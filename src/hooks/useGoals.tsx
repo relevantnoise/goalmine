@@ -177,11 +177,18 @@ export const useGoals = () => {
       
       // Optimistic update - update the goal state immediately
       if (data.goal) {
+        console.log('🎯 Check-in successful, updating goal state:', {
+          goalId,
+          oldLastCheckin: goals.find(g => g.id === goalId)?.last_checkin_date,
+          newLastCheckin: data.goal.last_checkin_date,
+          newStreakCount: data.goal.streak_count
+        });
         setGoals(prev => prev.map(goal => 
           goal.id === goalId ? data.goal : goal
         ));
       } else {
         // Fallback to refetch if no goal data returned
+        console.log('🎯 No goal data returned, fetching goals');
         await fetchGoals();
       }
     } catch (error) {
