@@ -1,0 +1,212 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Target, Heart, Users, BookOpen } from "lucide-react";
+import { useGoals } from "@/hooks/useGoals";
+
+const toneOptions = [
+  {
+    id: 'drill_sergeant' as const,
+    title: 'Drill Sergeant',
+    description: 'Direct, no-nonsense, push-you-to-excel motivation',
+    icon: Target,
+    example: '"Listen up! No excuses - time to execute!"'
+  },
+  {
+    id: 'kind_encouraging' as const, 
+    title: 'Kind & Encouraging',
+    description: 'Gentle, supportive, celebrate-every-step approach',
+    icon: Heart,
+    example: '"You\'re doing amazing! Every small step counts."'
+  },
+  {
+    id: 'teammate' as const,
+    title: 'Teammate',
+    description: 'Collaborative, we\'re-in-this-together energy', 
+    icon: Users,
+    example: '"We\'ve got this! Let\'s tackle it together."'
+  },
+  {
+    id: 'wise_mentor' as const,
+    title: 'Wise Mentor', 
+    description: 'Thoughtful guidance with life lessons and perspective',
+    icon: BookOpen,
+    example: '"Every master was once a beginner. Trust the process."'
+  }
+];
+
+interface SimpleGoalFormProps {
+  onComplete: (goalId?: string) => void;
+  onCancel: () => void;
+}
+
+export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [targetDate, setTargetDate] = useState('');
+  const [selectedTone, setSelectedTone] = useState<'drill_sergeant' | 'kind_encouraging' | 'teammate' | 'wise_mentor'>('kind_encouraging');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { createGoal } = useGoals();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    setIsSubmitting(true);
+    console.log('🎯 Enhanced form: Creating goal with:', { title, tone: selectedTone, description });
+
+    try {
+      const result = await createGoal({ 
+        title: title.trim(),
+        description: description.trim() || undefined,
+        target_date: targetDate ? new Date(targetDate) : undefined,
+        tone: selectedTone
+      });
+      if (result) {
+        console.log('✅ Goal created with tone and target date, calling onComplete');
+        onComplete(result.id);
+      }
+    } catch (error) {
+      console.error('❌ Form submission error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">Create Your Goal</CardTitle>
+          <p className="text-muted-foreground">Set your goal, timeline, and get personalized daily motivation emails</p>
+        </CardHeader>
+        
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Step 1: Goal Title */}
+            <div>
+              <Label htmlFor="title" className="text-base font-medium">
+                1. What's your goal?
+              </Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g., Exercise daily, Learn Spanish, Write a book..."
+                className="text-base"
+                maxLength={100}
+                required
+              />
+            </div>
+
+            {/* Step 2: Goal Details (Now Required for Better AI) */}
+            <div>
+              <Label htmlFor="description" className="text-base font-medium">
+                2. Tell us more about your goal (recommended)
+              </Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Why is this goal important to you? What specific challenges do you face? Any relevant background or context..."
+                className="text-base resize-none"
+                rows={4}
+                maxLength={300}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                <strong>The more details you provide, the better your AI coach can help you succeed.</strong> This creates personalized strategies, motivation, and daily guidance.
+              </p>
+            </div>
+
+            {/* Step 3: Target Date */}
+            <div>
+              <Label htmlFor="targetDate" className="text-base font-medium">
+                3. When do you want to achieve this? (optional but recommended)
+              </Label>
+              <input
+                id="targetDate"
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                className="w-full mt-1 px-3 py-2 border border-border rounded-md text-base"
+                min={new Date().toISOString().split('T')[0]}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Setting a deadline helps create urgency and better motivation
+              </p>
+            </div>
+
+            {/* Step 4: Coaching Tone Selection */}
+            <div>
+              <Label className="text-base font-medium mb-3 block">
+                4. Choose your AI coaching style
+              </Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {toneOptions.map((option) => {
+                  const IconComponent = option.icon;
+                  return (
+                    <div
+                      key={option.id}
+                      className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                        selectedTone === option.id ? 'border-primary bg-primary/5' : 'border-border'
+                      }`}
+                      onClick={() => setSelectedTone(option.id)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <IconComponent className={`w-5 h-5 mt-0.5 ${
+                          selectedTone === option.id ? 'text-primary' : 'text-muted-foreground'
+                        }`} />
+                        <div>
+                          <h3 className={`font-semibold text-sm ${
+                            selectedTone === option.id ? 'text-primary' : 'text-foreground'
+                          }`}>
+                            {option.title}
+                          </h3>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            {option.description}
+                          </p>
+                          <p className="text-xs italic text-muted-foreground">
+                            {option.example}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isSubmitting}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={!title.trim() || isSubmitting}
+                className="flex-1"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full mr-2" />
+                    Creating...
+                  </>
+                ) : (
+                  'Create Goal 🎯'
+                )}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
