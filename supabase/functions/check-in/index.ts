@@ -41,13 +41,15 @@ serve(async (req) => {
       });
     }
 
-    // Calculate current "streak day" in EST (3 AM reset)
+    // Calculate current "streak day" in Eastern Time (3 AM reset, handles EST/EDT automatically)
     const now = new Date();
-    const estOffset = -5 * 60; // EST is UTC-5 (in minutes)
-    const estTime = new Date(now.getTime() + (estOffset * 60 * 1000));
     
-    // Subtract 3 hours so day changes at 3 AM EST
-    const streakDay = new Date(estTime.getTime() - (3 * 60 * 60 * 1000));
+    // Get the current time in Eastern Time using proper timezone
+    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const easternTime = new Date(easternTimeStr);
+    
+    // Subtract 3 hours so day changes at 3 AM Eastern
+    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
     const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
 
     // Check if user already checked in today
@@ -56,8 +58,9 @@ serve(async (req) => {
     
     if (lastCheckinDate) {
       const lastCheckin = new Date(lastCheckinDate);
-      const lastCheckinEST = new Date(lastCheckin.getTime() + (estOffset * 60 * 1000));
-      const lastStreakDay = new Date(lastCheckinEST.getTime() - (3 * 60 * 60 * 1000));
+      const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
+      const lastCheckinEastern = new Date(lastCheckinEasternStr);
+      const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
       lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
     }
 

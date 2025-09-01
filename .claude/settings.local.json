@@ -127,7 +127,9 @@
       "Bash(git push:*)",
       "Bash(sudo npm install -g vercel)",
       "Bash(nslookup:*)",
-      "Bash(sudo dscacheutil:*)"
+      "Bash(sudo dscacheutil:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase db shell --db-url \"postgresql://postgres.dhlcycjnzwfnadmsptof:6jlr5PqgXCkcJPho@aws-0-us-west-1.pooler.supabase.com:6543/postgres\" --command \"\nSELECT \n  id,\n  title,\n  last_check_in AT TIME ZONE ''America/New_York'' as last_check_in_est,\n  streak_count,\n  CURRENT_TIMESTAMP AT TIME ZONE ''America/New_York'' as current_time_est\nFROM goals \nWHERE user_id = ''dandlynn@yahoo.com'' \nAND is_active = true;\")",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions logs daily-cron --tail=10)"
     ],
     "deny": [],
     "ask": [],
