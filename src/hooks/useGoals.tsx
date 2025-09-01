@@ -175,7 +175,15 @@ export const useGoals = () => {
       const message = data.message || 'Checked in! Streak updated.';
       toast.success(message);
       
-      await fetchGoals(); // Refresh goals to show updated streak
+      // Optimistic update - update the goal state immediately
+      if (data.goal) {
+        setGoals(prev => prev.map(goal => 
+          goal.id === goalId ? data.goal : goal
+        ));
+      } else {
+        // Fallback to refetch if no goal data returned
+        await fetchGoals();
+      }
     } catch (error) {
       console.error('❌ Error checking in:', error);
       
