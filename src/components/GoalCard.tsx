@@ -32,6 +32,7 @@ export const GoalCard = ({
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showResetStreakDialog, setShowResetStreakDialog] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
   // const [isGeneratingMotivation, setIsGeneratingMotivation] = useState(false); // TEST: Commented out for production
 
   // TEST: Commented out for production
@@ -125,7 +126,7 @@ export const GoalCard = ({
       frontendCalculation: 'Matches backend logic exactly'
     });
     return result;
-  }, [goal.last_checkin_date, goal.id, goal.title, goal.updated_at, goal.streak_count]);
+  }, [goal.last_checkin_date, goal.updated_at]);
   return <Card className="border border-border shadow-sm">
       <div>
       <CardHeader>
@@ -282,12 +283,25 @@ export const GoalCard = ({
           {hasCheckedInToday ? <div className="flex items-center gap-2 text-success text-sm font-medium">
               <CheckCircle className="w-4 h-4" />
               <span>Checked in today! 🔥</span>
-            </div> : <Button variant="default" size="sm" onClick={e => {
-          e.stopPropagation();
-          onCheckIn(goal.id);
-        }} className="w-full">
+            </div> : <Button 
+              variant="default" 
+              size="sm" 
+              onClick={async (e) => {
+                e.stopPropagation();
+                if (isCheckingIn) return; // Prevent double clicks
+                
+                setIsCheckingIn(true);
+                try {
+                  await onCheckIn(goal.id);
+                } finally {
+                  setIsCheckingIn(false);
+                }
+              }} 
+              className="w-full"
+              disabled={isCheckingIn}
+            >
               <CheckCircle className="w-4 h-4 mr-2" />
-              Check In Today
+              {isCheckingIn ? 'Checking In...' : 'Check In Today'}
             </Button>}
           
           {/* Daily reset info */}
