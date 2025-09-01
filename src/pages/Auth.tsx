@@ -92,7 +92,10 @@ export const Auth: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
       console.log('🚀 Authentication successful - redirecting to home page');
-      navigate('/', { replace: true });
+      // Add a small delay to ensure auth state is fully propagated
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     }
   }, [isAuthenticated, isLoading, navigate]);
 
