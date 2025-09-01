@@ -73,22 +73,29 @@ export default function GoalDetail() {
     return "Keep going! You're making great progress towards your goal.";
   };
 
-  // Check if user has already checked in today - using 3 AM EST reset logic
+  // Check if user has already checked in today - MUST match backend logic exactly
   const hasCheckedInToday = useMemo(() => {
     if (!goal?.last_checkin_date) return false;
     
-    // Get current time in Eastern Time (handles EST/EDT automatically)
+    // Calculate current "streak day" in Eastern Time (3 AM reset) - SAME as backend
     const now = new Date();
-    const easternTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
     
-    // If it's before 3 AM, consider it the previous day for check-in purposes
-    if (easternTime.getHours() < 3) {
-      easternTime.setDate(easternTime.getDate() - 1);
-    }
+    // Get current time in Eastern Time using proper timezone (handles EST/EDT automatically)
+    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const easternTime = new Date(easternTimeStr);
     
-    const today = easternTime.toISOString().split('T')[0];
-    const lastCheckinDate = typeof goal.last_checkin_date === 'string' ? goal.last_checkin_date.split('T')[0] : goal.last_checkin_date;
-    return lastCheckinDate === today;
+    // Subtract 3 hours so day changes at 3 AM Eastern - SAME as backend
+    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
+    const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    // Calculate last check-in streak date - SAME as backend
+    const lastCheckin = new Date(goal.last_checkin_date);
+    const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const lastCheckinEastern = new Date(lastCheckinEasternStr);
+    const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
+    const lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+    
+    return currentStreakDate === lastCheckinStreakDate;
   }, [goal?.last_checkin_date]);
   // Load motivation from existing data only - never generate in real-time
   const loadMotivation = async (goalData: Goal) => {

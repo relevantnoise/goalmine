@@ -88,34 +88,41 @@ export const GoalCard = ({
     });
   };
 
-  // Check if user has already checked in today - using useMemo for proper re-rendering
+  // Check if user has already checked in today - MUST match backend logic exactly
   const hasCheckedInToday = useMemo(() => {
     if (!goal.last_checkin_date) return false;
     
-    // Get current time in Eastern Time (handles EST/EDT automatically)
+    // Calculate current "streak day" in Eastern Time (3 AM reset) - SAME as backend
     const now = new Date();
-    const easternTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
     
-    // If it's before 3 AM, consider it the previous day for check-in purposes
-    if (easternTime.getHours() < 3) {
-      easternTime.setDate(easternTime.getDate() - 1);
-    }
+    // Get current time in Eastern Time using proper timezone (handles EST/EDT automatically)
+    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const easternTime = new Date(easternTimeStr);
     
-    const today = easternTime.toISOString().split('T')[0];
-    const lastCheckinDate = typeof goal.last_checkin_date === 'string' ? goal.last_checkin_date.split('T')[0] : goal.last_checkin_date;
-    const result = lastCheckinDate === today;
+    // Subtract 3 hours so day changes at 3 AM Eastern - SAME as backend
+    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
+    const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    // Calculate last check-in streak date - SAME as backend
+    const lastCheckin = new Date(goal.last_checkin_date);
+    const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const lastCheckinEastern = new Date(lastCheckinEasternStr);
+    const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
+    const lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+    
+    const result = currentStreakDate === lastCheckinStreakDate;
     
     console.log(`🎯 hasCheckedInToday for ${goal.title}:`, {
       now: now.toISOString(),
       easternTime: easternTime.toISOString(),
       easternHour: easternTime.getHours(),
-      today,
-      lastCheckinDate,
+      currentStreakDate,
+      lastCheckinStreakDate,
       result,
       goalId: goal.id,
       goalUpdatedAt: goal.updated_at,
       streakCount: goal.streak_count,
-      frontendCalculation: 'Using 3AM EST reset rule'
+      frontendCalculation: 'Matches backend logic exactly'
     });
     return result;
   }, [goal.last_checkin_date, goal.id, goal.title, goal.updated_at, goal.streak_count]);
