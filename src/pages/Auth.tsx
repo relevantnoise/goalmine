@@ -24,6 +24,7 @@ export const Auth: React.FC = () => {
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Helper function to convert Firebase errors to user-friendly messages
   const getErrorMessage = (error: any): string => {
@@ -90,14 +91,15 @@ export const Auth: React.FC = () => {
 
   // Redirect to home page when authentication succeeds
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
+    if (isAuthenticated && !isLoading && !isRedirecting) {
       console.log('🚀 Authentication successful - redirecting to home page');
+      setIsRedirecting(true);
       // Add a small delay to ensure auth state is fully propagated
       setTimeout(() => {
         navigate('/', { replace: true });
       }, 100);
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, isRedirecting]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -324,6 +326,19 @@ export const Auth: React.FC = () => {
             )}
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  // Show professional loading screen when authenticated and redirecting
+  if (isAuthenticated || isRedirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back!</h2>
+          <p className="text-gray-600">Dream Big, Start Small, Keep Going...</p>
+        </div>
       </div>
     );
   }
