@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import Test from "./pages/Test";
-import Auth from "./pages/Auth";
+import { ProtectedAuth } from "./components/ProtectedAuth";
 import Success from "./pages/Success";
 import NotFound from "./pages/NotFound";
 import GoalDetail from "./pages/GoalDetail";
@@ -23,7 +23,7 @@ const App = () => (
           <Routes>
             <Route path="/test" element={<Test />} />
             <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth" element={<ProtectedAuth />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/goal/:goalId" element={<GoalDetail />} />
             <Route path="/upgrade" element={<UpgradePage />} />
