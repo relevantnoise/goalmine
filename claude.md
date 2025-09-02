@@ -48,7 +48,7 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 - **UI**: shadcn-ui components + Tailwind CSS
 - **Backend**: Supabase (Database + Edge Functions) + Firebase (Authentication)
 - **Payments**: Stripe integration
-- **Email**: Render for email delivery
+- **Email**: Resend for email delivery
 - **Chat**: Crisp integration
 - **AI**: OpenAI GPT for motivation content generation
 
@@ -166,7 +166,7 @@ interface MotivationContent {
 - **Scheduled**: User-specified delivery time
 - **Content**: AI-generated motivation + progress tracking
 - **Templates**: React-based email templates
-- **Delivery**: Render email service integration
+- **Delivery**: Resend email service integration
 
 ### Transactional Emails
 - **Nudges**: On-demand motivation delivery

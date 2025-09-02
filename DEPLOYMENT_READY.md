@@ -26,7 +26,7 @@
 - **Backend**: Supabase (Database + Edge Functions)
 - **Hosting**: Vercel
 - **Payments**: Stripe
-- **Email**: Render (formerly Resend)
+- **Email**: Resend for all non-auth emails (Firebase handles auth emails)
 
 ---
 
@@ -163,8 +163,9 @@ git push origin main
    - [ ] Subscription limits enforced
 
 4. **Email System**
-   - [ ] Daily motivation emails sending
-   - [ ] Nudge emails arrive
+   - [ ] Daily motivation emails sending (via Resend)
+   - [ ] Nudge emails arrive (via Resend)
+   - [ ] Email verification works (via Firebase)
    - [ ] Email templates render correctly
 
 ---
@@ -185,7 +186,7 @@ VITE_SUPABASE_ANON_KEY
 OPENAI_API_KEY
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
-RENDER_API_KEY
+RESEND_API_KEY
 ```
 
 ---
