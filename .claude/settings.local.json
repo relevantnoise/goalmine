@@ -145,7 +145,10 @@
       "Bash(./deploy-firebase.sh)",
       "Bash(zip:*)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke daily-cron --project-ref dhlcycjnzwfnadmsptof)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-daily-emails --project-ref dhlcycjnzwfnadmsptof)"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-daily-emails --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy cleanup-test-user --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke cleanup-test-users --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy cleanup-dandlynn --project-ref dhlcycjnzwfnadmsptof)"
     ],
     "deny": [],
     "ask": [],

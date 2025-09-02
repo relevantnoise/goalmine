@@ -147,7 +147,7 @@ git push origin main
    - [ ] Sign up with fresh email
    - [ ] Receive verification email
    - [ ] Complete goal creation
-   - [ ] Receive first motivational email
+   - [ ] View goal detail page with motivation content
    - [ ] Land on dashboard with goal visible
 
 2. **Returning User Flow**
