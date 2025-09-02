@@ -230,13 +230,14 @@ export const useGoals = () => {
       // Optimistic update - remove from state immediately
       setGoals(prev => prev.filter(goal => goal.id !== goalId));
       
-      // Show success toast with creative message
-      toast.success('🗑️ Goal deleted! Time to dream up something new.');
+      // Wait for backend to fully process deletion before showing success
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      // Give a moment for backend to process, then refresh to ensure consistency
-      setTimeout(async () => {
-        await fetchGoals();
-      }, 500);
+      // Refresh goals to ensure consistency with backend
+      await fetchGoals();
+      
+      // Show success toast after backend sync completes
+      toast.success('🗑️ Goal deleted! Time to dream up something new.');
       
     } catch (error) {
       console.error('❌ Error deleting goal:', error);
