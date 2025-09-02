@@ -38,6 +38,7 @@ const Index = () => {
   const [alertData, setAlertData] = useState<{title: string, message: string, type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade'}>({title: '', message: ''});
   const [showTrialModal, setShowTrialModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
   const hasInitialized = useRef(false);
   const isCompletingOnboarding = useRef(false);
   
@@ -308,10 +309,15 @@ const Index = () => {
   };
 
   const handleStartOver = async () => {
-    if (!user) return;
+    if (!user || isCheckingLimits) return;
 
     try {
-      // Check subscription limits
+      setIsCheckingLimits(true);
+      
+      // Refresh goals data to get latest count (prevents race condition)
+      await fetchGoals();
+      
+      // Check subscription limits with fresh data
       if (!subscription.subscribed && goals.length >= 1) {
         // Free users: limit to 1 goal - redirect to upgrade page
         navigate('/upgrade');
@@ -342,6 +348,8 @@ const Index = () => {
         type: 'upgrade'
       });
       setShowAlert(true);
+    } finally {
+      setIsCheckingLimits(false);
     }
   };
 
@@ -542,6 +550,7 @@ const Index = () => {
             // Navigate to landing page using React state, not page reload
             setCurrentView('landing');
           }}
+          isCheckingLimits={isCheckingLimits}
         />
         {showAlert && (
           <MotivationAlert

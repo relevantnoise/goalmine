@@ -15,9 +15,10 @@ interface DashboardProps {
   onNudgeMe: () => Promise<any>;
   onStartOver: () => void;
   onLogoClick: () => void;
+  isCheckingLimits?: boolean;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, isCheckingLimits = false }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
@@ -101,9 +102,9 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   <p className="text-muted-foreground mb-4">
                     You don't have any active goals right now. Create your first goal to get started!
                   </p>
-                  <Button onClick={handleCreateGoal} className="mt-2">
+                  <Button onClick={handleCreateGoal} className="mt-2" disabled={isCheckingLimits}>
                     <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Goal
+                    {isCheckingLimits ? "Checking..." : "Create Your First Goal"}
                   </Button>
                 </div>
               ) : (
@@ -138,10 +139,10 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                     </p>
                   </div>
                 </div>
-                <Button onClick={handleCreateGoal} className="w-full" variant="default">
+                <Button onClick={handleCreateGoal} className="w-full" variant="default" disabled={isCheckingLimits}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Create A Goal
-                  {!subscription.subscribed && <Crown className="w-4 h-4 ml-2" />}
+                  {isCheckingLimits ? "Checking..." : "Create A Goal"}
+                  {!subscription.subscribed && !isCheckingLimits && <Crown className="w-4 h-4 ml-2" />}
                 </Button>
               </div>
 
