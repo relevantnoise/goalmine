@@ -38,7 +38,6 @@ const Index = () => {
   const [alertData, setAlertData] = useState<{title: string, message: string, type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade'}>({title: '', message: ''});
   const [showTrialModal, setShowTrialModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
   const hasInitialized = useRef(false);
   const isCompletingOnboarding = useRef(false);
   
@@ -309,69 +308,14 @@ const Index = () => {
   };
 
   const handleStartOver = async () => {
-    console.log('🔍 DEBUG: handleStartOver called!');
-    if (!user || isCheckingLimits) {
-      console.log('🔍 DEBUG: Early return - no user or already checking limits');
-      return;
-    }
+    if (!user) return;
 
-    try {
-      console.log('🔍 DEBUG: Starting limit check process...');
-      setIsCheckingLimits(true);
-      
-      // Get fresh goal count directly from Supabase 
-      const userId = user.email || user.id;
-      console.log('🔍 DEBUG: Checking limits for user:', userId);
-      console.log('🔍 DEBUG: Current subscription status:', subscription.subscribed);
-      
-      const { data } = await supabase.functions.invoke('fetch-user-goals', {
-        body: { user_id: userId }
-      });
-      
-      const currentGoalCount = data?.success ? data.goals.length : goals.length;
-      console.log('🔍 DEBUG: Fresh goal count from Supabase:', currentGoalCount);
-      console.log('🔍 DEBUG: Old goal count from state:', goals.length);
-      
-      // Also refresh the goals state for the dashboard
-      await fetchGoals();
-      
-      // Check subscription limits with fresh count
-      if (!subscription.subscribed && currentGoalCount >= 1) {
-        // Free users: limit to 1 goal - redirect to upgrade page
-        console.log('❌ DEBUG: FREE USER AT LIMIT - redirecting to upgrade');
-        navigate('/upgrade');
-        return;
-      }
-
-      if (subscription.subscribed && currentGoalCount >= 3) {
-        // Personal Plan users: limit to 3 goals
-        console.log('❌ DEBUG: PREMIUM USER AT 3/3 LIMIT - showing alert');
-        setAlertData({
-          title: '🎯 Maximum Goals Reached',
-          message: 'You\'ve reached your Personal Plan limit of 3 goals. To create a new goal, delete one first.',
-          type: 'upgrade'
-        });
-        setShowAlert(true);
-        return;
-      }
-
-      console.log('✅ DEBUG: User can create goal - proceeding to onboarding');
-      // Allow new goal creation
-      setCurrentView('onboarding');
-      
-      // Scroll to top when showing goal creation form
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
-      console.error('Error in handleStartOver:', error);
-      setAlertData({
-        title: "⚠️ Oops!",
-        message: "Failed to start over. Please try again.",
-        type: 'upgrade'
-      });
-      setShowAlert(true);
-    } finally {
-      setIsCheckingLimits(false);
-    }
+    // SIMPLIFIED: Just go to goal creation and let backend handle limits
+    // The backend will reject if limits are exceeded and show proper error
+    setCurrentView('onboarding');
+    
+    // Scroll to top when showing goal creation form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Show loading screen while checking authentication - SIMPLIFIED
@@ -571,7 +515,6 @@ const Index = () => {
             // Navigate to landing page using React state, not page reload
             setCurrentView('landing');
           }}
-          isCheckingLimits={isCheckingLimits}
         />
         {showAlert && (
           <MotivationAlert
