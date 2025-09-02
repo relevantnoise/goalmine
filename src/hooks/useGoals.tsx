@@ -147,7 +147,20 @@ export const useGoals = () => {
 
     } catch (error) {
       console.error('❌ Simple goal creation failed:', error);
-      toast.error(`Could not create goal: ${error.message}`);
+      
+      // Show the exact error from backend (includes limit messages)
+      const errorMessage = error.message || 'Could not create goal';
+      
+      // Check if it's a limit error and show it prominently
+      if (errorMessage.includes('maximum') || errorMessage.includes('limit')) {
+        toast.error(errorMessage, {
+          duration: 5000, // Show for 5 seconds
+          important: true
+        });
+      } else {
+        toast.error(`Could not create goal: ${errorMessage}`);
+      }
+      
       return null;
     } finally {
       setLoading(false);

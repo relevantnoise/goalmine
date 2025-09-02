@@ -310,30 +310,9 @@ const Index = () => {
   const handleStartOver = async () => {
     if (!user) return;
 
-    // Simple frontend check for better UX (backend is still authoritative)
-    const maxGoals = subscription.subscribed ? 3 : 1;
-    const currentGoals = goals.length;
-    
-    if (currentGoals >= maxGoals) {
-      // Show appropriate message based on subscription
-      if (subscription.subscribed) {
-        setAlertData({
-          title: '🎯 Maximum Goals Reached',
-          message: `You have ${currentGoals} of ${maxGoals} goals. Delete an existing goal to create a new one.`,
-          type: 'upgrade'
-        });
-      } else {
-        setAlertData({
-          title: '🎯 Upgrade to Create More Goals',
-          message: 'Free users can have 1 goal. Upgrade to Personal Plan for up to 3 goals.',
-          type: 'upgrade'
-        });
-      }
-      setShowAlert(true);
-      return;
-    }
-
-    // User has room for more goals, proceed to form
+    // ALWAYS allow going to the form
+    // Let the backend handle ALL limit checking
+    // This prevents ALL timing issues
     setCurrentView('onboarding');
     
     // Scroll to top when showing goal creation form
