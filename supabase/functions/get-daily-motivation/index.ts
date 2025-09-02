@@ -23,6 +23,18 @@ serve(async (req) => {
     // Get today's date
     const today = new Date().toISOString().split('T')[0];
     
+    // Get the current goal to check streak count
+    const { data: currentGoal, error: goalError } = await supabase
+      .from('goals')
+      .select('streak_count, title, description, tone, target_date')
+      .eq('id', goalId)
+      .single();
+
+    if (goalError) {
+      console.error('Error fetching goal:', goalError);
+      throw goalError;
+    }
+
     // Query for motivation created today for this goal
     const { data: motivationHistory, error } = await supabase
       .from('motivation_history')
@@ -39,17 +51,66 @@ serve(async (req) => {
       throw error;
     }
 
-    if (!motivationHistory) {
-      console.log('No motivation found for today');
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'No motivation found for today' 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // Check if we need fresh content due to streak change
+    const needsFreshContent = !motivationHistory || 
+      (motivationHistory.streak_count !== currentGoal.streak_count);
+
+    if (needsFreshContent) {
+      console.log(motivationHistory ? 
+        `Streak changed from ${motivationHistory.streak_count} to ${currentGoal.streak_count} - generating fresh content` :
+        'No motivation found for today - generating fresh content');
+      
+      // Generate fresh motivation with current streak
+      try {
+        const { data: newMotivation, error: genError } = await supabase.functions.invoke('generate-daily-motivation', {
+          body: {
+            goalId: goalId,
+            goalTitle: currentGoal.title,
+            goalDescription: currentGoal.description || '',
+            tone: currentGoal.tone || 'kind_encouraging',
+            streakCount: currentGoal.streak_count,
+            targetDate: currentGoal.target_date,
+            userId: userId,
+            isNudge: false
+          }
+        });
+
+        if (genError) {
+          console.error('Error generating fresh motivation:', genError);
+          // Fall back to existing content if available
+          if (motivationHistory) {
+            return new Response(JSON.stringify({ 
+              success: true, 
+              motivation: motivationHistory 
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+          throw genError;
+        }
+
+        console.log('Generated fresh motivation with current streak');
+        return new Response(JSON.stringify(newMotivation), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+
+      } catch (error) {
+        console.error('Failed to generate fresh motivation:', error);
+        // Fall back to existing content if available
+        if (motivationHistory) {
+          console.log('Falling back to existing content');
+          return new Response(JSON.stringify({ 
+            success: true, 
+            motivation: motivationHistory 
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        throw error;
+      }
     }
 
-    console.log('Found motivation:', motivationHistory.message);
+    console.log('Using existing motivation (streak unchanged):', motivationHistory.message);
 
     return new Response(JSON.stringify({ 
       success: true, 

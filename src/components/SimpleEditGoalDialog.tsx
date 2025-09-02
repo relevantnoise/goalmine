@@ -136,9 +136,9 @@ export const SimpleEditGoalDialog = ({ goal, open, onOpenChange, onSave }: Simpl
             />
           </div>
 
-          {/* Coaching Tone */}
+          {/* Coaching Style */}
           <div className="space-y-3">
-            <Label>Coaching Tone</Label>
+            <Label>Coaching Style</Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {toneOptions.map((option) => {
                 const IconComponent = option.icon;

@@ -18,7 +18,6 @@ import { MotivationAlert } from "@/components/MotivationAlert";
 import { TrialExpiredModal } from "@/components/TrialExpiredModal";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   // Version check log
@@ -31,7 +30,6 @@ const Index = () => {
   const { nudgeStatus, useNudge, loading: nudgeLoading } = useNudgeLimit();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
   // No need for custom supabase client with native auth
   const [searchParams] = useSearchParams();
   const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'onboarding' | 'dashboard'>('landing');
@@ -68,12 +66,13 @@ const Index = () => {
       goalsLoading,
       hasInitialized: hasInitialized.current,
       forceReset: searchParams.get('reset') === 'true',
-      currentView
+      currentView,
+      pathname: location.pathname
     });
 
     // Force reset if we're stuck - check URL params for reset or dashboard view
     const forceReset = searchParams.get('reset') === 'true';
-    const forceDashboard = searchParams.get('force-dashboard') === 'true';
+    const forceDashboard = searchParams.get('force-dashboard') === 'true' || location.pathname === '/dashboard';
     const forceOnboarding = searchParams.get('force-onboarding') === 'true';
     const checkinRequest = searchParams.get('checkin') === 'true';
     const forceHome = searchParams.get('home') === 'true';
@@ -229,11 +228,13 @@ const Index = () => {
     
     // ✅ Simple success flow - goal already created and added to state optimistically
     if (goalId) {
-      toast({
-        title: "Goal Created! 🎯",
-        description: "Check your email for your first daily motivation message!",
-        duration: 5000,
+      // Show premium success modal
+      setAlertData({
+        title: "🎯 Goal Created!",
+        message: "Your goal is ready! Daily motivation emails will start tomorrow.",
+        type: 'achievement'
       });
+      setShowAlert(true);
     }
     
     // ✅ Switch to dashboard - goals should already be visible
@@ -294,12 +295,13 @@ const Index = () => {
       
       return generalNudge;
     } else {
-      // Fallback toast if generation fails
-      toast({
+      // Fallback alert if generation fails
+      setAlertData({
         title: "🚀 Keep Going!",
-        description: "Every small step counts! You've got this - keep moving forward on your journey.",
-        duration: 5000,
+        message: "Every small step counts! You've got this - keep moving forward on your journey.",
+        type: 'nudge'
       });
+      setShowAlert(true);
       
       return null;
     }
@@ -317,10 +319,10 @@ const Index = () => {
       }
 
       if (subscription.subscribed && goals.length >= 3) {
-        // Premium users: limit to 3 goals
+        // Personal Plan users: limit to 3 goals
         setAlertData({
-          title: 'Goal Limit Reached',
-          message: 'Premium users can have up to 3 active goals.',
+          title: '🎯 Maximum Goals Reached',
+          message: 'You\'ve reached your Personal Plan limit of 3 goals. To create a new goal, delete one first.',
           type: 'upgrade'
         });
         setShowAlert(true);
@@ -329,13 +331,17 @@ const Index = () => {
 
       // Allow new goal creation
       setCurrentView('onboarding');
+      
+      // Scroll to top when showing goal creation form
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error in handleStartOver:', error);
-      toast({
-        title: "Error",
-        description: "Failed to start over. Please try again.",
-        variant: "destructive",
+      setAlertData({
+        title: "⚠️ Oops!",
+        message: "Failed to start over. Please try again.",
+        type: 'upgrade'
       });
+      setShowAlert(true);
     }
   };
 
@@ -371,7 +377,19 @@ const Index = () => {
   }
 
   if (currentView === 'landing') {
-  return (
+    // Show loading briefly while determining which landing page version to show
+    if (authLoading) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
       <LandingPage 
         onGetStarted={async () => {
           if (user) {
@@ -384,6 +402,7 @@ const Index = () => {
           }
         }}
         onSeePricing={() => setCurrentView('pricing')}
+        onGoToDashboard={() => setCurrentView('dashboard')}
       />
     );
   }
@@ -519,7 +538,10 @@ const Index = () => {
         <Dashboard
           onNudgeMe={handleNudgeMe}
           onStartOver={handleStartOver}
-          onLogoClick={() => window.location.href = '/?home=true'}
+          onLogoClick={() => {
+            // Navigate to landing page using React state, not page reload
+            setCurrentView('landing');
+          }}
         />
         {showAlert && (
           <MotivationAlert

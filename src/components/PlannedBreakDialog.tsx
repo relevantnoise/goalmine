@@ -31,9 +31,9 @@ export const PlannedBreakDialog = ({ goal, onSuccess }: PlannedBreakDialogProps)
   const handleSave = async () => {
     if (breakDays < 1 || breakDays > 14) {
       toast({
-        title: "Invalid Break Duration",
+        title: "⚠️ Invalid Duration",
         description: "Break duration must be between 1 and 14 days.",
-        variant: "destructive",
+        duration: 8000
       });
       return;
     }
@@ -56,7 +56,7 @@ export const PlannedBreakDialog = ({ goal, onSuccess }: PlannedBreakDialogProps)
       toast({
         title: "✈️ Break Scheduled!",
         description: `Your streak is paused for ${breakDays} day${breakDays > 1 ? 's' : ''} until ${endDate.toLocaleDateString()}.`,
-        variant: "default",
+        duration: 8000
       });
 
       setOpen(false);
@@ -64,9 +64,9 @@ export const PlannedBreakDialog = ({ goal, onSuccess }: PlannedBreakDialogProps)
     } catch (error) {
       console.error('Error scheduling break:', error);
       toast({
-        title: "Error",
+        title: "⚠️ Oops!",
         description: "Failed to schedule break. Please try again.",
-        variant: "destructive",
+        duration: 8000
       });
     } finally {
       setLoading(false);
@@ -89,16 +89,16 @@ export const PlannedBreakDialog = ({ goal, onSuccess }: PlannedBreakDialogProps)
       toast({
         title: "🎯 Break Cancelled!",
         description: "Your goal is active again. Welcome back!",
-        variant: "default",
+        duration: 8000
       });
 
       onSuccess();
     } catch (error) {
       console.error('Error cancelling break:', error);
       toast({
-        title: "Error",
+        title: "⚠️ Oops!",
         description: "Failed to cancel break. Please try again.",
-        variant: "destructive",
+        duration: 8000
       });
     } finally {
       setLoading(false);

@@ -76,40 +76,54 @@ export const GoalCard = ({
       year: 'numeric'
     });
   };
-  const formatTime = (timeString: string | null) => {
+  const formatTimeOfDay = (timeString: string | null) => {
     if (!timeString) return null;
-    // Parse time string (HH:MM:SS format) and format to 12-hour format
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes);
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    // Handle both old format (HH:MM:SS) and new format (morning/afternoon/evening)
+    if (timeString.includes(':')) {
+      // Old format - just show "Daily Email"
+      return "Daily Email";
+    }
+    // New format - show the time of day
+    switch(timeString.toLowerCase()) {
+      case 'morning':
+        return 'Morning Email';
+      case 'afternoon':
+        return 'Afternoon Email';
+      case 'evening':
+        return 'Evening Email';
+      default:
+        return 'Daily Email';
+    }
   };
 
   // Check if user has already checked in today - MUST match backend logic exactly
   const hasCheckedInToday = useMemo(() => {
     if (!goal.last_checkin_date) return false;
     
-    // Calculate current "streak day" in Eastern Time (3 AM reset) - SAME as backend
+    // SIMPLIFIED: Since backend already stores UTC timestamp, just compare dates directly
+    // The backend check-in function validates the streak day properly
     const now = new Date();
-    
-    // Get current time in Eastern Time using proper timezone (handles EST/EDT automatically)
     const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
     const easternTime = new Date(easternTimeStr);
     
-    // Subtract 3 hours so day changes at 3 AM Eastern - SAME as backend
+    // Subtract 3 hours so day changes at 3 AM Eastern
     const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
-    const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
+    const currentStreakDate = streakDay.toISOString().split('T')[0];
     
-    // Calculate last check-in streak date - SAME as backend
-    const lastCheckin = new Date(goal.last_checkin_date);
-    const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
-    const lastCheckinEastern = new Date(lastCheckinEasternStr);
-    const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
-    const lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+    // For last check-in, if it's a date string (YYYY-MM-DD), use it directly
+    // If it's a full timestamp, convert it the same way as current time
+    let lastCheckinStreakDate;
+    if (goal.last_checkin_date.includes('T')) {
+      // Full timestamp - convert same as current time
+      const lastCheckin = new Date(goal.last_checkin_date);
+      const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
+      const lastCheckinEastern = new Date(lastCheckinEasternStr);
+      const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
+      lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+    } else {
+      // Already a date string (YYYY-MM-DD)
+      lastCheckinStreakDate = goal.last_checkin_date;
+    }
     
     const result = currentStreakDate === lastCheckinStreakDate;
     
@@ -121,6 +135,7 @@ export const GoalCard = ({
       lastCheckinStreakDate,
       result,
       goalId: goal.id,
+      rawLastCheckinDate: goal.last_checkin_date,
       goalUpdatedAt: goal.updated_at,
       streakCount: goal.streak_count,
       frontendCalculation: 'Matches backend logic exactly'
@@ -202,30 +217,72 @@ export const GoalCard = ({
           <CardTitle className="text-lg mb-1">
             {goal.title}
           </CardTitle>
-          {goal.description && <p className="text-sm text-muted-foreground mb-2">{goal.description}</p>}
+          {goal.description && <p className="text-sm text-muted-foreground mb-3">{goal.description}</p>}
           
-          {/* View Details Button */}
-          <Button 
-            variant="default" 
-            size="sm" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigate(`/goal/${goal.id}`);
-            }}
-            className="mb-2 bg-primary hover:bg-primary/90"
-          >
-            <Target className="w-4 h-4 mr-2" />
-            View Today's Motivational Plan
-          </Button>
+          {/* Action Buttons - Side by side */}
+          <div className="flex gap-2 mb-3">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`/goal/${goal.id}`);
+              }}
+              className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+            >
+              <Target className="w-4 h-4 mr-2" />
+              View Motivation Plan
+            </Button>
+            
+            {hasCheckedInToday ? (
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="flex-1 bg-success hover:bg-success/90 cursor-default"
+                disabled
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Checked In! 🔥
+              </Button>
+            ) : (
+              <Button 
+                variant="default" 
+                size="sm" 
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  if (isCheckingIn) return;
+                  
+                  setIsCheckingIn(true);
+                  try {
+                    await onCheckIn(goal.id);
+                  } finally {
+                    setIsCheckingIn(false);
+                  }
+                }} 
+                className="flex-1"
+                disabled={isCheckingIn}
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                {isCheckingIn ? 'Checking In...' : 'Check In Today'}
+              </Button>
+            )}
+          </div>
           
           {/* Goal Settings */}
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             {goal.target_date && <span>🎯 Target: {formatDate(goal.target_date)}</span>}
-            {goal.time_of_day && <span>📧 Email: {formatTime(goal.time_of_day)}</span>}
             <Badge variant="secondary" className="text-xs">
-              {formatToneName(goal.tone)} Tone
+              {formatToneName(goal.tone)} Style
             </Badge>
+          </div>
+          
+          {/* Helpful info - subtle */}
+          <div className="text-xs text-muted-foreground mt-2 space-y-1">
+            <p>📧 Check your email each morning for daily motivation</p>
+            {!hasCheckedInToday && (
+              <p>🕒 Check-ins reset daily at 3 AM EST</p>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -277,37 +334,6 @@ export const GoalCard = ({
             </div>}
         </CardContent>}
 
-      {/* Check-in Button - Always show regardless of motivation */}
-      <CardContent className={`pt-${motivation ? '0' : '4'}`}>
-        <div className="pt-2">
-          {hasCheckedInToday ? <div className="flex items-center gap-2 text-success text-sm font-medium">
-              <CheckCircle className="w-4 h-4" />
-              <span>Checked in today! 🔥</span>
-            </div> : <Button 
-              variant="default" 
-              size="sm" 
-              onClick={async (e) => {
-                e.stopPropagation();
-                if (isCheckingIn) return; // Prevent double clicks
-                
-                setIsCheckingIn(true);
-                try {
-                  await onCheckIn(goal.id);
-                } finally {
-                  setIsCheckingIn(false);
-                }
-              }} 
-              className="w-full"
-              disabled={isCheckingIn}
-            >
-              <CheckCircle className="w-4 h-4 mr-2" />
-              {isCheckingIn ? 'Checking In...' : 'Check In Today'}
-            </Button>}
-          
-          {/* Daily reset info */}
-          <p className="text-xs text-muted-foreground mt-2 text-center">🕒 Your ability to Check In again will reset daily at 3 AM EST</p>
-        </div>
-      </CardContent>
       </div> {/* Close clickable div */}
 
       <SimpleEditGoalDialog goal={goal} open={showEditDialog} onOpenChange={setShowEditDialog} onSave={onUpdate} />

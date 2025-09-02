@@ -7,10 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 interface LandingPageProps {
   onGetStarted: () => void;
   onSeePricing: () => void;
+  onGoToDashboard?: () => void;
 }
 export const LandingPage = ({
   onGetStarted,
-  onSeePricing
+  onSeePricing,
+  onGoToDashboard
 }: LandingPageProps) => {
   const {
     user,
@@ -24,12 +26,10 @@ export const LandingPage = ({
     
     console.log('🚀 Continue to Dashboard button clicked!', { user: !!user, userId: user?.id });
     
-    // Since we know this user has goals from previous database checks, 
-    // and the RLS policies are preventing the client query from working,
-    // let's bypass the query and go directly to dashboard for existing users
-    
-    console.log('✅ Bypassing goal check for known user with existing goals - going to dashboard');
-    window.location.href = '/?force-dashboard=true';
+    // Call the parent's dashboard handler instead of reloading the page
+    if (onGoToDashboard) {
+      onGoToDashboard();
+    }
   };
   return <div className="min-h-screen bg-background">
       <Header onLogoClick={() => window.location.href = '/?home=true'} />

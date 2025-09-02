@@ -122,9 +122,9 @@ export const OnboardingForm = ({
     if (!user) {
       console.error('❌ No user found during goal creation');
       toast({
-        title: "Authentication Error",
+        title: "🔒 Authentication Required",
         description: "Please sign in to create a goal.",
-        variant: "destructive",
+        duration: 8000
       });
       return;
     }
@@ -150,17 +150,17 @@ export const OnboardingForm = ({
       } else {
         console.error('❌ createGoal returned null/false');
         toast({
-          title: "Error",
+          title: "⚠️ Oops!",
           description: "Failed to create goal. Please try again.",
-          variant: "destructive",
+          duration: 8000
         });
       }
     } catch (error) {
       console.error('❌ Error creating goal:', error);
       toast({
-        title: "Error", 
+        title: "⚠️ Oops!",
         description: error instanceof Error ? error.message : "Failed to create goal. Please try again.",
-        variant: "destructive",
+        duration: 8000
       });
     } finally {
       setIsSubmitting(false);

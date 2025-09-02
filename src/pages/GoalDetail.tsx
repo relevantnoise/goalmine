@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Target, Zap, Flame } from "lucide-react";
+import { ArrowLeft, Target, Zap, Flame, Brain, Sparkles, Heart } from "lucide-react";
 import { Goal, MotivationContent } from "@/hooks/useGoals";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,11 +22,13 @@ export default function GoalDetail() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const { checkIn, goals, loading: goalsLoading, todaysMotivation, generateGoalMotivation, fetchGoals } = useGoals();
+  const { goals, loading: goalsLoading, todaysMotivation, generateGoalMotivation, fetchGoals } = useGoals();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [loading, setLoading] = useState(true);
   const [motivation, setMotivation] = useState<MotivationContent | null>(null);
   const [loadingMotivation, setLoadingMotivation] = useState(false);
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
+  const [loadingPhase, setLoadingPhase] = useState(0);
   const formatToneName = (tone: string) => {
     switch (tone) {
       case 'drill_sergeant':
@@ -50,18 +52,6 @@ export default function GoalDetail() {
     });
   };
 
-  const formatTime = (timeString: string | null) => {
-    if (!timeString) return null;
-    // Parse time string (HH:MM:SS format) and format to 12-hour format
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes);
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
   const getEncouragementMessage = (title: string) => {
     const lowerTitle = title.toLowerCase();
     if (lowerTitle.includes('paint')) return "Keep painting! You're making great progress towards your goal.";
@@ -73,30 +63,17 @@ export default function GoalDetail() {
     return "Keep going! You're making great progress towards your goal.";
   };
 
-  // Check if user has already checked in today - MUST match backend logic exactly
-  const hasCheckedInToday = useMemo(() => {
-    if (!goal?.last_checkin_date) return false;
-    
-    // Calculate current "streak day" in Eastern Time (3 AM reset) - SAME as backend
-    const now = new Date();
-    
-    // Get current time in Eastern Time using proper timezone (handles EST/EDT automatically)
-    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
-    const easternTime = new Date(easternTimeStr);
-    
-    // Subtract 3 hours so day changes at 3 AM Eastern - SAME as backend
-    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
-    const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
-    
-    // Calculate last check-in streak date - SAME as backend
-    const lastCheckin = new Date(goal.last_checkin_date);
-    const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
-    const lastCheckinEastern = new Date(lastCheckinEasternStr);
-    const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
-    const lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
-    
-    return currentStreakDate === lastCheckinStreakDate;
-  }, [goal?.last_checkin_date]);
+  // Loading phase animation effect
+  useEffect(() => {
+    if (loadingMotivation) {
+      setLoadingPhase(0);
+      const interval = setInterval(() => {
+        setLoadingPhase(prev => (prev + 1) % 4);
+      }, 2000); // Change phase every 2 seconds
+      return () => clearInterval(interval);
+    }
+  }, [loadingMotivation]);
+
   // Load motivation from existing data only - never generate in real-time
   const loadMotivation = async (goalData: Goal) => {
     try {
@@ -187,10 +164,11 @@ export default function GoalDetail() {
         console.log('✅ Using pre-loaded motivation from useGoals hook for', goalData.title);
         setMotivation(todaysMotivation[goalData.id]);
         setLoadingMotivation(false);
-      } else {
+      } else if (!hasAttemptedLoad) {
         console.log('⚠️ No pre-loaded motivation found, will load separately for', goalData.title);
-        // Only call loadMotivation if we don't already have the content
+        // Only call loadMotivation if we haven't attempted it yet
         setLoadingMotivation(true);
+        setHasAttemptedLoad(true);
         loadMotivation(goalData);
       }
     }
@@ -224,11 +202,11 @@ export default function GoalDetail() {
       </div>;
   }
   return <div className="min-h-screen bg-background">
-      <Header onLogoClick={() => navigate('/?force-dashboard=true')} />
+      <Header onLogoClick={() => navigate('/dashboard')} />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {/* Header */}
         <div className="mb-6">
-          <Button variant="ghost" onClick={() => navigate('/?force-dashboard=true')} className="mb-4 -ml-4">
+          <Button variant="ghost" onClick={() => navigate('/dashboard')} className="mb-4 -ml-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
@@ -247,9 +225,6 @@ export default function GoalDetail() {
             <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
               {goal.target_date && <span className="flex items-center gap-1">
                   🎯 Target: {formatDate(goal.target_date)}
-                </span>}
-              {goal.time_of_day && <span className="flex items-center gap-1">
-                  📧 Email: {formatTime(goal.time_of_day)}
                 </span>}
               <div className="flex items-center gap-1">
                 <Flame className="w-4 h-4 text-success" />
@@ -346,47 +321,14 @@ export default function GoalDetail() {
                 </CardContent>
               </Card>}
 
-            {/* Streak Status and Check-in */}
-            <Card className="bg-warning/10 border-warning/30 border-2">
-              <CardContent className="text-center py-8">
-                <h3 className="text-2xl font-bold text-foreground mb-4">
-                  🔥 Your {goal.streak_count || 0}-Day Streak is {hasCheckedInToday ? 'Active!' : 'Waiting!'}
+            {/* Streak Display Only */}
+            <Card className="bg-success/10 border-success/30 border-2">
+              <CardContent className="text-center py-6">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
+                  🔥 {goal.streak_count || 0}-Day Streak
                 </h3>
-                <p className="text-lg text-muted-foreground mb-6">
-                  {hasCheckedInToday 
-                    ? "Great job! You've already checked in today. Keep the momentum going!"
-                    : "Don't break your momentum! Check in today to keep your streak alive and growing."
-                  }
-                </p>
-                {!hasCheckedInToday ? (
-                  <Button 
-                    onClick={async () => {
-                      await checkIn(goal.id);
-                      // Refresh goal data after check-in
-                      const { data: updatedGoalData } = await supabase
-                        .from('goals')
-                        .select('*')
-                        .eq('id', goal.id)
-                        .eq('user_id', user.id)
-                        .single();
-                      if (updatedGoalData) {
-                        setGoal(updatedGoalData as Goal);
-                      }
-                    }}
-                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground text-lg py-3 px-8"
-                  >
-                    ✅ CHECK IN NOW - Update Your Streak!
-                  </Button>
-                ) : (
-                  <div className="text-success font-medium text-lg">
-                    ✅ Checked in for today!
-                  </div>
-                )}
-                <p className="text-sm text-muted-foreground mt-4">
-                  Missing today breaks your streak! Don't let your progress reset to zero.
-                </p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  🕒 Your ability to Check In again will reset daily at 3 AM EST
+                <p className="text-muted-foreground">
+                  Check in on your dashboard to maintain your streak
                 </p>
               </CardContent>
             </Card>
@@ -402,11 +344,55 @@ export default function GoalDetail() {
           </div> : <Card>
             <CardContent className="text-center py-12">
               {loadingMotivation ? (
-                <>
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <h3 className="text-lg font-semibold mb-2">Loading Your Motivation...</h3>
-                  <p className="text-muted-foreground mb-4">Retrieving your personalized daily motivation content...</p>
-                </>
+                <div className="py-8">
+                  <div className="relative mb-8">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-24 h-24 border-4 border-primary/20 rounded-full"></div>
+                    </div>
+                    <div className="relative flex items-center justify-center">
+                      {loadingPhase === 0 && <Brain className="w-16 h-16 text-primary animate-pulse" />}
+                      {loadingPhase === 1 && <Sparkles className="w-16 h-16 text-success animate-bounce" />}
+                      {loadingPhase === 2 && <Heart className="w-16 h-16 text-warning animate-pulse" />}
+                      {loadingPhase === 3 && <Target className="w-16 h-16 text-primary animate-bounce" />}
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 border-2 border-primary animate-spin rounded-full border-t-transparent"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    {loadingPhase === 0 && (
+                      <>
+                        <h3 className="text-2xl font-bold text-primary">🧠 AI Coach Analyzing Your Progress</h3>
+                        <p className="text-lg text-muted-foreground">Reviewing your {goal?.streak_count || 0}-day streak and goal details...</p>
+                      </>
+                    )}
+                    {loadingPhase === 1 && (
+                      <>
+                        <h3 className="text-2xl font-bold text-success">✨ Crafting Your Personalized Plan</h3>
+                        <p className="text-lg text-muted-foreground">Creating {formatToneName(goal?.tone || 'kind_encouraging')} coaching content just for you...</p>
+                      </>
+                    )}
+                    {loadingPhase === 2 && (
+                      <>
+                        <h3 className="text-2xl font-bold text-warning">💫 Adding Motivational Magic</h3>
+                        <p className="text-lg text-muted-foreground">Generating micro-plans and challenges to fuel your success...</p>
+                      </>
+                    )}
+                    {loadingPhase === 3 && (
+                      <>
+                        <h3 className="text-2xl font-bold text-primary">🎯 Almost Ready! Finalizing Your Experience</h3>
+                        <p className="text-lg text-muted-foreground">Putting the finishing touches on your daily motivation...</p>
+                      </>
+                    )}
+                    
+                    <div className="mt-6 bg-gradient-to-r from-primary/10 via-success/10 to-warning/10 rounded-lg p-4">
+                      <p className="text-sm font-medium text-foreground">
+                        💡 <strong>Pro Tip:</strong> Your AI coach is considering your unique goals, current streak, and preferred coaching style to create content that will truly resonate with you!
+                      </p>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <>
                   <Target className="w-16 h-16 text-muted-foreground mx-auto mb-4" />

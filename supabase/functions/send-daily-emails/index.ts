@@ -86,7 +86,16 @@ const handler = async (req: Request): Promise<Response> => {
 
         let motivationContent;
         
-        if (!existingMotivation) {
+        // Check if we need fresh content due to streak change
+        const needsFreshContent = !existingMotivation || 
+          (existingMotivation.streak_count !== goal.streak_count);
+        
+        if (needsFreshContent) {
+          if (existingMotivation) {
+            console.log(`[DAILY-EMAILS] Streak changed from ${existingMotivation.streak_count} to ${goal.streak_count} for ${goal.title} - regenerating content`);
+          } else {
+            console.log(`[DAILY-EMAILS] No existing motivation for ${goal.title} - generating fresh content`);
+          }
           // Generate AI motivation content since it doesn't exist for today
           try {
             console.log(`[DAILY-EMAILS] Pre-generating AI motivation for goal: ${goal.title}`);
@@ -121,13 +130,13 @@ const handler = async (req: Request): Promise<Response> => {
             };
           }
         } else {
-          // Use existing motivation content
+          // Use existing motivation content (streak unchanged)
           motivationContent = {
             message: existingMotivation.message,
             microPlan: Array.isArray(existingMotivation.micro_plan) ? existingMotivation.micro_plan : [existingMotivation.micro_plan],
             challenge: existingMotivation.challenge || ''
           };
-          console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title}`);
+          console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
         }
         
         // Step 2: Only send email if it's 7:00 AM Eastern or later

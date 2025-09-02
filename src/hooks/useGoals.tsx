@@ -140,7 +140,6 @@ export const useGoals = () => {
         await createBasicMotivationContent(data.goal);
       }
 
-      toast.success('Goal created! 🎯 Check your dashboard for personalized motivation.');
       return data.goal;
 
     } catch (error) {
@@ -181,11 +180,25 @@ export const useGoals = () => {
           goalId,
           oldLastCheckin: goals.find(g => g.id === goalId)?.last_checkin_date,
           newLastCheckin: data.goal.last_checkin_date,
-          newStreakCount: data.goal.streak_count
+          newStreakCount: data.goal.streak_count,
+          fullGoalData: data.goal
         });
-        setGoals(prev => prev.map(goal => 
-          goal.id === goalId ? data.goal : goal
-        ));
+        
+        // Force update ONLY the specific goal that was checked in
+        setGoals(prev => {
+          const updated = prev.map(goal => 
+            goal.id === goalId 
+              ? { ...data.goal } // Replace with complete backend data
+              : goal // Leave other goals unchanged
+          );
+          console.log('🎯 Goals after update:', updated.map(g => ({
+            id: g.id, 
+            title: g.title, 
+            last_checkin_date: g.last_checkin_date, 
+            streak_count: g.streak_count
+          })));
+          return updated;
+        });
       } else {
         // Fallback to refetch if no goal data returned
         console.log('🎯 No goal data returned, fetching goals');

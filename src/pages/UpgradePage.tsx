@@ -22,12 +22,12 @@ export const UpgradePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onLogoClick={() => navigate('/')} />
+      <Header onLogoClick={() => navigate('/dashboard')} />
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Back Button */}
         <div className="mb-3">
           <Button 
-            onClick={() => navigate('/')} 
+            onClick={() => navigate('/dashboard')} 
             variant="default" 
             className="flex items-center gap-2 bg-primary hover:bg-primary/90"
           >

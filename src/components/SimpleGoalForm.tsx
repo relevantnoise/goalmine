@@ -96,7 +96,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) =>
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Exercise daily, Learn Spanish, Write a book..."
-                className="text-base"
+                className="text-base md:text-base"
                 maxLength={100}
                 required
               />
@@ -139,7 +139,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) =>
               </p>
             </div>
 
-            {/* Step 4: Coaching Tone Selection */}
+            {/* Step 4: Coaching Style Selection */}
             <div>
               <Label className="text-base font-medium mb-3 block">
                 4. Choose your AI coaching style
