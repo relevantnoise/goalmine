@@ -22,6 +22,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
   const [isNudging, setIsNudging] = useState(false);
+  const [isCheckingLimits, setIsCheckingLimits] = useState(false);
 
   const handleNudgeMe = async () => {
     setIsNudging(true);
@@ -36,9 +37,14 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
     }
   };
 
-  const handleCreateGoal = () => {
-    // Let Index.tsx handle the limit checking and show MotivationAlert
-    onStartOver();
+  const handleCreateGoal = async () => {
+    setIsCheckingLimits(true);
+    try {
+      // Let Index.tsx handle the limit checking and show MotivationAlert
+      await onStartOver();
+    } finally {
+      setIsCheckingLimits(false);
+    }
   };
 
   const totalStreak = Math.round(goals.reduce((sum, goal) => sum + goal.streak_count, 0) / goals.length) || 0;
@@ -101,9 +107,18 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   <p className="text-muted-foreground mb-4">
                     You don't have any active goals right now. Create your first goal to get started!
                   </p>
-                  <Button onClick={handleCreateGoal} className="mt-2">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Goal
+                  <Button onClick={handleCreateGoal} className="mt-2" disabled={isCheckingLimits}>
+                    {isCheckingLimits ? (
+                      <>
+                        <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+                        Checking...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Your First Goal
+                      </>
+                    )}
                   </Button>
                 </div>
               ) : (
@@ -138,10 +153,19 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                     </p>
                   </div>
                 </div>
-                <Button onClick={handleCreateGoal} className="w-full" variant="default">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create A Goal
-                  {!subscription.subscribed && <Crown className="w-4 h-4 ml-2" />}
+                <Button onClick={handleCreateGoal} className="w-full" variant="default" disabled={isCheckingLimits}>
+                  {isCheckingLimits ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+                      Checking limits...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create A Goal
+                      {!subscription.subscribed && <Crown className="w-4 h-4 ml-2" />}
+                    </>
+                  )}
                 </Button>
               </div>
 
