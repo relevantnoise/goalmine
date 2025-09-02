@@ -104,8 +104,8 @@ export const useGoals = () => {
 
       console.log('📝 Inserting minimal goal:', newGoal);
 
-      // Use the simple edge function
-      const { data, error } = await supabase.functions.invoke('create-goal-direct', {
+      // Use the edge function with subscription limits
+      const { data, error } = await supabase.functions.invoke('create-goal', {
         body: newGoal
       });
 
@@ -229,7 +229,15 @@ export const useGoals = () => {
       
       // Optimistic update - remove from state immediately
       setGoals(prev => prev.filter(goal => goal.id !== goalId));
-      toast.success('Goal deleted successfully.');
+      
+      // Show success toast with creative message
+      toast.success('🗑️ Goal deleted! Time to dream up something new.');
+      
+      // Give a moment for backend to process, then refresh to ensure consistency
+      setTimeout(async () => {
+        await fetchGoals();
+      }, 500);
+      
     } catch (error) {
       console.error('❌ Error deleting goal:', error);
       toast.error('Failed to delete goal. Please try again.');
