@@ -143,7 +143,9 @@
       "Bash(open \"http://localhost:5174\")",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke update-subscription --project-ref dhlcycjnzwfnadmsptof --method POST --body '{\n  \"\"userId\"\": \"\"danlynn@gmail.com\"\",\n  \"\"planName\"\": \"\"Personal Plan\"\", \n  \"\"status\"\": \"\"active\"\"\n}')",
       "Bash(./deploy-firebase.sh)",
-      "Bash(zip:*)"
+      "Bash(zip:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke daily-cron --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-daily-emails --project-ref dhlcycjnzwfnadmsptof)"
     ],
     "deny": [],
     "ask": [],

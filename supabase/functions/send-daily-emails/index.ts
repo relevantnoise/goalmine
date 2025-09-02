@@ -13,6 +13,9 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log('[DAILY-EMAILS] Starting daily email send process');
+    
+    // Check for force delivery parameter
+    const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
 
     // Initialize Supabase client
     const supabase = createClient(
@@ -139,8 +142,8 @@ const handler = async (req: Request): Promise<Response> => {
           console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
         }
         
-        // Step 2: Only send email if it's 7:00 AM Eastern or later
-        const shouldSendEmail = currentHour > DELIVERY_HOUR || (currentHour === DELIVERY_HOUR && currentMinute >= DELIVERY_MINUTE);
+        // Step 2: Only send email if it's 7:00 AM Eastern or later (or force delivery)
+        const shouldSendEmail = forceDelivery || currentHour > DELIVERY_HOUR || (currentHour === DELIVERY_HOUR && currentMinute >= DELIVERY_MINUTE);
         
         if (shouldSendEmail) {
           console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);
