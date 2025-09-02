@@ -309,23 +309,43 @@ const Index = () => {
   };
 
   const handleStartOver = async () => {
-    if (!user || isCheckingLimits) return;
+    console.log('🔍 DEBUG: handleStartOver called!');
+    if (!user || isCheckingLimits) {
+      console.log('🔍 DEBUG: Early return - no user or already checking limits');
+      return;
+    }
 
     try {
+      console.log('🔍 DEBUG: Starting limit check process...');
       setIsCheckingLimits(true);
       
-      // Refresh goals data to get latest count (prevents race condition)
+      // Get fresh goal count directly from Supabase 
+      const userId = user.email || user.id;
+      console.log('🔍 DEBUG: Checking limits for user:', userId);
+      console.log('🔍 DEBUG: Current subscription status:', subscription.subscribed);
+      
+      const { data } = await supabase.functions.invoke('fetch-user-goals', {
+        body: { user_id: userId }
+      });
+      
+      const currentGoalCount = data?.success ? data.goals.length : goals.length;
+      console.log('🔍 DEBUG: Fresh goal count from Supabase:', currentGoalCount);
+      console.log('🔍 DEBUG: Old goal count from state:', goals.length);
+      
+      // Also refresh the goals state for the dashboard
       await fetchGoals();
       
-      // Check subscription limits with fresh data
-      if (!subscription.subscribed && goals.length >= 1) {
+      // Check subscription limits with fresh count
+      if (!subscription.subscribed && currentGoalCount >= 1) {
         // Free users: limit to 1 goal - redirect to upgrade page
+        console.log('❌ DEBUG: FREE USER AT LIMIT - redirecting to upgrade');
         navigate('/upgrade');
         return;
       }
 
-      if (subscription.subscribed && goals.length >= 3) {
+      if (subscription.subscribed && currentGoalCount >= 3) {
         // Personal Plan users: limit to 3 goals
+        console.log('❌ DEBUG: PREMIUM USER AT 3/3 LIMIT - showing alert');
         setAlertData({
           title: '🎯 Maximum Goals Reached',
           message: 'You\'ve reached your Personal Plan limit of 3 goals. To create a new goal, delete one first.',
@@ -335,6 +355,7 @@ const Index = () => {
         return;
       }
 
+      console.log('✅ DEBUG: User can create goal - proceeding to onboarding');
       // Allow new goal creation
       setCurrentView('onboarding');
       
