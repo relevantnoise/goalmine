@@ -109,7 +109,10 @@ export const useGoals = () => {
         body: newGoal
       });
 
+      console.log('🔍 CREATE-GOAL RESPONSE:', { data, error });
+
       if (error || !data?.success) {
+        console.log('❌ Goal creation blocked by backend:', data?.error || error?.message);
         throw new Error(data?.error || error?.message || 'Failed to create goal');
       }
 
