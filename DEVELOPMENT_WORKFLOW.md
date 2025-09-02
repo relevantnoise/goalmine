@@ -7,6 +7,7 @@
 - Test thoroughly before deploying
 - Use feature flags for risky changes
 - Always have a rollback plan
+- **CRITICAL: Verify database schema in production before declaring success**
 
 ### 2. User Experience First
 - Every change should improve the user experience
@@ -19,6 +20,13 @@
 - Comment complex logic
 - Follow existing patterns in the codebase
 - Keep components small and focused
+
+### 4. AI Assistant Responsibilities (CRITICAL)
+- **NEVER ask user to run SQL manually**
+- **ALWAYS verify database schema exists in production**
+- **Handle ALL technical aspects** - user should only test functionality
+- **Immediately fix infrastructure issues** without user intervention
+- **Take full ownership** of deployment completeness
 
 ---
 
@@ -91,7 +99,8 @@ Before writing any code:
 #### Quick Smoke Test (2 minutes)
 1. **Build Test**: `npm run build` - Must complete without errors
 2. **Console Check**: Open browser console - No errors allowed
-3. **Core Flow**: Sign in → View Dashboard → Click a button → Sign out
+3. **Database Check**: Verify all core tables exist in dev environment
+4. **Core Flow**: Sign in → View Dashboard → Create Goal → Sign out
 
 #### Full Feature Test (10 minutes)
 Run through each section of the testing checklist in DEPLOYMENT_READY.md:
@@ -105,11 +114,12 @@ Run through each section of the testing checklist in DEPLOYMENT_READY.md:
 ### After Deployment - Production Testing
 
 #### Critical Path Test (5 minutes)
-1. **Load Homepage**: Verify it loads quickly
-2. **Authentication**: Test login/logout
-3. **Core Feature**: Create or check in on a goal
-4. **Subscription**: Verify limits are enforced
-5. **Mobile Check**: Test on phone
+1. **Database Verification**: AI must verify all core tables exist in production
+2. **Load Homepage**: Verify it loads quickly
+3. **Authentication**: Test login/logout
+4. **Core Feature**: Create or check in on a goal (tests database connectivity)
+5. **Subscription**: Verify limits are enforced (tests subscribers table)
+6. **Mobile Check**: Test on phone
 
 #### Comprehensive Test (15 minutes)
 Complete the full production testing checklist from DEPLOYMENT_READY.md

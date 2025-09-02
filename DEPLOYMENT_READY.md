@@ -85,24 +85,32 @@ git push origin main
 - [ ] All features tested locally
 - [ ] No console errors in browser
 - [ ] Build completes successfully (`npm run build`)
+- [ ] **CRITICAL: Database schema applied to production** 
+- [ ] **CRITICAL: All core tables exist (profiles, goals, subscribers, motivation_history, daily_nudges)**
 - [ ] All edge functions deployed to Supabase
 - [ ] Environment variables verified in Vercel
 
 #### 2. Deploy to Production
 ```bash
-# 1. Ensure all changes are committed
+# 1. FIRST: Apply database schema (if needed)
+# AI Assistant must handle this - NEVER ask user to run SQL manually
+
+# 2. Ensure all changes are committed
 git status
 
-# 2. Stage all changes
+# 3. Stage all changes
 git add -A
 
-# 3. Commit with version note
+# 4. Commit with version note
 git commit -m "Production release: [version] - [summary of changes]"
 
-# 4. Push to GitHub (auto-deploys to both Vercel projects)
+# 5. Push to GitHub (auto-deploys to both Vercel projects)
 git push origin main
 
-# 5. Monitor deployment (2-3 minutes)
+# 6. AI Assistant: Verify database tables exist in production
+# 7. AI Assistant: Test core functionality immediately
+
+# 8. Monitor deployment (2-3 minutes)
 # Check: https://vercel.com/dashboard
 ```
 
@@ -215,6 +223,23 @@ RESEND_API_KEY
 - Check Supabase `check-subscription` edge function
 - Verify Stripe webhook is configured
 - Test with real Stripe test keys
+
+### 🚨 CRITICAL ISSUE: Database tables missing in production
+**Symptoms**: 
+- "relation does not exist" errors
+- App not working at all
+- Goals can't be created
+- Subscription checks fail
+
+**ROOT CAUSE**: Database migrations not applied to production
+
+**SOLUTION (AI Assistant Only)**:
+1. AI must immediately create and execute database setup function
+2. AI must verify all core tables exist
+3. AI must test app functionality
+4. NEVER ask user to run SQL manually
+
+**Prevention**: Always verify database schema before declaring deployment complete
 
 ---
 
