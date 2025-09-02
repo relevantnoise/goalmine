@@ -85,10 +85,11 @@ git push origin main
 - [ ] All features tested locally
 - [ ] No console errors in browser
 - [ ] Build completes successfully (`npm run build`)
-- [ ] **CRITICAL: Database schema applied to production** 
+- [ ] **CRITICAL: Database schema verified in BOTH dev and production** 
 - [ ] **CRITICAL: All core tables exist (profiles, goals, subscribers, motivation_history, daily_nudges)**
 - [ ] All edge functions deployed to Supabase
 - [ ] Environment variables verified in Vercel
+- [ ] **AI Assistant: Verify schema sync between environments**
 
 #### 2. Deploy to Production
 ```bash
@@ -243,18 +244,42 @@ RESEND_API_KEY
 
 ---
 
+## 🔄 Dev/Production Sync Process
+
+### **Current Setup (Always In Sync):**
+✅ **Code**: Single GitHub repo → Auto-deploys to both environments  
+✅ **Edge Functions**: Same Supabase project for both  
+✅ **Environment Variables**: Properly configured in Vercel  
+
+### **Best Practice Workflow:**
+1. **Make changes locally** (localhost:5173)
+2. **Test thoroughly** with dev database
+3. **AI Assistant verifies** schema exists in production
+4. **Commit and push** → Auto-deploys everywhere
+5. **Verify both environments** work identically
+
+### **Schema Sync Process:**
+- **Dev Environment**: Uses local Supabase or shared dev instance
+- **Production**: Uses production Supabase (dhlcycjnzwfnadmsptof)
+- **AI Responsibility**: Ensure schemas match before deployment
+- **Never Again**: User shouldn't need to run SQL manually
+
+---
+
 ## 📊 Monitoring & Maintenance
 
 ### Daily Checks
 - Verify daily email cron job ran (7 AM EST)
 - Check error logs in Vercel dashboard
 - Monitor Supabase edge function logs
+- **New: Verify dev/prod database schema consistency**
 
 ### Weekly Maintenance
 - Review user feedback
 - Check Stripe for failed payments
 - Audit database for orphaned records
 - Review email delivery rates
+- **New: Run schema comparison between environments**
 
 ---
 
