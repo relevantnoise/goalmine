@@ -310,13 +310,44 @@ const Index = () => {
   const handleStartOver = async () => {
     if (!user) return;
 
-    // ALWAYS allow going to the form
-    // Let the backend handle ALL limit checking
-    // This prevents ALL timing issues
+    // Get fresh goal count directly from database
+    const userId = user.email || user.id;
+    const { data } = await supabase.functions.invoke('fetch-user-goals', {
+      body: { user_id: userId }
+    });
+    
+    const freshGoalCount = data?.success ? data.goals.length : goals.length;
+    const maxGoals = subscription.subscribed ? 3 : 1;
+    
+    console.log('🎯 Goal limit check:', { freshGoalCount, maxGoals, subscribed: subscription.subscribed });
+    
+    if (freshGoalCount >= maxGoals) {
+      // Show appropriate message based on subscription
+      if (subscription.subscribed) {
+        setAlertData({
+          title: '🎯 Maximum Goals Reached',
+          message: `You have ${freshGoalCount} of ${maxGoals} goals. Delete an existing goal to create a new one.`,
+          type: 'upgrade'
+        });
+      } else {
+        setAlertData({
+          title: '🎯 Upgrade to Create More Goals',
+          message: 'Free users can have 1 goal. Upgrade to Personal Plan for up to 3 goals.',
+          type: 'upgrade'
+        });
+      }
+      setShowAlert(true);
+      return;
+    }
+
+    // User has room for more goals, proceed to form
     setCurrentView('onboarding');
     
     // Scroll to top when showing goal creation form
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Also refresh the local state for dashboard consistency
+    await fetchGoals();
   };
 
   // Show loading screen while checking authentication - SIMPLIFIED
