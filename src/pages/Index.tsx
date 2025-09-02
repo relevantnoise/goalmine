@@ -310,20 +310,33 @@ const Index = () => {
   const handleStartOver = async () => {
     if (!user) return;
 
-    // Get fresh goal count directly from database
+    // Get fresh data from database
     const userId = user.email || user.id;
-    const { data } = await supabase.functions.invoke('fetch-user-goals', {
+    
+    // Get fresh goal count
+    const { data: goalsData } = await supabase.functions.invoke('fetch-user-goals', {
       body: { user_id: userId }
     });
     
-    const freshGoalCount = data?.success ? data.goals.length : goals.length;
-    const maxGoals = subscription.subscribed ? 3 : 1;
+    // Get fresh subscription status
+    const { data: subData } = await supabase.functions.invoke('check-subscription', {
+      body: { userId, email: user.email }
+    });
     
-    console.log('🎯 Goal limit check:', { freshGoalCount, maxGoals, subscribed: subscription.subscribed });
+    const freshGoalCount = goalsData?.success ? goalsData.goals.length : goals.length;
+    const isSubscribed = subData?.subscribed || false;
+    const maxGoals = isSubscribed ? 3 : 1;
+    
+    console.log('🎯 Fresh limit check:', { 
+      freshGoalCount, 
+      maxGoals, 
+      isSubscribed,
+      subData
+    });
     
     if (freshGoalCount >= maxGoals) {
       // Show appropriate message based on subscription
-      if (subscription.subscribed) {
+      if (isSubscribed) {
         setAlertData({
           title: '🎯 Maximum Goals Reached',
           message: `You have ${freshGoalCount} of ${maxGoals} goals. Delete an existing goal to create a new one.`,
