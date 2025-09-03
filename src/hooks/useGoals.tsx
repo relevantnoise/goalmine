@@ -26,11 +26,163 @@ export interface MotivationContent {
   tone: string;
 }
 
+// Phase 1: Data Layer Helper Functions
+export interface GoalPermissions {
+  canEdit: boolean;
+  canDelete: boolean;
+  canCheckIn: boolean;
+  canShare: boolean;
+  canReceiveEmails: boolean;
+  canGenerateNudge: boolean;
+}
+
+export type GoalStatus = 'active' | 'goal-expired' | 'trial-expired';
+
+export interface Profile {
+  id: string;
+  email: string;
+  trial_expires_at?: string;
+  created_at: string;
+}
+
+// Helper function to check if a goal has expired based on target_date
+export function isGoalExpired(goal: Goal): boolean {
+  if (!goal.target_date) return false;
+  const targetDate = new Date(goal.target_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Compare dates only, ignore time
+  return targetDate < today;
+}
+
+// Helper function to check if user's free trial has expired
+export function isTrialExpired(profile: Profile | null): boolean {
+  if (!profile || !profile.trial_expires_at) return false;
+  return new Date(profile.trial_expires_at) < new Date();
+}
+
+// Helper function to determine goal status (most restrictive wins)
+export function getGoalStatus(goal: Goal, profile: Profile | null, isSubscribed: boolean): GoalStatus {
+  // Trial expired and not subscribed = most restrictive
+  if (isTrialExpired(profile) && !isSubscribed) {
+    return 'trial-expired';
+  }
+  
+  // Goal expired = moderately restrictive
+  if (isGoalExpired(goal)) {
+    return 'goal-expired';
+  }
+  
+  // Normal operation
+  return 'active';
+}
+
+// Helper function to get what user can do with a goal
+export function getGoalPermissions(goal: Goal, profile: Profile | null, isSubscribed: boolean): GoalPermissions {
+  const status = getGoalStatus(goal, profile, isSubscribed);
+  
+  switch (status) {
+    case 'trial-expired':
+      // Trial expired: completely read-only
+      return {
+        canEdit: false,
+        canDelete: false,
+        canCheckIn: false,
+        canShare: false,
+        canReceiveEmails: false,
+        canGenerateNudge: false,
+      };
+      
+    case 'goal-expired':
+      // Goal expired: only edit/delete allowed
+      return {
+        canEdit: true,
+        canDelete: true,
+        canCheckIn: false,
+        canShare: false,
+        canReceiveEmails: false,
+        canGenerateNudge: false,
+      };
+      
+    case 'active':
+    default:
+      // Full functionality
+      return {
+        canEdit: true,
+        canDelete: true,
+        canCheckIn: true,
+        canShare: true,
+        canReceiveEmails: true,
+        canGenerateNudge: true,
+      };
+  }
+}
+
+// Phase 3: Enhanced Goal with Status and Permissions
+export interface GoalWithStatus extends Goal {
+  status: GoalStatus;
+  permissions: GoalPermissions;
+}
+
 export const useGoals = () => {
   const { user } = useAuth();
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(false);
   const [todaysMotivation, setTodaysMotivation] = useState<Record<string, MotivationContent>>({});
+  
+  // Phase 3: Add profile and subscription state
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [goalsWithStatus, setGoalsWithStatus] = useState<GoalWithStatus[]>([]);
+
+  // Phase 3: Fetch user profile for trial status
+  const fetchUserProfile = async () => {
+    if (!user) return null;
+    
+    const userId = user.email || user.id;
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', userId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+  };
+
+  // Phase 3: Check subscription status
+  const checkSubscriptionStatus = async () => {
+    if (!user) return false;
+    
+    const userId = user.email || user.id;
+    try {
+      const { data } = await supabase.functions.invoke('check-subscription', {
+        body: { userId, email: user.email }
+      });
+      
+      return data?.subscribed || false;
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      return false;
+    }
+  };
+
+  // Phase 3: Enhance goals with status and permissions
+  const enhanceGoalsWithStatus = (goals: Goal[], profile: Profile | null, isSubscribed: boolean): GoalWithStatus[] => {
+    return goals.map(goal => ({
+      ...goal,
+      status: getGoalStatus(goal, profile, isSubscribed),
+      permissions: getGoalPermissions(goal, profile, isSubscribed)
+    }));
+  };
 
   // Fetch user's goals using edge function to bypass RLS
   const fetchGoals = async () => {
@@ -47,23 +199,42 @@ export const useGoals = () => {
       
       // Make sure we're using the same user_id format as when creating goals
       const userId = user.email || user.id;
+      console.log('🔍 DEBUG: user.email =', user.email);
+      console.log('🔍 DEBUG: user.id =', user.id);
       console.log('🔍 Fetching goals for user_id:', userId);
       
-      const { data, error } = await supabase.functions.invoke('fetch-user-goals', {
-        body: { user_id: userId }
-      });
+      // Phase 3: Fetch goals, profile, and subscription in parallel
+      const [goalsResponse, profile, subscribed] = await Promise.all([
+        supabase.functions.invoke('fetch-user-goals', {
+          body: { user_id: userId }
+        }),
+        fetchUserProfile(),
+        checkSubscriptionStatus()
+      ]);
 
-      if (error || !data?.success) {
-        console.error('❌ Error fetching goals:', error || data?.error);
-        throw new Error(data?.error || error?.message || 'Failed to fetch goals');
+      if (goalsResponse.error || !goalsResponse.data?.success) {
+        console.error('❌ Error fetching goals:', goalsResponse.error || goalsResponse.data?.error);
+        throw new Error(goalsResponse.data?.error || goalsResponse.error?.message || 'Failed to fetch goals');
       }
 
-      console.log('✅ Goals fetched via edge function:', data.goals.length, 'goals');
-      setGoals(data.goals);
+      const fetchedGoals = goalsResponse.data.goals;
+      console.log('✅ Goals fetched via edge function:', fetchedGoals.length, 'goals');
+      
+      // Phase 3: Store profile and subscription status
+      setUserProfile(profile);
+      setIsSubscribed(subscribed);
+      
+      // Phase 3: Enhance goals with status and permissions
+      const enhancedGoals = enhanceGoalsWithStatus(fetchedGoals, profile, subscribed);
+      setGoalsWithStatus(enhancedGoals);
+      
+      // Keep original goals array for backward compatibility
+      setGoals(fetchedGoals);
 
     } catch (error) {
       console.error('❌ Error fetching goals:', error);
       setGoals([]);
+      setGoalsWithStatus([]);
     } finally {
       setLoading(false);
     }
@@ -595,5 +766,12 @@ export const useGoals = () => {
     debugGoals,
     cleanDatabase,
     updateSubscription,
+    // Phase 3: New exports for status and permissions
+    goalsWithStatus,
+    userProfile,
+    isSubscribed,
+    isTrialExpired: isTrialExpired(userProfile),
+    getGoalStatus: (goal: Goal) => getGoalStatus(goal, userProfile, isSubscribed),
+    getGoalPermissions: (goal: Goal) => getGoalPermissions(goal, userProfile, isSubscribed),
   };
 };

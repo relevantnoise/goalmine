@@ -5,10 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Target, Zap, Trash2, Flame, RotateCcw, Edit, CheckCircle, Share2 } from "lucide-react";
 // import { Brain } from "lucide-react"; // TEST: Commented out for production
-import { Goal, MotivationContent } from "@/hooks/useGoals";
+import { Goal, MotivationContent, GoalWithStatus, GoalStatus, GoalPermissions } from "@/hooks/useGoals";
 import { useNavigate } from "react-router-dom";
 import { SimpleEditGoalDialog } from "./SimpleEditGoalDialog";
 import { useShare } from "@/hooks/useShare";
+
+// Phase 4: Enhanced GoalCard props with status and permissions
 interface GoalCardProps {
   goal: Goal;
   motivation: MotivationContent | null;
@@ -16,6 +18,9 @@ interface GoalCardProps {
   onResetStreak: (goalId: string) => void;
   onUpdate: (goalId: string, updates: any) => Promise<void>;
   onCheckIn: (goalId: string) => void;
+  // Phase 4: New props for status-aware UI
+  status?: GoalStatus;
+  permissions?: GoalPermissions;
   // onGenerateMotivation?: (goalId: string) => Promise<MotivationContent | null>; // TEST: Commented out for production
 }
 export const GoalCard = ({
@@ -24,7 +29,17 @@ export const GoalCard = ({
   onDelete,
   onResetStreak,
   onUpdate,
-  onCheckIn
+  onCheckIn,
+  // Phase 4: Destructure new status and permissions props
+  status = 'active',
+  permissions = {
+    canEdit: true,
+    canDelete: true,
+    canCheckIn: true,
+    canShare: true,
+    canReceiveEmails: true,
+    canGenerateNudge: true,
+  }
   // onGenerateMotivation // TEST: Commented out for production
 }: GoalCardProps) => {
   const navigate = useNavigate();
@@ -152,14 +167,27 @@ export const GoalCard = ({
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Target className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-semibold mb-1">Goal</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold mb-1">Goal</h3>
+                {/* Phase 4: Status Badge */}
+                {status === 'goal-expired' && (
+                  <Badge variant="destructive" className="text-xs font-semibold">
+                    GOAL EXPIRED
+                  </Badge>
+                )}
+                {status === 'trial-expired' && (
+                  <Badge variant="destructive" className="text-xs font-semibold bg-orange-500 hover:bg-orange-600">
+                    TRIAL EXPIRED
+                  </Badge>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               {/* Streak Info */}
               <div className="flex items-center gap-1">
                 <Flame className="w-4 h-4 text-success" />
                 <span className="text-sm font-medium">{goal.streak_count} day streak</span>
-                {goal.streak_count > 0 && <Button variant="default" size="sm" onClick={e => {
+                {goal.streak_count > 0 && permissions.canCheckIn && <Button variant="default" size="sm" onClick={e => {
                   e.stopPropagation();
                   console.log('🔥 GoalCard: Opening reset streak dialog for goal:', goal.id, goal.title, 'streak:', goal.streak_count);
                   setShowResetStreakDialog(true);
@@ -179,20 +207,20 @@ export const GoalCard = ({
                   }} 
                   className="text-muted-foreground hover:text-primary" 
                   title="Share goal"
-                  disabled={isSharing}
+                  disabled={isSharing || !permissions.canShare}
                 >
                   <Share2 className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={e => {
                 e.stopPropagation();
                 setShowEditDialog(true);
-              }} className="text-muted-foreground hover:text-primary" title="Edit goal">
+              }} className="text-muted-foreground hover:text-primary" title="Edit goal" disabled={!permissions.canEdit}>
                   <Edit className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={e => {
                 e.stopPropagation();
                 setShowDeleteDialog(true);
-              }} className="text-muted-foreground hover:text-destructive" title="Delete goal">
+              }} className="text-muted-foreground hover:text-destructive" title="Delete goal" disabled={!permissions.canDelete}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
                 {/* TEST: Commented out for production
@@ -227,12 +255,14 @@ export const GoalCard = ({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (!permissions.canCheckIn) return; // If can't check in, can't view motivation either
                 navigate(`/goal/${goal.id}`);
               }}
               className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+              disabled={!permissions.canCheckIn}
             >
               <Target className="w-4 h-4 mr-2" />
-              View Motivation Plan
+              {!permissions.canCheckIn ? 'Motivation Unavailable' : 'View Motivation Plan'}
             </Button>
             
             {hasCheckedInToday ? (
@@ -251,7 +281,7 @@ export const GoalCard = ({
                 size="sm" 
                 onClick={async (e) => {
                   e.stopPropagation();
-                  if (isCheckingIn) return;
+                  if (isCheckingIn || !permissions.canCheckIn) return;
                   
                   setIsCheckingIn(true);
                   try {
@@ -261,13 +291,49 @@ export const GoalCard = ({
                   }
                 }} 
                 className="flex-1"
-                disabled={isCheckingIn}
+                disabled={isCheckingIn || !permissions.canCheckIn}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                {isCheckingIn ? 'Checking In...' : 'Check In Today'}
+                {!permissions.canCheckIn ? 'Check-In Disabled' : isCheckingIn ? 'Checking In...' : 'Check In Today'}
               </Button>
             )}
           </div>
+
+          {/* Phase 4: Upgrade prompt for expired trials */}
+          {status === 'trial-expired' && (
+            <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="w-4 h-4 text-orange-600" />
+                <span className="text-sm font-semibold text-orange-800">Trial Expired</span>
+              </div>
+              <p className="text-xs text-orange-700 mb-2">
+                Your 30-day free trial has ended. Upgrade to continue tracking this goal.
+              </p>
+              <Button 
+                size="sm" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/upgrade');
+                }} 
+                className="bg-orange-500 hover:bg-orange-600 text-white text-xs"
+              >
+                🎯 Upgrade to Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Goal expired message */}
+          {status === 'goal-expired' && (
+            <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <Target className="w-4 h-4 text-gray-600" />
+                <span className="text-sm font-semibold text-gray-800">Goal Expired</span>
+              </div>
+              <p className="text-xs text-gray-600">
+                This goal has reached its target date. Edit to extend or delete to remove.
+              </p>
+            </div>
+          )}
           
           {/* Goal Settings */}
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">

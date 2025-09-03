@@ -6,6 +6,34 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Phase 2: Email Skip Logic Helper Functions
+function isGoalExpired(goal: any): boolean {
+  if (!goal.target_date) return false;
+  const targetDate = new Date(goal.target_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return targetDate < today;
+}
+
+function isTrialExpired(profile: any): boolean {
+  if (!profile || !profile.trial_expires_at) return false;
+  return new Date(profile.trial_expires_at) < new Date();
+}
+
+function shouldSkipEmailForGoal(goal: any, profile: any, isSubscribed: boolean): { skip: boolean; reason: string } {
+  // Check if trial expired and not subscribed
+  if (isTrialExpired(profile) && !isSubscribed) {
+    return { skip: true, reason: 'Trial expired and user not subscribed' };
+  }
+  
+  // Check if goal is expired
+  if (isGoalExpired(goal)) {
+    return { skip: true, reason: 'Goal has reached its target date' };
+  }
+  
+  return { skip: false, reason: 'Goal is active and eligible for emails' };
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -61,18 +89,40 @@ const handler = async (req: Request): Promise<Response> => {
 
     for (const goal of goals || []) {
       try {
-        // Get the user's profile for email address
-        const { data: profile, error: profileError } = await supabase
+        // Get the user's profile for email address and trial status
+        const { data: userProfile, error: profileError } = await supabase
           .from('profiles')
-          .select('email')
-          .eq('id', goal.user_id)
+          .select('email, trial_expires_at, created_at')
+          .eq('email', goal.user_id)
           .single();
+
+        // Fallback if profile lookup fails - create minimal profile
+        const profile = userProfile || { email: goal.user_id, trial_expires_at: null };
           
-        if (profileError || !profile) {
-          console.error(`[DAILY-EMAILS] Could not find profile for goal ${goal.title}:`, profileError);
+        if (!profile.email || !profile.email.includes('@')) {
+          console.error(`[DAILY-EMAILS] Invalid email for goal ${goal.title}: ${goal.user_id}`);
           errors++;
           continue;
         }
+
+        // Check subscription status
+        const { data: subscriptionData } = await supabase
+          .from('subscribers')
+          .select('status, plan_name')
+          .eq('user_id', goal.user_id)
+          .eq('status', 'active')
+          .single();
+        
+        const isSubscribed = subscriptionData && subscriptionData.status === 'active';
+
+        // Phase 2: Check if we should skip this email
+        const skipCheck = shouldSkipEmailForGoal(goal, profile, isSubscribed);
+        if (skipCheck.skip) {
+          console.log(`[DAILY-EMAILS] Skipping email for goal "${goal.title}": ${skipCheck.reason}`);
+          continue; // Skip this goal
+        }
+
+        console.log(`[DAILY-EMAILS] Processing email for goal "${goal.title}": ${skipCheck.reason}`);
         
         // Step 1: Ensure motivation content exists (generate if needed)
         const today = new Date().toISOString().split('T')[0];
@@ -102,16 +152,14 @@ const handler = async (req: Request): Promise<Response> => {
           // Generate AI motivation content since it doesn't exist for today
           try {
             console.log(`[DAILY-EMAILS] Pre-generating AI motivation for goal: ${goal.title}`);
-            const aiResponse = await supabase.functions.invoke('generate-daily-motivation', {
+            const aiResponse = await supabase.functions.invoke('generate-daily-motivation-simple', {
               body: {
                 goalId: goal.id,
                 goalTitle: goal.title,
                 goalDescription: goal.description || '',
                 tone: goal.tone || 'kind_encouraging',
                 streakCount: goal.streak_count || 0,
-                userId: goal.user_id,
-                targetDate: goal.target_date || null,
-                isNudge: false
+                userId: goal.user_id
               }
             });
             

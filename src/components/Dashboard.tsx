@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Target, Zap, Plus, Crown, Calendar, Flame } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useGoals } from "@/hooks/useGoals";
+import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
 import { GoalCard } from "./GoalCard";
 import { Header } from "./Header";
@@ -122,17 +122,25 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   </Button>
                 </div>
               ) : (
-                goals.map(goal => (
-                  <GoalCard 
-                    key={goal.id} 
-                    goal={goal} 
-                    motivation={todaysMotivation[goal.id] || null} 
-                    onDelete={deleteGoal} 
-                    onResetStreak={resetStreak} 
-                    onUpdate={updateGoal} 
-                    onCheckIn={checkIn} 
-                  />
-                ))
+                goals.map(goal => {
+                  // Phase 4: Calculate status and permissions for each goal
+                  const status = getGoalStatus(goal, user, subscription.subscribed);
+                  const permissions = getGoalPermissions(goal, user, subscription.subscribed);
+                  
+                  return (
+                    <GoalCard 
+                      key={goal.id} 
+                      goal={goal} 
+                      motivation={todaysMotivation[goal.id] || null} 
+                      onDelete={deleteGoal} 
+                      onResetStreak={resetStreak} 
+                      onUpdate={updateGoal} 
+                      onCheckIn={checkIn} 
+                      status={status}
+                      permissions={permissions}
+                    />
+                  );
+                })
               )}
             </div>
           </div>

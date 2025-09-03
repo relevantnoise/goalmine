@@ -6,6 +6,60 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Phase 5: Permission helper functions (copied from frontend)
+function isTrialExpired(profile: any): boolean {
+  if (!profile?.trial_expires_at) return false;
+  return new Date(profile.trial_expires_at) < new Date();
+}
+
+function isGoalExpired(goal: any): boolean {
+  if (!goal.target_date) return false;
+  const targetDate = new Date(goal.target_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return targetDate < today;
+}
+
+function getGoalPermissions(goal: any, profile: any, isSubscribed: boolean) {
+  const trialExpired = isTrialExpired(profile);
+  const goalExpired = isGoalExpired(goal);
+  
+  // Priority: Trial expiration > Goal expiration > Normal operation
+  if (trialExpired && !isSubscribed) {
+    // Trial expired, no subscription = no permissions
+    return {
+      canEdit: false,
+      canDelete: false,
+      canCheckIn: false,
+      canShare: false,
+      canReceiveEmails: false,
+      canGenerateNudge: false,
+    };
+  }
+  
+  if (goalExpired) {
+    // Goal expired = edit/delete only
+    return {
+      canEdit: true,
+      canDelete: true,
+      canCheckIn: false,
+      canShare: false,
+      canReceiveEmails: false,
+      canGenerateNudge: false,
+    };
+  }
+  
+  // Normal operation = all permissions
+  return {
+    canEdit: true,
+    canDelete: true,
+    canCheckIn: true,
+    canShare: true,
+    canReceiveEmails: true,
+    canGenerateNudge: true,
+  };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -26,7 +80,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get current goal
+    // Phase 5: Get current goal and user profile with subscription status
     const { data: goal, error: fetchError } = await supabase
       .from('goals')
       .select('*')
@@ -38,6 +92,45 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: fetchError.message }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
+      });
+    }
+
+    // Get user profile and subscription status
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    const { data: subscription } = await supabase
+      .from('subscribers')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    const isSubscribed = subscription?.status === 'active';
+
+    // Phase 5: Check permissions before allowing check-in
+    const permissions = getGoalPermissions(goal, profile, isSubscribed);
+    
+    if (!permissions.canCheckIn) {
+      const trialExpired = isTrialExpired(profile);
+      const goalExpired = isGoalExpired(goal);
+      
+      let message = "Check-in not allowed.";
+      if (trialExpired && !isSubscribed) {
+        message = "Your 30-day free trial has expired. Please upgrade to continue checking in.";
+      } else if (goalExpired) {
+        message = "This goal has reached its target date. Edit the goal to extend the date if you want to continue.";
+      }
+      
+      return new Response(JSON.stringify({ 
+        error: message,
+        permissions: permissions,
+        needsUpgrade: trialExpired && !isSubscribed
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
       });
     }
 
