@@ -26,7 +26,7 @@
 - **Backend**: Supabase (Database + Edge Functions)
 - **Hosting**: Vercel
 - **Payments**: Stripe
-- **Email**: Resend for all non-auth emails (Firebase handles auth emails)
+- **Email**: Resend using onboarding@resend.dev (Firebase handles auth emails)
 
 ---
 
@@ -134,13 +134,18 @@ git push origin main
 - [ ] Check-ins work (once per day)
 - [ ] Streaks calculate correctly
 - [ ] Nudges generate properly
+- [ ] ✅ **FIXED Sept 8**: Daily motivation emails sending via Resend (onboarding@resend.dev)
 
-#### Subscription Limits
+#### Subscription Limits & Business Logic
 - [ ] Free users: 1 goal maximum
 - [ ] Free users: 1 nudge per day
 - [ ] Premium users: 3 goals maximum
 - [ ] Premium users: 3 nudges per day
 - [ ] Upgrade prompts appear correctly
+- [ ] ✅ **DEPLOYED**: Expired goals show "GOAL EXPIRED" badge with edit/delete only
+- [ ] ✅ **DEPLOYED**: Trial-expired users show "TRIAL EXPIRED" badge with upgrade prompts
+- [ ] ✅ **DEPLOYED**: Permission system prevents invalid actions (check-in, share, view motivation on expired goals)
+- [ ] ✅ **DEPLOYED**: Backend validates permissions in check-in/update/delete functions
 
 #### UI/UX
 - [ ] All buttons work
@@ -172,10 +177,11 @@ git push origin main
    - [ ] Subscription limits enforced
 
 4. **Email System**
-   - [ ] Daily motivation emails sending (via Resend)
-   - [ ] Nudge emails arrive (via Resend)
+   - [ ] Daily motivation emails sending (1 per goal via Resend)
+   - [ ] Nudge emails arrive (individual delivery via Resend)
    - [ ] Email verification works (via Firebase)
-   - [ ] Email templates render correctly
+   - [ ] Password reset emails work (via Firebase)
+   - [ ] Email templates render correctly with goal-specific content
 
 ---
 
@@ -270,6 +276,8 @@ RESEND_API_KEY
 
 ### Daily Checks
 - Verify daily email cron job ran (7 AM EST)
+- Check Resend dashboard for email delivery status
+- Monitor that emails send from onboarding@resend.dev
 - Check error logs in Vercel dashboard
 - Monitor Supabase edge function logs
 - **New: Verify dev/prod database schema consistency**
@@ -327,9 +335,14 @@ git add -A && git commit -m "message" && git push origin main
 
 ## 📝 Version History
 
-### Latest Release (December 2024)
+### Latest Release (September 2025) 
+- **NEW**: Comprehensive expired goals/trials system with 5-phase implementation
+- **NEW**: Status badges ("GOAL EXPIRED", "TRIAL EXPIRED") and permission-based UI
+- **NEW**: Backend permission validation in all key edge functions
+- **NEW**: Smart email skip logic for expired scenarios  
+- **ENHANCED**: Enterprise-grade business logic with full-stack validation
 - Fixed Firebase authentication flow
-- Corrected subscription limits
+- Corrected subscription limits  
 - Resolved loading state issues
 - Fixed email delivery system
 - Enhanced UI consistency

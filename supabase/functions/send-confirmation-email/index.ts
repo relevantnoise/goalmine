@@ -80,7 +80,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Send the email via Resend
         const emailResponse = await resend.emails.send({
-          from: "GoalMine.ai Team <noreply@notifications.goalmine.ai>",
+          from: "GoalMine.ai Team <onboarding@resend.dev>",
           to: [user.email],
           reply_to: "support@goalmine.ai",
           subject: "Welcome to GoalMine.ai - Please confirm your email",

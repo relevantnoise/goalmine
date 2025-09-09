@@ -108,7 +108,9 @@ Run through each section of the testing checklist in DEPLOYMENT_READY.md:
 - Goal management
 - Check-ins and streaks
 - Subscription limits
-- Email delivery
+- **NEW**: Expired goals/trials business logic
+- **NEW**: Status badges and permission-based UI
+- Email delivery with skip logic
 - UI responsiveness
 
 ### After Deployment - Production Testing
@@ -181,6 +183,41 @@ Complete the full production testing checklist from DEPLOYMENT_READY.md
 - [ ] Deploy to production
 - [ ] Announce to team/users if significant
 - [ ] Monitor for issues
+
+---
+
+## 🔄 Expired Goals/Trials System (September 2025)
+
+### Understanding the Business Logic
+**Priority Order**: Trial expiration > Goal expiration > Normal operation
+
+#### Goal Expiration (past target_date)
+- **User Experience**: Red "GOAL EXPIRED" badge + gray info box
+- **Allowed Actions**: Edit ✅ Delete ✅ 
+- **Blocked Actions**: Check-in ❌ Share ❌ Emails ❌
+- **Purpose**: Users can extend dates or clean up old goals
+
+#### Trial Expiration (30+ days, not subscribed)  
+- **User Experience**: Orange "TRIAL EXPIRED" badge + upgrade prompt
+- **Allowed Actions**: All blocked ❌ until upgrade
+- **Purpose**: Clear upgrade path without data loss
+
+### Development Guidelines for Expired System
+1. **Always use helper functions** from `useGoals.tsx`: `isGoalExpired()`, `isTrialExpired()`, `getGoalStatus()`, `getGoalPermissions()`
+2. **Follow priority system**: Check trial expiration first, then goal expiration
+3. **Validate both frontend and backend**: UI prevention + edge function validation  
+4. **Clear user messaging**: Explain what users can/cannot do in each state
+5. **Test all scenarios**: Active, goal-expired, trial-expired combinations
+
+### Testing Expired States
+```bash
+# Test with real expired goals (create goals with past target dates)
+# Test with trial-expired users (users > 30 days old, not subscribed)
+# Verify status badges appear correctly
+# Confirm buttons are enabled/disabled appropriately 
+# Test backend validation prevents API bypass
+# Check email system skips expired scenarios
+```
 
 ---
 

@@ -160,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Send the email with retry logic (reuse the send function from motivation emails)
         const emailResult = await sendEmailWithRetry({
-          from: "GoalMine.ai <noreply@notifications.goalmine.ai>",
+          from: "GoalMine.ai <onboarding@resend.dev>",
           to: [user.email],
           subject: emailSubject,
           html: emailHTML,

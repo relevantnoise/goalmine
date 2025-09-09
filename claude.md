@@ -14,7 +14,7 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 3. **30-Day Free Trial**: Automatically activated upon registration
 
 ### Goal Creation Process (Onboarding)
-1. **5-Step Form**: Title → Description → Target Date → Tone Selection → Email Time
+1. **4-Step Form**: Title → Description → Target Date → Tone Selection
 2. **LLM Content Generation**: Immediate AI-powered motivation content creation
 3. **Success Toast**: "Goal Created! 🎯 Your daily motivation emails will start tomorrow"
 5. **Redirect**: User taken to dashboard
@@ -32,7 +32,7 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 
 ### Daily Motivation System
 - **Goal Detail Pages**: Display daily AI-generated content (pre-generated, not real-time)
-- **Daily Emails**: Fresh LLM content sent at user-specified times
+- **Daily Emails**: Fresh LLM content sent at 7 AM Eastern (fixed time for all users)
 - **Content Types**: Motivational messages, micro-plans (3 actionable steps), mini-challenges (2-minute tasks)
 - **Tone Consistency**: All content matches user's selected coaching style
 
@@ -47,9 +47,9 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 - **UI**: shadcn-ui components + Tailwind CSS
 - **Backend**: Supabase (Database + Edge Functions) + Firebase (Authentication)
 - **Payments**: Stripe integration
-- **Email**: Resend for email delivery
-- **Chat**: Crisp integration
-- **AI**: OpenAI GPT for motivation content generation
+- **Email**: Resend for email delivery (using onboarding@resend.dev default domain)
+- **Chat**: Crisp integration  
+- **AI**: OpenAI GPT-4 for motivation content generation
 
 ## Project Structure
 
@@ -86,7 +86,7 @@ supabase/
 ## Key Features
 
 ### 1. Goal Management
-- **Create Goals**: Title, description, target date, tone, email time
+- **Create Goals**: Title, description, target date, tone
 - **Edit/Delete**: Full CRUD operations
 - **Goal Cards**: Display progress, streaks, and motivation content
 
@@ -100,18 +100,45 @@ supabase/
 - **Micro-Plans**: 3 actionable steps for the day
 - **Mini-Challenges**: Quick 2-minute tasks
 - **Nudges**: On-demand motivation boosts
-- **Email Delivery**: Daily motivational emails at user-specified times
+- **Email Delivery**: Daily motivational emails at 7 AM Eastern (fixed time)
 
-### 4. Subscription System
+### 4. Subscription System & Business Logic
 - **Free Tier**: 1 goal, 1 daily nudge, 30-day trial
 - **Premium**: 3 goals, 3 daily nudges, priority email delivery
 - **Stripe Integration**: Payment processing and subscription management
+- **Expired Goals**: Goals past target date - edit/delete only, no check-ins
+- **Expired Trials**: 30+ days free users - read-only until upgrade
 
 ### 5. User Experience
 - **Responsive Design**: Works on desktop and mobile
 - **Real-time Updates**: Live streak updates and goal changes
 - **Social Sharing**: Share goals on social platforms
 - **Progressive Enhancement**: Fallback content when AI fails
+
+## Expired Goals & Trials System
+
+### Business Logic (5-Phase Implementation - COMPLETED September 3, 2025)
+**Status**: ✅ FULLY IMPLEMENTED AND DEPLOYED TO PRODUCTION
+**Priority**: Trial expiration > Goal expiration > Normal operation
+
+#### Goal Expiration (past target_date)
+- **UI**: "GOAL EXPIRED" red badge, gray info box with explanation
+- **Permissions**: Edit ✅ Delete ✅ | Check-in ❌ Share ❌ Emails ❌ View Motivation ❌
+- **Purpose**: Users can extend date or clean up old goals
+- **Email System**: Skips sending to expired goals
+
+#### Trial Expiration (30+ days, not subscribed)  
+- **UI**: "TRIAL EXPIRED" orange badge, upgrade prompt with button
+- **Permissions**: All actions disabled ❌ until upgrade
+- **Purpose**: Clear upgrade path without losing goal data
+- **Email System**: Skips sending to trial-expired users
+
+#### Implementation Architecture
+- **Phase 1**: Data layer helper functions in `useGoals.tsx`
+- **Phase 2**: Email skip logic in `send-daily-emails` function  
+- **Phase 3**: Frontend status detection with parallel data fetching
+- **Phase 4**: UI components with status badges and permission-based buttons
+- **Phase 5**: Backend validation in `check-in`, `delete-goal`, `update-goal` functions
 
 ## Database Schema
 
@@ -162,15 +189,23 @@ interface MotivationContent {
 ## Email System
 
 ### Daily Emails
-- **Scheduled**: User-specified delivery time
-- **Content**: AI-generated motivation + progress tracking
-- **Templates**: React-based email templates
-- **Delivery**: Resend email service integration
+- **Frequency**: 1 separate email per goal (not consolidated per user)
+- **Scheduled**: 7 AM Eastern delivery time (intentionally fixed for simplicity)
+- **Content**: AI-generated motivation + progress tracking per goal
+- **Templates**: Professional HTML email templates
+- **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
+- **Status**: ✅ WORKING (Fixed Sept 8, 2025 - using Resend default domain)
 
-### Transactional Emails
-- **Nudges**: On-demand motivation delivery
-- **Confirmations**: Goal creation notifications
-- **Milestones**: Progress celebration emails
+### Transactional Emails (via Resend)
+- **Nudges**: On-demand motivation delivery (1 email per nudge)
+- **Daily Motivation**: Individual goal-specific motivation (1 email per goal)
+- **From Address**: GoalMine.ai <onboarding@resend.dev>
+- **System**: Resend handles all application emails (using default domain to avoid DNS issues)
+
+### Authentication Emails (via Firebase)
+- **Email Verification**: Account verification links
+- **Password Reset**: Password recovery emails
+- **System**: Firebase handles all authentication-related emails
 
 ## Development Workflow
 
@@ -294,7 +329,7 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 - **API Limits**: Rate limiting for AI generation and email sending
 - **Cache Strategy**: In-memory caching for frequently accessed data
 
-## Recent Technical Fixes (Aug 2024)
+## Recent Technical Developments
 
 ### Data Structure Handling
 - **MicroPlan Format**: Components handle both string and array formats for `motivation.microPlan`
@@ -316,6 +351,13 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 - **Solution**: Changed Firebase verification redirect from `/auth?verified=true` to `/?email-verified=true`
 - **Implementation**: Index.tsx detects `email-verified=true` parameter and forces goal creation
 - **Pattern**: Use URL parameters to maintain context across Firebase redirects
+
+### Expired Goals & Trials System (Sep 2024)
+- **Implementation**: 5-phase rollout ensuring no breaking changes
+- **Frontend**: Status badges, permission-based UI, upgrade prompts
+- **Backend**: Full permission validation in key edge functions
+- **Email System**: Smart skip logic prevents individual goal emails to expired scenarios
+- **Architecture**: Consistent business logic across frontend/backend with helper functions
 
 ## Content Generation Strategy
 

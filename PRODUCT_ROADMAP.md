@@ -3,7 +3,7 @@
 ## 🚀 Version 1.0 (MVP) - Current Release
 
 ### Core Features (✅ Complete)
-- **Goal Creation & Management**: Title, description, target date, tone selection, email timing
+- **Goal Creation & Management**: Title, description, target date, tone selection
 - **Daily Streak System**: Check-ins with 3 AM EST reset, streak tracking  
 - **AI-Powered Motivation**: Daily personalized messages based on goal and tone
 - **Email System**: Daily motivational emails with check-in links

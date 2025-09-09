@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending milestone email to:', email);
 
     const emailResponse = await resend.emails.send({
-      from: "GoalMine.ai <noreply@notifications.goalmine.ai>",
+      from: "GoalMine.ai <onboarding@resend.dev>",
       to: [email],
       subject: `🎉 Milestone Achieved: ${milestoneLabel} on ${goal}!`,
       html: `

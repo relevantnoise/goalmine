@@ -193,11 +193,6 @@ CREATE TABLE subscribers (
   - **Wise Mentor**: "Guide me with thoughtful, insightful advice"
 - Required selection
 
-**Step 5 - Email Timing**:
-- "When should we send your daily motivation?"
-- 3 options: Morning, Afternoon, Evening
-- Required selection
-
 **Final Step**:
 - Review goal summary
 - "Create My Goal" button

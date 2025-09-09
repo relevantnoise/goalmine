@@ -190,8 +190,8 @@ const handler = async (req: Request): Promise<Response> => {
           console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
         }
         
-        // Step 2: Only send email if it's 7:00 AM Eastern or later (or force delivery)
-        const shouldSendEmail = forceDelivery || currentHour > DELIVERY_HOUR || (currentHour === DELIVERY_HOUR && currentMinute >= DELIVERY_MINUTE);
+        // Step 2: Only send email if it's within the 7 AM hour Eastern (7:00-7:59) or force delivery
+        const shouldSendEmail = forceDelivery || (currentHour === DELIVERY_HOUR);
         
         if (shouldSendEmail) {
           console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);
@@ -229,7 +229,7 @@ const handler = async (req: Request): Promise<Response> => {
               .eq('id', goal.id);
           }
         } else {
-          console.log(`[DAILY-EMAILS] Content ready for ${goal.title} but waiting for ${DELIVERY_HOUR}:${String(DELIVERY_MINUTE).padStart(2, '0')} Eastern. Current time: ${currentHour}:${currentMinute}`);
+          console.log(`[DAILY-EMAILS] Content ready for ${goal.title} but not sending - only sends during the 7 AM Eastern hour. Current time: ${currentHour}:${String(currentMinute).padStart(2, '0')} Eastern`);
         }
       } catch (error) {
         console.error(`[DAILY-EMAILS] Error processing goal ${goal.title}:`, error);
