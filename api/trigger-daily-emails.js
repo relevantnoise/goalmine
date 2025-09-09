@@ -14,12 +14,13 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] Triggering daily email send at', new Date().toISOString());
     
     // Call the Supabase edge function
+    // Use SUPABASE_ANON_KEY (without VITE_ prefix) for Vercel serverless functions
     const response = await fetch(
       'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/daily-cron',
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({})
