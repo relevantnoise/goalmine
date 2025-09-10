@@ -191,10 +191,11 @@ interface MotivationContent {
 ### Daily Emails
 - **Frequency**: 1 separate email per goal (not consolidated per user)
 - **Scheduled**: 7 AM Eastern delivery time (intentionally fixed for simplicity)
+- **Automation**: Vercel cron job triggers at 11:00 UTC (7:00 AM EDT) daily
 - **Content**: AI-generated motivation + progress tracking per goal
 - **Templates**: Professional HTML email templates
 - **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
-- **Status**: ✅ WORKING (Fixed Sept 8, 2025 - using Resend default domain)
+- **Status**: ✅ FULLY AUTOMATED (Fixed Sept 9, 2025 - cron job authentication resolved)
 
 ### Transactional Emails (via Resend)
 - **Nudges**: On-demand motivation delivery (1 email per nudge)

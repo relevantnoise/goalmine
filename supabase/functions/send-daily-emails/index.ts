@@ -45,11 +45,44 @@ const handler = async (req: Request): Promise<Response> => {
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
 
-    // Initialize Supabase client
+    // Initialize Supabase client early for duplicate check
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+
+    // DUPLICATE PREVENTION: Check if we've already processed emails this hour
+    const now = new Date();
+    const currentHour = now.getUTCHours();
+    const todayDate = now.toISOString().split('T')[0];
+    
+    if (!forceDelivery) {
+      // Check if any goals were already processed today (indicating this function already ran)
+      const { data: processedToday, error: checkError } = await supabase
+        .from('goals')
+        .select('id, title')
+        .eq('is_active', true)
+        .eq('last_motivation_date', todayDate)
+        .limit(1);
+      
+      if (checkError) {
+        console.error('[DAILY-EMAILS] Error checking for already processed goals:', checkError);
+      } else if (processedToday && processedToday.length > 0) {
+        console.log('[DAILY-EMAILS] Already processed emails today - skipping to prevent duplicates');
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            emailsSent: 0, 
+            errors: 0,
+            message: 'Daily emails already sent today - duplicate prevention active'
+          }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+    }
 
     // Get current time in Eastern timezone
     const now = new Date();
@@ -196,6 +229,22 @@ const handler = async (req: Request): Promise<Response> => {
         if (shouldSendEmail) {
           console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);
           
+          // DUPLICATE PREVENTION: Update the goal's last motivation date BEFORE sending email
+          // This prevents race conditions if the function runs multiple times
+          const todayDate = new Date().toISOString().split('T')[0];
+          const { error: updateError } = await supabase
+            .from('goals')
+            .update({ last_motivation_date: todayDate })
+            .eq('id', goal.id)
+            .is('last_motivation_date', null)
+            .or(`last_motivation_date.lt.${todayDate}`);
+          
+          if (updateError) {
+            console.error(`[DAILY-EMAILS] Failed to update last_motivation_date for ${goal.title}:`, updateError);
+            errors++;
+            continue; // Skip this goal to prevent duplicate
+          }
+          
           // Call the send-motivation-email function with pre-generated content
           const emailResponse = await supabase.functions.invoke('send-motivation-email', {
             body: {
@@ -221,12 +270,6 @@ const handler = async (req: Request): Promise<Response> => {
           } else {
             console.log(`[DAILY-EMAILS] Successfully sent email for goal: ${goal.title}`);
             emailsSent++;
-            
-            // Update the goal's last motivation date
-            await supabase
-              .from('goals')
-              .update({ last_motivation_date: new Date().toISOString().split('T')[0] })
-              .eq('id', goal.id);
           }
         } else {
           console.log(`[DAILY-EMAILS] Content ready for ${goal.title} but not sending - only sends during the 7 AM Eastern hour. Current time: ${currentHour}:${String(currentMinute).padStart(2, '0')} Eastern`);

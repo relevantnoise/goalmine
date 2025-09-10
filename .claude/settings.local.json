@@ -184,7 +184,12 @@
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_Ncr37K/**)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy send-motivation-email send-milestone-email send-trial-warning --project-ref dhlcycjnzwfnadmsptof)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_txPBn5/**)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions logs send-daily-emails --project-ref dhlcycjnzwfnadmsptof --tail=30)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions logs send-daily-emails --tail=30)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke debug-email-system --project-ref dhlcycjnzwfnadmsptof --method POST --body '{\"\"userId\"\": \"\"danlynn@gmail.com\"\", \"\"checkDate\"\": \"\"2025-09-10\"\"}')",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy debug-duplicate-emails)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy send-daily-emails)"
     ],
     "deny": [],
     "ask": [],
