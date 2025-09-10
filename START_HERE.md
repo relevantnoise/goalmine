@@ -49,12 +49,14 @@
 
 ---
 
-## 🚦 Current Status (September 9, 2025)
+## 🚦 Current Status (September 10, 2025)
 
-- **Status**: ✅ DEPLOYED IN PRODUCTION - DAILY EMAIL AUTOMATION FULLY WORKING
+- **Status**: ✅ DEPLOYED IN PRODUCTION - EMAIL SYSTEM STABLE WITH DUPLICATE PREVENTION
 - **Live URL**: https://goalmine.ai 🚀
-- **Latest**: Daily email automation FIXED - emails will send automatically at 7 AM EDT
-- **Email System**: Vercel cron → Supabase functions → Resend delivery (FULLY TESTED)
+- **Latest**: Email system stabilized - duplicate emails fixed, check-in UX improved
+- **Email System**: Vercel cron → Supabase functions → Resend delivery (STABLE & TESTED)
+- **Duplicate Prevention**: Active at goal level - users get exactly 1 email per goal per day
+- **Check-In Links**: Working with helpful Firebase session error handling
 - **Features**: 100% MVP + enterprise-grade business logic running live
 - **Subscription Limits**: Fully enforced with permission system in production
 - **Business Logic**: Trial expiration > Goal expiration > Normal operation
@@ -94,12 +96,12 @@ git push origin main
 
 ## 🆕 Latest Fixes (September 2025)
 
-### **Daily Email Automation FULLY RESTORED (September 9, 2025)**
-- **Issue**: Vercel cron job authentication failure prevented automatic daily emails
-- **Fix**: Resolved API endpoint authentication in `/api/trigger-daily-emails.js`
-- **Testing**: Complete end-to-end verification of email delivery chain
-- **Result**: Daily emails will automatically send at 7 AM EDT starting tomorrow
-- **Architecture**: Vercel cron → API → Supabase edge functions → Resend email delivery
+### **Email System Stabilized (September 10, 2025)**
+- **Duplicate Email Fix**: Resolved race condition causing 2 emails per goal instead of 1
+- **Technical Solution**: Atomic `last_motivation_date` updates BEFORE email sending
+- **UX Enhancement**: Added helpful messaging for Firebase session expiration from email links
+- **Result**: Users get exactly 1 email per goal per day with better check-in link experience
+- **Architecture**: Vercel cron → Supabase (with duplicate prevention) → Resend delivery
 
 ### **Expired Goals/Trials System - 5 Phases Complete (September 3, 2025)**
 - **Phase 1**: Data layer helper functions in `useGoals.tsx`

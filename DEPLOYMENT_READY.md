@@ -176,12 +176,15 @@ git push origin main
    - [ ] Stripe checkout loads
    - [ ] Subscription limits enforced
 
-4. **Email System** ✅ **FULLY AUTOMATED AS OF SEPT 9, 2025**
-   - [ ] Daily motivation emails sending automatically at 7 AM EDT (via Vercel cron → Supabase → Resend)
+4. **Email System** ✅ **FULLY STABLE AS OF SEPT 10, 2025**
+   - [ ] Daily motivation emails sending automatically at 7 AM EDT (1 per goal, no duplicates)
    - [ ] Nudge emails arrive (individual delivery via Resend)
    - [ ] Email verification works (via Firebase)
    - [ ] Password reset emails work (via Firebase)
    - [ ] Email templates render correctly with goal-specific content
+   - [ ] Check-in links work from emails (`?checkin=true` parameter)
+   - [ ] Users see helpful message if Firebase session expired from email links
+   - [ ] **CRITICAL**: Verify no duplicate emails (each user gets exactly 1 email per goal per day)
    - [ ] **NEW**: Verify Vercel cron job runs at 7 AM EDT (check logs at https://vercel.com/dashboard)
 
 ---
@@ -220,17 +223,25 @@ RESEND_API_KEY
 - Ensure `authLoading` and `goalsLoading` are coordinated
 - Check Dashboard.tsx loading logic
 
-### Issue: Firebase authentication errors
+### Issue: Firebase authentication errors from email links
 **Solution**:
-- Verify Firebase project settings
-- Check authorized domains include goalmine.ai
-- Ensure environment variables are set
+- This is normal behavior when Firebase session expires
+- App shows helpful blue alert message to user
+- User logs in normally and continues to dashboard
+- No action needed - UX enhancement handles this gracefully
 
 ### Issue: Subscription limits not working
 **Solution**:
 - Check Supabase `check-subscription` edge function
 - Verify Stripe webhook is configured
 - Test with real Stripe test keys
+
+### Issue: Duplicate emails being sent
+**Solution**:
+- Check `send-daily-emails` function for proper `last_motivation_date` updates
+- Ensure updates happen BEFORE email sending, not after
+- Verify duplicate prevention is at goal level, not function level
+- Look for race conditions in email processing logic
 
 ### 🚨 CRITICAL ISSUE: Database tables missing in production
 **Symptoms**: 

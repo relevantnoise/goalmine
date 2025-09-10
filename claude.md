@@ -193,9 +193,15 @@ interface MotivationContent {
 - **Scheduled**: 7 AM Eastern delivery time (intentionally fixed for simplicity)
 - **Automation**: Vercel cron job triggers at 11:00 UTC (7:00 AM EDT) daily
 - **Content**: AI-generated motivation + progress tracking per goal
-- **Templates**: Professional HTML email templates
+- **Templates**: Professional HTML email templates with "CHECK IN NOW" links
 - **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
-- **Status**: ✅ FULLY AUTOMATED (Fixed Sept 9, 2025 - cron job authentication resolved)
+- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 10, 2025 - duplicate prevention implemented)
+
+### Email Link Flow
+- **Check-In Links**: Include `?checkin=true&t=timestamp` parameters for direct dashboard access
+- **Authentication Handling**: If user session expired, shows helpful login message
+- **User Experience**: Seamless flow from email → login (if needed) → dashboard
+- **Duplicate Prevention**: Atomic database updates prevent race conditions and duplicate emails
 
 ### Transactional Emails (via Resend)
 - **Nudges**: On-demand motivation delivery (1 email per nudge)
@@ -283,11 +289,17 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 ### Common Issues
 - **Auth Loops**: Check Supabase session handling
 - **Streak Logic**: Verify timezone calculations (3 AM EST reset)
-- **Email Delivery**: Confirm Render integration and templates
+- **Email Delivery**: Confirm Resend integration and templates (not Render)
 - **Subscription Sync**: Check Stripe webhook configuration
 - **Loading State Flash**: Dashboard briefly shows "No Active Goals" - check `authLoading` coordination
 - **Motivation Content Missing**: RLS policies block frontend DB writes - use edge functions instead
 - **MicroPlan Type Errors**: Handle both string and array formats in components (GoalCard, GoalDetail)
+
+### Email System Issues
+- **Duplicate Emails**: Check `last_motivation_date` updates in send-daily-emails function
+- **Missing Emails**: Verify duplicate prevention isn't too aggressive - should be goal-level, not function-level
+- **Check-In Links**: Firebase session errors are normal - app shows helpful login message
+- **Email Content**: All templates in `/supabase/functions/send-motivation-email/index.ts`
 
 ### Debug Tools
 - Browser dev tools for client-side debugging
