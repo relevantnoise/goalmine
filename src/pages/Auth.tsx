@@ -24,6 +24,16 @@ export const Auth: React.FC = () => {
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [checkinMessage, setCheckinMessage] = useState<string | null>(null);
+
+  // Check for check-in message from email link
+  useEffect(() => {
+    const message = sessionStorage.getItem('checkinMessage');
+    if (message) {
+      setCheckinMessage(message);
+      sessionStorage.removeItem('checkinMessage'); // Clear after showing
+    }
+  }, []);
 
   // Helper function to convert Firebase errors to user-friendly messages
   const getErrorMessage = (error: any): string => {
@@ -367,6 +377,15 @@ export const Auth: React.FC = () => {
             <Alert className="mb-4 border-red-200 bg-red-50">
               <AlertDescription className="text-red-700">
                 {error}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Check-in Message Alert */}
+          {checkinMessage && (
+            <Alert className="mb-4 border-blue-200 bg-blue-50">
+              <AlertDescription className="text-blue-700">
+                {checkinMessage}
               </AlertDescription>
             </Alert>
           )}

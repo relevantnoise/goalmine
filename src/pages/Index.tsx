@@ -159,6 +159,9 @@ const Index = () => {
       } else if (!user && !authLoading) {
         // Unauthenticated user clicking check-in link - go to auth page
         console.log('🔐 Unauthenticated check-in request - redirecting to auth');
+        // Add helpful context for user about why they need to log in
+        const checkinMessage = "Please log in to complete your check-in from the email link.";
+        sessionStorage.setItem('checkinMessage', checkinMessage);
         navigate('/auth', { replace: true });
         return;
       }
