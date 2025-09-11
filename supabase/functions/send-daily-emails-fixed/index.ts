@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS] Starting daily email send process');
+    console.log('[DAILY-EMAILS-FIXED] Starting daily email send process');
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
@@ -68,72 +68,100 @@ const handler = async (req: Request): Promise<Response> => {
     const DELIVERY_HOUR = 7;
     const DELIVERY_MINUTE = 0;
     
-    console.log(`[DAILY-EMAILS] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
-    console.log(`[DAILY-EMAILS] Delivery time: ${DELIVERY_HOUR}:${String(DELIVERY_MINUTE).padStart(2, '0')} Eastern`);
+    console.log(`[DAILY-EMAILS-FIXED] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
+    console.log(`[DAILY-EMAILS-FIXED] Delivery time: ${DELIVERY_HOUR}:${String(DELIVERY_MINUTE).padStart(2, '0')} Eastern`);
 
-    // Get goals that need motivation today
+    // Get goals that need motivation today (removed the date filter for now to test)
     const { data: goals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
-      .eq('is_active', true)
-      .or(`last_motivation_date.is.null,last_motivation_date.lt.${new Date().toISOString().split('T')[0]}`);
+      .eq('is_active', true);
 
     if (goalsError) {
-      console.error('[DAILY-EMAILS] Error fetching goals:', goalsError);
+      console.error('[DAILY-EMAILS-FIXED] Error fetching goals:', goalsError);
       throw goalsError;
     }
 
-    console.log(`[DAILY-EMAILS] Found ${goals?.length || 0} goals to process`);
+    console.log(`[DAILY-EMAILS-FIXED] Found ${goals?.length || 0} total active goals`);
+
+    // Filter goals that need emails today (haven't been sent today)
+    const goalsNeedingEmails = goals?.filter(goal => 
+      !goal.last_motivation_date || goal.last_motivation_date !== todayDate
+    ) || [];
+
+    console.log(`[DAILY-EMAILS-FIXED] Found ${goalsNeedingEmails.length} goals needing emails today`);
 
     let emailsSent = 0;
     let errors = 0;
 
-    for (const goal of goals || []) {
+    for (const goal of goalsNeedingEmails) {
       try {
         // Get the user's profile for email address and trial status
-        const { data: userProfile, error: profileError } = await supabase
-          .from('profiles')
-          .select('email, trial_expires_at, created_at')
-          .eq('email', goal.user_id)
-          .single();
-
-        // Fallback if profile lookup fails - create minimal profile
-        const profile = userProfile || { email: goal.user_id, trial_expires_at: null };
-          
-        if (!profile.email || !profile.email.includes('@')) {
-          console.error(`[DAILY-EMAILS] Invalid email for goal ${goal.title}: ${goal.user_id}`);
+        // FIXED: Use email directly since user_id IS the email
+        const userEmail = goal.user_id;
+        
+        console.log(`[DAILY-EMAILS-FIXED] Processing goal "${goal.title}" for user: ${userEmail}`);
+        
+        if (!userEmail || !userEmail.includes('@')) {
+          console.error(`[DAILY-EMAILS-FIXED] Invalid email for goal ${goal.title}: ${goal.user_id}`);
           errors++;
           continue;
         }
 
-        // Check subscription status - FIXED: Use correct field names
-        const { data: subscriptionData } = await supabase
+        // Get user profile - FIXED: Find by email field, not ID
+        const { data: userProfile, error: profileError } = await supabase
+          .from('profiles')
+          .select('email, trial_expires_at, created_at')
+          .eq('email', userEmail)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        // Use the first profile or create minimal profile
+        const profile = userProfile || { 
+          email: userEmail, 
+          trial_expires_at: null,
+          created_at: new Date().toISOString()
+        };
+        
+        if (profileError) {
+          console.log(`[DAILY-EMAILS-FIXED] Profile lookup warning for ${userEmail}:`, profileError);
+        }
+
+        // FIXED: Check subscription status using correct field names
+        const { data: subscriptionData, error: subError } = await supabase
           .from('subscribers')
           .select('subscribed, subscription_tier, email')
-          .eq('user_id', goal.user_id)
-          .eq('subscribed', true)
-          .single();
+          .eq('user_id', userEmail)  // Look by user_id which should be email
+          .eq('subscribed', true)    // FIXED: Use 'subscribed' field, not 'status'
+          .maybeSingle();
         
+        if (subError) {
+          console.log(`[DAILY-EMAILS-FIXED] Subscription lookup warning for ${userEmail}:`, subError);
+        }
+        
+        // FIXED: Check subscription using correct field
         const isSubscribed = subscriptionData && subscriptionData.subscribed === true;
+        
+        console.log(`[DAILY-EMAILS-FIXED] User ${userEmail} subscription status: ${isSubscribed ? 'SUBSCRIBED' : 'NOT_SUBSCRIBED'}`);
 
         // Phase 2: Check if we should skip this email
         const skipCheck = shouldSkipEmailForGoal(goal, profile, isSubscribed);
         if (skipCheck.skip) {
-          console.log(`[DAILY-EMAILS] Skipping email for goal "${goal.title}": ${skipCheck.reason}`);
+          console.log(`[DAILY-EMAILS-FIXED] Skipping email for goal "${goal.title}": ${skipCheck.reason}`);
           continue; // Skip this goal
         }
 
-        console.log(`[DAILY-EMAILS] Processing email for goal "${goal.title}": ${skipCheck.reason}`);
+        console.log(`[DAILY-EMAILS-FIXED] Processing email for goal "${goal.title}": ${skipCheck.reason}`);
         
         // Step 1: Ensure motivation content exists (generate if needed)
-        const today = new Date().toISOString().split('T')[0];
         const { data: existingMotivation, error: motivationCheckError } = await supabase
           .from('motivation_history')
           .select('*')
           .eq('goal_id', goal.id)
           .eq('user_id', goal.user_id)
-          .gte('created_at', `${today}T00:00:00`)
-          .lt('created_at', `${today}T23:59:59`)
+          .gte('created_at', `${todayDate}T00:00:00`)
+          .lt('created_at', `${todayDate}T23:59:59`)
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
@@ -146,13 +174,14 @@ const handler = async (req: Request): Promise<Response> => {
         
         if (needsFreshContent) {
           if (existingMotivation) {
-            console.log(`[DAILY-EMAILS] Streak changed from ${existingMotivation.streak_count} to ${goal.streak_count} for ${goal.title} - regenerating content`);
+            console.log(`[DAILY-EMAILS-FIXED] Streak changed from ${existingMotivation.streak_count} to ${goal.streak_count} for ${goal.title} - regenerating content`);
           } else {
-            console.log(`[DAILY-EMAILS] No existing motivation for ${goal.title} - generating fresh content`);
+            console.log(`[DAILY-EMAILS-FIXED] No existing motivation for ${goal.title} - generating fresh content`);
           }
+          
           // Generate AI motivation content since it doesn't exist for today
           try {
-            console.log(`[DAILY-EMAILS] Pre-generating AI motivation for goal: ${goal.title}`);
+            console.log(`[DAILY-EMAILS-FIXED] Pre-generating AI motivation for goal: ${goal.title}`);
             const aiResponse = await supabase.functions.invoke('generate-daily-motivation-simple', {
               body: {
                 goalId: goal.id,
@@ -165,15 +194,15 @@ const handler = async (req: Request): Promise<Response> => {
             });
             
             if (aiResponse.error) {
-              console.error(`[DAILY-EMAILS] AI generation error for ${goal.title}:`, aiResponse.error);
+              console.error(`[DAILY-EMAILS-FIXED] AI generation error for ${goal.title}:`, aiResponse.error);
               throw new Error('AI generation failed');
             }
             
             motivationContent = aiResponse.data;
-            console.log(`[DAILY-EMAILS] Successfully pre-generated AI content for ${goal.title}`);
+            console.log(`[DAILY-EMAILS-FIXED] Successfully pre-generated AI content for ${goal.title}`);
             
           } catch (error) {
-            console.error(`[DAILY-EMAILS] Failed to generate AI content, using fallback:`, error);
+            console.error(`[DAILY-EMAILS-FIXED] Failed to generate AI content, using fallback:`, error);
             // Fallback content if AI generation fails
             motivationContent = {
               message: `Today is another opportunity to make progress on your goal: ${goal.title}. Keep building momentum!`,
@@ -188,20 +217,20 @@ const handler = async (req: Request): Promise<Response> => {
             microPlan: Array.isArray(existingMotivation.micro_plan) ? existingMotivation.micro_plan : [existingMotivation.micro_plan],
             challenge: existingMotivation.challenge || ''
           };
-          console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
+          console.log(`[DAILY-EMAILS-FIXED] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
         }
         
         // Step 2: Only send email if it's within the 7 AM hour Eastern (7:00-7:59) or force delivery
         const shouldSendEmail = forceDelivery || (currentHour === DELIVERY_HOUR);
         
         if (shouldSendEmail) {
-          console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);
+          console.log(`[DAILY-EMAILS-FIXED] Sending email for goal: ${goal.title} to ${userEmail}`);
           
-          // DUPLICATE PREVENTION: Check if this specific goal already got email today
-          if (goal.last_motivation_date === todayDate) {
-            console.log(`[DAILY-EMAILS] Goal "${goal.title}" already received email today - skipping`);
-            continue;
-          }
+          // DUPLICATE PREVENTION: Check if this specific goal already got email today - REMOVED for testing
+          // if (goal.last_motivation_date === todayDate) {
+          //   console.log(`[DAILY-EMAILS-FIXED] Goal "${goal.title}" already received email today - skipping`);
+          //   continue;
+          // }
           
           // Update the goal's last motivation date BEFORE sending email
           const { error: updateError } = await supabase
@@ -210,7 +239,7 @@ const handler = async (req: Request): Promise<Response> => {
             .eq('id', goal.id);
           
           if (updateError) {
-            console.error(`[DAILY-EMAILS] Failed to update last_motivation_date for ${goal.title}:`, updateError);
+            console.error(`[DAILY-EMAILS-FIXED] Failed to update last_motivation_date for ${goal.title}:`, updateError);
             errors++;
             continue; // Skip this goal to prevent duplicate
           }
@@ -218,8 +247,8 @@ const handler = async (req: Request): Promise<Response> => {
           // Call the send-motivation-email function with pre-generated content
           const emailResponse = await supabase.functions.invoke('send-motivation-email', {
             body: {
-              email: profile.email,
-              name: profile.email.split('@')[0],
+              email: userEmail,
+              name: userEmail.split('@')[0],
               goal: goal.title,
               message: motivationContent.message,
               microPlan: Array.isArray(motivationContent.microPlan) ? 
@@ -235,22 +264,22 @@ const handler = async (req: Request): Promise<Response> => {
           });
 
           if (emailResponse.error) {
-            console.error(`[DAILY-EMAILS] Error sending email for goal ${goal.title}:`, emailResponse.error);
+            console.error(`[DAILY-EMAILS-FIXED] Error sending email for goal ${goal.title}:`, emailResponse.error);
             errors++;
           } else {
-            console.log(`[DAILY-EMAILS] Successfully sent email for goal: ${goal.title}`);
+            console.log(`[DAILY-EMAILS-FIXED] Successfully sent email for goal: ${goal.title}`);
             emailsSent++;
           }
         } else {
-          console.log(`[DAILY-EMAILS] Content ready for ${goal.title} but not sending - only sends during the 7 AM Eastern hour. Current time: ${currentHour}:${String(currentMinute).padStart(2, '0')} Eastern`);
+          console.log(`[DAILY-EMAILS-FIXED] Content ready for ${goal.title} but not sending - only sends during the 7 AM Eastern hour. Current time: ${currentHour}:${String(currentMinute).padStart(2, '0')} Eastern`);
         }
       } catch (error) {
-        console.error(`[DAILY-EMAILS] Error processing goal ${goal.title}:`, error);
+        console.error(`[DAILY-EMAILS-FIXED] Error processing goal ${goal.title}:`, error);
         errors++;
       }
     }
 
-    console.log(`[DAILY-EMAILS] Process complete. Sent: ${emailsSent}, Errors: ${errors}`);
+    console.log(`[DAILY-EMAILS-FIXED] Process complete. Sent: ${emailsSent}, Errors: ${errors}`);
 
     return new Response(
       JSON.stringify({ 
@@ -266,7 +295,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error('[DAILY-EMAILS] Fatal error:', error);
+    console.error('[DAILY-EMAILS-FIXED] Fatal error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
