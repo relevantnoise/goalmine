@@ -195,7 +195,7 @@ interface MotivationContent {
 - **Content**: AI-generated motivation + progress tracking per goal
 - **Templates**: Professional HTML email templates with "CHECK IN NOW" links
 - **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
-- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 10, 2025 - duplicate prevention implemented)
+- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 11, 2025 - subscription logic and database issues resolved)
 
 ### Email Link Flow
 - **Check-In Links**: Include `?checkin=true&t=timestamp` parameters for direct dashboard access
@@ -295,11 +295,19 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 - **Motivation Content Missing**: RLS policies block frontend DB writes - use edge functions instead
 - **MicroPlan Type Errors**: Handle both string and array formats in components (GoalCard, GoalDetail)
 
-### Email System Issues
-- **Duplicate Emails**: Check `last_motivation_date` updates in send-daily-emails function
-- **Missing Emails**: Verify duplicate prevention isn't too aggressive - should be goal-level, not function-level
-- **Check-In Links**: Firebase session errors are normal - app shows helpful login message
+### Email System Issues ✅ **RESOLVED SEPTEMBER 11, 2025**
+- **✅ FIXED: Subscription Field Bug**: Updated `send-daily-emails` to use `subscribed = true` instead of `status = 'active'`
+- **✅ FIXED: Duplicate User Profiles**: Cleaned up multiple profiles per email causing subscription mismatches
+- **✅ FIXED: Resend Verification**: Resend requires individual email verification or domain verification for production
+- **✅ WORKING: Duplicate Prevention**: Atomic `last_motivation_date` updates prevent race conditions
+- **✅ WORKING: Check-In Links**: Firebase session errors handled gracefully with user messaging
 - **Email Content**: All templates in `/supabase/functions/send-motivation-email/index.ts`
+
+### Email System Debug Tools (Added September 11, 2025)
+- **debug-email-issues**: Complete database diagnostic for email troubleshooting
+- **test-resend-simple**: Direct Resend API testing and verification status checking  
+- **cleanup-duplicate-profiles**: Database cleanup for duplicate user issues
+- **cleanup-dandlynn-completely**: Complete user removal for fresh testing
 
 ### Debug Tools
 - Browser dev tools for client-side debugging

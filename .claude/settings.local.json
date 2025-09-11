@@ -200,7 +200,8 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke debug-email-issues --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy send-daily-emails-fixed --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy test-resend-simple --project-ref dhlcycjnzwfnadmsptof)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy cleanup-duplicate-profiles --project-ref dhlcycjnzwfnadmsptof)"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy cleanup-duplicate-profiles --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy reset-dandlynn-email-date --project-ref dhlcycjnzwfnadmsptof)"
     ],
     "deny": [],
     "ask": [],
