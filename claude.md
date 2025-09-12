@@ -51,6 +51,73 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 - **Chat**: Crisp integration  
 - **AI**: OpenAI GPT-4 for motivation content generation
 
+## Authentication Architecture (CRITICAL - Updated September 2025)
+
+### Firebase Authentication System
+- **Migration**: Originally used Supabase auth, migrated to Firebase due to rate limiting (2 users/hour limit)
+- **Methods**: Email/password and Google OAuth via Firebase CDN
+- **Scalability**: No rate limits, handles unlimited user signups
+- **Session Management**: Firebase handles auth tokens and session state
+
+### Database Profile Sync (Firebase → Supabase)
+- **Profile Creation**: `create-user-profile` edge function syncs Firebase users to Supabase
+- **Primary Key**: Uses Firebase UID as profile.id (NOT email)
+- **Email Storage**: Stores email in separate field for lookups
+- **Trial Setup**: 30-day trial automatically configured on profile creation
+
+### HYBRID User ID Architecture (Resolved September 2025)
+```typescript
+// Profile Table Structure
+profiles: {
+  id: string,           // Firebase UID (e.g., "ABC123xyz")  
+  email: string,        // User email (e.g., "user@example.com")
+  trial_expires_at: timestamp
+}
+
+// Goals Table Structure (HYBRID - supports both formats)
+goals: {
+  id: string,
+  user_id: string,      // Can be EITHER:
+                        // - Firebase UID (e.g., "ABC123xyz") [NEW architecture]
+                        // - Email (e.g., "user@example.com") [OLD architecture]
+  title: string,
+  // ...
+}
+
+// Subscribers Table Structure  
+subscribers: {
+  user_id: string,      // Always email format
+  subscribed: boolean,
+  // ...
+}
+```
+
+### Hybrid Edge Function Architecture (RESOLVED)
+- **Frontend**: Sends email as user_id in requests (unchanged)
+- **Edge Functions**: Use HYBRID APPROACH - support both architectures
+- **Goal Retrieval**: Query by BOTH email AND Firebase UID, combine results
+- **Goal Operations**: Try email first, fallback to Firebase UID approach
+- **New Goal Creation**: Uses Firebase UID for consistency
+- **Email System**: Auto-detects goal format and handles subscription lookup accordingly
+
+### Hybrid Functions (September 2025)
+- **✅ fetch-user-goals**: Dual lookup (email + Firebase UID), combines all goals
+- **✅ check-in**: Tries email approach first, then Firebase UID if not found
+- **✅ create-goal**: Profile lookup → Firebase UID for new goals
+- **✅ send-daily-emails**: Detects goal format, handles subscription accordingly
+
+### Legacy RLS Issues (Bypassed)
+- **Original Design**: RLS policies expect Supabase auth.uid()
+- **Current Reality**: Firebase auth means auth.uid() returns NULL
+- **Solution**: All edge functions use service role keys to bypass RLS
+- **Frontend**: Cannot query database directly due to broken RLS
+
+### Auth Flow Summary
+1. **User Signs In**: Firebase handles authentication (email/Google)
+2. **Profile Sync**: `create-user-profile` creates Supabase profile with Firebase UID
+3. **Database Operations**: Edge functions look up profile by email, use Firebase UID
+4. **Session**: Firebase maintains session state, Supabase stores profile data
+
 ## Project Structure
 
 ```
@@ -287,13 +354,52 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 ## Troubleshooting
 
 ### Common Issues
-- **Auth Loops**: Check Supabase session handling
+- **Auth Loops**: Check Firebase session handling in `useAuth.tsx`
 - **Streak Logic**: Verify timezone calculations (3 AM EST reset)
 - **Email Delivery**: Confirm Resend integration and templates (not Render)
 - **Subscription Sync**: Check Stripe webhook configuration
 - **Loading State Flash**: Dashboard briefly shows "No Active Goals" - check `authLoading` coordination
 - **Motivation Content Missing**: RLS policies block frontend DB writes - use edge functions instead
 - **MicroPlan Type Errors**: Handle both string and array formats in components (GoalCard, GoalDetail)
+
+### Firebase Authentication Issues ✅ **RESOLVED WITH HYBRID ARCHITECTURE SEPTEMBER 2025**
+- **✅ FIXED: Create Goal Button Not Working**: Hybrid architecture supports both email and Firebase UID goals
+- **✅ FIXED: Check-In Button Not Working**: Hybrid check-in tries both approaches, works for all goal types
+- **✅ FIXED: Goals Not Loading**: Dual lookup combines goals from both architectures seamlessly
+- **✅ FIXED: Email System Compatibility**: Auto-detects goal format for subscription matching
+- **✅ ROOT CAUSE**: Incremental fixes created mixed architecture (some goals email-based, some Firebase UID-based)
+- **✅ SOLUTION**: Hybrid system maintains backward compatibility while supporting proper Firebase architecture
+
+### Hybrid Architecture Benefits (CRITICAL UNDERSTANDING)
+- **Backward Compatibility**: All existing email-based goals continue working
+- **Forward Compatibility**: New goals use proper Firebase UID architecture  
+- **No Data Loss**: Existing user data preserved during architectural transition
+- **Ecosystem Safety**: No functions broken, email system maintained
+- **Migration Path**: Gradual transition without breaking changes
+
+### Hybrid Function Patterns
+```typescript
+// Pattern 1: Goal Retrieval (fetch-user-goals)
+// Query BOTH architectures, combine results
+const emailGoals = await query.eq('user_id', email);
+const firebaseGoals = await query.eq('user_id', firebaseUID);
+return [...emailGoals, ...firebaseGoals];
+
+// Pattern 2: Goal Operations (check-in)  
+// Try email first, fallback to Firebase UID
+let goal = await findByEmail(goalId, email);
+if (!goal && firebaseUID) {
+  goal = await findByFirebaseUID(goalId, firebaseUID);
+}
+
+// Pattern 3: Email System (send-daily-emails)
+// Auto-detect goal format
+if (goal.user_id.includes('@')) {
+  // Email-based goal
+} else {
+  // Firebase UID-based goal, lookup email via profile
+}
+```
 
 ### Email System Issues ✅ **RESOLVED SEPTEMBER 11, 2025**
 - **✅ FIXED: Subscription Field Bug**: Updated `send-daily-emails` to use `subscribed = true` instead of `status = 'active'`

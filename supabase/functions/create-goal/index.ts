@@ -63,28 +63,67 @@ serve(async (req) => {
       throw new Error('Missing required fields: user_id, title, tone, time_of_day');
     }
 
-    // Check current goal count and subscription status
-    console.log('🔍 Checking existing goals for user:', user_id);
-    
-    const { data: existingGoals, error: goalsError } = await supabaseAdmin
-      .from('goals')
-      .select('id')
-      .eq('user_id', user_id)
-      .eq('is_active', true);
+    // HYBRID: Look up profile by email to get Firebase UID (proper architecture)
+    console.log('🔍 Looking up profile by email to get Firebase UID:', user_id);
+    const { data: userProfile, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('id, email')
+      .eq('email', user_id)
+      .maybeSingle();
 
-    if (goalsError) {
-      console.error('❌ Error checking existing goals:', goalsError);
+    if (profileError) {
+      console.error('❌ Error looking up user profile:', profileError);
+      throw new Error('Failed to find user profile');
+    }
+
+    if (!userProfile) {
+      console.error('❌ No profile found for email:', user_id);
+      throw new Error('User profile not found. Please sign in again to sync your profile.');
+    }
+
+    const actualUserId = userProfile.id; // Firebase UID
+    console.log('✅ Found profile - Email:', userProfile.email, 'Firebase UID:', actualUserId);
+
+    // HYBRID: Check existing goals using BOTH approaches to count properly
+    console.log('🔍 HYBRID: Checking existing goals using both email and Firebase UID approaches');
+    
+    const [goalsByEmail, goalsByUID] = await Promise.all([
+      // Check goals with email as user_id (OLD architecture)
+      supabaseAdmin
+        .from('goals')
+        .select('id')
+        .eq('user_id', user_id)
+        .eq('is_active', true),
+      // Check goals with Firebase UID as user_id (NEW architecture)  
+      supabaseAdmin
+        .from('goals')
+        .select('id')
+        .eq('user_id', actualUserId)
+        .eq('is_active', true)
+    ]);
+
+    if (goalsByEmail.error) {
+      console.error('❌ Error checking email-based goals:', goalsByEmail.error);
+      throw new Error('Failed to check existing goals');
+    }
+    
+    if (goalsByUID.error) {
+      console.error('❌ Error checking UID-based goals:', goalsByUID.error);
       throw new Error('Failed to check existing goals');
     }
 
-    const currentGoalCount = existingGoals?.length || 0;
-    console.log('📊 Current goal count for user:', currentGoalCount);
+    // Combine and deduplicate goals
+    const emailGoalIds = new Set(goalsByEmail.data?.map(g => g.id) || []);
+    const uidGoalIds = new Set(goalsByUID.data?.map(g => g.id) || []);
+    const allGoalIds = new Set([...emailGoalIds, ...uidGoalIds]);
+    const currentGoalCount = allGoalIds.size;
+    console.log('📊 Total goal count for user:', currentGoalCount);
 
-    // Check subscription status (handle case where no subscriber record exists)
+    // Check subscription status using email (subscribers table uses email as user_id)
     const { data: subscriber, error: subError } = await supabaseAdmin
       .from('subscribers')
       .select('subscribed')
-      .eq('user_id', user_id)
+      .eq('user_id', user_id) // Keep using email for subscribers table
       .maybeSingle(); // Use maybeSingle() to avoid errors when no record exists
 
     // Default to free user if no subscriber record found or error occurred
@@ -111,9 +150,9 @@ serve(async (req) => {
     console.log('✅ Goal limit check passed, proceeding with creation');
 
     // Insert the goal using service role (bypasses RLS)  
-    // Only specify required fields, let database handle defaults
+    // Use Firebase UID for proper architecture consistency
     const goalToInsert = {
-      user_id,
+      user_id: actualUserId, // Use Firebase UID for consistency with existing goals
       title,
       description: description || null,
       target_date: target_date ? target_date.split('T')[0] : null, // Ensure date format

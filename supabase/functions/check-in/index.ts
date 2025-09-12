@@ -80,13 +80,49 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Phase 5: Get current goal and user profile with subscription status
-    const { data: goal, error: fetchError } = await supabase
+    // HYBRID: Find goal using both email AND Firebase UID approaches
+    console.log('🔍 HYBRID: Looking for goal using both email and Firebase UID approaches');
+    
+    // First, try to get profile to find Firebase UID
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', userId)
+      .maybeSingle();
+
+    let goal = null;
+    let fetchError = null;
+    
+    // Try 1: Look for goal with email as user_id (OLD architecture)
+    const { data: goalByEmail, error: emailError } = await supabase
       .from('goals')
       .select('*')
       .eq('id', goalId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
+    
+    if (goalByEmail) {
+      goal = goalByEmail;
+      console.log('✅ Found goal using email approach');
+    } else if (userProfile?.id) {
+      // Try 2: Look for goal with Firebase UID as user_id (NEW architecture)
+      console.log('🔍 Trying Firebase UID approach:', userProfile.id);
+      const { data: goalByUID, error: uidError } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('id', goalId)
+        .eq('user_id', userProfile.id)
+        .maybeSingle();
+      
+      if (goalByUID) {
+        goal = goalByUID;
+        console.log('✅ Found goal using Firebase UID approach');
+      } else {
+        fetchError = uidError || emailError || new Error('Goal not found');
+      }
+    } else {
+      fetchError = emailError || new Error('Goal not found');
+    }
 
     if (fetchError) {
       return new Response(JSON.stringify({ error: fetchError.message }), {
@@ -95,17 +131,22 @@ serve(async (req) => {
       });
     }
 
-    // Get user profile and subscription status
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    // Get user profile and subscription status using hybrid approach
+    let profile = null;
+    if (userProfile) {
+      // We already have profile from the goal lookup above
+      const { data: fullProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userProfile.id)
+        .single();
+      profile = fullProfile;
+    }
 
     const { data: subscription } = await supabase
       .from('subscribers')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', userId) // Subscribers table uses email
       .single();
 
     const isSubscribed = subscription?.status === 'active';

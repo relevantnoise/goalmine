@@ -71,16 +71,31 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
     console.log(`[DAILY-EMAILS] Delivery time: ${DELIVERY_HOUR}:${String(DELIVERY_MINUTE).padStart(2, '0')} Eastern`);
 
-    // Get goals that need motivation today
+    // ATOMIC FIX: Get goals that need motivation today and immediately mark them as processed
     const { data: goals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
       .eq('is_active', true)
-      .or(`last_motivation_date.is.null,last_motivation_date.lt.${new Date().toISOString().split('T')[0]}`);
+      .or(`last_motivation_date.is.null,last_motivation_date.lt.${todayDate}`);
 
     if (goalsError) {
       console.error('[DAILY-EMAILS] Error fetching goals:', goalsError);
       throw goalsError;
+    }
+
+    // Immediately mark these goals as processed to prevent duplicates
+    if (goals && goals.length > 0) {
+      const goalIds = goals.map(g => g.id);
+      const { error: updateError } = await supabase
+        .from('goals')
+        .update({ last_motivation_date: todayDate })
+        .in('id', goalIds);
+      
+      if (updateError) {
+        console.error('[DAILY-EMAILS] Error marking goals as processed:', updateError);
+        throw updateError;
+      }
+      console.log(`[DAILY-EMAILS] Marked ${goalIds.length} goals as processed for ${todayDate}`);
     }
 
     console.log(`[DAILY-EMAILS] Found ${goals?.length || 0} goals to process`);
@@ -107,12 +122,37 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         // Check subscription status - FIXED: Use correct field names
-        const { data: subscriptionData } = await supabase
-          .from('subscribers')
-          .select('subscribed, subscription_tier, email')
-          .eq('user_id', goal.user_id)
-          .eq('subscribed', true)
-          .single();
+        // HYBRID: Handle both email-based and Firebase UID-based goals for subscription lookup
+        let subscriptionData = null;
+        
+        // First, check if goal.user_id looks like an email (OLD architecture)
+        if (goal.user_id.includes('@')) {
+          // Goal user_id is email, use directly
+          const { data } = await supabase
+            .from('subscribers')
+            .select('subscribed, subscription_tier, email')
+            .eq('user_id', goal.user_id)
+            .eq('subscribed', true)
+            .single();
+          subscriptionData = data;
+        } else {
+          // Goal user_id is Firebase UID (NEW architecture), need to find email via profile
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', goal.user_id)
+            .single();
+          
+          if (profileData?.email) {
+            const { data } = await supabase
+              .from('subscribers')
+              .select('subscribed, subscription_tier, email')
+              .eq('user_id', profileData.email)
+              .eq('subscribed', true)
+              .single();
+            subscriptionData = data;
+          }
+        }
         
         const isSubscribed = subscriptionData && subscriptionData.subscribed === true;
 
@@ -196,24 +236,6 @@ const handler = async (req: Request): Promise<Response> => {
         
         if (shouldSendEmail) {
           console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);
-          
-          // DUPLICATE PREVENTION: Check if this specific goal already got email today
-          if (goal.last_motivation_date === todayDate) {
-            console.log(`[DAILY-EMAILS] Goal "${goal.title}" already received email today - skipping`);
-            continue;
-          }
-          
-          // Update the goal's last motivation date BEFORE sending email
-          const { error: updateError } = await supabase
-            .from('goals')
-            .update({ last_motivation_date: todayDate })
-            .eq('id', goal.id);
-          
-          if (updateError) {
-            console.error(`[DAILY-EMAILS] Failed to update last_motivation_date for ${goal.title}:`, updateError);
-            errors++;
-            continue; // Skip this goal to prevent duplicate
-          }
           
           // Call the send-motivation-email function with pre-generated content
           const emailResponse = await supabase.functions.invoke('send-motivation-email', {

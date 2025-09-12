@@ -51,19 +51,20 @@
 
 ## 🚦 Current Status (September 11, 2025)
 
-- **Status**: ✅ DEPLOYED IN PRODUCTION - EMAIL SYSTEM FULLY RESOLVED
+- **Status**: ✅ DEPLOYED IN PRODUCTION - HYBRID ARCHITECTURE FULLY IMPLEMENTED
 - **Live URL**: https://goalmine.ai 🚀
-- **Latest**: Email system completely fixed - subscription logic, database conflicts, and Resend verification resolved
-- **Email System**: Vercel cron → Supabase functions → Resend delivery (FULLY FUNCTIONAL)
-- **Critical Fixes**: Subscription field bug fixed, duplicate profiles cleaned up, diagnostic tools added
-- **Resend Requirements**: Individual email verification or domain verification required for production
-- **Test Results**: danlynn@gmail.com getting emails properly, dandlynn@yahoo.com ready once verified
-- **Features**: 100% MVP + enterprise-grade business logic running live
-- **Subscription Limits**: Fully enforced with FIXED subscription detection in production
-- **Business Logic**: Trial expiration > Goal expiration > Normal operation
-- **UI**: Status badges, permission-based buttons, upgrade prompts (LIVE)
-- **Backend**: Full permission validation in all edge functions (DEPLOYED)
-- **Database**: All conflicts resolved, clean user data
+- **Latest**: Hybrid architecture implemented - supports both email-based and Firebase UID-based goals seamlessly
+- **Architecture**: Comprehensive hybrid system with backward/forward compatibility and auto-detection logic
+- **Critical Achievement**: No data loss, no ecosystem breaks, all functions coordinate together
+- **Backward Compatibility**: All existing email-based goals continue working without disruption
+- **Forward Compatibility**: New Firebase UID-based goals use proper architecture consistency
+- **Auto-Detection**: Functions intelligently detect goal format and adapt behavior accordingly
+- **Test Results**: dandlynn@yahoo.com Firebase UID goals + legacy email-based goals all working perfectly
+- **Features**: 100% MVP + enterprise-grade business logic + hybrid architecture running live
+- **Firebase Auth**: Unlimited user signups with no rate limits (migrated from Supabase auth 2 users/hour limit)
+- **Database Operations**: Hybrid functions support both email and Firebase UID formats seamlessly
+- **Profile Sync**: Firebase → Supabase profile creation working seamlessly
+- **User Experience**: End-to-end authentication and goal management flow working for all user types
 
 ---
 
@@ -89,22 +90,40 @@ git push origin main
 2. **Test thoroughly** - Use checklists in DEPLOYMENT_READY.md
 3. **Firebase Auth** - Uses CDN version, not npm package
 4. **Supabase Edge Functions** - Handle all database writes with permission validation
-5. **Daily Email System** - **FULLY AUTOMATED** via Vercel cron (7 AM EDT) → Supabase → **Resend** (onboarding@resend.dev)
-6. **Business Logic Priority** - Trial expiration > Goal expiration > Normal operation
-7. **Expired Goals/Trials** - Sophisticated 5-phase system implemented September 2025
-8. **Permission System** - Full-stack validation prevents API bypass attempts
+5. **Firebase Authentication** - **SCALABLE AUTH** with unlimited signups (migrated from Supabase auth rate limits)
+6. **User ID Architecture** - Firebase UID (database) vs email (frontend) - edge functions convert email → Firebase UID
+7. **Database Operations** - All edge functions use service role keys (RLS policies broken for Firebase auth)
+8. **Daily Email System** - **FULLY AUTOMATED** via Vercel cron (7 AM EDT) → Supabase → **Resend** (onboarding@resend.dev)
+9. **Business Logic Priority** - Trial expiration > Goal expiration > Normal operation
+10. **Permission System** - Full-stack validation prevents API bypass attempts
 
 ---
 
 ## 🆕 Latest Fixes (September 2025)
 
-### **Email System Completely Resolved (September 11, 2025)**
+### **Hybrid Architecture Fully Implemented (September 11, 2025)**
+- **Comprehensive Solution**: Hybrid functions support both email-based and Firebase UID-based goals
+- **Backward Compatibility**: All existing email-based goals continue working without any disruption
+- **Forward Compatibility**: New goals use Firebase UID for proper architecture consistency
+- **Auto-Detection Logic**: Functions intelligently detect goal format and adapt behavior accordingly
+- **Ecosystem Coordination**: All edge functions updated together to prevent cascade failures
+- **Critical Lesson**: Architectural changes require comprehensive planning to avoid downstream impacts
+- **No Data Loss**: dandlynn@yahoo.com's Firebase UID goal preserved during architectural transition
+- **Test Results**: Both legacy email-based goals AND new Firebase UID goals working perfectly
+- **Scalability**: Firebase auth provides unlimited user signups (no more 2 users/hour Supabase limit)
+
+**Key Hybrid Functions Implemented:**
+- `create-goal`: Converts email → Firebase UID, creates with proper user_id format
+- `fetch-user-goals`: Dual queries (email + Firebase UID), combines and deduplicates results  
+- `check-in`: Sequential lookup (email first, Firebase UID fallback) for goal access
+- `send-daily-emails`: Auto-detects format `if (goal.user_id.includes('@'))` for subscription matching
+- `update-goal/delete-goal`: Hybrid support with permission validation for both formats
+
+### **Previous Fix: Email System Completely Resolved (September 11, 2025)**
 - **Subscription Logic Fix**: Fixed field mismatch bug - `subscribed = true` vs `status = 'active'`
 - **Database Cleanup**: Removed duplicate user profiles causing subscription matching failures
 - **Resend Configuration**: Identified and documented verification requirements for production
 - **Diagnostic Tools**: Added comprehensive debugging functions for future troubleshooting
-- **Test Results**: danlynn@gmail.com emails working, dandlynn@yahoo.com ready once verified in Resend
-- **Architecture**: Vercel cron → Supabase (with fixed subscription logic) → Resend delivery
 
 ### **Expired Goals/Trials System - 5 Phases Complete (September 3, 2025)**
 - **Phase 1**: Data layer helper functions in `useGoals.tsx`

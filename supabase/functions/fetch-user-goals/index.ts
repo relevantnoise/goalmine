@@ -33,13 +33,64 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Fetch goals directly with service role
-    const { data, error } = await supabase
-      .from('goals')
-      .select('*')
-      .eq('user_id', user_id)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
+    // HYBRID: Fetch goals using both email AND Firebase UID to support both architectures
+    console.log('🔍 HYBRID: Looking for goals using both email and Firebase UID approaches');
+    
+    // First, try to get profile to find Firebase UID
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', user_id)
+      .maybeSingle();
+
+    let goalQueries = [];
+    
+    // Query 1: Look for goals with email as user_id (OLD architecture)
+    goalQueries.push(
+      supabase
+        .from('goals')
+        .select('*')
+        .eq('user_id', user_id)
+        .eq('is_active', true)
+    );
+    
+    // Query 2: If profile exists, also look for goals with Firebase UID as user_id (NEW architecture)
+    if (userProfile?.id) {
+      console.log('🔍 Also searching for goals with Firebase UID:', userProfile.id);
+      goalQueries.push(
+        supabase
+          .from('goals')
+          .select('*')
+          .eq('user_id', userProfile.id)
+          .eq('is_active', true)
+      );
+    }
+    
+    // Execute all queries in parallel
+    const results = await Promise.all(goalQueries);
+    
+    // Combine all goals from both queries, removing duplicates by ID
+    let allGoals = [];
+    const seenIds = new Set();
+    
+    for (const result of results) {
+      if (result.data) {
+        for (const goal of result.data) {
+          if (!seenIds.has(goal.id)) {
+            seenIds.add(goal.id);
+            allGoals.push(goal);
+          }
+        }
+      }
+    }
+    
+    // Sort by created_at descending
+    allGoals.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    
+    console.log(`✅ HYBRID: Found ${allGoals.length} total goals for user ${user_id}`);
+    
+    const data = allGoals;
+    const error = null;
 
     if (error) {
       console.error('❌ Database error:', error);
