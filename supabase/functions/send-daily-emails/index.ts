@@ -313,7 +313,12 @@ const handler = async (req: Request): Promise<Response> => {
         success: true, 
         emailsSent, 
         errors,
-        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`
+        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`,
+        debug: {
+          goalsProcessed: goals?.length || 0,
+          todayDate,
+          forceDelivery: !!forceDelivery
+        }
       }),
       {
         status: 200,
