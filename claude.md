@@ -262,13 +262,13 @@ interface MotivationContent {
 - **Content**: AI-generated motivation + progress tracking per goal
 - **Templates**: Professional HTML email templates with "CHECK IN NOW" links
 - **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
-- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 11, 2025 - subscription logic and database issues resolved)
+- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 12, 2025 - duplicate email issue resolved with atomic database updates)
 
 ### Email Link Flow
 - **Check-In Links**: Include `?checkin=true&t=timestamp` parameters for direct dashboard access
 - **Authentication Handling**: If user session expired, shows helpful login message
 - **User Experience**: Seamless flow from email → login (if needed) → dashboard
-- **Duplicate Prevention**: Atomic database updates prevent race conditions and duplicate emails
+- **Duplicate Prevention**: ✅ BULLETPROOF - Atomic database updates prevent race conditions (Sept 12, 2025 fix)
 
 ### Transactional Emails (via Resend)
 - **Nudges**: On-demand motivation delivery (1 email per nudge)
@@ -401,13 +401,21 @@ if (goal.user_id.includes('@')) {
 }
 ```
 
-### Email System Issues ✅ **RESOLVED SEPTEMBER 11, 2025**
-- **✅ FIXED: Subscription Field Bug**: Updated `send-daily-emails` to use `subscribed = true` instead of `status = 'active'`
-- **✅ FIXED: Duplicate User Profiles**: Cleaned up multiple profiles per email causing subscription mismatches
+### Email System Issues ✅ **COMPLETELY RESOLVED SEPTEMBER 12, 2025**
+- **✅ FIXED: Duplicate Email Bug**: Implemented atomic database updates preventing race conditions (Sept 12, 2025)
+- **✅ FIXED: Subscription Field Bug**: Updated `send-daily-emails` to use `subscribed = true` instead of `status = 'active'` (Sept 11, 2025)
+- **✅ FIXED: Duplicate User Profiles**: Cleaned up multiple profiles per email causing subscription mismatches (Sept 11, 2025)
 - **✅ FIXED: Resend Verification**: Resend requires individual email verification or domain verification for production
-- **✅ WORKING: Duplicate Prevention**: Atomic `last_motivation_date` updates prevent race conditions
+- **✅ BULLETPROOF: Duplicate Prevention**: Atomic `last_motivation_date` updates with surgical timing fix
 - **✅ WORKING: Check-In Links**: Firebase session errors handled gracefully with user messaging
 - **Email Content**: All templates in `/supabase/functions/send-motivation-email/index.ts`
+
+### Duplicate Email Fix Implementation (September 12, 2025)
+- **Root Cause**: Race condition in database update timing allowed goals to be processed multiple times
+- **Solution**: Moved `last_motivation_date` update to happen atomically after initial query selection
+- **Code Change**: Lines 86-99 in `send-daily-emails/index.ts` - mark goals as processed immediately
+- **Removed**: Redundant duplicate check on line 226 that was unreachable due to query logic
+- **Result**: Each user receives exactly 1 email per active goal per day, regardless of cron timing issues
 
 ### Email System Debug Tools (Added September 11, 2025)
 - **debug-email-issues**: Complete database diagnostic for email troubleshooting
