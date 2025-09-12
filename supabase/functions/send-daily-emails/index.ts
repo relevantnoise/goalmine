@@ -141,8 +141,8 @@ const handler = async (req: Request): Promise<Response> => {
           // Email-based goal without profile - use email directly
           profile = { email: goal.user_id, trial_expires_at: null };
         } else {
-          // Firebase UID-based goal without profile - skip with error
-          console.error(`[DAILY-EMAILS] No profile found for Firebase UID goal ${goal.title}: ${goal.user_id}`);
+          // Firebase UID-based goal without profile - this is the error we keep seeing
+          console.error(`[DAILY-EMAILS] No profile found for Firebase UID goal ${goal.title}: ${goal.user_id} (profileError: ${profileError})`);
           errors++;
           continue;
         }
