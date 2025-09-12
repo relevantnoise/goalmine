@@ -105,29 +105,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     for (const goal of goals || []) {
       try {
-        // HYBRID FIX: Get the user's profile for email address and trial status
-        let userProfile = null;
-        
-        if (goal.user_id.includes('@')) {
-          // Email-based goal - lookup by email
-          const { data } = await supabase
-            .from('profiles')
-            .select('email, trial_expires_at, created_at')
-            .eq('email', goal.user_id)
-            .single();
-          userProfile = data;
-        } else {
-          // Firebase UID-based goal - lookup by ID
-          const { data } = await supabase
-            .from('profiles')
-            .select('email, trial_expires_at, created_at')
-            .eq('id', goal.user_id)
-            .single();
-          userProfile = data;
-        }
+        // Get the user's profile for email address and trial status
+        const { data: userProfile, error: profileError } = await supabase
+          .from('profiles')
+          .select('email, trial_expires_at, created_at')
+          .eq('email', goal.user_id)
+          .single();
 
         // Fallback if profile lookup fails - create minimal profile
-        const profile = userProfile || { email: goal.user_id.includes('@') ? goal.user_id : null, trial_expires_at: null };
+        const profile = userProfile || { email: goal.user_id, trial_expires_at: null };
           
         if (!profile.email || !profile.email.includes('@')) {
           console.error(`[DAILY-EMAILS] Invalid email for goal ${goal.title}: ${goal.user_id}`);
