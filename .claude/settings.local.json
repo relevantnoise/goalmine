@@ -208,7 +208,8 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke debug-dandlynn --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions logs send-daily-emails --project-ref dhlcycjnzwfnadmsptof --tail=50)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions logs send-daily-emails --tail=50)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke debug-duplicate-emails --method POST --body '{\"\"userId\"\": \"\"danlynn@gmail.com\"\"}')"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke debug-duplicate-emails --method POST --body '{\"\"userId\"\": \"\"danlynn@gmail.com\"\"}')",
+      "Bash(git revert:*)"
     ],
     "deny": [],
     "ask": [],

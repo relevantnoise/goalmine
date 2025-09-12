@@ -105,18 +105,52 @@ const handler = async (req: Request): Promise<Response> => {
 
     for (const goal of goals || []) {
       try {
-        // Get the user's profile for email address and trial status
-        const { data: userProfile, error: profileError } = await supabase
-          .from('profiles')
-          .select('email, trial_expires_at, created_at')
-          .eq('email', goal.user_id)
-          .single();
+        console.log(`[DAILY-EMAILS] Processing goal: "${goal.title}" (user_id: ${goal.user_id})`);
+        
+        // HYBRID FIX: Handle both email-based and Firebase UID-based goals
+        let userProfile = null;
+        let profileError = null;
+        
+        if (goal.user_id.includes('@')) {
+          console.log(`[DAILY-EMAILS] Email-based goal - looking up profile by email: ${goal.user_id}`);
+          const result = await supabase
+            .from('profiles')
+            .select('email, trial_expires_at, created_at')
+            .eq('email', goal.user_id)
+            .single();
+          userProfile = result.data;
+          profileError = result.error;
+        } else {
+          console.log(`[DAILY-EMAILS] Firebase UID-based goal - looking up profile by ID: ${goal.user_id}`);
+          const result = await supabase
+            .from('profiles')
+            .select('email, trial_expires_at, created_at')
+            .eq('id', goal.user_id)
+            .single();
+          userProfile = result.data;
+          profileError = result.error;
+        }
 
-        // Fallback if profile lookup fails - create minimal profile
-        const profile = userProfile || { email: goal.user_id, trial_expires_at: null };
+        console.log(`[DAILY-EMAILS] Profile lookup result:`, { userProfile, profileError });
+
+        // Better fallback handling
+        let profile;
+        if (userProfile) {
+          profile = userProfile;
+        } else if (goal.user_id.includes('@')) {
+          // Email-based goal without profile - use email directly
+          profile = { email: goal.user_id, trial_expires_at: null };
+        } else {
+          // Firebase UID-based goal without profile - skip with error
+          console.error(`[DAILY-EMAILS] No profile found for Firebase UID goal ${goal.title}: ${goal.user_id}`);
+          errors++;
+          continue;
+        }
+        
+        console.log(`[DAILY-EMAILS] Final profile:`, profile);
           
         if (!profile.email || !profile.email.includes('@')) {
-          console.error(`[DAILY-EMAILS] Invalid email for goal ${goal.title}: ${goal.user_id}`);
+          console.error(`[DAILY-EMAILS] Invalid email for goal ${goal.title}: ${goal.user_id} -> ${profile.email}`);
           errors++;
           continue;
         }
