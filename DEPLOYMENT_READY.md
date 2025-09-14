@@ -189,8 +189,15 @@ git push origin main
    - [ ] **FORWARD COMPATIBLE**: New Firebase UID-based goals use proper architecture
    - [ ] **ARCHITECTURE**: Firebase auth provides unlimited scalability (no rate limits)
 
-5. **Email System** ✅ **COMPLETELY RESOLVED AS OF SEPT 12, 2025**
-   - [ ] Daily motivation emails sending automatically at 7 AM EDT (1 per goal, duplicate issue fixed)
+5. **Perfect Email System** ✅ **BULLETPROOF AS OF SEPT 14, 2025**
+   - [ ] **ENVIRONMENT SEPARATION**: Only production (`goalmine.ai`) sends emails, dev environment blocked
+   - [ ] **FREE TRIAL EMAILS**: Free trial users receive emails during valid 30-day trial period
+   - [ ] Daily motivation emails sending automatically at 7 AM EDT (hybrid profile lookup implemented)
+   - [ ] **HYBRID SUPPORT**: Email-based goals (danlynn@gmail.com) get emails via email lookup
+   - [ ] **HYBRID SUPPORT**: Firebase UID goals (dandlynn@yahoo.com) get emails via ID lookup  
+   - [ ] **AUTO-DETECTION**: System automatically detects goal type and uses correct lookup method
+   - [ ] **NO DUPLICATES**: Users receive exactly 1 email per goal (not 2 from dev+prod environments)
+   - [ ] **ALL USER TYPES**: Free trial, paid subscribers, email goals, Firebase UID goals all work
    - [ ] Nudge emails arrive (individual delivery via Resend)
    - [ ] Email verification works (via Firebase)
    - [ ] Password reset emails work (via Firebase)
@@ -198,11 +205,12 @@ git push origin main
    - [ ] Check-in links work from emails (`?checkin=true` parameter)
    - [ ] Users see helpful message if Firebase session expired from email links
    - [ ] **BULLETPROOF**: Each user gets exactly 1 email per goal per day (atomic database updates)
-   - [ ] **FIXED**: Subscription logic correctly identifies paid users (subscribed = true)
-   - [ ] **FIXED**: No duplicate user profiles causing subscription matching failures
+   - [ ] **COMPREHENSIVE**: All user types receive emails regardless of account creation method
+   - [ ] **FIXED**: Subscription logic includes free trial users during valid trial
+   - [ ] **FIXED**: Environment detection prevents dev environment from sending emails
    - [ ] **CRITICAL**: Verify users in Resend (either individual verification or domain verification)
    - [ ] **WORKING**: Verify Vercel cron job runs at 7 AM EDT (check logs at https://vercel.com/dashboard)
-   - [ ] **WORKING**: Email diagnostic tools (debug-email-issues, test-resend-simple)
+   - [ ] **ENHANCED**: Comprehensive logging for email delivery troubleshooting
 
 ---
 
