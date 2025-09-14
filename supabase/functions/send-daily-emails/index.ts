@@ -155,18 +155,17 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
 
-        // Check subscription status - FIXED: Use correct field names
+        // Check subscription status - INCLUDE FREE TRIAL USERS
         // HYBRID: Handle both email-based and Firebase UID-based goals for subscription lookup
         let subscriptionData = null;
         
         // First, check if goal.user_id looks like an email (OLD architecture)
         if (goal.user_id.includes('@')) {
-          // Goal user_id is email, use directly
+          // Goal user_id is email, use directly - CHECK ALL SUBSCRIPTION RECORDS, NOT JUST ACTIVE ONES
           const { data } = await supabase
             .from('subscribers')
             .select('subscribed, subscription_tier, email')
             .eq('user_id', goal.user_id)
-            .eq('subscribed', true)
             .single();
           subscriptionData = data;
         } else {
@@ -182,12 +181,13 @@ const handler = async (req: Request): Promise<Response> => {
               .from('subscribers')
               .select('subscribed, subscription_tier, email')
               .eq('user_id', profileData.email)
-              .eq('subscribed', true)
               .single();
             subscriptionData = data;
           }
         }
         
+        // User is "subscribed" if they have an active paid subscription
+        // Free trial users (no subscription record) are handled by trial expiration logic below
         const isSubscribed = subscriptionData && subscriptionData.subscribed === true;
 
         // Phase 2: Check if we should skip this email
