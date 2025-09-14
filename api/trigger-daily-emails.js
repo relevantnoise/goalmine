@@ -4,6 +4,25 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // CRITICAL FIX: Only allow production environment to send emails
+  // Development environment URLs contain 'steady-aim-coach'
+  // Production environment uses 'goalmine.ai'
+  const host = req.headers.host || '';
+  const isDevelopment = host.includes('steady-aim-coach') || host.includes('vercel.app');
+  
+  if (isDevelopment) {
+    console.log(`[VERCEL-CRON] SKIPPED - Development environment detected (${host})`);
+    return res.status(200).json({ 
+      success: true,
+      message: 'Skipped: Development environment does not send emails',
+      environment: 'development',
+      host: host,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  console.log(`[VERCEL-CRON] PRODUCTION environment confirmed (${host}) - proceeding with email send`);
+
   // Optional: Add a secret to prevent unauthorized calls
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret && req.headers['authorization'] !== `Bearer ${cronSecret}`) {
