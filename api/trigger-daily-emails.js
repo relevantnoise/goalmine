@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   // Development environment URLs contain 'steady-aim-coach'
   // Production environment uses 'goalmine.ai'
   const host = req.headers.host || '';
-  const isDevelopment = host.includes('steady-aim-coach') || host.includes('vercel.app');
+  const isDevelopment = host.includes('steady-aim-coach');
   
   if (isDevelopment) {
     console.log(`[VERCEL-CRON] SKIPPED - Development environment detected (${host})`);
