@@ -149,12 +149,20 @@ const Index = () => {
     
     // Handle check-in request from email links
     if (checkinRequest) {
-      console.log('📧 Check-in request from email link', { checkinUser, checkinGoal, currentUser: user?.email });
+      console.log('📧 Check-in request from email link', { 
+        checkinUser, 
+        checkinGoal, 
+        currentUser: user?.email,
+        firebaseEmail: firebaseUser?.email 
+      });
       
       if (user && !authLoading && !goalsLoading) {
         // Check if the logged-in user matches the user from the email link
-        if (checkinUser && user.email !== checkinUser) {
-          console.log('⚠️ User mismatch! Email link for:', checkinUser, 'but logged in as:', user.email);
+        // Use Firebase user email as the authoritative source since that's what emails are sent to
+        const userEmail = firebaseUser?.email || user?.email;
+        if (checkinUser && userEmail !== checkinUser) {
+          console.log('⚠️ User mismatch! Email link for:', checkinUser, 'but logged in as:', userEmail);
+          console.log('📧 Profile email:', user.email, 'Firebase email:', firebaseUser?.email);
           // Store the intended check-in info and redirect to auth
           sessionStorage.setItem('checkinUser', checkinUser);
           if (checkinGoal) sessionStorage.setItem('checkinGoal', checkinGoal);
@@ -174,6 +182,7 @@ const Index = () => {
       } else if (!user && !authLoading) {
         // Unauthenticated user clicking check-in link - go to auth page
         console.log('🔐 Unauthenticated check-in request - redirecting to auth');
+        console.log('📧 Check-in link for:', checkinUser, 'Goal:', checkinGoal);
         // Store the check-in info for after authentication
         if (checkinUser) sessionStorage.setItem('checkinUser', checkinUser);
         if (checkinGoal) sessionStorage.setItem('checkinGoal', checkinGoal);
