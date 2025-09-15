@@ -401,27 +401,53 @@ if (goal.user_id.includes('@')) {
 }
 ```
 
-### Email System Issues ✅ **COMPLETELY RESOLVED SEPTEMBER 12, 2025**
+### Email System Issues ✅ **COMPLETELY RESOLVED SEPTEMBER 14, 2025**
+- **✅ FIXED: Dual Environment Duplicate Emails**: Environment detection prevents dev environment from sending emails (Sept 14, 2025)
+- **✅ FIXED: Free Trial Users Not Receiving Emails**: Subscription logic now includes free trial users during valid trial period (Sept 14, 2025)
+- **✅ FIXED: Hybrid Profile Lookup Bug**: Implemented dual lookup strategy for email and Firebase UID goals (Sept 12, 2025)
 - **✅ FIXED: Duplicate Email Bug**: Implemented atomic database updates preventing race conditions (Sept 12, 2025)
 - **✅ FIXED: Subscription Field Bug**: Updated `send-daily-emails` to use `subscribed = true` instead of `status = 'active'` (Sept 11, 2025)
 - **✅ FIXED: Duplicate User Profiles**: Cleaned up multiple profiles per email causing subscription mismatches (Sept 11, 2025)
 - **✅ FIXED: Resend Verification**: Resend requires individual email verification or domain verification for production
-- **✅ BULLETPROOF: Duplicate Prevention**: Atomic `last_motivation_date` updates with surgical timing fix
+- **✅ BULLETPROOF: Email Delivery**: All users receive emails regardless of goal creation method and subscription status
 - **✅ WORKING: Check-In Links**: Firebase session errors handled gracefully with user messaging
 - **Email Content**: All templates in `/supabase/functions/send-motivation-email/index.ts`
+
+### Hybrid Profile Lookup Implementation (September 12, 2025)
+- **Root Cause**: Profile lookup in `send-daily-emails` only handled email-based goals, failed for Firebase UID-based goals
+- **Solution**: Implemented hybrid profile lookup with auto-detection and dual query strategy
+- **Code Changes**: Lines 110-160 in `send-daily-emails/index.ts` - comprehensive hybrid support
+- **Email-based goals**: `WHERE profiles.email = goal.user_id` (e.g., danlynn@gmail.com)
+- **Firebase UID goals**: `WHERE profiles.id = goal.user_id` (e.g., dandlynn@yahoo.com's Firebase UID)
+- **Auto-detection**: `goal.user_id.includes('@')` determines which lookup method to use
+- **Result**: All users receive daily emails regardless of account creation architecture
 
 ### Duplicate Email Fix Implementation (September 12, 2025)
 - **Root Cause**: Race condition in database update timing allowed goals to be processed multiple times
 - **Solution**: Moved `last_motivation_date` update to happen atomically after initial query selection
 - **Code Change**: Lines 86-99 in `send-daily-emails/index.ts` - mark goals as processed immediately
-- **Removed**: Redundant duplicate check on line 226 that was unreachable due to query logic
 - **Result**: Each user receives exactly 1 email per active goal per day, regardless of cron timing issues
+
+### Dual Environment Fix Implementation (September 14, 2025)
+- **Root Cause**: Both development (`steady-aim-coach-*.vercel.app`) and production (`goalmine.ai`) environments running same cron job
+- **Issue**: Users receiving 2 emails per goal - one from dev, one from production
+- **Solution**: Environment detection in `/api/trigger-daily-emails.js` - dev environment skips email sending
+- **Implementation**: `req.headers.host` detection blocks URLs containing `steady-aim-coach` or `vercel.app`
+- **Result**: Only production environment sends emails, eliminates all duplicate emails
+
+### Free Trial Email Fix Implementation (September 14, 2025)
+- **Root Cause**: Subscription lookup filtered with `.eq('subscribed', true)` excluding all free trial users
+- **Issue**: Free trial users received zero emails during valid 30-day trial period
+- **Solution**: Removed subscription filter, rely on trial expiration logic for proper filtering
+- **Implementation**: Lines 164-186 in `send-daily-emails/index.ts` - check all subscription records, not just active
+- **Result**: Free trial users receive emails during trial, expired trials properly blocked
 
 ### Email System Debug Tools (Added September 11, 2025)
 - **debug-email-issues**: Complete database diagnostic for email troubleshooting
 - **test-resend-simple**: Direct Resend API testing and verification status checking  
 - **cleanup-duplicate-profiles**: Database cleanup for duplicate user issues
 - **cleanup-dandlynn-completely**: Complete user removal for fresh testing
+- **debug-duplicate-emails**: Comprehensive duplicate email analysis tool
 
 ### Debug Tools
 - Browser dev tools for client-side debugging

@@ -170,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
 
           <div style="text-align: center; margin-bottom: 20px;">
-            <a href="${redirectUrl || 'https://goalmine.ai'}/?checkin=true&t=${Date.now()}" 
+            <a href="${redirectUrl || 'https://goalmine.ai'}/?checkin=true&user=${encodeURIComponent(email)}&goal=${encodeURIComponent(goalId || '')}&t=${Date.now()}" 
                style="background: #ff6b35; color: white; padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
               ⚡ QUICK CHECK-IN
             </a>
@@ -228,7 +228,7 @@ const handler = async (req: Request): Promise<Response> => {
                 Don't break your momentum! Check in today to keep your streak alive and growing.
               </p>
             </div>
-            <a href="${redirectUrl || 'https://goalmine.ai'}/?checkin=true&t=${Date.now()}" 
+            <a href="${redirectUrl || 'https://goalmine.ai'}/?checkin=true&user=${encodeURIComponent(email)}&goal=${encodeURIComponent(goalId || '')}&t=${Date.now()}" 
                style="background: #dc2626; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);">
               ✅ CHECK IN NOW - Update Your Streak!
             </a>

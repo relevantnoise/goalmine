@@ -75,6 +75,8 @@ const Index = () => {
     const forceDashboard = searchParams.get('force-dashboard') === 'true' || location.pathname === '/dashboard';
     const forceOnboarding = searchParams.get('force-onboarding') === 'true';
     const checkinRequest = searchParams.get('checkin') === 'true';
+    const checkinUser = searchParams.get('user'); // Email from check-in link
+    const checkinGoal = searchParams.get('goal'); // Goal ID from check-in link
     const forceHome = searchParams.get('home') === 'true';
     // DEBUG: Log all URL parameters
     console.log('🔍 URL Search Parameters:', {
@@ -147,8 +149,21 @@ const Index = () => {
     
     // Handle check-in request from email links
     if (checkinRequest) {
-      console.log('📧 Check-in request from email link');
+      console.log('📧 Check-in request from email link', { checkinUser, checkinGoal, currentUser: user?.email });
+      
       if (user && !authLoading && !goalsLoading) {
+        // Check if the logged-in user matches the user from the email link
+        if (checkinUser && user.email !== checkinUser) {
+          console.log('⚠️ User mismatch! Email link for:', checkinUser, 'but logged in as:', user.email);
+          // Store the intended check-in info and redirect to auth
+          sessionStorage.setItem('checkinUser', checkinUser);
+          if (checkinGoal) sessionStorage.setItem('checkinGoal', checkinGoal);
+          const mismatchMessage = `This check-in link is for ${checkinUser}. Please log in with the correct account.`;
+          sessionStorage.setItem('checkinMessage', mismatchMessage);
+          navigate('/auth', { replace: true });
+          return;
+        }
+        
         // Authenticated user clicking check-in link - ALWAYS go to dashboard
         // Even if they have 0 active goals (due to limit enforcement), they should see their dashboard
         console.log('✅ Authenticated user check-in - forcing dashboard view (bypass goal count check)');
@@ -159,8 +174,12 @@ const Index = () => {
       } else if (!user && !authLoading) {
         // Unauthenticated user clicking check-in link - go to auth page
         console.log('🔐 Unauthenticated check-in request - redirecting to auth');
-        // Add helpful context for user about why they need to log in
-        const checkinMessage = "Please log in to complete your check-in from the email link.";
+        // Store the check-in info for after authentication
+        if (checkinUser) sessionStorage.setItem('checkinUser', checkinUser);
+        if (checkinGoal) sessionStorage.setItem('checkinGoal', checkinGoal);
+        const checkinMessage = checkinUser 
+          ? `Please log in as ${checkinUser} to complete your check-in from the email link.`
+          : "Please log in to complete your check-in from the email link.";
         sessionStorage.setItem('checkinMessage', checkinMessage);
         navigate('/auth', { replace: true });
         return;
