@@ -443,13 +443,14 @@ if (goal.user_id.includes('@')) {
 - **Implementation**: Lines 164-186 in `send-daily-emails/index.ts` - check all subscription records, not just active
 - **Result**: Free trial users receive emails during trial, expired trials properly blocked
 
-### Email Check-In Cross-Contamination Fix (September 15, 2025)
-- **Root Cause**: Check-in links in emails were generic (`?checkin=true`) without user identification
-- **Issue**: Clicking any email link would check in whoever was currently logged in, causing wrong user check-ins
-- **Solution**: Added user email and goal ID to all check-in links in emails
-- **Implementation**: Links now include `?checkin=true&user=email&goal=goalId&t=timestamp` parameters
-- **Frontend Fix**: Index.tsx validates logged-in user matches email link user, redirects to auth if mismatch
-- **Result**: Each email link belongs to specific user, eliminates cross-contamination completely
+### Email Check-In Cross-Contamination Fix (FINAL - September 15, 2025)
+- **Initial Issue**: Check-in links in emails were generic (`?checkin=true`) without user identification
+- **Initial Fix**: Added user email and goal ID to all check-in links (`?checkin=true&user=email&goal=goalId&t=timestamp`)
+- **Final Security Issue**: User validation used Supabase profile email vs Firebase email, causing mismatches
+- **Root Cause**: Hybrid architecture where `user.email` (profile) ≠ `firebaseUser.email` in some cases
+- **Final Solution**: Updated Index.tsx lines 162-163 to use `firebaseUser?.email || user?.email` for validation
+- **Session Security**: Users on same device must log out/in to access different user's email links (intended behavior)
+- **Result**: BULLETPROOF user validation - email links only work for intended recipient using Firebase email as authority
 
 ### Custom Domain Email Delivery Fix (September 15, 2025)
 - **Root Cause**: Resend sandbox mode only allows emails to verified account owner (danlynn@gmail.com)

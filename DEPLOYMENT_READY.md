@@ -204,7 +204,8 @@ git push origin main
    - [ ] Email templates render correctly with goal-specific content
    - [ ] Check-in links work from emails with user-specific parameters (`?checkin=true&user=email&goal=goalId`)
    - [ ] Users see helpful message if Firebase session expired from email links
-   - [ ] **SECURITY**: Check-in links validate correct user, prevent cross-contamination
+   - [ ] **SECURITY**: Check-in links validate correct user using Firebase email, prevent cross-contamination
+   - [ ] **SESSION SECURITY**: Wrong user on same device redirected to auth page (test with different email accounts)
    - [ ] **CUSTOM DOMAIN**: Emails sent from noreply@notifications.goalmine.ai (not resend.dev)
    - [ ] **BULLETPROOF**: Each user gets exactly 1 email per goal per day (atomic database updates)
    - [ ] **COMPREHENSIVE**: All user types receive emails regardless of account creation method
@@ -214,6 +215,19 @@ git push origin main
    - [ ] **VERIFIED**: Custom domain notifications.goalmine.ai verified in Resend
    - [ ] **WORKING**: Verify Vercel cron job runs at 7 AM EDT (check logs at https://vercel.com/dashboard)
    - [ ] **ENHANCED**: Comprehensive logging for email delivery troubleshooting
+
+### Security Testing (Cross-Contamination Prevention)
+1. **Email Link Security Test**
+   - [ ] **Setup**: Have two user accounts (e.g., user1@gmail.com, user2@yahoo.com)
+   - [ ] **Test 1**: Log in as User 1, click User 2's email link → Should redirect to auth
+   - [ ] **Test 2**: Log out completely, click User 2's email link → Should go to User 2's dashboard
+   - [ ] **Test 3**: Different browsers/devices → Each user goes to correct dashboard directly
+   - [ ] **Expected**: Email links only work for intended recipient (no cross-contamination)
+
+2. **Session Persistence Security**
+   - [ ] **Same Device/Browser**: Wrong user logged in → Redirected to auth (secure)
+   - [ ] **Same Device/Browser**: Correct user logged in → Direct to dashboard (convenient)
+   - [ ] **Different Devices**: Each user goes directly to their dashboard (seamless)
 
 ---
 
