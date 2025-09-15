@@ -202,13 +202,16 @@ git push origin main
    - [ ] Email verification works (via Firebase)
    - [ ] Password reset emails work (via Firebase)
    - [ ] Email templates render correctly with goal-specific content
-   - [ ] Check-in links work from emails (`?checkin=true` parameter)
+   - [ ] Check-in links work from emails with user-specific parameters (`?checkin=true&user=email&goal=goalId`)
    - [ ] Users see helpful message if Firebase session expired from email links
+   - [ ] **SECURITY**: Check-in links validate correct user, prevent cross-contamination
+   - [ ] **CUSTOM DOMAIN**: Emails sent from noreply@notifications.goalmine.ai (not resend.dev)
    - [ ] **BULLETPROOF**: Each user gets exactly 1 email per goal per day (atomic database updates)
    - [ ] **COMPREHENSIVE**: All user types receive emails regardless of account creation method
+   - [ ] **UNIVERSAL**: Gmail, Yahoo, Outlook, custom domains all supported via verified custom domain
    - [ ] **FIXED**: Subscription logic includes free trial users during valid trial
    - [ ] **FIXED**: Environment detection prevents dev environment from sending emails
-   - [ ] **CRITICAL**: Verify users in Resend (either individual verification or domain verification)
+   - [ ] **VERIFIED**: Custom domain notifications.goalmine.ai verified in Resend
    - [ ] **WORKING**: Verify Vercel cron job runs at 7 AM EDT (check logs at https://vercel.com/dashboard)
    - [ ] **ENHANCED**: Comprehensive logging for email delivery troubleshooting
 

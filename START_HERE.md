@@ -35,7 +35,7 @@
 ## 🔑 Quick Context for AI Assistants
 
 **Tell your AI assistant:**
-"Please read STATUS.md first, then CLAUDE.md and DEPLOYMENT_READY.md before we start working on the GoalMine.ai app. The app is running live at https://goalmine.ai with daily emails working via Resend (using onboarding@resend.dev). Email system was fixed on September 8, 2025."
+"Please read STATUS.md first, then CLAUDE.md and DEPLOYMENT_READY.md before we start working on the GoalMine.ai app. The app is running live at https://goalmine.ai with bulletproof daily emails via custom domain noreply@notifications.goalmine.ai. Email system was perfected on September 15, 2025 with custom domain verification."
 
 ---
 
@@ -49,18 +49,20 @@
 
 ---
 
-## 🚦 Current Status (September 14, 2025)
+## 🚦 Current Status (September 15, 2025)
 
-- **Status**: ✅ PRODUCTION READY - EMAIL SYSTEM BULLETPROOF & ENVIRONMENT SEPARATED
+- **Status**: ✅ PRODUCTION READY - EMAIL SYSTEM PERFECTED WITH CUSTOM DOMAIN
 - **Live URL**: https://goalmine.ai 🚀
-- **Latest**: DUAL CRITICAL FIXES - Environment separation prevents duplicates + Free trial users now receive emails
-- **Duplicate Email Fix**: Development environment blocked from sending emails via environment detection
-- **Free Trial Fix**: Subscription logic corrected to include free trial users during valid trial period
+- **Latest**: EMAIL SYSTEM PERFECTED - Custom domain verified + Cross-contamination eliminated + Universal email delivery
+- **Custom Domain Fix**: Verified notifications.goalmine.ai domain enables ALL users to receive emails (not just account owner)
+- **Cross-Contamination Fix**: User-specific check-in links prevent wrong user being checked in from email clicks
+- **Universal Delivery**: Gmail, Yahoo, Outlook, custom domains all supported via verified custom domain  
+- **Security Enhancement**: Check-in links include user validation, redirect to auth if user mismatch
+- **Professional Sender**: noreply@notifications.goalmine.ai (not generic resend.dev domain)
 - **Environment Separation**: Only production (`goalmine.ai`) sends emails, dev environment completely blocked
-- **Perfect Email Matrix**: Free trial (active), free trial (expired), paid subscribers, all goal types work correctly
+- **Perfect Email Matrix**: Free trial (active), free trial (expired), paid subscribers, all goal types, all email domains work
 - **Email Architecture**: Dual lookup strategy supports both email-based and Firebase UID-based goals
 - **Auto-Detection**: `goal.user_id.includes('@')` determines correct profile lookup method
-- **Environment Detection**: `req.headers.host` determines dev vs production environment for email sending
 - **Bulletproof System**: Users receive exactly 1 email per goal per day from production environment only
 - **All User Types Supported**: Free trial users, paid subscribers, email-based goals, Firebase UID goals
 - **Features**: 100% MVP + enterprise-grade business logic + hybrid architecture + perfect email system

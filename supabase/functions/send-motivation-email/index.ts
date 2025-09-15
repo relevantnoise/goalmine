@@ -249,7 +249,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Use retry logic for email sending
     const emailResponse = await sendEmailWithRetry(
       {
-        from: "GoalMine.ai <onboarding@resend.dev>",
+        from: "GoalMine.ai <noreply@notifications.goalmine.ai>",
         to: [email],
         subject: emailSubject,
         html: emailHTML,

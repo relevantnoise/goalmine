@@ -261,20 +261,21 @@ interface MotivationContent {
 - **Automation**: Vercel cron job triggers at 11:00 UTC (7:00 AM EDT) daily
 - **Content**: AI-generated motivation + progress tracking per goal
 - **Templates**: Professional HTML email templates with "CHECK IN NOW" links
-- **Delivery**: Resend email service using onboarding@resend.dev (bypasses DNS verification)
-- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 12, 2025 - duplicate email issue resolved with atomic database updates)
+- **Delivery**: Resend email service using custom domain noreply@notifications.goalmine.ai
+- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 15, 2025 - custom domain verified, all users receive emails)
 
 ### Email Link Flow
-- **Check-In Links**: Include `?checkin=true&t=timestamp` parameters for direct dashboard access
-- **Authentication Handling**: If user session expired, shows helpful login message
-- **User Experience**: Seamless flow from email → login (if needed) → dashboard
-- **Duplicate Prevention**: ✅ BULLETPROOF - Atomic database updates prevent race conditions (Sept 12, 2025 fix)
+- **Check-In Links**: Include `?checkin=true&user=email&goal=goalId&t=timestamp` parameters for user-specific access
+- **User Validation**: Links validate the correct user is logged in, prevent cross-contamination
+- **Authentication Handling**: If user session expired, shows helpful login message with context
+- **User Experience**: Seamless flow from email → login (if needed) → correct user's dashboard
+- **Security**: ✅ BULLETPROOF - User-specific links prevent cross-user access (Sept 15, 2025 fix)
 
 ### Transactional Emails (via Resend)
 - **Nudges**: On-demand motivation delivery (1 email per nudge)
 - **Daily Motivation**: Individual goal-specific motivation (1 email per goal)
-- **From Address**: GoalMine.ai <onboarding@resend.dev>
-- **System**: Resend handles all application emails (using default domain to avoid DNS issues)
+- **From Address**: GoalMine.ai <noreply@notifications.goalmine.ai>
+- **System**: Resend handles all application emails using verified custom domain
 
 ### Authentication Emails (via Firebase)
 - **Email Verification**: Account verification links
@@ -441,6 +442,22 @@ if (goal.user_id.includes('@')) {
 - **Solution**: Removed subscription filter, rely on trial expiration logic for proper filtering
 - **Implementation**: Lines 164-186 in `send-daily-emails/index.ts` - check all subscription records, not just active
 - **Result**: Free trial users receive emails during trial, expired trials properly blocked
+
+### Email Check-In Cross-Contamination Fix (September 15, 2025)
+- **Root Cause**: Check-in links in emails were generic (`?checkin=true`) without user identification
+- **Issue**: Clicking any email link would check in whoever was currently logged in, causing wrong user check-ins
+- **Solution**: Added user email and goal ID to all check-in links in emails
+- **Implementation**: Links now include `?checkin=true&user=email&goal=goalId&t=timestamp` parameters
+- **Frontend Fix**: Index.tsx validates logged-in user matches email link user, redirects to auth if mismatch
+- **Result**: Each email link belongs to specific user, eliminates cross-contamination completely
+
+### Custom Domain Email Delivery Fix (September 15, 2025)
+- **Root Cause**: Resend sandbox mode only allows emails to verified account owner (danlynn@gmail.com)
+- **Issue**: Free trial users like dandlynn@yahoo.com couldn't receive emails due to Resend restrictions
+- **Solution**: Verified custom domain notifications.goalmine.ai with proper DNS records in Vercel
+- **DNS Records**: MX, TXT/SPF, and DKIM records configured for notifications.goalmine.ai subdomain
+- **Implementation**: Updated send-motivation-email function to use noreply@notifications.goalmine.ai
+- **Result**: ALL users (paid and free trial) now receive emails regardless of email domain
 
 ### Email System Debug Tools (Added September 11, 2025)
 - **debug-email-issues**: Complete database diagnostic for email troubleshooting
