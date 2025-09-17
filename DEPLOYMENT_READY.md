@@ -26,7 +26,7 @@
 - **Backend**: Supabase (Database + Edge Functions)
 - **Hosting**: Vercel
 - **Payments**: Stripe
-- **Email**: Resend using onboarding@resend.dev (Firebase handles auth emails)
+- **Email**: Resend using verified custom domain noreply@notifications.goalmine.ai (Firebase handles auth emails)
 
 ---
 
@@ -189,7 +189,7 @@ git push origin main
    - [ ] **FORWARD COMPATIBLE**: New Firebase UID-based goals use proper architecture
    - [ ] **ARCHITECTURE**: Firebase auth provides unlimited scalability (no rate limits)
 
-5. **Perfect Email System** ✅ **BULLETPROOF AS OF SEPT 14, 2025**
+5. **Perfect Email System** ✅ **AUTOMATION VERIFIED WORKING SEPT 16, 2025**
    - [ ] **ENVIRONMENT SEPARATION**: Only production (`goalmine.ai`) sends emails, dev environment blocked
    - [ ] **FREE TRIAL EMAILS**: Free trial users receive emails during valid 30-day trial period
    - [ ] Daily motivation emails sending automatically at 7 AM EDT (hybrid profile lookup implemented)
@@ -215,6 +215,10 @@ git push origin main
    - [ ] **VERIFIED**: Custom domain notifications.goalmine.ai verified in Resend
    - [ ] **WORKING**: Verify Vercel cron job runs at 7 AM EDT (check logs at https://vercel.com/dashboard)
    - [ ] **ENHANCED**: Comprehensive logging for email delivery troubleshooting
+   - [ ] **✅ AUTOMATION VERIFIED**: Full end-to-end email automation pipeline tested and working (Sept 16, 2025)
+   - [ ] **✅ DAILY-CRON FIXED**: Service role authentication issues resolved in daily-cron function
+   - [ ] **✅ TIMING BUG FIXED**: Removed hourly restriction in send-daily-emails function
+   - [ ] **✅ COMPLETE PIPELINE**: Vercel cron → daily-cron → send-daily-emails → Resend delivery verified
 
 ### Security Testing (Cross-Contamination Prevention)
 1. **Email Link Security Test**

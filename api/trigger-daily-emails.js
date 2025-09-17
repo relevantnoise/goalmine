@@ -30,7 +30,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('[VERCEL-CRON] Triggering daily email send at', new Date().toISOString());
+    const now = new Date();
+    const utcTime = now.toISOString();
+    const easternTime = now.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    console.log('[VERCEL-CRON] Triggering daily email send');
+    console.log('[VERCEL-CRON] UTC Time:', utcTime);
+    console.log('[VERCEL-CRON] Eastern Time:', easternTime);
     
     // Call the Supabase edge function
     // Hardcoded temporarily - need to add SUPABASE_ANON_KEY to Vercel env vars

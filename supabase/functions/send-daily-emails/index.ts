@@ -265,8 +265,9 @@ const handler = async (req: Request): Promise<Response> => {
           console.log(`[DAILY-EMAILS] Using existing motivation content for ${goal.title} (streak unchanged at ${goal.streak_count})`);
         }
         
-        // Step 2: Only send email if it's within the 7 AM hour Eastern (7:00-7:59) or force delivery
-        const shouldSendEmail = forceDelivery || (currentHour === DELIVERY_HOUR);
+        // Step 2: Send emails when cron runs (cron job controls timing at 7 AM Eastern)
+        // Remove hourly restriction since cron job already schedules at correct time
+        const shouldSendEmail = true; // Always send when function is called by cron
         
         if (shouldSendEmail) {
           console.log(`[DAILY-EMAILS] Sending email for goal: ${goal.title} to ${profile.email}`);

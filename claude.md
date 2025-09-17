@@ -47,7 +47,7 @@ GoalMine.ai is a goal tracking and motivational platform built with React, TypeS
 - **UI**: shadcn-ui components + Tailwind CSS
 - **Backend**: Supabase (Database + Edge Functions) + Firebase (Authentication)
 - **Payments**: Stripe integration
-- **Email**: Resend for email delivery (using onboarding@resend.dev default domain)
+- **Email**: Resend for email delivery (using verified custom domain noreply@notifications.goalmine.ai)
 - **Chat**: Crisp integration  
 - **AI**: OpenAI GPT-4 for motivation content generation
 
@@ -402,7 +402,10 @@ if (goal.user_id.includes('@')) {
 }
 ```
 
-### Email System Issues ✅ **COMPLETELY RESOLVED SEPTEMBER 14, 2025**
+### Email System Issues ✅ **COMPLETELY RESOLVED SEPTEMBER 16, 2025**
+- **✅ FIXED: Daily Email Automation Failure**: Fixed daily-cron function authentication issues causing "non-2xx status code" errors (Sept 16, 2025)
+- **✅ FIXED: Service Role Authentication**: Added proper service role keys to internal function calls in daily-cron (Sept 16, 2025)
+- **✅ FIXED: Email Timing Logic Bug**: Removed hourly restriction in send-daily-emails, now sends whenever cron runs (Sept 16, 2025)
 - **✅ FIXED: Dual Environment Duplicate Emails**: Environment detection prevents dev environment from sending emails (Sept 14, 2025)
 - **✅ FIXED: Free Trial Users Not Receiving Emails**: Subscription logic now includes free trial users during valid trial period (Sept 14, 2025)
 - **✅ FIXED: Hybrid Profile Lookup Bug**: Implemented dual lookup strategy for email and Firebase UID goals (Sept 12, 2025)
