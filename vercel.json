@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/trigger-daily-emails",
-      "schedule": "0 12 * * *"
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
