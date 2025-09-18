@@ -1,9 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/trigger-daily-emails", 
-      "schedule": "0 12 * * *",
-      "description": "Daily motivation emails - changed to 12:00 UTC to target 7:00 AM EST year-round"
+      "path": "/api/trigger-daily-emails",
+      "schedule": "0 12 * * *"
     }
   ],
   "rewrites": [
