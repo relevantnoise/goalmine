@@ -42,9 +42,22 @@ export default async function handler(req, res) {
       hour12: false
     });
     
+    // Enhanced timezone debugging
+    const utcHour = now.getUTCHours();
+    const utcMinute = now.getUTCMinutes();
+    const easternDate = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+    const easternHour = easternDate.getHours();
+    const easternMinute = easternDate.getMinutes();
+    
     console.log('[VERCEL-CRON] Triggering daily email send');
-    console.log('[VERCEL-CRON] UTC Time:', utcTime);
-    console.log('[VERCEL-CRON] Eastern Time:', easternTime);
+    console.log('[VERCEL-CRON] ========== TIMEZONE DEBUG ==========');
+    console.log('[VERCEL-CRON] Full UTC Time:', utcTime);
+    console.log('[VERCEL-CRON] UTC Hour:Minute:', `${utcHour.toString().padStart(2, '0')}:${utcMinute.toString().padStart(2, '0')}`);
+    console.log('[VERCEL-CRON] Full Eastern Time:', easternTime);
+    console.log('[VERCEL-CRON] Eastern Hour:Minute:', `${easternHour.toString().padStart(2, '0')}:${easternMinute.toString().padStart(2, '0')}`);
+    console.log('[VERCEL-CRON] Expected: 11:00 UTC = 07:00 EDT');
+    console.log('[VERCEL-CRON] Actual execution time check:', utcHour === 11 ? 'CORRECT' : `WRONG - executing at ${utcHour}:${utcMinute.toString().padStart(2, '0')} UTC instead of 11:00 UTC`);
+    console.log('[VERCEL-CRON] =====================================');
     
     // Call the Supabase edge function
     // Hardcoded temporarily - need to add SUPABASE_ANON_KEY to Vercel env vars
