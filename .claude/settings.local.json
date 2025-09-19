@@ -244,7 +244,8 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy setup-cron --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke setup-cron --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-emails-external)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-emails-external --project-ref dhlcycjnzwfnadmsptof)"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy trigger-emails-external --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy auto-schedule-emails --project-ref dhlcycjnzwfnadmsptof)"
     ],
     "deny": [],
     "ask": [],
