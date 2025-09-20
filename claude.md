@@ -517,6 +517,18 @@ if (goal.user_id.includes('@')) {
 
 ## Recent Technical Developments
 
+### Email Timing Issue - COMPLETELY RESOLVED (September 20, 2025)
+- **Problem**: Daily emails consistently arriving at 8 PM EDT instead of intended 7 AM EDT
+- **User Impact**: Defeated purpose of morning motivation emails to start the day
+- **Investigation**: Multiple cron schedule changes had no effect, suggesting wrong root cause
+- **Root Cause Discovery**: External trigger function `trigger-emails-external` was being called at 8 PM EDT
+- **Mystery Source**: Unknown external service or system calling the function at midnight UTC (8 PM EDT)
+- **Solution**: Disabled external trigger function, enabled logging to identify caller
+- **Architecture Simplification**: Now uses only Vercel cron at 11:00 UTC (7 AM EDT)
+- **Verification**: Vercel API endpoint tested and working correctly
+- **Expected Result**: Daily emails will arrive at 7 AM EDT starting next day
+- **Lesson Learned**: Multiple scheduling systems can conflict - always check for competing schedulers
+
 ### Data Structure Handling
 - **MicroPlan Format**: Components handle both string and array formats for `motivation.microPlan`
 - **Implementation**: Use conditional logic to convert strings to arrays before mapping

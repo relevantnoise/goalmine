@@ -741,6 +741,46 @@ export function checkFeatureAccess(
 
 ---
 
+## 📤 Social Sharing Feature
+
+### **Simple Goal Sharing**
+```typescript
+// services/sharing.ts
+import { Share } from 'react-native';
+
+export const shareGoal = async (goal: Goal) => {
+  const message = `🎯 I'm working on: ${goal.title}\n\nTrack your goals with GoalMine! 💪`;
+  
+  try {
+    await Share.share({
+      message: message,
+      title: 'My Goal from GoalMine'
+    });
+  } catch (error) {
+    console.error('Error sharing goal:', error);
+  }
+};
+```
+
+### **Share Button Implementation**
+```typescript
+// Simple share action in GoalCard
+const handleShare = () => {
+  if (goalState.canShare) {
+    shareGoal(goal);
+  }
+};
+```
+
+**Features:**
+- Share goal title to any social platform (Twitter, Facebook, Instagram, etc.)
+- Uses native iOS/Android share sheet
+- Simple text format: "🎯 I'm working on: [Goal Title]"
+- Only available for active (non-expired) goals
+- No complex tracking or analytics needed
+
+---
+
 ## 🎨 UI Component Examples
 
 ### **Goal Card Component**
@@ -789,6 +829,11 @@ export const GoalCard: React.FC<GoalCardProps> = ({
           icon="delete" 
           enabled={goalState.canDelete}
           onPress={() => onDelete(goal.id)} 
+        />
+        <IconButton 
+          icon="share" 
+          enabled={goalState.canShare}
+          onPress={() => onShare(goal.id)} 
         />
       </View>
     </View>
