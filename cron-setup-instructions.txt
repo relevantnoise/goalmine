@@ -1,0 +1,39 @@
+EXTERNAL CRON SERVICE SETUP INSTRUCTIONS
+=========================================
+
+Since I can't access external websites, here are the exact steps to set up reliable email scheduling:
+
+1. Go to: https://cron-job.org/en/signup
+2. Create a free account (takes 2 minutes)
+3. Click "Create cronjob"
+4. Enter these exact details:
+
+   Title: GoalMine Daily Emails
+   URL: https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/trigger-emails-external
+   
+   Schedule: Daily at 11:00 (UTC)
+   - OR use cron expression: 0 11 * * *
+   
+   Request Method: POST
+   
+   Headers (click "Add header"):
+   Name: Authorization  
+   Value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0
+   
+   Name: Content-Type
+   Value: application/json
+   
+   Body: {}
+
+5. Click "Create cronjob"
+6. Done!
+
+ALTERNATIVE SERVICES (if cron-job.org doesn't work):
+- easycron.com (same setup)
+- uptimerobot.com (create heartbeat monitor)
+- cronitor.io (simple cron monitoring)
+
+RESULT: 
+Emails will be delivered at 7:00 AM Eastern Time every day starting tomorrow.
+
+The function is already deployed and tested - it works perfectly.

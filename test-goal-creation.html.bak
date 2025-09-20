@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Goal Creation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-case { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .result { margin-top: 10px; padding: 10px; background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>GoalMine.ai Enhanced Goal Creation Test</h1>
+    
+    <div class="test-case">
+        <h2>Test Case 1: Complete Goal with Target Date</h2>
+        <p><strong>Goal:</strong> Quit smoking</p>
+        <p><strong>Target Date:</strong> December 31, 2024</p>
+        <p><strong>Tone:</strong> Drill Sergeant</p>
+        <p><strong>Description:</strong> I want to quit smoking completely and improve my health for my family</p>
+        
+        <div class="result">
+            <strong>Expected:</strong>
+            <ul>
+                <li>Goal created with target_date: 2024-12-31</li>
+                <li>Tone: drill_sergeant</li>
+                <li>time_of_day: 07:00 (automatic)</li>
+                <li>LLM content generated immediately</li>
+                <li>Smoking cessation expertise applied</li>
+                <li>Drill sergeant personality in motivation</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="test-case">
+        <h2>Test Case 2: Simple Goal, No Target Date</h2>
+        <p><strong>Goal:</strong> Exercise daily</p>
+        <p><strong>Target Date:</strong> None</p>
+        <p><strong>Tone:</strong> Kind & Encouraging</p>
+        <p><strong>Description:</strong> None</p>
+        
+        <div class="result">
+            <strong>Expected:</strong>
+            <ul>
+                <li>Goal created with target_date: null</li>
+                <li>Tone: kind_encouraging</li>
+                <li>Exercise/fitness expertise applied</li>
+                <li>Kind encouraging personality</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Test Case 3: Learning Goal with Wise Mentor</h2>
+        <p><strong>Goal:</strong> Learn Spanish</p>
+        <p><strong>Target Date:</strong> June 1, 2025</p>
+        <p><strong>Tone:</strong> Wise Mentor</p>
+        <p><strong>Description:</strong> I want to become conversational in Spanish for travel and career opportunities</p>
+        
+        <div class="result">
+            <strong>Expected:</strong>
+            <ul>
+                <li>Learning expertise applied</li>
+                <li>Wise mentor personality</li>
+                <li>Target date urgency factored in</li>
+                <li>Spaced repetition strategies suggested</li>
+            </ul>
+        </div>
+    </div>
+    
+    <p><strong>Manual Testing Steps:</strong></p>
+    <ol>
+        <li>Navigate to http://localhost:5173</li>
+        <li>Sign in as dandlynn@yahoo.com</li>
+        <li>Create goal using the enhanced form</li>
+        <li>Verify all fields are captured correctly</li>
+        <li>Check that LLM content is generated</li>
+        <li>Verify tone-appropriate content</li>
+        <li>Confirm target date displays properly</li>
+    </ol>
+</body>
+</html>

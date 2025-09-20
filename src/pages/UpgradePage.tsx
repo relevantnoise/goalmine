@@ -1,0 +1,197 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, Crown, ArrowLeft, Target, Zap, Mail } from "lucide-react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+
+export const UpgradePage = () => {
+  const { user } = useAuth();
+  const { subscription, loading, createCheckout } = useSubscription();
+  const navigate = useNavigate();
+
+  const handleSubscribe = () => {
+    if (!user) {
+      // Redirect to auth if not logged in
+      window.location.href = '/auth';
+      return;
+    }
+    createCheckout();
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header onLogoClick={() => navigate('/dashboard')} />
+      <div className="container mx-auto px-4 py-6 max-w-2xl">
+        {/* Back Button */}
+        <div className="mb-3">
+          <Button 
+            onClick={() => navigate('/dashboard')} 
+            variant="default" 
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
+        </div>
+
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Upgrade Now To Set More Goals
+          </h1>
+          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+            You've reached the limit for free users. Upgrade to Personal Plan to set up to 3 goals 
+            and unlock powerful features to achieve more.
+          </p>
+        </div>
+
+        {/* Premium Plan Card */}
+        <div className="max-w-xs mx-auto mb-6">
+          <Card className="border-2 border-premium relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
+              Most Popular Plan
+            </div>
+            <CardHeader className="pt-8 text-center">
+              <div className="w-8 h-8 bg-premium-light rounded-full flex items-center justify-center mx-auto mb-2">
+                <Crown className="w-4 h-4 text-premium" />
+              </div>
+              <CardTitle className="text-xl">Personal Plan</CardTitle>
+              <p className="text-sm text-muted-foreground mb-3">Everything you need to achieve your goals</p>
+              <div className="text-3xl font-bold text-premium">
+                $4.99
+                <span className="text-base font-normal text-muted-foreground">/month</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 mb-4">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Up to 3 Goals</span>
+                    <p className="text-xs text-muted-foreground">Set and track multiple goals simultaneously</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Daily AI-Powered Motivation</span>
+                    <p className="text-xs text-muted-foreground">Fresh, personalized motivation every day</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Up to 3 Daily Nudges</span>
+                    <p className="text-xs text-muted-foreground">Get extra motivation when you need it most</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Custom Coaching Tones</span>
+                    <p className="text-xs text-muted-foreground">Choose from 4 different motivational styles</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Daily Email Motivation</span>
+                    <p className="text-xs text-muted-foreground">Never miss your daily dose of inspiration</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Priority Support</span>
+                    <p className="text-xs text-muted-foreground">Get help when you need it</p>
+                  </div>
+                </li>
+              </ul>
+
+              {subscription.subscribed ? (
+                <div className="bg-success-light/20 text-success border border-success/20 rounded-lg p-4 text-center">
+                  <Crown className="w-6 h-6 mx-auto mb-2" />
+                  <p className="font-semibold">You're already a Personal Plan member!</p>
+                  <p className="text-sm opacity-90">Go back to set your new goal</p>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleSubscribe} 
+                  className="w-full bg-premium hover:bg-premium/90 text-premium-foreground" 
+                  size="lg" 
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-premium-foreground border-t-transparent rounded-full mr-2" />
+                      Dream Big...
+                    </>
+                  ) : (
+                    <>
+                      <Crown className="w-4 h-4 mr-2" />
+                      Upgrade to Personal Plan
+                    </>
+                  )}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="grid md:grid-cols-3 gap-3 mb-6">
+          <div className="text-center p-3">
+            <div className="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-2">
+              <Target className="w-4 h-4 text-primary" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Multiple Goals</h3>
+            <p className="text-xs text-muted-foreground">
+              Work on fitness, career, relationships, and more simultaneously
+            </p>
+          </div>
+          <div className="text-center p-3">
+            <div className="w-8 h-8 bg-success-light rounded-full flex items-center justify-center mx-auto mb-2">
+              <Zap className="w-4 h-4 text-success" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">AI-Powered</h3>
+            <p className="text-xs text-muted-foreground">
+              Advanced AI creates personalized motivation based on your progress
+            </p>
+          </div>
+          <div className="text-center p-3">
+            <div className="w-8 h-8 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-2">
+              <Mail className="w-4 h-4 text-warning" />
+            </div>
+            <h3 className="text-sm font-semibold mb-1">Daily Delivery</h3>
+            <p className="text-xs text-muted-foreground">
+              Get your motivation delivered directly to your inbox every day
+            </p>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-base font-semibold text-center mb-3">Why Upgrade?</h2>
+          <div className="space-y-4">
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="text-sm font-medium mb-1">Multiple Goals = Better Results</h3>
+              <p className="text-xs text-muted-foreground">
+                Research shows that people who work on complementary goals (like fitness + career) 
+                see better outcomes in both areas through positive momentum transfer.
+              </p>
+            </div>
+            <div className="bg-card border rounded-lg p-3">
+              <h3 className="text-sm font-medium mb-1">Cancel Anytime</h3>
+              <p className="text-xs text-muted-foreground">
+                No long-term commitment. You can cancel your subscription at any time 
+                and keep access until the end of your billing period.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,14 @@
+{
+  "crons": [
+    {
+      "path": "/api/trigger-daily-emails",
+      "schedule": "0 11 * * *"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

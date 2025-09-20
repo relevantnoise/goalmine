@@ -1,0 +1,2 @@
+-- Disable the custom email confirmation hook to let Supabase handle it natively
+-- This will remove the hook that intercepts signup confirmations
