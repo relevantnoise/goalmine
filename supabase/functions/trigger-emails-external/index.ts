@@ -24,40 +24,39 @@ const handler = async (req: Request): Promise<Response> => {
       minute: '2-digit'
     });
 
-    console.log(`[EXTERNAL-TRIGGER] Daily email trigger called at ${now.toISOString()} (${easternTime} Eastern)`);
+    console.log(`[EXTERNAL-TRIGGER] DISABLED - Function called at ${now.toISOString()} (${easternTime} Eastern)`);
+    
+    // Log request details to identify what's calling this
+    const userAgent = req.headers.get('user-agent') || 'unknown';
+    const origin = req.headers.get('origin') || 'unknown';
+    const referer = req.headers.get('referer') || 'unknown';
+    const xForwardedFor = req.headers.get('x-forwarded-for') || 'unknown';
+    
+    console.log(`[EXTERNAL-TRIGGER] REQUEST DETAILS (FOR DEBUGGING):`);
+    console.log(`[EXTERNAL-TRIGGER] User-Agent: ${userAgent}`);
+    console.log(`[EXTERNAL-TRIGGER] Origin: ${origin}`);
+    console.log(`[EXTERNAL-TRIGGER] Referer: ${referer}`);
+    console.log(`[EXTERNAL-TRIGGER] X-Forwarded-For: ${xForwardedFor}`);
+    console.log(`[EXTERNAL-TRIGGER] All headers:`, Object.fromEntries(req.headers.entries()));
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Call the daily-cron function directly
-    console.log('[EXTERNAL-TRIGGER] Calling daily-cron function');
-    const cronResponse = await supabase.functions.invoke('daily-cron', {
-      body: {},
-      headers: {
-        Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-      },
-    });
-
-    if (cronResponse.error) {
-      console.error('[EXTERNAL-TRIGGER] Error calling daily-cron:', cronResponse.error);
-      throw new Error(cronResponse.error.message);
-    }
-
-    const result = cronResponse.data;
-    console.log('[EXTERNAL-TRIGGER] Daily-cron completed successfully:', result);
+    // DISABLED - No longer trigger emails from this function
+    console.log('[EXTERNAL-TRIGGER] Function disabled - not calling daily-cron');
 
     return new Response(
       JSON.stringify({
-        success: true,
-        message: 'Daily emails triggered successfully via external cron',
+        success: false,
+        message: 'External trigger function is disabled. Using Vercel cron only.',
         triggerTime: {
           utc: now.toISOString(),
           eastern: easternTime
         },
-        results: result,
-        note: 'Emails should be delivered within minutes'
+        note: 'This function has been disabled. Emails are now sent via Vercel cron at 11:00 UTC (7 AM EDT).',
+        requestDetails: {
+          userAgent,
+          origin,
+          referer,
+          xForwardedFor
+        }
       }),
       {
         status: 200,
