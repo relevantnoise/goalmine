@@ -40,7 +40,7 @@ Authentication (Email/Password OR Google OAuth)
     ↓
 [If Email] Email Verification Required
     ↓
-Goal Creation Onboarding (4 steps)
+Goal Creation Form (simple single form)
     ↓
 AI Content Generation (immediate motivation)
     ↓
@@ -76,7 +76,7 @@ App Launch
 Dashboard Shows:
 - All active goals with current streaks
 - Today's check-in status per goal
-- Quick access to nudges
+- Quick access to nudges (on-demand motivation)
 - Subscription status/upgrade prompts
 ```
 
@@ -103,16 +103,18 @@ CREATE TABLE profiles (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Goals table (same as web)
+-- Goals table (exact match to web)
 CREATE TABLE goals (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id TEXT NOT NULL REFERENCES profiles(id),
   title TEXT NOT NULL,
   description TEXT,
-  target_date DATE NOT NULL,
-  coaching_tone TEXT NOT NULL CHECK (coaching_tone IN ('drill_sergeant', 'kind_encouraging', 'teammate', 'wise_mentor')),
+  target_date DATE,
+  tone TEXT NOT NULL CHECK (tone IN ('drill_sergeant', 'kind_encouraging', 'teammate', 'wise_mentor')),
+  time_of_day TEXT DEFAULT '07:00',
   streak_count INTEGER DEFAULT 0,
-  last_check_in TIMESTAMP,
+  last_motivation_date DATE,
+  last_checkin_date DATE,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
@@ -211,7 +213,7 @@ export const createUserProfile = async (req: Request) => {
 ```typescript
 // create-goal/index.ts
 export const createGoal = async (req: Request) => {
-  const { userId, title, description, targetDate, coachingTone } = await req.json();
+  const { userId, title, description, targetDate, tone } = await req.json();
   
   // Check goal limits
   const subscription = await checkUserSubscription(userId);
@@ -224,7 +226,7 @@ export const createGoal = async (req: Request) => {
     }), { status: 403 });
   }
   
-  // Create goal
+  // Create goal (match web app structure)
   const { data, error } = await supabase
     .from('goals')
     .insert({
@@ -232,7 +234,8 @@ export const createGoal = async (req: Request) => {
       title,
       description,
       target_date: targetDate,
-      coaching_tone: coachingTone
+      tone: tone || 'kind_encouraging',
+      time_of_day: '07:00' // Default notification time
     });
     
   // Generate initial motivation content
@@ -296,7 +299,54 @@ export const checkIn = async (req: Request) => {
 };
 ```
 
-#### **3. AI Content Generation**
+#### **3. Nudge (On-Demand Motivation) Functions**
+```typescript
+// generate-nudge/index.ts
+export const generateNudge = async (req: Request) => {
+  const { goalId, userId } = await req.json();
+  
+  // Check nudge limits
+  const subscription = await checkUserSubscription(userId);
+  const nudgeCount = await getTodayNudgeCount(userId);
+  
+  if (nudgeCount >= subscription.nudgeLimit) {
+    return new Response(JSON.stringify({ 
+      error: 'Daily nudge limit reached', 
+      requiresUpgrade: subscription.name === 'Free Trial'
+    }), { status: 403 });
+  }
+  
+  const goal = await getGoalById(goalId);
+  const prompt = buildNudgePrompt(goal);
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7
+    });
+    
+    const content = parseAIResponse(completion.choices[0].message.content);
+    
+    // Log nudge usage
+    await supabase
+      .from('daily_nudges')
+      .insert({
+        user_id: userId,
+        goal_id: goalId,
+        nudge_date: new Date().toISOString().split('T')[0]
+      });
+    
+    return new Response(JSON.stringify({ success: true, content }));
+    
+  } catch (error) {
+    const fallbackContent = getFallbackNudge(goal.tone);
+    return new Response(JSON.stringify({ success: true, content: fallbackContent }));
+  }
+};
+```
+
+#### **4. AI Content Generation**
 ```typescript
 // generate-daily-motivation/index.ts
 export const generateDailyMotivation = async (req: Request) => {
@@ -679,6 +729,7 @@ interface GoalState {
   canDelete: boolean;      // Always true
   canShare: boolean;       // Only if not expired
   canViewMotivation: boolean; // Only if not expired
+  canGenerateNudge: boolean;  // Only if not expired + under daily limit
 }
 
 export function getGoalState(goal: Goal, userSubscription: Subscription): GoalState {
@@ -692,7 +743,8 @@ export function getGoalState(goal: Goal, userSubscription: Subscription): GoalSt
     canEdit: !isTrialExpired, // Can edit expired goals to extend date
     canDelete: !isTrialExpired,
     canShare: !isExpired && !isTrialExpired,
-    canViewMotivation: !isExpired && !isTrialExpired
+    canViewMotivation: !isExpired && !isTrialExpired,
+    canGenerateNudge: !isExpired && !isTrialExpired // Additional nudge limit check in handler
   };
 }
 ```
@@ -791,6 +843,8 @@ interface GoalCardProps {
   onCheckIn: (goalId: string) => void;
   onEdit: (goalId: string) => void;
   onDelete: (goalId: string) => void;
+  onShare: (goalId: string) => void;
+  onNudge: (goalId: string) => void;
 }
 
 export const GoalCard: React.FC<GoalCardProps> = ({ 
@@ -798,7 +852,9 @@ export const GoalCard: React.FC<GoalCardProps> = ({
   goalState, 
   onCheckIn, 
   onEdit, 
-  onDelete 
+  onDelete,
+  onShare,
+  onNudge
 }) => {
   return (
     <View style={styles.card}>
@@ -834,6 +890,11 @@ export const GoalCard: React.FC<GoalCardProps> = ({
           icon="share" 
           enabled={goalState.canShare}
           onPress={() => onShare(goal.id)} 
+        />
+        <IconButton 
+          icon="zap" 
+          enabled={goalState.canGenerateNudge}
+          onPress={() => onNudge(goal.id)} 
         />
       </View>
     </View>
