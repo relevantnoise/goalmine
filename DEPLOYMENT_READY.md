@@ -213,11 +213,13 @@ git push origin main
    - [ ] **FIXED**: Subscription logic includes free trial users during valid trial
    - [ ] **FIXED**: Environment detection prevents dev environment from sending emails
    - [ ] **VERIFIED**: Custom domain notifications.goalmine.ai verified in Resend
-   - [ ] **✅ VERCEL CRON FIXED**: Corrected Vercel cron schedule from 11:00 UTC to 12:00 UTC for proper 7:00 AM EDT delivery (Sept 18, 2025)
-   - [ ] **✅ SIMPLE SOLUTION**: One-line fix in vercel.json maintains existing reliable email pipeline
-   - [ ] **✅ AUTOMATION MAINTAINED**: Vercel cron → api/trigger-daily-emails.js → daily-cron → send-daily-emails → Resend
-   - [ ] **✅ TIMEZONE CORRECTED**: 12:00 UTC = 7:00 AM EDT for proper morning delivery
-   - [ ] **✅ NO EXTERNAL DEPENDENCIES**: Self-contained system using existing Vercel infrastructure
+   - [ ] **✅ EMAIL TIMING COMPLETELY RESOLVED**: Root cause eliminated - external trigger function disabled (Sept 20, 2025)
+   - [ ] **✅ SINGLE SCHEDULER**: Only Vercel cron at 11:00 UTC (7:00 AM EDT) active, external trigger disabled
+   - [ ] **✅ ROOT CAUSE FIXED**: External trigger was being called at 8 PM EDT by unknown source
+   - [ ] **✅ ARCHITECTURE SIMPLIFIED**: Vercel cron → api/trigger-daily-emails.js → daily-cron → send-daily-emails → Resend
+   - [ ] **✅ PRODUCTION VERIFIED**: API endpoint tested and working, user confirmed 4 goals received last emails at 8 PM
+   - [ ] **✅ MYSTERY CALLER LOGGING**: External trigger now logs requests to identify unknown caller
+   - [ ] **✅ DEPLOYMENT COMPLETE**: All changes committed and deployed to production
    - [ ] **✅ DAILY-CRON FIXED**: Service role authentication issues resolved in daily-cron function (Sept 16, 2025)
    - [ ] **✅ TIMING BUG FIXED**: Removed hourly restriction in send-daily-emails function (Sept 16, 2025)
 
