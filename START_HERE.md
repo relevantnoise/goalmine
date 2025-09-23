@@ -10,22 +10,28 @@
    - Complete feature matrix and business logic
    - Production readiness assessment
 
-2. **`CLAUDE.md`** - Complete project overview and technical architecture
+2. **`ARCHITECTURE_MIGRATION.md`** - **CRITICAL** Root cause of persistent bugs (READ THIS SECOND!)
+   - Explains dual-project architecture problem
+   - Why email issues keep recurring across 100+ chats
+   - Complete migration plan to fix architectural issues
+   - **Essential reading for understanding persistent problems**
+
+3. **`CLAUDE.md`** - Complete project overview and technical architecture
    - Understand what the app does and how it works
    - Learn the technical stack and design patterns
    - Review common issues and troubleshooting
 
-3. **`DEPLOYMENT_READY.md`** - Deployment workflows and environment setup
+4. **`DEPLOYMENT_READY.md`** - Deployment workflows and environment setup
    - Understand the dev → production pipeline
    - Learn how to deploy changes safely
    - Review comprehensive testing checklists
 
-4. **`CURRENT_STATUS.md`** - Detailed development history and context
+5. **`CURRENT_STATUS.md`** - Detailed development history and context
    - Recent development achievements
    - Testing results and deployment preparation
    - Critical notes for developers
 
-5. **`DEVELOPMENT_WORKFLOW.md`** - Development best practices (if exists)
+6. **`DEVELOPMENT_WORKFLOW.md`** - Development best practices (if exists)
    - Learn the coding workflow
    - Understand testing requirements
    - Review emergency procedures
@@ -35,7 +41,7 @@
 ## 🔑 Quick Context for AI Assistants
 
 **Tell your AI assistant:**
-"Please read STATUS.md first, then CLAUDE.md and DEPLOYMENT_READY.md before we start working on the GoalMine.ai app. The app is running live at https://goalmine.ai with professional email delivery via custom domain noreply@notifications.goalmine.ai. EMAIL TIMING BREAKTHROUGH: Pacific/Midway timezone solution implemented on Sept 22, 2025. Discovered that emails are triggered by date rollover, not time. Using Pacific/Midway (UTC-11) timezone where midnight = 11:00 AM UTC = 7:00 AM EDT for perfect morning delivery."
+"Please read STATUS.md first, then ARCHITECTURE_MIGRATION.md (CRITICAL), then CLAUDE.md before we start working on GoalMine.ai. The app has a DUAL PROJECT ARCHITECTURE PROBLEM where both development and production environments run identical cron jobs, causing persistent email issues across 100+ chat sessions. The ARCHITECTURE_MIGRATION.md document explains this root cause and provides a complete migration plan. DO NOT try to fix email issues with environment detection code - that's treating symptoms, not the architectural problem."
 
 ---
 
