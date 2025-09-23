@@ -410,7 +410,7 @@ if (goal.user_id.includes('@')) {
 - **✅ PREVIOUS: Daily Email Automation Failure**: Fixed daily-cron function authentication issues causing "non-2xx status code" errors (Sept 16, 2025)
 - **✅ PREVIOUS: Service Role Authentication**: Added proper service role keys to internal function calls in daily-cron (Sept 16, 2025)
 - **✅ PREVIOUS: Email Timing Logic Bug**: Removed hourly restriction in send-daily-emails, now sends whenever cron runs (Sept 16, 2025)
-- **✅ FIXED: Dual Environment Duplicate Emails**: Environment detection prevents dev environment from sending emails (Sept 14, 2025)
+- **🚨 CRITICAL RECURRING ISSUE: Dual Environment Duplicate Emails**: REGRESSION OCCURRED AGAIN (Sept 23, 2025) - Environment detection in api/trigger-daily-emails.js is THE ONLY protection against duplicate emails. NEVER remove this logic. Both dev and production projects run same cron jobs from same GitHub repo.
 - **✅ FIXED: Free Trial Users Not Receiving Emails**: Subscription logic now includes free trial users during valid trial period (Sept 14, 2025)
 - **✅ FIXED: Hybrid Profile Lookup Bug**: Implemented dual lookup strategy for email and Firebase UID goals (Sept 12, 2025)
 - **✅ FIXED: Duplicate Email Bug**: Implemented atomic database updates preventing race conditions (Sept 12, 2025)
@@ -466,6 +466,15 @@ if (goal.user_id.includes('@')) {
 - **DNS Records**: MX, TXT/SPF, and DKIM records configured for notifications.goalmine.ai subdomain
 - **Implementation**: Updated send-motivation-email function to use noreply@notifications.goalmine.ai
 - **Result**: ALL users (paid and free trial) now receive emails regardless of email domain
+
+### 🚨 CRITICAL EMAIL SYSTEM WARNINGS (Updated September 23, 2025)
+
+**NEVER REMOVE ENVIRONMENT DETECTION FROM api/trigger-daily-emails.js**
+- Both steady-aim-coach (dev) and GoalMine (production) projects use same GitHub repo
+- Both projects auto-deploy identical code including vercel.json cron configuration  
+- ONLY environment detection prevents dev from sending duplicate emails to live users
+- Current protection: `const isProductionDomain = host === 'goalmine.ai';`
+- REGRESSION RISK: High - This has been broken multiple times causing user complaints
 
 ### Email System Debug Tools (Added September 11, 2025)
 - **debug-email-issues**: Complete database diagnostic for email troubleshooting

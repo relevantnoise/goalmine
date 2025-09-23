@@ -1,7 +1,7 @@
 # GoalMine.ai - Current Development Status & Continuation Guide
 
-**Date**: September 22, 2025 (EMAIL TIMING ISSUE FINAL RESOLUTION - PACIFIC/MIDWAY TIMEZONE FIX)  
-**Status**: ✅ PRODUCTION READY WITH MORNING EMAIL DELIVERY SYSTEM  
+**Date**: September 23, 2025 (DUPLICATE EMAIL REGRESSION OCCURRED - CRITICAL DOCUMENTATION UPDATES APPLIED)  
+**Status**: ⚠️ PRODUCTION READY BUT MONITORING REQUIRED FOR DUPLICATE EMAIL PREVENTION  
 **Production URL**: `https://goalmine.ai`  
 **Working Directory**: `/Users/zaptitude/Downloads/steady-aim-coach-main`  
 **Local Dev URL**: `http://localhost:5173`
@@ -9,6 +9,12 @@
 ---
 
 ## 🎯 EXECUTIVE SUMMARY
+
+### 🚨 DUPLICATE EMAIL REGRESSION OCCURRED (September 23, 2025)
+
+**CRITICAL ISSUE**: Users received 2 emails per goal at 7 AM EDT today despite previous fix. This is a RECURRING problem that has now happened multiple times. The protection mechanisms were documented but not sufficiently protected from accidental removal.
+
+**Root Cause**: Both steady-aim-coach (dev) and GoalMine (production) Vercel projects run identical cron jobs from same GitHub repo. Environment detection in api/trigger-daily-emails.js is the ONLY protection.
 
 ### ✅ EMAIL TIMING ISSUE FINAL RESOLUTION: PACIFIC/MIDWAY TIMEZONE FIX (September 22, 2025)
 

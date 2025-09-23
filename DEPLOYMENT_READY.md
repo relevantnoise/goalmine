@@ -90,6 +90,9 @@ git push origin main
 - [ ] All edge functions deployed to Supabase
 - [ ] Environment variables verified in Vercel
 - [ ] **AI Assistant: Verify schema sync between environments**
+- [ ] **🚨 MANDATORY: Verify environment detection in api/trigger-daily-emails.js is intact**
+- [ ] **🚨 MANDATORY: Confirm `const isProductionDomain = host === 'goalmine.ai';` exists and works**
+- [ ] **🚨 CRITICAL: Test that dev environment is blocked from sending emails**
 
 #### 2. Deploy to Production
 ```bash
@@ -304,7 +307,10 @@ RESEND_API_KEY
 - Verify Stripe webhook is configured
 - Test with real Stripe test keys
 
-### Issue: Duplicate emails being sent ✅ **RESOLVED SEPTEMBER 11, 2025**
+### 🚨 Issue: Duplicate emails being sent ⚠️ **RECURRING ISSUE - REGRESSION OCCURRED SEPTEMBER 23, 2025**
+**CRITICAL WARNING**: This issue has regressed multiple times causing user complaints.
+**Root Cause**: Both steady-aim-coach (dev) and GoalMine (production) run identical cron jobs.
+**ONLY Protection**: Environment detection in `api/trigger-daily-emails.js`
 **Solution**:
 - ✅ **FIXED**: Check `send-daily-emails` function for proper `last_motivation_date` updates
 - ✅ **FIXED**: Ensure updates happen BEFORE email sending, not after
@@ -312,6 +318,8 @@ RESEND_API_KEY
 - ✅ **FIXED**: Look for race conditions in email processing logic
 - ✅ **FIXED**: Subscription field bug (`subscribed = true` vs `status = 'active'`)
 - ✅ **FIXED**: Duplicate user profiles causing database conflicts
+- 🚨 **MANDATORY**: Never modify environment detection logic in api/trigger-daily-emails.js
+- 🚨 **MANDATORY**: Always test that dev environment is blocked from email sending
 
 ### Issue: Users not receiving emails ✅ **DIAGNOSED SEPTEMBER 11, 2025**
 **Solution**:

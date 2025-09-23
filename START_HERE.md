@@ -49,10 +49,11 @@
 
 ---
 
-## 🚦 Current Status (September 22, 2025)
+## 🚦 Current Status (September 23, 2025)
 
-- **Status**: ✅ PRODUCTION READY WITH MORNING EMAIL DELIVERY SYSTEM
+- **Status**: ⚠️ PRODUCTION READY BUT DUPLICATE EMAIL REGRESSION OCCURRED
 - **Live URL**: https://goalmine.ai 🚀
+- **CRITICAL ISSUE**: Duplicate emails sent today - environment detection must be protected
 - **EMAIL TIMING**: ✅ BREAKTHROUGH SOLUTION - Pacific/Midway timezone fix
 - **Discovery**: Emails triggered by timezone date rollover, not specific time
 - **Pattern**: UTC rollover = 8 PM EDT, Eastern rollover = midnight EDT
@@ -102,20 +103,30 @@ git push origin main
 
 ## ⚠️ Critical Things to Know
 
-1. **Never edit production directly** - Always work in local dev first
-2. **Test thoroughly** - Use checklists in DEPLOYMENT_READY.md
-3. **Firebase Auth** - Uses CDN version, not npm package
-4. **Supabase Edge Functions** - Handle all database writes with permission validation
-5. **Firebase Authentication** - **SCALABLE AUTH** with unlimited signups (migrated from Supabase auth rate limits)
-6. **User ID Architecture** - Firebase UID (database) vs email (frontend) - edge functions convert email → Firebase UID
-7. **Database Operations** - All edge functions use service role keys (RLS policies broken for Firebase auth)
-8. **Daily Email System** - **FULLY AUTOMATED** via Vercel cron (7 AM EDT) → Supabase → **Resend** (onboarding@resend.dev)
-9. **Business Logic Priority** - Trial expiration > Goal expiration > Normal operation
-10. **Permission System** - Full-stack validation prevents API bypass attempts
+1. **🚨 NEVER modify environment detection in api/trigger-daily-emails.js** - This prevents duplicate emails
+2. **🚨 Both dev and production projects run same cron jobs** - Only environment detection protects users
+3. **Never edit production directly** - Always work in local dev first
+4. **Test thoroughly** - Use checklists in DEPLOYMENT_READY.md
+5. **Firebase Auth** - Uses CDN version, not npm package
+6. **Supabase Edge Functions** - Handle all database writes with permission validation
+7. **Firebase Authentication** - **SCALABLE AUTH** with unlimited signups (migrated from Supabase auth rate limits)
+8. **User ID Architecture** - Firebase UID (database) vs email (frontend) - edge functions convert email → Firebase UID
+9. **Database Operations** - All edge functions use service role keys (RLS policies broken for Firebase auth)
+10. **Daily Email System** - **FULLY AUTOMATED** via Vercel cron (7 AM EDT) → Supabase → **Resend** (onboarding@resend.dev)
+11. **Business Logic Priority** - Trial expiration > Goal expiration > Normal operation
+12. **Permission System** - Full-stack validation prevents API bypass attempts
 
 ---
 
-## 🆕 Latest Fixes (September 22, 2025)
+## 🆕 Latest Critical Issue (September 23, 2025)
+
+### 🚨 DUPLICATE EMAIL REGRESSION - USERS RECEIVED 2 EMAILS PER GOAL
+**Problem**: Environment detection logic was insufficient to prevent both dev and production from sending emails
+**Impact**: User complaints about duplicate daily motivation emails
+**Lesson**: This architectural weakness requires constant vigilance and documentation protection
+**Fix**: Enhanced environment detection + comprehensive documentation warnings
+
+## 🆕 Previous Fix (September 22, 2025)
 
 ### **EMAIL TIMING BREAKTHROUGH: PACIFIC/MIDWAY TIMEZONE SOLUTION (September 22, 2025)**
 

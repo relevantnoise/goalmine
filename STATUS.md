@@ -1,8 +1,8 @@
 # GoalMine.ai - Complete Status Overview
 
-**Last Updated**: September 22, 2025 (EMAIL TIMING ISSUE FINAL RESOLUTION - PACIFIC/MIDWAY TIMEZONE FIX)
-**Status**: ✅ PRODUCTION READY WITH MORNING EMAIL DELIVERY SYSTEM  
-**Confidence Level**: High - Enterprise-grade application with brilliant timezone solution at https://goalmine.ai
+**Last Updated**: September 23, 2025 (DUPLICATE EMAIL REGRESSION FIXED - CRITICAL DOCUMENTATION UPDATE)
+**Status**: ⚠️ PRODUCTION READY WITH EMAIL DELIVERY SYSTEM (REGRESSION MONITORING REQUIRED)
+**Confidence Level**: Medium - Email timing perfect but duplicate email protection requires vigilant monitoring
 
 ---
 
@@ -21,6 +21,31 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 - ✅ **Environment Separation**: Dev and production environments properly isolated
 
 ---
+
+## 🚨 CRITICAL DUPLICATE EMAIL REGRESSION (September 23, 2025)
+
+### REGRESSION ALERT: DUPLICATE EMAILS SENT TO USERS TODAY
+- **Problem**: Users received 2 daily motivation emails per goal at 7 AM EDT
+- **Root Cause**: Both steady-aim-coach (dev) AND GoalMine (production) projects ran cron jobs
+- **Why This Happened Again**: Previous fix (Sept 14, 2025) was not sufficiently documented and protected
+- **Impact**: User complaint - professional email delivery compromised
+- **Current Status**: ✅ FIXED with enhanced environment detection and documentation
+
+### CRITICAL LESSON: DUAL PROJECT ARCHITECTURE RISK
+- **Architecture Issue**: Both Vercel projects (dev + production) share same GitHub repository
+- **Cron Job Risk**: Both projects auto-deploy identical vercel.json with same cron schedule
+- **ONLY Protection**: Environment detection in api/trigger-daily-emails.js
+- **Failure Mode**: If environment detection logic is modified/removed = duplicate emails
+- **Prevention**: Added prominent warnings in all documentation files
+
+### MANDATORY PROTECTION (NEVER REMOVE):
+```javascript
+// In api/trigger-daily-emails.js - Line 10
+const isProductionDomain = host === 'goalmine.ai';
+if (!isProductionDomain) {
+  // BLOCKED: Only goalmine.ai can send emails
+}
+```
 
 ## ✅ EMAIL TIMING ISSUE FINAL RESOLUTION: PACIFIC/MIDWAY TIMEZONE SOLUTION (September 22, 2025)
 
