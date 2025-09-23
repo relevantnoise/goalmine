@@ -1,5 +1,4 @@
 {
-  "_comment": "DEVELOPMENT ENVIRONMENT: NO CRON JOBS - prevents sending emails to live users",
   "rewrites": [
     {
       "source": "/(.*)",

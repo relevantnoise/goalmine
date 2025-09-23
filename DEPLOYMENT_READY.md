@@ -213,13 +213,15 @@ git push origin main
    - [ ] **FIXED**: Subscription logic includes free trial users during valid trial
    - [ ] **FIXED**: Environment detection prevents dev environment from sending emails
    - [ ] **VERIFIED**: Custom domain notifications.goalmine.ai verified in Resend
-   - [ ] **✅ EMAIL TIMING COMPLETELY RESOLVED**: Root cause eliminated - external trigger function disabled (Sept 20, 2025)
-   - [ ] **✅ SINGLE SCHEDULER**: Only Vercel cron at 11:00 UTC (7:00 AM EDT) active, external trigger disabled
-   - [ ] **✅ ROOT CAUSE FIXED**: External trigger was being called at 8 PM EDT by unknown source
-   - [ ] **✅ ARCHITECTURE SIMPLIFIED**: Vercel cron → api/trigger-daily-emails.js → daily-cron → send-daily-emails → Resend
-   - [ ] **✅ PRODUCTION VERIFIED**: API endpoint tested and working, user confirmed 4 goals received last emails at 8 PM
-   - [ ] **✅ MYSTERY CALLER LOGGING**: External trigger now logs requests to identify unknown caller
-   - [ ] **✅ DEPLOYMENT COMPLETE**: All changes committed and deployed to production
+   - [ ] **✅ EMAIL TIMING FINAL RESOLUTION**: Pacific/Midway timezone solution implemented (Sept 22, 2025)
+   - [ ] **✅ BREAKTHROUGH DISCOVERY**: Date rollover triggering identified - emails trigger on timezone date change, not time
+   - [ ] **✅ PATTERN IDENTIFIED**: UTC rollover = 8 PM EDT emails, Eastern rollover = midnight EDT emails  
+   - [ ] **✅ BRILLIANT SOLUTION**: Pacific/Midway (UTC-11) midnight = 11:00 AM UTC = 7:00 AM EDT
+   - [ ] **✅ TIMEZONE FIX**: `todayDate` calculation changed to Pacific/Midway timezone in send-daily-emails
+   - [ ] **✅ TECHNICAL IMPLEMENTATION**: Lines 57-63 in send-daily-emails/index.ts updated with Pacific/Midway logic
+   - [ ] **✅ FUNCTION DEPLOYED**: Updated send-daily-emails function deployed and tested successfully
+   - [ ] **✅ DEBUG LOGGING**: Added UTC, Eastern, and Pacific/Midway date comparison for verification
+   - [ ] **✅ PERFECT TIMING**: Emails will now trigger at ~7:00 AM EDT when Pacific/Midway date rolls over
    - [ ] **✅ DAILY-CRON FIXED**: Service role authentication issues resolved in daily-cron function (Sept 16, 2025)
    - [ ] **✅ TIMING BUG FIXED**: Removed hourly restriction in send-daily-emails function (Sept 16, 2025)
 

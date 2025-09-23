@@ -517,17 +517,22 @@ if (goal.user_id.includes('@')) {
 
 ## Recent Technical Developments
 
-### Email Timing Issue - COMPLETELY RESOLVED (September 20, 2025)
-- **Problem**: Daily emails consistently arriving at 8 PM EDT instead of intended 7 AM EDT
+### Email Timing Issue - FINAL RESOLUTION (September 22, 2025)
+- **Problem**: Daily emails consistently arriving at wrong times (8 PM EDT, then midnight EDT) despite multiple fix attempts
 - **User Impact**: Defeated purpose of morning motivation emails to start the day
-- **Investigation**: Multiple cron schedule changes had no effect, suggesting wrong root cause
-- **Root Cause Discovery**: External trigger function `trigger-emails-external` was being called at 8 PM EDT
-- **Mystery Source**: Unknown external service or system calling the function at midnight UTC (8 PM EDT)
-- **Solution**: Disabled external trigger function, enabled logging to identify caller
-- **Architecture Simplification**: Now uses only Vercel cron at 11:00 UTC (7 AM EDT)
-- **Verification**: Vercel API endpoint tested and working correctly
-- **Expected Result**: Daily emails will arrive at 7 AM EDT starting next day
-- **Lesson Learned**: Multiple scheduling systems can conflict - always check for competing schedulers
+- **ROOT CAUSE DISCOVERY**: Date rollover triggering, NOT time-based triggering
+  - **Critical Insight**: Emails triggered by timezone date rollover, not specific time
+  - **UTC rollover**: 8:00 PM EDT (midnight UTC) triggered emails at 8 PM EDT
+  - **Eastern rollover**: 12:00 AM EDT (midnight Eastern) triggered emails at midnight EDT
+  - **Database Logic**: `last_motivation_date.lt.${todayDate}` triggers on date change in selected timezone
+- **BRILLIANT SOLUTION**: Use Pacific/Midway timezone (UTC-11) for date calculation
+  - **Perfect Match**: Midnight Pacific/Midway = 11:00 AM UTC = 7:00 AM EDT
+  - **Before**: `todayDate = easternDate;` (Eastern timezone)
+  - **After**: `todayDate = midwayDate;` (Pacific/Midway timezone)  
+- **Technical Fix**: Lines 57-63 in `send-daily-emails/index.ts`
+- **Deployment**: Function deployed and tested successfully (September 22, 2025)
+- **Expected Result**: Daily emails will trigger at ~7:00 AM EDT when Pacific/Midway date rolls over
+- **Lesson Learned**: Leverage date rollover behavior instead of fighting it - choose timezone where midnight = desired delivery time
 
 ### Data Structure Handling
 - **MicroPlan Format**: Components handle both string and array formats for `motivation.microPlan`

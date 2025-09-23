@@ -195,26 +195,21 @@ Keep it concise, actionable, and motivating. This is for their first day startin
       console.log('✅ Motivation content saved to database successfully:', savedMotivation.id);
     }
 
-    // Step 4: Send first motivational email
-    try {
-      console.log('📧 Sending first motivational email...');
+    // Step 4: Generate motivation content for goal detail page
+    // ✅ DESIGN CHANGE: No immediate email - "emails start tomorrow" per current requirements
+    console.log('✅ Motivation content generated for goal detail page - daily emails will start tomorrow');
+    
+    // Set last_motivation_date to today to prevent immediate daily email pickup
+    const todayDate = new Date().toISOString().split('T')[0];
+    const { error: updateError } = await supabase
+      .from('goals')
+      .update({ last_motivation_date: todayDate })
+      .eq('id', goal.id);
       
-      await supabase.functions.invoke('send-motivation-email', {
-        body: {
-          userId: user_id,
-          goalId: goal.id,
-          goalTitle: title,
-          userEmail: user_id, // Assuming user_id is email, adjust if needed
-          motivation: motivationContent,
-          timeOfDay: time_of_day
-        }
-      });
-      
-      console.log('✅ First motivational email sent successfully');
-      
-    } catch (emailError) {
-      console.error('⚠️ Failed to send email (non-blocking):', emailError);
-      // Don't fail the operation - email is not critical for goal creation
+    if (updateError) {
+      console.error('⚠️ Failed to set last_motivation_date (non-blocking):', updateError);
+    } else {
+      console.log('✅ Goal marked to start daily emails tomorrow');
     }
 
     // Step 5: Return complete goal with generated content

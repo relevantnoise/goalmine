@@ -53,7 +53,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Get current time in Eastern timezone
     const now = new Date();
-    const todayDate = now.toISOString().split('T')[0];
+    
+    // CRITICAL FIX: Use Pacific/Midway timezone for date calculation
+    // Midnight in Pacific/Midway = 11:00 AM UTC = 7:00 AM EDT
+    // This triggers emails at 7:00 AM EDT when the date rolls over in Pacific/Midway
+    const midwayDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Pacific/Midway'
+    }).format(now);
+    const todayDate = midwayDate; // YYYY-MM-DD in Pacific/Midway time
+    
     const easternTime = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
       hour: '2-digit',
@@ -68,8 +76,38 @@ const handler = async (req: Request): Promise<Response> => {
     const DELIVERY_HOUR = 7;
     const DELIVERY_MINUTE = 0;
     
+    // Debug timezone calculations
+    const utcDate = now.toISOString().split('T')[0];
+    const easternDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York'
+    }).format(now);
+    console.log(`[DAILY-EMAILS] UTC date (ORIGINAL): ${utcDate}`);
+    console.log(`[DAILY-EMAILS] Eastern date (PREVIOUS): ${easternDate}`);
+    console.log(`[DAILY-EMAILS] Pacific/Midway date (NEW TRIGGER): ${todayDate}`);
     console.log(`[DAILY-EMAILS] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
-    console.log(`[DAILY-EMAILS] Delivery time: ${DELIVERY_HOUR}:${String(DELIVERY_MINUTE).padStart(2, '0')} Eastern`);
+    console.log(`[DAILY-EMAILS] Email trigger logic: Date rollover in Pacific/Midway = ~7:00 AM EDT`);
+
+    // ✅ CRITICAL FIX: Enforce "emails start tomorrow" rule - prevent same-day delivery
+    // Only send daily emails during proper morning delivery window (7-10 AM EDT)
+    const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
+    if (!isProperDeliveryWindow && !forceDelivery) {
+      console.log(`[DAILY-EMAILS] Outside proper delivery window (${currentHour}:${String(currentMinute).padStart(2, '0')} EDT). Daily emails only send 7-10 AM EDT to enforce 'emails start tomorrow' rule.`);
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: `Outside delivery window (${currentHour}:${String(currentMinute).padStart(2, '0')} EDT). Daily emails only send 7-10 AM EDT.`,
+          emailsSent: 0,
+          errors: 0,
+          skipped: true
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log(`[DAILY-EMAILS] ✅ Within proper delivery window (${currentHour}:${String(currentMinute).padStart(2, '0')} EDT), proceeding with email delivery`);
 
     // ATOMIC FIX: Get goals that need motivation today and immediately mark them as processed
     const { data: goals, error: goalsError } = await supabase
@@ -98,12 +136,29 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`[DAILY-EMAILS] Marked ${goalIds.length} goals as processed for ${todayDate}`);
     }
 
-    console.log(`[DAILY-EMAILS] Found ${goals?.length || 0} goals to process`);
+    // ✅ ENFORCE "EMAILS START TOMORROW" RULE: Filter out goals created today
+    const eligibleGoals = (goals || []).filter(goal => {
+      const goalCreatedDate = new Date(goal.created_at);
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      
+      const wasCreatedToday = goalCreatedDate >= todayStart;
+      
+      if (wasCreatedToday) {
+        console.log(`[DAILY-EMAILS] 🚫 Skipping goal "${goal.title}" - created today (${goalCreatedDate.toISOString()}). Emails start tomorrow per design.`);
+        return false;
+      }
+      
+      console.log(`[DAILY-EMAILS] ✅ Goal "${goal.title}" eligible - created ${goalCreatedDate.toISOString()}`);
+      return true;
+    });
+
+    console.log(`[DAILY-EMAILS] Found ${goals?.length || 0} total goals, ${eligibleGoals.length} eligible after filtering same-day creations`);
 
     let emailsSent = 0;
     let errors = 0;
 
-    for (const goal of goals || []) {
+    for (const goal of eligibleGoals) {
       try {
         console.log(`[DAILY-EMAILS] Processing goal: "${goal.title}" (user_id: ${goal.user_id})`);
         
@@ -316,7 +371,9 @@ const handler = async (req: Request): Promise<Response> => {
         errors,
         message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`,
         debug: {
-          goalsProcessed: goals?.length || 0,
+          totalGoals: goals?.length || 0,
+          eligibleGoals: eligibleGoals.length,
+          skippedSameDayGoals: (goals?.length || 0) - eligibleGoals.length,
           todayDate,
           forceDelivery: !!forceDelivery
         }

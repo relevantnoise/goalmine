@@ -203,11 +203,11 @@ CREATE TABLE subscribers (
 2. Create goal record in database
 3. Generate first AI motivation content using goal details and tone
 4. Save motivation content to `motivation_history` table for today
-5. Send first motivational email immediately
+5. Generate motivation content for goal detail page (emails start tomorrow)
 6. Return success response with goal data
 
 ### 5. Post-Creation Flow
-- Success toast: "🎉 Goal created successfully! Check your email for your first motivational message."
+- Success toast: "🎉 Goal created successfully! You'll receive daily motivational emails starting tomorrow."
 - Automatic redirect to dashboard
 - Goal appears immediately (optimistic update)
 
@@ -339,7 +339,7 @@ const fallbackContent = {
 1. Create goal record
 2. Generate AI motivation content
 3. Save to motivation_history
-4. Send first email
+4. Generate content for goal detail page (emails start tomorrow)
 5. Return goal + motivation data
 
 ### 2. get-user-goals

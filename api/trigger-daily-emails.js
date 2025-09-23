@@ -4,18 +4,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Only allow production environment to send emails
+  // CRITICAL: Only allow production environment to send emails
+  // Development servers should NEVER send emails to live users
   const host = req.headers.host || '';
-  const isDevelopment = host.includes('steady-aim-coach');
+  const isProductionDomain = host === 'goalmine.ai';
   
-  if (isDevelopment) {
-    console.log(`[VERCEL-CRON] SKIPPED - Development environment detected (${host})`);
+  if (!isProductionDomain) {
+    console.log(`[VERCEL-CRON] 🚫 BLOCKED - Only goalmine.ai can send emails. Current host: ${host}`);
     return res.status(200).json({ 
       success: true,
-      message: 'Skipped: Development environment does not send emails',
-      environment: 'development',
+      message: `BLOCKED: Only goalmine.ai production can send emails. Current host: ${host}`,
+      environment: 'development_or_staging',
       host: host,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      blocked: true
     });
   }
 
