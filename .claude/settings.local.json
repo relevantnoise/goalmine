@@ -283,7 +283,12 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke cleanup-test-users)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase projects list)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy setup-paid-subscriber --project-ref dhlcycjnzwfnadmsptof)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke send-daily-emails --method POST --body '{\"\"forceDelivery\"\": true}')"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke send-daily-emails --method POST --body '{\"\"forceDelivery\"\": true}')",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_QFRVaS/**)",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_A0dc5t/**)",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_y0bx1o/**)",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_45UXM8/**)",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_mEoWMc/**)"
     ],
     "deny": [],
     "ask": [],

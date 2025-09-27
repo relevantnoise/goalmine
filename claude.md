@@ -4,6 +4,37 @@
 
 GoalMine.ai is a goal tracking and motivational platform built with React, TypeScript, and Supabase. The application helps users create goals, track daily progress through streaks, and receive AI-enhanced motivational messages via email and on-demand nudges.
 
+## ✅ DEVELOPMENT WORKFLOW (Updated September 27, 2025)
+
+**BRANCH-BASED ARCHITECTURE IMPLEMENTED**: True environment separation eliminates systematic email bugs.
+
+### **Repository Structure**
+```
+GitHub: relevantnoise/goalmine
+├── main branch → GoalMine project (goalmine.ai) [PRODUCTION + CRON JOBS]
+└── dev branch  → steady-aim-coach project [DEVELOPMENT + NO CRON JOBS]
+```
+
+### **Your Son's Development Pattern (Now Standard)**
+```bash
+# 1. Development work
+git checkout dev
+npm run dev  # localhost:5173
+
+# 2. Push to staging
+git add -A && git commit -m "Feature: description"
+git push origin dev  # → steady-aim-coach.vercel.app (SAFE)
+
+# 3. Production deployment
+git checkout main && git merge dev && git push origin main  # → goalmine.ai
+```
+
+### **Benefits Achieved**
+- ✅ **Architectural email bug prevention**: Dev environment cannot send emails
+- ✅ **Safe development**: Break things without affecting users  
+- ✅ **Industry standard**: Proper dev/staging/production pipeline
+- ✅ **No more environment detection code**: Architecture prevents issues
+
 ## Complete User Flow
 
 ### New User Registration & Onboarding

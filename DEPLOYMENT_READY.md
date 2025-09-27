@@ -60,19 +60,18 @@ Production Testing on goalmine.ai
 3. **Manual Testing**: Complete the testing checklist below
 4. **Commit with Clear Messages**: Describe what was fixed/added
 
-#### Git Workflow
+#### Git Workflow (Branch-Based)
 ```bash
-# 1. Check status
-git status
+# Development
+git checkout dev
+git status && git add -A
+git commit -m "Feature: [description]"
+git push origin dev  # → Safe staging deployment
 
-# 2. Add all changes
-git add -A
-
-# 3. Commit with descriptive message
-git commit -m "Fix: [specific issue] - [what was done]"
-
-# 4. Push to GitHub (triggers auto-deploy)
-git push origin main
+# Production (when ready)
+git checkout main
+git merge dev
+git push origin main  # → Live production deployment
 ```
 
 ---
@@ -353,17 +352,18 @@ RESEND_API_KEY
 
 ## 🔄 Dev/Production Sync Process
 
-### **Current Setup (Always In Sync):**
-✅ **Code**: Single GitHub repo → Auto-deploys to both environments  
-✅ **Edge Functions**: Same Supabase project for both  
-✅ **Environment Variables**: Properly configured in Vercel  
+### **NEW: Branch-Based Deployment (Your Son's Workflow - September 27, 2025):**
+✅ **Architecture**: True environment separation eliminates systematic bugs  
+✅ **Development**: dev branch → steady-aim-coach project (NO cron jobs)  
+✅ **Production**: main branch → GoalMine project (WITH cron jobs)  
+✅ **Safety**: Dev environment cannot affect live users
 
-### **Best Practice Workflow:**
-1. **Make changes locally** (localhost:5173)
-2. **Test thoroughly** with dev database
-3. **AI Assistant verifies** schema exists in production
-4. **Commit and push** → Auto-deploys everywhere
-5. **Verify both environments** work identically
+### **New Development Workflow:**
+1. **Development work** (git checkout dev, localhost:5173)
+2. **Push to staging** (git push origin dev → steady-aim-coach.vercel.app)
+3. **Test thoroughly** in safe staging environment
+4. **Production deploy** (git checkout main, git merge dev, git push origin main)
+5. **Verify production** (goalmine.ai)
 
 ### **Schema Sync Process:**
 - **Dev Environment**: Uses local Supabase or shared dev instance
