@@ -619,10 +619,10 @@ export const useGoals = () => {
 
       const template = motivationTemplates[goal.tone] || motivationTemplates['kind_encouraging'];
       
-      // Save to database
+      // Save to database (upsert - overwrite existing content for this goal/date)
       const { data, error } = await supabase
         .from('motivation_history')
-        .insert([{
+        .upsert([{
           goal_id: goal.id,
           user_id: goal.user_id,
           date: today,
@@ -631,7 +631,9 @@ export const useGoals = () => {
           challenge: template.challenge,
           tone: goal.tone,
           created_at: new Date().toISOString()
-        }])
+        }], {
+          onConflict: 'goal_id,date'
+        })
         .select()
         .single();
 

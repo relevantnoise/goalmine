@@ -11,15 +11,33 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
-  // Skip auth for cleanup - this is a utility function
+  // 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DELETION
   try {
+    // Check if this is production database
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    
+    // PRODUCTION SAFETY: Require explicit confirmation
+    const body = await req.json().catch(() => ({}))
+    const confirmation = body?.confirmation
+    
+    if (confirmation !== 'DELETE_ALL_DATA_PERMANENTLY_I_AM_SURE') {
+      console.log('🚫 BLOCKED: cleanup-database requires explicit confirmation')
+      return new Response(JSON.stringify({
+        error: 'SAFETY PROTECTION ENABLED',
+        message: 'This function deletes ALL USER DATA permanently. To proceed, send POST request with confirmation: "DELETE_ALL_DATA_PERMANENTLY_I_AM_SURE"',
+        warning: 'This action cannot be undone. Ensure you have backups.',
+        blocked: true
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      })
+    }
     
     // Create admin client with service role key
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
-    console.log('🧹 Starting complete database cleanup...')
+    console.log('🧹 CONFIRMED: Starting complete database cleanup (ALL DATA WILL BE DELETED)...')
 
     // Get current data counts
     const { data: profilesCount } = await supabaseAdmin

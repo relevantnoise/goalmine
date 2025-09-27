@@ -223,18 +223,22 @@ This person chose you as their coach because they want to achieve something mean
     const data = await response.json();
     const content = JSON.parse(data.choices[0].message.content);
 
-    // Save the generated motivation to the database (only for goal-specific motivation)
+    // Save the generated motivation to the database (upsert - overwrite existing content for this goal/date)
     if (goalId) {
+      const today = new Date().toISOString().split('T')[0];
       const { error } = await supabase
         .from('motivation_history')
-        .insert({
+        .upsert({
           goal_id: goalId,
           user_id: userId,
+          date: today,
           message: content.message,
           micro_plan: content.microPlan,
           challenge: content.challenge,
           tone: tone,
           nudge_count: 1
+        }, {
+          onConflict: 'goal_id,date'
         });
 
       if (error) {

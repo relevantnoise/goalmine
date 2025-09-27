@@ -22,14 +22,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[TRIAL-WARNINGS-FIXED] Starting trial warning email process');
+    console.log('[TRIAL-WARNINGS] Starting trial warning email process');
 
     // Get users whose trials expire in 7 days, 3 days, or 1 day
     const now = new Date();
     const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const in3Days = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+    const in1Day = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000);
 
-    // FIXED: Get all users with trials expiring in the next 7 days
-    const { data: candidateUsers, error: queryError } = await supabase
+    // Query for users who need trial warnings and aren't already subscribed
+    const { data: usersNeedingWarnings, error: queryError } = await supabase
       .from('profiles')
       .select(`
         id,
@@ -39,48 +41,24 @@ const handler = async (req: Request): Promise<Response> => {
       `)
       .not('trial_expires_at', 'is', null)
       .gte('trial_expires_at', now.toISOString())
-      .lte('trial_expires_at', in7Days.toISOString());
+      .lte('trial_expires_at', in7Days.toISOString())
+      // Exclude users who are already subscribed
+      .not('id', 'in', `(
+        SELECT user_id FROM subscribers WHERE subscribed = true
+      )`);
 
     if (queryError) {
-      console.error('[TRIAL-WARNINGS-FIXED] Error querying users:', queryError);
+      console.error('[TRIAL-WARNINGS] Error querying users:', queryError);
       throw queryError;
     }
 
-    console.log(`[TRIAL-WARNINGS-FIXED] Found ${candidateUsers?.length || 0} candidate users`);
+    console.log(`[TRIAL-WARNINGS] Found ${usersNeedingWarnings?.length || 0} users needing warnings`);
 
     let emailsSent = 0;
     let errors = 0;
-    let excluded = 0;
 
-    for (const user of candidateUsers || []) {
+    for (const user of usersNeedingWarnings || []) {
       try {
-        // FIXED: Check if user is already a subscriber (hybrid architecture support)
-        let isSubscriber = false;
-        
-        // Check by email (most common case)
-        const { data: subscriberByEmail } = await supabase
-          .from('subscribers')
-          .select('subscribed')
-          .eq('user_id', user.email)
-          .eq('subscribed', true)
-          .single();
-
-        // Also check by Firebase UID (for proper architecture)
-        const { data: subscriberById } = await supabase
-          .from('subscribers')
-          .select('subscribed')
-          .eq('user_id', user.id)
-          .eq('subscribed', true)
-          .single();
-
-        isSubscriber = !!(subscriberByEmail || subscriberById);
-
-        if (isSubscriber) {
-          console.log(`[TRIAL-WARNINGS-FIXED] Excluding ${user.email} - already subscribed`);
-          excluded++;
-          continue;
-        }
-
         const trialExpiresAt = new Date(user.trial_expires_at);
         const daysRemaining = Math.ceil((trialExpiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
         
@@ -101,19 +79,19 @@ const handler = async (req: Request): Promise<Response> => {
 
         if (!shouldSend) continue;
 
-        // FIXED: Better deduplication - check by email address since that's more reliable
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const { data: existingEmails } = await supabase
+        // Check if we've already sent this warning type to this user
+        const { data: existingEmail } = await supabase
           .from('email_deliveries')
-          .select('id, email_type')
-          .eq('recipient_email', user.email)  // Use email instead of user_id
+          .select('id')
+          .eq('user_id', user.id)
           .eq('email_type', emailType)
           .eq('status', 'sent')
-          .gte('created_at', todayStart.toISOString()) // Check for today only
-          .order('created_at', { ascending: false });
+          .gte('created_at', new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()) // Within last 24 hours
+          .limit(1)
+          .maybeSingle();
 
-        if (existingEmails && existingEmails.length > 0) {
-          console.log(`[TRIAL-WARNINGS-FIXED] Skipping ${emailType} for ${user.email} - already sent today (${existingEmails.length} times)`);
+        if (existingEmail) {
+          console.log(`[TRIAL-WARNINGS] Skipping ${emailType} for ${user.email} - already sent`);
           continue;
         }
 
@@ -180,37 +158,36 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         `;
 
-        // Send the email with custom domain
+        // Send the email with retry logic (reuse the send function from motivation emails)
         const emailResult = await sendEmailWithRetry({
-          from: "GoalMine.ai <noreply@notifications.goalmine.ai>", // Fixed: use custom domain
+          from: "GoalMine.ai <onboarding@resend.dev>",
           to: [user.email],
           subject: emailSubject,
           html: emailHTML,
         }, user.id, null, emailType);
 
         if (emailResult.success) {
-          console.log(`[TRIAL-WARNINGS-FIXED] ✅ Sent ${emailType} to ${user.email} (${daysRemaining} days remaining)`);
+          console.log(`[TRIAL-WARNINGS] Sent ${emailType} to ${user.email}`);
           emailsSent++;
         } else {
-          console.error(`[TRIAL-WARNINGS-FIXED] ❌ Failed to send ${emailType} to ${user.email}:`, emailResult.error);
+          console.error(`[TRIAL-WARNINGS] Failed to send ${emailType} to ${user.email}:`, emailResult.error);
           errors++;
         }
 
       } catch (error) {
-        console.error(`[TRIAL-WARNINGS-FIXED] Error processing user ${user.email}:`, error);
+        console.error(`[TRIAL-WARNINGS] Error processing user ${user.email}:`, error);
         errors++;
       }
     }
 
-    console.log(`[TRIAL-WARNINGS-FIXED] Process complete. Sent: ${emailsSent}, Errors: ${errors}, Excluded: ${excluded}`);
+    console.log(`[TRIAL-WARNINGS] Process complete. Sent: ${emailsSent}, Errors: ${errors}`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         emailsSent, 
         errors,
-        excluded,
-        message: `Trial warning process completed. Sent ${emailsSent} emails, ${errors} errors, ${excluded} excluded (already subscribed).`
+        message: `Trial warning process completed. Sent ${emailsSent} emails with ${errors} errors.`
       }),
       {
         status: 200,
@@ -219,7 +196,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error('[TRIAL-WARNINGS-FIXED] Fatal error:', error);
+    console.error('[TRIAL-WARNINGS] Fatal error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
@@ -230,7 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-// Reuse the email retry function
+// Reuse the email retry function from send-motivation-email
 const sendEmailWithRetry = async (
   emailData: any,
   userId: string | null = null,

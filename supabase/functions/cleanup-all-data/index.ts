@@ -11,8 +11,26 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // 🚨 CRITICAL SAFETY CHECK - PREVENT PRODUCTION DATA DELETION
   try {
-    console.log('🧹 Starting complete database cleanup...');
+    // PRODUCTION SAFETY: Require explicit confirmation
+    const body = await req.json().catch(() => ({}))
+    const confirmation = body?.confirmation
+    
+    if (confirmation !== 'DELETE_ALL_DATA_PERMANENTLY_I_AM_SURE') {
+      console.log('🚫 BLOCKED: cleanup-all-data requires explicit confirmation')
+      return new Response(JSON.stringify({
+        error: 'SAFETY PROTECTION ENABLED',
+        message: 'This function deletes ALL USER DATA permanently. To proceed, send POST request with confirmation: "DELETE_ALL_DATA_PERMANENTLY_I_AM_SURE"',
+        warning: 'This action cannot be undone. Ensure you have backups.',
+        blocked: true
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders }
+      })
+    }
+
+    console.log('🧹 CONFIRMED: Starting complete database cleanup (ALL DATA WILL BE DELETED)...');
 
     // Create Supabase client with service role
     const supabase = createClient(

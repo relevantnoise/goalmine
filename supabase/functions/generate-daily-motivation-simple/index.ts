@@ -93,7 +93,7 @@ serve(async (req) => {
       
       await supabase
         .from('motivation_history')
-        .insert({
+        .upsert({
           goal_id: goalId,
           user_id: userId,
           date: today,
@@ -102,6 +102,8 @@ serve(async (req) => {
           challenge: motivationContent.challenge,
           tone: tone || 'kind_encouraging',
           streak_count: streakCount || 0
+        }, {
+          onConflict: 'goal_id,date'
         });
         
       console.log('💾 Saved to motivation_history');

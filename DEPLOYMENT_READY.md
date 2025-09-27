@@ -93,6 +93,8 @@ git push origin main
 - [ ] **🚨 MANDATORY: Verify environment detection in api/trigger-daily-emails.js is intact**
 - [ ] **🚨 MANDATORY: Confirm `const isProductionDomain = host === 'goalmine.ai';` exists and works**
 - [ ] **🚨 CRITICAL: Test that dev environment is blocked from sending emails**
+- [ ] **⚠️ PATTERN ALERT: Beware of "tomorrow it will work" promises - 5+ previous email fixes failed**
+- [ ] **⚠️ SUCCESS CONFIRMATION: Verify that goals are only marked as processed AFTER successful Resend delivery**
 
 #### 2. Deploy to Production
 ```bash
@@ -227,6 +229,8 @@ git push origin main
    - [ ] **✅ PERFECT TIMING**: Emails will now trigger at ~7:00 AM EDT when Pacific/Midway date rolls over
    - [ ] **✅ DAILY-CRON FIXED**: Service role authentication issues resolved in daily-cron function (Sept 16, 2025)
    - [ ] **✅ TIMING BUG FIXED**: Removed hourly restriction in send-daily-emails function (Sept 16, 2025)
+   - [ ] **⚠️ ATOMIC FIX TESTING**: Check for duplicate emails - 4th attempt at fixing same issue (Sept 24, 2025)
+   - [ ] **🚨 REGRESSION MONITORING**: Verify users get exactly 1 email per goal, not 2 (Sept 25, 2025 test)
 
 ### Security Testing (Cross-Contamination Prevention)
 1. **Email Link Security Test**
@@ -307,19 +311,19 @@ RESEND_API_KEY
 - Verify Stripe webhook is configured
 - Test with real Stripe test keys
 
-### 🚨 Issue: Duplicate emails being sent ⚠️ **RECURRING ISSUE - REGRESSION OCCURRED SEPTEMBER 23, 2025**
-**CRITICAL WARNING**: This issue has regressed multiple times causing user complaints.
-**Root Cause**: Both steady-aim-coach (dev) and GoalMine (production) run identical cron jobs.
-**ONLY Protection**: Environment detection in `api/trigger-daily-emails.js`
+### 🚨 Issue: Email System Chronic Failures ⚠️ **NEW FAILURE MODE: ZERO EMAILS SENT (SEPTEMBER 26, 2025)**
+**CRITICAL WARNING**: Email system has failed 5+ times with different failure modes despite multiple "final" fixes.
+**Timeline**: Sept 14 (duplicates) → Sept 23 (duplicates) → Sept 24 (duplicates) → Sept 26 (zero emails)
+**ATTEMPTED FIX #5**: Success confirmation pattern (September 26, 2025)
 **Solution**:
-- ✅ **FIXED**: Check `send-daily-emails` function for proper `last_motivation_date` updates
-- ✅ **FIXED**: Ensure updates happen BEFORE email sending, not after
-- ✅ **FIXED**: Verify duplicate prevention is at goal level, not function level
-- ✅ **FIXED**: Look for race conditions in email processing logic
-- ✅ **FIXED**: Subscription field bug (`subscribed = true` vs `status = 'active'`)
-- ✅ **FIXED**: Duplicate user profiles causing database conflicts
-- 🚨 **MANDATORY**: Never modify environment detection logic in api/trigger-daily-emails.js
-- 🚨 **MANDATORY**: Always test that dev environment is blocked from email sending
+- ✅ **LATEST FIX**: Only mark goals as processed AFTER successful email delivery via Resend
+- ✅ **TECHNICAL**: `if (emailResponse.error) { don't mark } else { mark processed }`
+- ✅ **LOGIC**: Failed emails remain unmarked for automatic retry tomorrow
+- ✅ **DEPLOYMENT**: Replaced send-daily-emails function (backup in send-daily-emails-backup/)
+- ⚠️ **EXPECTATION**: Users should receive exactly 1 email per goal at 7 AM EDT
+- 🚨 **PATTERN**: This is the 5th "tomorrow it will work" promise - confidence very low
+- 🚨 **ARCHITECTURAL**: Dual project architecture remains the true root cause
+- 🚨 **MANDATORY**: Extreme skepticism warranted - consider architectural migration as only real solution
 
 ### Issue: Users not receiving emails ✅ **DIAGNOSED SEPTEMBER 11, 2025**
 **Solution**:

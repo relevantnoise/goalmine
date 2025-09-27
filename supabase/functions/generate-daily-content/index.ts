@@ -68,10 +68,10 @@ serve(async (req) => {
           continue;
         }
 
-        // Save to database
+        // Save to database (upsert - overwrite existing content for this goal/date)
         const { error: saveError } = await supabase
           .from('motivation_history')
-          .insert({
+          .upsert({
             goal_id: goal.id,
             user_id: goal.user_id,
             date: today,
@@ -79,6 +79,8 @@ serve(async (req) => {
             micro_plan: motivationContent.microPlan,
             challenge: motivationContent.challenge,
             tone: motivationContent.tone,
+          }, {
+            onConflict: 'goal_id,date'
           });
 
         if (saveError) {
