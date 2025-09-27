@@ -1,5 +1,5 @@
 {
-  "_comment": "SHARED CONFIG: Both projects use this file. Environment detection in trigger-daily-emails.js prevents dev from sending emails",
+  "_comment": "PRODUCTION BRANCH: Has cron jobs for daily email delivery at 11:00 UTC (7:00 AM EDT)",
   "crons": [
     {
       "path": "/api/trigger-daily-emails",
