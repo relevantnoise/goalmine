@@ -1,11 +1,7 @@
 {
-  "_comment": "SHARED CONFIG: Both projects use this file. Environment detection in trigger-daily-emails.js prevents dev from sending emails",
-  "crons": [
-    {
-      "path": "/api/trigger-daily-emails",
-      "schedule": "0 11 * * *"
-    }
-  ],
+  "_comment": "DEVELOPMENT BRANCH: NO CRON JOBS - Safe development environment",
+  "_architecture": "Dev branch deploys to steady-aim-coach project, main branch deploys to GoalMine production",
+  "_email_protection": "Only production (goalmine.ai) sends emails to users",
   "rewrites": [
     {
       "source": "/(.*)",
