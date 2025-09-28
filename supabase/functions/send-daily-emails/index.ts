@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Phase 2: Email Skip Logic Helper Functions
+// Keep the working expired goals logic
 function isGoalExpired(goal: any): boolean {
   if (!goal.target_date) return false;
   const targetDate = new Date(goal.target_date);
@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS-FIXED] Starting daily email send process with processing lock pattern');
+    console.log('[SIMPLE-EMAILS] Starting simplified daily email send process');
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
@@ -51,10 +51,10 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get current time in Eastern timezone
+    // Get current time
     const now = new Date();
     
-    // Use Pacific/Midway timezone for date calculation (existing fix)
+    // KEEP PACIFIC/MIDWAY TIMEZONE SOLUTION (this works for 7 AM delivery)
     const midwayDate = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Pacific/Midway'
     }).format(now);
@@ -68,19 +68,18 @@ const handler = async (req: Request): Promise<Response> => {
     }).format(now);
     
     const currentHour = parseInt(easternTime.split(':')[0]);
-    const currentMinute = parseInt(easternTime.split(':')[1]);
     
-    console.log(`[DAILY-EMAILS-FIXED] Pacific/Midway date: ${todayDate}`);
-    console.log(`[DAILY-EMAILS-FIXED] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
+    console.log(`[SIMPLE-EMAILS] Pacific/Midway date: ${todayDate}`);
+    console.log(`[SIMPLE-EMAILS] Current Eastern time: ${easternTime}`);
 
-    // Check delivery window (keep existing logic)
+    // Keep delivery window check (simplified)
     const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
     if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-FIXED] Outside delivery window, skipping.`);
+      console.log(`[SIMPLE-EMAILS] Outside delivery window (7-10 AM EDT), skipping.`);
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Outside delivery window. Daily emails only send 7-10 AM EDT.`,
+          message: `Outside delivery window. Current time: ${easternTime} EDT`,
           emailsSent: 0,
           errors: 0,
           skipped: true
@@ -92,9 +91,9 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] ✅ Within delivery window, proceeding with email delivery`);
+    console.log(`[SIMPLE-EMAILS] ✅ Within delivery window, proceeding with email delivery`);
 
-    // NEW APPROACH: Find goals that need emails but DON'T mark them as processed yet
+    // SIMPLIFIED: Find goals that need emails (keep working hybrid architecture)
     const { data: candidateGoals, error: candidateError } = await supabase
       .from('goals')
       .select('*')
@@ -102,11 +101,11 @@ const handler = async (req: Request): Promise<Response> => {
       .or(`last_motivation_date.is.null,last_motivation_date.lt.${todayDate}`);
 
     if (candidateError) {
-      console.error('[DAILY-EMAILS-FIXED] Error fetching candidate goals:', candidateError);
+      console.error('[SIMPLE-EMAILS] Error fetching candidate goals:', candidateError);
       throw candidateError;
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] Found ${candidateGoals?.length || 0} candidate goals`);
+    console.log(`[SIMPLE-EMAILS] Found ${candidateGoals?.length || 0} candidate goals`);
     
     if (!candidateGoals || candidateGoals.length === 0) {
       return new Response(
@@ -123,15 +122,15 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    let emailsSent = 0;
-    let errors = 0;
+    // OPTION 1: Send all emails FIRST, then mark successful ones
+    const successfulGoalIds = [];
+    const emailResults = [];
 
-    // Process each goal with success confirmation pattern
     for (const goal of candidateGoals) {
       try {
-        console.log(`[DAILY-EMAILS-FIXED] Processing: "${goal.title}"`);
+        console.log(`[SIMPLE-EMAILS] Processing: "${goal.title}"`);
         
-        // Get profile info for email
+        // Get profile info (keep working hybrid lookup)
         let profile;
         if (goal.user_id.includes('@')) {
           const result = await supabase
@@ -150,12 +149,12 @@ const handler = async (req: Request): Promise<Response> => {
         }
         
         if (!profile?.email) {
-          console.error(`[DAILY-EMAILS-FIXED] No email for goal: ${goal.title}`);
-          errors++;
+          console.error(`[SIMPLE-EMAILS] No email for goal: ${goal.title}`);
+          emailResults.push({ goal: goal.title, status: 'error', reason: 'No email found' });
           continue;
         }
 
-        // Check subscription
+        // Check subscription (keep working logic)
         let subscriptionData = null;
         if (goal.user_id.includes('@')) {
           const { data } = await supabase
@@ -175,20 +174,18 @@ const handler = async (req: Request): Promise<Response> => {
         
         const isSubscribed = subscriptionData?.subscribed === true;
         
-        // Skip check
+        // Keep skip logic (working)
         const skipCheck = shouldSkipEmailForGoal(goal, profile, isSubscribed);
         if (skipCheck.skip) {
-          console.log(`[DAILY-EMAILS-FIXED] Skipping: ${skipCheck.reason}`);
-          // Mark as processed since we're skipping intentionally
-          await supabase
-            .from('goals')
-            .update({ last_motivation_date: todayDate })
-            .eq('id', goal.id);
+          console.log(`[SIMPLE-EMAILS] Skipping: ${skipCheck.reason}`);
+          emailResults.push({ goal: goal.title, status: 'skipped', reason: skipCheck.reason });
+          // Note: Skipped goals will be marked as processed at the end too
+          successfulGoalIds.push(goal.id);
           continue;
         }
 
-        // Generate AI-powered content for this goal
-        console.log(`[DAILY-EMAILS-FIXED] Generating AI content for goal: ${goal.title} (tone: ${goal.tone})`);
+        // Generate AI content (keep working function)
+        console.log(`[SIMPLE-EMAILS] Generating AI content for: ${goal.title}`);
         
         const aiResponse = await supabase.functions.invoke('generate-daily-motivation-simple', {
           body: {
@@ -203,15 +200,13 @@ const handler = async (req: Request): Promise<Response> => {
 
         let motivationContent;
         if (aiResponse.error || !aiResponse.data?.success) {
-          console.error(`[DAILY-EMAILS-FIXED] AI generation failed for ${goal.title}, using fallback:`, aiResponse.error);
-          // Fallback to static content if AI fails
+          console.log(`[SIMPLE-EMAILS] AI generation failed, using fallback for ${goal.title}`);
           motivationContent = {
             message: `Today is another opportunity to make progress on your goal: ${goal.title}. Keep building momentum!`,
             microPlan: ['Take one small action toward your goal today', 'Document your progress', 'Reflect on your progress'],
             challenge: 'Take 30 seconds to visualize achieving this goal.'
           };
         } else {
-          console.log(`[DAILY-EMAILS-FIXED] ✅ AI content generated for ${goal.title}`);
           motivationContent = {
             message: aiResponse.data.message,
             microPlan: aiResponse.data.microPlan,
@@ -219,9 +214,9 @@ const handler = async (req: Request): Promise<Response> => {
           };
         }
 
-        console.log(`[DAILY-EMAILS-FIXED] Sending email to: ${profile.email}`);
+        console.log(`[SIMPLE-EMAILS] Sending email to: ${profile.email}`);
         
-        // CRITICAL: Send email via Resend FIRST
+        // Send email (keep working function)
         const emailResponse = await supabase.functions.invoke('send-motivation-email', {
           body: {
             email: profile.email,
@@ -238,40 +233,55 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // CRITICAL: Only mark as processed if email succeeded
+        // SIMPLIFIED SUCCESS CHECK: If no error, consider it successful
         if (emailResponse.error) {
-          console.error(`[DAILY-EMAILS-FIXED] ❌ Email failed for ${goal.title}:`, emailResponse.error);
-          errors++;
-          // DON'T mark as processed - will retry tomorrow
+          console.error(`[SIMPLE-EMAILS] ❌ Email failed for ${goal.title}:`, emailResponse.error);
+          emailResults.push({ goal: goal.title, status: 'error', reason: emailResponse.error.message });
         } else {
-          // SUCCESS! Mark as processed
-          const { error: markError } = await supabase
-            .from('goals')
-            .update({ last_motivation_date: todayDate })
-            .eq('id', goal.id);
-
-          if (markError) {
-            console.error(`[DAILY-EMAILS-FIXED] Error marking processed:`, markError);
-          } else {
-            console.log(`[DAILY-EMAILS-FIXED] ✅ Email sent and marked processed: ${goal.title}`);
-            emailsSent++;
-          }
+          console.log(`[SIMPLE-EMAILS] ✅ Email sent for ${goal.title}`);
+          successfulGoalIds.push(goal.id);
+          emailResults.push({ goal: goal.title, status: 'sent', email: profile.email });
         }
 
       } catch (error) {
-        console.error(`[DAILY-EMAILS-FIXED] Error processing ${goal.title}:`, error);
-        errors++;
+        console.error(`[SIMPLE-EMAILS] Error processing ${goal.title}:`, error);
+        emailResults.push({ goal: goal.title, status: 'error', reason: error.message });
       }
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] Complete. Sent: ${emailsSent}, Errors: ${errors}`);
+    // OPTION 1: Mark ALL successful goals as processed AT ONCE
+    let markedCount = 0;
+    if (successfulGoalIds.length > 0) {
+      console.log(`[SIMPLE-EMAILS] Marking ${successfulGoalIds.length} goals as processed`);
+      
+      const { error: markError } = await supabase
+        .from('goals')
+        .update({ last_motivation_date: todayDate })
+        .in('id', successfulGoalIds);
+
+      if (markError) {
+        console.error(`[SIMPLE-EMAILS] Error marking goals as processed:`, markError);
+      } else {
+        markedCount = successfulGoalIds.length;
+        console.log(`[SIMPLE-EMAILS] ✅ Successfully marked ${markedCount} goals as processed`);
+      }
+    }
+
+    const emailsSent = emailResults.filter(r => r.status === 'sent').length;
+    const errors = emailResults.filter(r => r.status === 'error').length;
+    const skipped = emailResults.filter(r => r.status === 'skipped').length;
+
+    console.log(`[SIMPLE-EMAILS] Complete. Sent: ${emailsSent}, Errors: ${errors}, Skipped: ${skipped}, Marked: ${markedCount}`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         emailsSent, 
         errors,
-        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`
+        skipped,
+        markedCount,
+        results: emailResults,
+        message: `Simplified email process completed. Sent ${emailsSent} emails, ${errors} errors, ${skipped} skipped.`
       }),
       {
         status: 200,
@@ -280,7 +290,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error('[DAILY-EMAILS-FIXED] Fatal error:', error);
+    console.error('[SIMPLE-EMAILS] Fatal error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
