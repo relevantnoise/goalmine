@@ -9,6 +9,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { GoalCard } from "./GoalCard";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
+import { ProfessionalCoachPrompt } from "./ProfessionalCoachPrompt";
 import { format } from "date-fns";
 
 interface DashboardProps {
@@ -205,6 +206,9 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
 
               {/* Upgrade Prompt for Free Users */}
               {!subscription.subscribed && <UpgradePrompt compact />}
+
+              {/* Professional Coach Prompt for Personal Plan Users */}
+              {subscription.subscribed && subscription.subscription_tier === "Personal Plan" && <ProfessionalCoachPrompt />}
 
               {/* Subscription Status */}
               <div className="bg-card border rounded-lg p-4">
