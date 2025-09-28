@@ -4,34 +4,40 @@
 
 ### 📖 Read These Documents First (IN THIS ORDER):
 
-1. **`STATUS.md`** - **NEW** Complete status overview (READ THIS FIRST!)
+1. **`DATABASE_SAFETY.md`** - **🚨 CRITICAL SAFETY FIRST!** (READ THIS FIRST!)
+   - Database protection rules and safe patterns
+   - NEVER delete user data without explicit permission
+   - Prevents catastrophic data loss incidents
+   - **MANDATORY reading before any database operations**
+
+2. **`STATUS.md`** - **NEW** Complete status overview (READ THIS SECOND!)
    - Executive summary of current state
    - Latest expired goals/trials system implementation
    - Complete feature matrix and business logic
    - Production readiness assessment
 
-2. **`ARCHITECTURE_MIGRATION.md`** - **CRITICAL** Root cause of persistent bugs (READ THIS SECOND!)
+3. **`ARCHITECTURE_MIGRATION.md`** - **CRITICAL** Root cause of persistent bugs (READ THIS THIRD!)
    - Explains dual-project architecture problem
    - Why email issues keep recurring across 100+ chats
    - Complete migration plan to fix architectural issues
    - **Essential reading for understanding persistent problems**
 
-3. **`CLAUDE.md`** - Complete project overview and technical architecture
+4. **`CLAUDE.md`** - Complete project overview and technical architecture
    - Understand what the app does and how it works
    - Learn the technical stack and design patterns
    - Review common issues and troubleshooting
 
-4. **`DEPLOYMENT_READY.md`** - Deployment workflows and environment setup
+5. **`DEPLOYMENT_READY.md`** - Deployment workflows and environment setup
    - Understand the dev → production pipeline
    - Learn how to deploy changes safely
    - Review comprehensive testing checklists
 
-5. **`CURRENT_STATUS.md`** - Detailed development history and context
+6. **`CURRENT_STATUS.md`** - Detailed development history and context
    - Recent development achievements
    - Testing results and deployment preparation
    - Critical notes for developers
 
-6. **`DEVELOPMENT_WORKFLOW.md`** - Development best practices (if exists)
+7. **`DEVELOPMENT_WORKFLOW.md`** - Development best practices (if exists)
    - Learn the coding workflow
    - Understand testing requirements
    - Review emergency procedures
@@ -41,7 +47,7 @@
 ## 🔑 Quick Context for AI Assistants
 
 **Tell your AI assistant:**
-"Please read STATUS.md first, then CLAUDE.md before we start working on GoalMine.ai. ✅ ARCHITECTURAL FIX COMPLETE: Branch-based development workflow eliminates systematic email bugs. Your son's development pattern is now implemented as standard. Use dev branch for development (safe), main branch for production (live). The dual project architecture problem has been solved with true environment separation."
+"🚨 READ DATABASE_SAFETY.md FIRST! Then read STATUS.md, then CLAUDE.md before we start working on GoalMine.ai. NEVER delete user data without explicit permission - we had catastrophic data loss incidents from AI assistants running cleanup functions. The database safety rules are MANDATORY. ✅ ARCHITECTURAL FIX COMPLETE: Branch-based development workflow eliminates systematic email bugs. Use dev branch for development (safe), main branch for production (live)."
 
 ---
 
