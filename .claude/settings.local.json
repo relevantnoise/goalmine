@@ -283,7 +283,8 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke cleanup-test-users)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase projects list)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy setup-paid-subscriber --project-ref dhlcycjnzwfnadmsptof)",
-      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke send-daily-emails --method POST --body '{\"\"forceDelivery\"\": true}')"
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke send-daily-emails --method POST --body '{\"\"forceDelivery\"\": true}')",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": [],
