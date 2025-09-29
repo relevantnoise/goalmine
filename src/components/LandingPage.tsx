@@ -3,6 +3,7 @@ import { ArrowRight, Heart, Target, Zap, LogIn, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { UserCount } from "@/components/UserCount";
 import { supabase } from "@/integrations/supabase/client";
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -47,7 +48,11 @@ export const LandingPage = ({
               with AI-powered motivation
             </h2>
             
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed font-normal">Turn your ambitions into action with a personalized, AI-powered daily goal tracker & motivator that’s as committed to your success as you are.</p>
+            <p className="text-xl text-muted-foreground mb-6 max-w-2xl mx-auto leading-relaxed font-normal">Turn your ambitions into action with a personalized, AI-powered daily goal tracker & motivator that's as committed to your success as you are.</p>
+            
+            <div className="flex justify-center mb-12">
+              <UserCount variant="prominent" />
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">

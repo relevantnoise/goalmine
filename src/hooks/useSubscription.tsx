@@ -86,6 +86,33 @@ export const useSubscription = () => {
     }
   };
 
+  const createProfessionalCheckout = async () => {
+    const userEmail = user?.email;
+    if (!userEmail || !user.id) {
+      toast.error('Please sign in to subscribe');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-professional-checkout', {
+        body: {
+          email: userEmail,
+          userId: user.id,
+        },
+      });
+
+      if (error) throw new Error(error.message || 'Professional Coach checkout failed');
+      if (!data?.url) throw new Error('No checkout URL received');
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Error creating professional checkout:', error);
+      toast.error(`Failed to start Professional Coach checkout: ${error.message}`);
+      setLoading(false);
+    }
+  };
+
   const openCustomerPortal = async () => {
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
@@ -128,6 +155,7 @@ export const useSubscription = () => {
     loading,
     checkSubscription,
     createCheckout,
+    createProfessionalCheckout,
     openCustomerPortal,
   };
 };

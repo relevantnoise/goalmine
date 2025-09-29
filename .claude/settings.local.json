@@ -284,17 +284,20 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase projects list)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy setup-paid-subscriber --project-ref dhlcycjnzwfnadmsptof)",
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions invoke send-daily-emails --method POST --body '{\"\"forceDelivery\"\": true}')",
+<<<<<<< Updated upstream
+      "Bash(git stash:*)"
+=======
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_QFRVaS/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_A0dc5t/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_y0bx1o/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_45UXM8/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_mEoWMc/**)",
-      "Bash(npx supabase functions invoke:*)",
-      "Bash(npx supabase functions deploy:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(curl:*)"
+      "Bash(git merge:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy create-professional-checkout --project-ref dhlcycjnzwfnadmsptof)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_92814ac901f3b9a33f69e4019854d307e675d968 npx supabase functions deploy create-professional-checkout --project-ref dhlcycjnzwfnadmsptof --debug)",
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_Jfg5cQ/**)",
+      "Bash(git stash push:*)"
+>>>>>>> Stashed changes
     ],
     "deny": [],
     "ask": [],

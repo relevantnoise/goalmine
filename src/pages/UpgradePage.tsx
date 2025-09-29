@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Crown, ArrowLeft, Target, Zap, Mail } from "lucide-react";
+import { Check, Crown, ArrowLeft, Target, Zap, Mail, Users } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 
 export const UpgradePage = () => {
   const { user } = useAuth();
-  const { subscription, loading, createCheckout } = useSubscription();
+  const { subscription, loading, createCheckout, createProfessionalCheckout } = useSubscription();
   const navigate = useNavigate();
 
   const handleSubscribe = () => {
@@ -18,6 +18,17 @@ export const UpgradePage = () => {
       return;
     }
     createCheckout();
+  };
+
+  const handleProfessionalSubscribe = () => {
+    if (!user) {
+      // Redirect to auth if not logged in
+      window.location.href = '/auth';
+      return;
+    }
+    // Temporary: Redirect to pricing page where Professional Coach function works
+    // TODO: Replace with createProfessionalCheckout() once function is deployed
+    navigate('/');
   };
 
   return (
@@ -47,8 +58,8 @@ export const UpgradePage = () => {
           </p>
         </div>
 
-        {/* Premium Plan Card */}
-        <div className="max-w-xs mx-auto mb-6">
+        {/* Premium Plan Cards */}
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-6">
           <Card className="border-2 border-premium relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
               Most Popular Plan
@@ -110,7 +121,7 @@ export const UpgradePage = () => {
                 </li>
               </ul>
 
-              {subscription.subscribed ? (
+              {subscription.subscribed && subscription.subscription_tier === "Personal Plan" ? (
                 <div className="bg-success-light/20 text-success border border-success/20 rounded-lg p-4 text-center">
                   <Crown className="w-6 h-6 mx-auto mb-2" />
                   <p className="font-semibold">You're already a Personal Plan member!</p>
@@ -134,6 +145,80 @@ export const UpgradePage = () => {
                       Upgrade to Personal Plan
                     </>
                   )}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Professional Coach Card */}
+          <Card className="border-2 border-green-600 relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
+              Premium Coaching
+            </div>
+            <CardHeader className="pt-8 text-center">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Users className="w-4 h-4 text-green-600" />
+              </div>
+              <CardTitle className="text-xl">Professional Coach</CardTitle>
+              <p className="text-sm text-muted-foreground mb-3">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+              <div className="text-3xl font-bold text-green-600">
+                $750
+                <span className="text-base font-normal text-muted-foreground">/month</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 mb-4">
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Everything in Personal Plan</span>
+                    <p className="text-xs text-muted-foreground">All features from Personal Plan included</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">1-Hour Monthly Coaching</span>
+                    <p className="text-xs text-muted-foreground">Direct 1-on-1 sessions with Dan Lynn</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">SMART Goal Development</span>
+                    <p className="text-xs text-muted-foreground">Professional goal structuring and planning</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">"Right to Left" Planning</span>
+                    <p className="text-xs text-muted-foreground">Strategic project planning methodology</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Personalized Support</span>
+                    <p className="text-xs text-muted-foreground">Coaching & motivational guidance</p>
+                  </div>
+                </li>
+              </ul>
+
+              {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? (
+                <div className="bg-success-light/20 text-success border border-success/20 rounded-lg p-4 text-center">
+                  <Users className="w-6 h-6 mx-auto mb-2" />
+                  <p className="font-semibold">You're a Professional Coach member!</p>
+                  <p className="text-sm opacity-90">Enjoy your premium coaching experience</p>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleProfessionalSubscribe} 
+                  className="w-full bg-green-600 hover:bg-green-700" 
+                  size="lg" 
+                  disabled={loading}
+                >
+                  {loading ? "Dream Big..." : "Subscribe Now"}
                 </Button>
               )}
             </CardContent>
