@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[SIMPLE-EMAILS] Starting simplified daily email send process');
+    console.log('[SIMPLE-EMAILS] Starting simplified daily email send process - FIXED VERSION 2.0');
     
     // Check for force delivery and reset parameters
     const { forceDelivery, resetToday } = req.method === 'POST' ? await req.json() : {};

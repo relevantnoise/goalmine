@@ -291,7 +291,10 @@
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_mEoWMc/**)",
       "Bash(npx supabase functions invoke:*)",
       "Bash(npx supabase functions deploy:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],
