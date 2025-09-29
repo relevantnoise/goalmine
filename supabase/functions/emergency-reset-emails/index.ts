@@ -12,33 +12,32 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[RESET-GOALS] Resetting test user goals for email testing');
+    console.log('[EMERGENCY-RESET] Resetting all goals for immediate email delivery');
     
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Reset last_motivation_date for test users
+    // Reset ALL active goals so emails can be sent today
     const { data: resetData, error: resetError } = await supabase
       .from('goals')
       .update({ last_motivation_date: null })
-      .in('user_id', ['danlynn@gmail.com', 'dandlynn@yahoo.com'])
       .eq('is_active', true)
-      .select('*');
+      .select('id, title, user_id');
 
     if (resetError) {
-      console.error('[RESET-GOALS] Error resetting goals:', resetError);
+      console.error('[EMERGENCY-RESET] Error:', resetError);
       throw resetError;
     }
 
-    console.log(`[RESET-GOALS] Successfully reset ${resetData?.length || 0} goals`);
+    console.log(`[EMERGENCY-RESET] Reset ${resetData?.length || 0} goals for email delivery`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Reset ${resetData?.length || 0} goals - ready for email testing`,
-        resetGoals: resetData?.map(goal => ({ id: goal.id, title: goal.title, user_id: goal.user_id }))
+        message: `EMERGENCY RESET: ${resetData?.length || 0} goals ready for email delivery`,
+        resetGoals: resetData
       }),
       {
         status: 200,
@@ -47,7 +46,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error('[RESET-GOALS] Fatal error:', error);
+    console.error('[EMERGENCY-RESET] Fatal error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

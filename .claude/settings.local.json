@@ -288,7 +288,10 @@
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_A0dc5t/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_y0bx1o/**)",
       "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_45UXM8/**)",
-      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_mEoWMc/**)"
+      "Read(//var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_mEoWMc/**)",
+      "Bash(npx supabase functions invoke:*)",
+      "Bash(npx supabase functions deploy:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": [],

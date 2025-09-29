@@ -42,8 +42,8 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log('[SIMPLE-EMAILS] Starting simplified daily email send process');
     
-    // Check for force delivery parameter
-    const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
+    // Check for force delivery and reset parameters
+    const { forceDelivery, resetToday } = req.method === 'POST' ? await req.json() : {};
 
     // Initialize Supabase client
     const supabase = createClient(
@@ -92,6 +92,22 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`[SIMPLE-EMAILS] ✅ Within delivery window, proceeding with email delivery`);
+
+    // EMERGENCY RESET: Clear today's email dates if requested
+    if (resetToday) {
+      console.log(`[SIMPLE-EMAILS] 🚨 EMERGENCY RESET: Clearing last_motivation_date for today`);
+      const { error: resetError } = await supabase
+        .from('goals')
+        .update({ last_motivation_date: null })
+        .eq('is_active', true)
+        .eq('last_motivation_date', todayDate);
+      
+      if (resetError) {
+        console.error(`[SIMPLE-EMAILS] Reset failed:`, resetError);
+      } else {
+        console.log(`[SIMPLE-EMAILS] ✅ Reset completed - goals can now receive emails`);
+      }
+    }
 
     // SIMPLIFIED: Find goals that need emails (keep working hybrid architecture)
     const { data: candidateGoals, error: candidateError } = await supabase
@@ -233,12 +249,14 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // SIMPLIFIED SUCCESS CHECK: If no error, consider it successful
-        if (emailResponse.error) {
-          console.error(`[SIMPLE-EMAILS] ❌ Email failed for ${goal.title}:`, emailResponse.error);
-          emailResults.push({ goal: goal.title, status: 'error', reason: emailResponse.error.message });
+        // CRITICAL FIX: Check the actual success response, not just absence of error
+        if (emailResponse.error || !emailResponse.data?.success) {
+          const errorMsg = emailResponse.error?.message || emailResponse.data?.error || 'Email delivery failed';
+          console.error(`[SIMPLE-EMAILS] ❌ Email failed for ${goal.title}:`, errorMsg);
+          emailResults.push({ goal: goal.title, status: 'error', reason: errorMsg });
+          // CRITICAL: Do NOT add to successfulGoalIds - goal will NOT be marked as processed
         } else {
-          console.log(`[SIMPLE-EMAILS] ✅ Email sent for ${goal.title}`);
+          console.log(`[SIMPLE-EMAILS] ✅ Email sent for ${goal.title}:`, emailResponse.data);
           successfulGoalIds.push(goal.id);
           emailResults.push({ goal: goal.title, status: 'sent', email: profile.email });
         }
