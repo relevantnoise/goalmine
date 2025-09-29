@@ -5,6 +5,7 @@ import { Check, Zap, Crown, Target, Users } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
+import { UserCount } from "@/components/UserCount";
 interface PricingPageProps {
   onStartTrial: () => void;
   onBack: () => void;
@@ -53,6 +54,9 @@ export const PricingPage = ({
       <div className="container mx-auto px-6 py-12 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-12">
+          <div className="flex justify-center mb-3">
+            <UserCount variant="subtle" />
+          </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your First Goal</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transform your goals into achievements with personalized daily motivation. 
@@ -167,14 +171,14 @@ export const PricingPage = ({
           </Card>
 
           {/* Professional Coach Card */}
-          <Card className="border-2 border-warning relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 bg-warning text-warning-foreground text-center py-2 text-sm font-medium">
+          <Card className="border-2 border-green-600 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
               Premium Coaching
             </div>
             <CardHeader className="pt-12">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-warning-light rounded-full flex items-center justify-center">
-                  <Users className="w-6 h-6 text-warning" />
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <Users className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
                   <CardTitle className="text-2xl">Professional Coach</CardTitle>
@@ -182,36 +186,36 @@ export const PricingPage = ({
                 </div>
               </div>
               <div className="text-4xl font-bold">
-                $500
+                $750
                 <span className="text-lg font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-warning" />
+                  <Check className="w-6 h-6 text-green-600" />
                   <span>Everything in Personal Plan plus...</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-warning" />
+                  <Check className="w-6 h-6 text-green-600" />
                   <span>1-hour monthly 1-on-1 coaching sessions</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-warning" />
+                  <Check className="w-6 h-6 text-green-600" />
                   <span>Personal goal planning & SMART goal development</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-warning" />
+                  <Check className="w-6 h-6 text-green-600" />
                   <span>"Right to left" project planning methodology</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-warning" />
+                  <Check className="w-6 h-6 text-green-600" />
                   <span>Personalized coaching & motivational support</span>
                 </li>
               </ul>
               {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
-                </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-warning hover:bg-warning/90" size="lg" disabled={loading}>
+                </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-green-600 hover:bg-green-700" size="lg" disabled={loading}>
                   {loading ? "Dream Big..." : "Subscribe Now"}
                 </Button>}
             </CardContent>
@@ -255,7 +259,7 @@ export const PricingPage = ({
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold mb-2">What exactly is a "Goal" and a "Nudge"?</h3>
-              <p className="text-muted-foreground">A Goal is your personal goal journey. Each Goal within GoalMine.ai receives personalized daily motivation, micro-plans, and challenges tailored to your preferred coaching style.  A Nudge is an additional Motivational email you can receive to give you an added boost. </p>
+              <p className="text-muted-foreground">A Goal is your personal goal journey. Each Goal within GoalMine.ai receives personalized daily motivation, micro-plans, and challenges tailored to your preferred coaching style.  A Nudge is an additional Motivational message you can receive during the day to give you an added boost. </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Can I have multiple Goals?</h3>
@@ -263,7 +267,7 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">What's included in Professional Coach?</h3>
-              <p className="text-muted-foreground">Professional Coach includes everything from Personal Plan plus a monthly 1-hour 1-on-1 coaching session with me personally. We'll work together on goal planning, SMART goal development, "right to left" project planning, and provide ongoing motivational support tailored to your specific needs.</p>
+              <p className="text-muted-foreground">Professional Coach includes everything from Personal Plan plus a monthly 1-hour 1-on-1 coaching session with Dan Lynn, a successful and seasoned entrepreneur who is the co-founder of Starting Point Ventures and creator of GoalMine.ai. We'll work together on goal planning, SMART goal development, "right to left" project planning, and provide ongoing motivational support tailored to your specific needs.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>

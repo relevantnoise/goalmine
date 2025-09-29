@@ -28,7 +28,7 @@ export const ProfessionalCoachPrompt = ({
           disabled={loading}
         >
           <Users className="w-3 h-3 mr-1" />
-          $500/month
+          $750/month
         </Button>
       </div>
     </div>

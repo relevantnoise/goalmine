@@ -151,53 +151,53 @@ export const UpgradePage = () => {
           </Card>
 
           {/* Professional Coach Card */}
-          <Card className="border-2 border-warning relative overflow-hidden shadow-xl">
-            <div className="absolute top-0 left-0 right-0 bg-warning text-warning-foreground text-center py-2 text-sm font-medium">
+          <Card className="border-2 border-green-600 relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
               Premium Coaching
             </div>
             <CardHeader className="pt-8 text-center">
-              <div className="w-8 h-8 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-2">
-                <Users className="w-4 h-4 text-warning" />
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Users className="w-4 h-4 text-green-600" />
               </div>
               <CardTitle className="text-xl">Professional Coach</CardTitle>
               <p className="text-sm text-muted-foreground mb-3">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
-              <div className="text-3xl font-bold text-warning">
-                $500
+              <div className="text-3xl font-bold text-green-600">
+                $750
                 <span className="text-base font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 mb-4">
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Everything in Personal Plan</span>
                     <p className="text-xs text-muted-foreground">All features from Personal Plan included</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">1-Hour Monthly Coaching</span>
                     <p className="text-xs text-muted-foreground">Direct 1-on-1 sessions with Dan Lynn</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">SMART Goal Development</span>
                     <p className="text-xs text-muted-foreground">Professional goal structuring and planning</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">"Right to Left" Planning</span>
                     <p className="text-xs text-muted-foreground">Strategic project planning methodology</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Personalized Support</span>
                     <p className="text-xs text-muted-foreground">Coaching & motivational guidance</p>
@@ -214,7 +214,7 @@ export const UpgradePage = () => {
               ) : (
                 <Button 
                   onClick={handleProfessionalSubscribe} 
-                  className="w-full bg-warning hover:bg-warning/90" 
+                  className="w-full bg-green-600 hover:bg-green-700" 
                   size="lg" 
                   disabled={loading}
                 >

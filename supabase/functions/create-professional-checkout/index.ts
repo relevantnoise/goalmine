@@ -25,13 +25,13 @@ serve(async (req) => {
       timeout: 5000, // 5 second timeout
     });
 
-    // Create checkout session for Professional Coach tier - $500/month
+    // Create checkout session for Professional Coach tier - $750/month
     // Includes everything from Personal Plan + 1-on-1 coaching
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
         {
-          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Professional Coach $500/month
+          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Professional Coach $750/month
           quantity: 1,
         },
       ],
