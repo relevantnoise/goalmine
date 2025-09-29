@@ -60,25 +60,37 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('[DEBUG] Email candidates:', JSON.stringify(emailCandidates, null, 2));
     console.log('[DEBUG] All goals:', JSON.stringify(goals, null, 2));
 
-    // TEMP FIX: Reset email dates for testing (remove after fixing)
+    // EMERGENCY RESET: Clear today's processed dates
     const { searchParams } = new URL(req.url);
     const shouldReset = searchParams.get('reset') === 'true';
     
     let resetResults = null;
     if (shouldReset) {
-      console.log('[DEBUG] RESETTING email dates for testing...');
+      console.log('[DEBUG] 🚨 EMERGENCY RESET: Clearing last_motivation_date = 2025-09-29');
       const { data: resetData, error: resetError } = await supabase
         .from('goals')
         .update({ last_motivation_date: null })
         .in('user_id', ['danlynn@gmail.com', 'dandlynn@yahoo.com'])
         .eq('is_active', true)
-        .select('*');
+        .eq('last_motivation_date', '2025-09-29');
       
       if (resetError) {
         console.error('[DEBUG] Reset error:', resetError);
       } else {
-        console.log('[DEBUG] Reset successful:', resetData?.length);
+        console.log('[DEBUG] ✅ RESET SUCCESS - cleared', resetData?.length, 'goals');
         resetResults = resetData;
+        
+        // Immediately test email sending after reset
+        console.log('[DEBUG] Testing email send after reset...');
+        const testEmailResponse = await supabase.functions.invoke('send-daily-emails', {
+          body: { forceDelivery: true },
+          headers: {
+            Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+          },
+        });
+        
+        resetResults.testEmailResponse = testEmailResponse.data;
+        resetResults.testEmailError = testEmailResponse.error;
       }
     }
 
