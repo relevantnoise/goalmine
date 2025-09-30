@@ -188,7 +188,7 @@ serve(async (req) => {
       .eq('id', goalId)
       .eq('user_id', goal.user_id)  // Use the actual user_id from the found goal
       .select()
-      .maybeSingle();
+      .single();
 
     if (error) {
       console.error('❌ Database error:', error);

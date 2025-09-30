@@ -468,7 +468,9 @@ export const useGoals = () => {
         body: { goalId, userId: user.email || user.id, updates }
       });
 
-      if (error) throw error;
+      if (error || !data?.success) {
+        throw new Error(data?.error || error?.message || 'Failed to update goal');
+      }
       
       // Optimistic update
       setGoals(prev => prev.map(goal => 
