@@ -65,11 +65,12 @@ serve(async (req) => {
 
     // HYBRID: Look up profile by email to get Firebase UID (proper architecture)
     console.log('🔍 Looking up profile by email to get Firebase UID:', user_id);
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const { data: userProfileResults, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('id, email')
-      .eq('email', user_id)
-      .maybeSingle();
+      .eq('email', user_id);
+    
+    const userProfile = userProfileResults && userProfileResults.length > 0 ? userProfileResults[0] : null;
 
     if (profileError) {
       console.error('❌ Error looking up user profile:', profileError);
@@ -120,11 +121,12 @@ serve(async (req) => {
     console.log('📊 Total goal count for user:', currentGoalCount);
 
     // Check subscription status using email (subscribers table uses email as user_id)
-    const { data: subscriber, error: subError } = await supabaseAdmin
+    const { data: subscriberResults, error: subError } = await supabaseAdmin
       .from('subscribers')
       .select('subscribed')
-      .eq('user_id', user_id) // Keep using email for subscribers table
-      .maybeSingle(); // Use maybeSingle() to avoid errors when no record exists
+      .eq('user_id', user_id); // Keep using email for subscribers table
+    
+    const subscriber = subscriberResults && subscriberResults.length > 0 ? subscriberResults[0] : null;
 
     // Default to free user if no subscriber record found or error occurred
     const isSubscribed = subscriber?.subscribed === true;
