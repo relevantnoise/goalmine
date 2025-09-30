@@ -54,11 +54,17 @@ const handler = async (req: Request): Promise<Response> => {
     // Get current time
     const now = new Date();
     
-    // KEEP PACIFIC/MIDWAY TIMEZONE SOLUTION (this works for 7 AM delivery)
+    // PACIFIC/MIDWAY TIMEZONE SOLUTION with DATE ADJUSTMENT FIX
+    // Use Pacific/Midway for timing (midnight = 7 AM EDT) but subtract 1 day for proper date logic
     const midwayDate = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Pacific/Midway'
     }).format(now);
-    const todayDate = midwayDate;
+    
+    // FIX: Subtract 1 day from Pacific/Midway date to match Eastern date expectation
+    // When it's Wed 12:00 AM Pacific/Midway (Tue 7:00 AM EDT), use Tuesday's date
+    const midwayDateObj = new Date(midwayDate + 'T00:00:00Z');
+    midwayDateObj.setDate(midwayDateObj.getDate() - 1);
+    const todayDate = midwayDateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     const easternTime = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
