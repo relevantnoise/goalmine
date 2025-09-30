@@ -132,7 +132,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) =>
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
                 className="w-full mt-1 px-3 py-2 border border-border rounded-md text-base"
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]} // Tomorrow's date
               />
               <p className="text-xs text-muted-foreground mt-1">
                 Setting a deadline helps create urgency and better motivation
