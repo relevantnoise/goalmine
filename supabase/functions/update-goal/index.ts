@@ -87,36 +87,72 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Phase 5: Get goal and user profile for permission validation
-    const { data: goal, error: fetchError } = await supabase
+    // HYBRID: Find goal using both email AND Firebase UID approaches
+    console.log('🔍 HYBRID: Looking for goal using both email and Firebase UID approaches');
+    
+    // First, try to get profile to find Firebase UID
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', userId)
+      .maybeSingle();
+
+    let goal = null;
+    let fetchError = null;
+    
+    // Try 1: Look for goal with email as user_id (OLD architecture)
+    const { data: goalByEmail, error: emailError } = await supabase
       .from('goals')
       .select('*')
       .eq('id', goalId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
+    
+    if (goalByEmail) {
+      goal = goalByEmail;
+      console.log('✅ Found goal using email approach');
+    } else if (userProfile?.id) {
+      // Try 2: Look for goal with Firebase UID as user_id (NEW architecture)
+      console.log('🔍 Trying Firebase UID approach:', userProfile.id);
+      const { data: goalByUID, error: uidError } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('id', goalId)
+        .eq('user_id', userProfile.id)
+        .maybeSingle();
+      
+      if (goalByUID) {
+        goal = goalByUID;
+        console.log('✅ Found goal using Firebase UID approach');
+      } else {
+        fetchError = uidError || emailError || new Error('Goal not found');
+      }
+    } else {
+      fetchError = emailError || new Error('Goal not found');
+    }
 
-    if (fetchError) {
+    if (!goal || fetchError) {
       return new Response(JSON.stringify({
         success: false,
-        error: fetchError.message
+        error: fetchError?.message || 'Goal not found'
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 404,
       });
     }
 
-    // Get user profile and subscription status
+    // Get user profile and subscription status (use email lookup)
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', userId)
-      .single();
+      .eq('email', userId)
+      .maybeSingle();
 
     const { data: subscription } = await supabase
       .from('subscribers')
       .select('*')
-      .eq('user_id', userId)
-      .single();
+      .eq('user_id', userProfile?.id || userId)
+      .maybeSingle();
 
     const isSubscribed = subscription?.status === 'active';
 
@@ -142,7 +178,7 @@ serve(async (req) => {
       });
     }
 
-    // Update the goal using service role
+    // Update the goal using service role (use the actual goal's user_id)
     const { data, error } = await supabase
       .from('goals')
       .update({
@@ -150,9 +186,9 @@ serve(async (req) => {
         updated_at: new Date().toISOString()
       })
       .eq('id', goalId)
-      .eq('user_id', userId)
+      .eq('user_id', goal.user_id)  // Use the actual user_id from the found goal
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('❌ Database error:', error);
