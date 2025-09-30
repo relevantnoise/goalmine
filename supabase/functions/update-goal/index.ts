@@ -184,7 +184,7 @@ serve(async (req) => {
     }
 
     // Update the goal using service role (use the actual goal's user_id)
-    const { data, error } = await supabase
+    const { data: updateResults, error } = await supabase
       .from('goals')
       .update({
         ...updates,
@@ -192,17 +192,18 @@ serve(async (req) => {
       })
       .eq('id', goalId)
       .eq('user_id', goal.user_id)  // Use the actual user_id from the found goal
-      .select()
-      .single();
+      .select();
+    
+    const data = updateResults && updateResults.length > 0 ? updateResults[0] : null;
 
-    if (error) {
-      console.error('❌ Database error:', error);
+    if (error || !data) {
+      console.error('❌ Database error or no rows updated:', error);
       return new Response(JSON.stringify({
         success: false,
-        error: error.message
+        error: error?.message || 'Goal not found or could not be updated'
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: error ? 500 : 404,
       });
     }
 
