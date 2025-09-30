@@ -217,8 +217,21 @@ export const useGoals = () => {
         throw new Error(goalsResponse.data?.error || goalsResponse.error?.message || 'Failed to fetch goals');
       }
 
-      const fetchedGoals = goalsResponse.data.goals;
+      let fetchedGoals = goalsResponse.data.goals;
       console.log('✅ Goals fetched via edge function:', fetchedGoals.length, 'goals');
+      
+      // Apply localStorage edits to fetched goals
+      const editedGoals = JSON.parse(localStorage.getItem('editedGoals') || '{}');
+      if (Object.keys(editedGoals).length > 0) {
+        console.log('💾 Applying localStorage edits:', editedGoals);
+        fetchedGoals = fetchedGoals.map(goal => {
+          if (editedGoals[goal.id]) {
+            console.log('🔄 Applying edit to goal:', goal.id, editedGoals[goal.id]);
+            return { ...goal, ...editedGoals[goal.id] };
+          }
+          return goal;
+        });
+      }
       
       // Phase 3: Store profile and subscription status
       setUserProfile(profile);
@@ -517,12 +530,23 @@ export const useGoals = () => {
         console.log('🗓️ Date processing:', { original: updates.target_date, processed: processedUpdates.target_date });
       }
       
-      // Optimistic update
-      setGoals(prev => prev.map(goal => 
-        goal.id === goalId 
-          ? { ...goal, ...processedUpdates, updated_at: new Date().toISOString() }
-          : goal
-      ));
+      // Optimistic update with localStorage persistence
+      const updatedGoal = { ...processedUpdates, updated_at: new Date().toISOString() };
+      setGoals(prev => {
+        const newGoals = prev.map(goal => 
+          goal.id === goalId 
+            ? { ...goal, ...updatedGoal }
+            : goal
+        );
+        
+        // Persist changes to localStorage as backup
+        const editedGoals = JSON.parse(localStorage.getItem('editedGoals') || '{}');
+        editedGoals[goalId] = updatedGoal;
+        localStorage.setItem('editedGoals', JSON.stringify(editedGoals));
+        console.log('💾 Saved edit to localStorage:', { goalId, updates: updatedGoal });
+        
+        return newGoals;
+      });
       
       console.log('🎉 Calling toast.success...');
       toast.success('Goal updated successfully!');
