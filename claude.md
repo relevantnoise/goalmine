@@ -135,6 +135,7 @@ subscribers: {
 - **✅ fetch-user-goals**: Dual lookup (email + Firebase UID), combines all goals
 - **✅ check-in**: Tries email approach first, then Firebase UID if not found
 - **✅ create-goal**: Profile lookup → Firebase UID for new goals
+- **✅ update-goal**: Hybrid lookup supports both email and Firebase UID goals (Fixed Sept 30, 2025)
 - **✅ send-daily-emails**: Detects goal format, handles subscription accordingly
 
 ### Legacy RLS Issues (Bypassed)
