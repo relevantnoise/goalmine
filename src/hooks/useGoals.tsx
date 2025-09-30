@@ -461,7 +461,11 @@ export const useGoals = () => {
 
   // Update a goal
   const updateGoal = async (goalId: string, updates: Partial<Goal>) => {
-    if (!user) return;
+    console.log('🔄 updateGoal function called with:', { goalId, updates, user: user?.email });
+    if (!user) {
+      console.log('❌ No user found, returning early');
+      return;
+    }
 
     try {
       const { data, error } = await supabase.functions.invoke('update-goal', {
