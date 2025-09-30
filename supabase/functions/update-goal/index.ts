@@ -145,17 +145,19 @@ serve(async (req) => {
     }
 
     // Get user profile and subscription status (use email lookup)
-    const { data: profile } = await supabase
+    const { data: profileResults } = await supabase
       .from('profiles')
       .select('*')
-      .eq('email', userId)
-      .maybeSingle();
+      .eq('email', userId);
+    
+    const profile = profileResults && profileResults.length > 0 ? profileResults[0] : null;
 
-    const { data: subscription } = await supabase
+    const { data: subscriptionResults } = await supabase
       .from('subscribers')
       .select('*')
-      .eq('user_id', userProfile?.id || userId)
-      .maybeSingle();
+      .eq('user_id', userProfile?.id || userId);
+    
+    const subscription = subscriptionResults && subscriptionResults.length > 0 ? subscriptionResults[0] : null;
 
     const isSubscribed = subscription?.status === 'active';
 
