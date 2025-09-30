@@ -477,14 +477,14 @@ export const useGoals = () => {
         updates
       });
       
-      // Use direct fetch to get detailed error response - testing with v2 function
-      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal-v2', {
+      // TESTING: Use simple test function instead of complex update-goal
+      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/simple-update-test', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ goalId, userId: user.email || user.id, updates })
+        body: JSON.stringify({ goalId, updates })
       });
 
       const responseText = await response.text();
@@ -512,7 +512,53 @@ export const useGoals = () => {
       ));
       toast.success('Goal updated successfully.');
     } catch (error) {
-      console.error('❌ Error updating goal:', error);
+      console.error('❌ Error updating goal via edge function:', error);
+      
+      // FALLBACK: Try direct Supabase update (may fail due to RLS but worth trying)
+      try {
+        console.log('🔄 Attempting direct Supabase update as fallback...');
+        console.log('🔍 Direct update parameters:', { goalId, updates });
+        
+        // First, let's see what user_id this goal actually has
+        const { data: goalData } = await supabase
+          .from('goals')
+          .select('id, user_id, title')
+          .eq('id', goalId);
+        console.log('🔍 Current goal data:', goalData);
+        
+        const { data: directUpdateData, error: directError } = await supabase
+          .from('goals')
+          .update({
+            ...updates,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', goalId)
+          .select();
+          
+        console.log('🔍 Direct update response:', { data: directUpdateData, error: directError });
+          
+        if (directError) {
+          console.error('❌ Direct update failed with error:', directError);
+          throw directError;
+        }
+        
+        if (directUpdateData && directUpdateData.length > 0) {
+          console.log('✅ Direct update succeeded! Updated goal:', directUpdateData[0]);
+          setGoals(prev => prev.map(goal => 
+            goal.id === goalId 
+              ? { ...goal, ...updates, updated_at: new Date().toISOString() }
+              : goal
+          ));
+          toast.success('Goal updated successfully.');
+          return;
+        } else {
+          console.log('⚠️ Direct update returned no data - goal may not exist or RLS blocked it');
+          throw new Error('No data returned from direct update');
+        }
+      } catch (fallbackError) {
+        console.error('❌ Fallback update failed:', fallbackError);
+      }
+      
       toast.error('Failed to update goal. Please try again.');
       // Revert optimistic update on error
       await fetchGoals();
