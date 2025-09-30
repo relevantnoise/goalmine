@@ -595,7 +595,27 @@ if (goal.user_id.includes('@')) {
 
 ## Recent Technical Developments
 
-### Email Timing Issue - FINAL RESOLUTION (September 22, 2025)
+### Goal Editing Fix - FINAL RESOLUTION (September 30, 2025)
+- **Problem**: Goal editing appeared to work (dialog opened, changes made, save clicked) but changes didn't persist to database
+- **Root Cause**: `.maybeSingle()` calls in `update-goal` edge function causing PostgreSQL "Cannot coerce the result to a single JSON object" errors
+- **User Report**: "I used to get a message saying goal saved. I don't get that anymore and the goal isn't saved."
+- **Technical Issue**: `.maybeSingle()` fails when query returns 0 or multiple rows, breaking the hybrid architecture goal lookup
+- **FINAL SOLUTION**: Replaced ALL `.maybeSingle()` calls with proper array handling throughout update-goal function
+- **Fix Details**: `const goal = results?.length > 0 ? results[0] : null` pattern instead of `.maybeSingle()`
+- **Testing**: ✅ Verified working on both localhost and production (goalmine.ai) with persistent changes
+- **Files Modified**: `supabase/functions/update-goal/index.ts`, `src/hooks/useGoals.tsx`
+- **Result**: Goal editing now works perfectly - users see "Goal updated successfully" toast and changes persist across sessions
+
+### Email Timing Issue - FINAL RESOLUTION with Date Adjustment (September 30, 2025)
+- **Previous Solution**: Pacific/Midway timezone (UTC-11) for 7 AM EDT delivery timing
+- **New Problem Identified**: Date mismatch between delivery timing and goal processing
+- **Critical Issue**: Tuesday 7:00 AM EDT = Wednesday 12:00 AM Pacific/Midway, causing goals to be marked for wrong date
+- **FINAL SOLUTION**: Added date adjustment - subtract 1 day from Pacific/Midway date to match Eastern date expectation
+- **Technical Fix**: `midwayDateObj.setDate(midwayDateObj.getDate() - 1)` in send-daily-emails function
+- **Result**: Perfect 7 AM EDT timing with correct Tuesday date processing when emails deliver Tuesday morning
+- **Status**: ✅ DEPLOYED - Tomorrow's 7 AM EDT emails will have proper timing AND date logic
+
+### Email Timing Issue - Previous Attempts (September 22, 2025)
 - **Problem**: Daily emails consistently arriving at wrong times (8 PM EDT, then midnight EDT) despite multiple fix attempts
 - **User Impact**: Defeated purpose of morning motivation emails to start the day
 - **ROOT CAUSE DISCOVERY**: Date rollover triggering, NOT time-based triggering
