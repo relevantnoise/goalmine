@@ -477,8 +477,8 @@ export const useGoals = () => {
         updates
       });
       
-      // Use direct fetch to get detailed error response
-      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal', {
+      // Use direct fetch to get detailed error response - testing with v2 function
+      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal-v2', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
