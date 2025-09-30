@@ -91,22 +91,24 @@ serve(async (req) => {
     console.log('🔍 HYBRID: Looking for goal using both email and Firebase UID approaches');
     
     // First, try to get profile to find Firebase UID
-    const { data: userProfile } = await supabase
+    const { data: userProfiles } = await supabase
       .from('profiles')
       .select('id, email')
-      .eq('email', userId)
-      .maybeSingle();
+      .eq('email', userId);
+    
+    const userProfile = userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
 
     let goal = null;
     let fetchError = null;
     
     // Try 1: Look for goal with email as user_id (OLD architecture)
-    const { data: goalByEmail, error: emailError } = await supabase
+    const { data: goalByEmailResults, error: emailError } = await supabase
       .from('goals')
       .select('*')
       .eq('id', goalId)
-      .eq('user_id', userId)
-      .maybeSingle();
+      .eq('user_id', userId);
+    
+    const goalByEmail = goalByEmailResults && goalByEmailResults.length > 0 ? goalByEmailResults[0] : null;
     
     if (goalByEmail) {
       goal = goalByEmail;
@@ -114,12 +116,13 @@ serve(async (req) => {
     } else if (userProfile?.id) {
       // Try 2: Look for goal with Firebase UID as user_id (NEW architecture)
       console.log('🔍 Trying Firebase UID approach:', userProfile.id);
-      const { data: goalByUID, error: uidError } = await supabase
+      const { data: goalByUIDResults, error: uidError } = await supabase
         .from('goals')
         .select('*')
         .eq('id', goalId)
-        .eq('user_id', userProfile.id)
-        .maybeSingle();
+        .eq('user_id', userProfile.id);
+      
+      const goalByUID = goalByUIDResults && goalByUIDResults.length > 0 ? goalByUIDResults[0] : null;
       
       if (goalByUID) {
         goal = goalByUID;

@@ -468,12 +468,40 @@ export const useGoals = () => {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('update-goal', {
-        body: { goalId, userId: user.email || user.id, updates }
+      console.log('🚀 Calling update-goal edge function...');
+      console.log('🔍 Request details:', {
+        goalId,
+        userId: user.email || user.id, 
+        userEmail: user.email,
+        userFirebaseId: user.id,
+        updates
+      });
+      
+      // Use direct fetch to get detailed error response
+      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ goalId, userId: user.email || user.id, updates })
       });
 
-      if (error || !data?.success) {
-        throw new Error(data?.error || error?.message || 'Failed to update goal');
+      const responseText = await response.text();
+      console.log('🔍 Raw response status:', response.status);
+      console.log('🔍 Raw response text:', responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('❌ Failed to parse response:', parseError);
+        throw new Error(`Server returned invalid JSON: ${responseText}`);
+      }
+
+      if (!response.ok || !data?.success) {
+        console.error('❌ Goal update failed with details:', data);
+        throw new Error(data?.error || `HTTP ${response.status}: ${response.statusText}`);
       }
       
       // Optimistic update
