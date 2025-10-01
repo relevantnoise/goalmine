@@ -5,8 +5,11 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { DanLynnBioModal } from "@/components/DanLynnBioModal";
+import { useState } from "react";
 
 export const UpgradePage = () => {
+  const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const { user } = useAuth();
   const { subscription, loading, createCheckout, createProfessionalCheckout } = useSubscription();
   const navigate = useNavigate();
@@ -161,6 +164,12 @@ export const UpgradePage = () => {
               </div>
               <CardTitle className="text-xl">Professional Coach</CardTitle>
               <p className="text-sm text-muted-foreground mb-3">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+              <button 
+                onClick={() => setIsDanBioOpen(true)}
+                className="text-green-600 hover:text-green-700 text-sm underline mb-3 cursor-pointer"
+              >
+                Learn more about Dan
+              </button>
               <div className="text-3xl font-bold text-green-600">
                 $750
                 <span className="text-base font-normal text-muted-foreground">/month</span>
@@ -277,6 +286,12 @@ export const UpgradePage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Dan Lynn Bio Modal */}
+      <DanLynnBioModal 
+        isOpen={isDanBioOpen} 
+        onClose={() => setIsDanBioOpen(false)} 
+      />
     </div>
   );
 };

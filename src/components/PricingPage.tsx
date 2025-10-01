@@ -6,6 +6,8 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { UserCount } from "@/components/UserCount";
+import { DanLynnBioModal } from "@/components/DanLynnBioModal";
+import { useState } from "react";
 interface PricingPageProps {
   onStartTrial: () => void;
   onBack: () => void;
@@ -14,6 +16,7 @@ export const PricingPage = ({
   onStartTrial,
   onBack
 }: PricingPageProps) => {
+  const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const {
     user
   } = useAuth();
@@ -183,6 +186,12 @@ export const PricingPage = ({
                 <div>
                   <CardTitle className="text-2xl">Professional Coach</CardTitle>
                   <p className="text-muted-foreground">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+                  <button 
+                    onClick={() => setIsDanBioOpen(true)}
+                    className="text-green-600 hover:text-green-700 text-sm underline mt-1 cursor-pointer"
+                  >
+                    Learn more about Dan
+                  </button>
                 </div>
               </div>
               <div className="text-4xl font-bold">
@@ -286,5 +295,11 @@ export const PricingPage = ({
           </Button>
         </div>
       </div>
+      
+      {/* Dan Lynn Bio Modal */}
+      <DanLynnBioModal 
+        isOpen={isDanBioOpen} 
+        onClose={() => setIsDanBioOpen(false)} 
+      />
     </div>;
 };
