@@ -133,6 +133,7 @@ export const SimpleEditGoalDialog = ({ goal, open, onOpenChange, onSave }: Simpl
               onChange={(e) => setTargetDate(e.target.value)}
               disabled={isLoading}
               className="w-full"
+              min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]} // Tomorrow's date
             />
           </div>
 

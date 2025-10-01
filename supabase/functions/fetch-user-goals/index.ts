@@ -37,11 +37,12 @@ serve(async (req) => {
     console.log('🔍 HYBRID: Looking for goals using both email and Firebase UID approaches');
     
     // First, try to get profile to find Firebase UID
-    const { data: userProfile } = await supabase
+    const { data: userProfileResults } = await supabase
       .from('profiles')
       .select('id, email')
-      .eq('email', user_id)
-      .maybeSingle();
+      .eq('email', user_id);
+    
+    const userProfile = userProfileResults && userProfileResults.length > 0 ? userProfileResults[0] : null;
 
     let goalQueries = [];
     

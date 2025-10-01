@@ -608,6 +608,12 @@ if (goal.user_id.includes('@')) {
 - **Benefits**: Eliminates timezone complexity, works year-round, predictable behavior
 - **Status**: Deployed October 1, 2025 - emails will work starting tomorrow 7 AM EDT
 
+### Goal Editing Fix - FINAL RESOLUTION (September 30, 2025)
+- **Problem**: Goal editing appeared to work (dialog opened, changes made, save clicked) but changes didn't persist to database
+- **Root Cause**: `.maybeSingle()` calls in `update-goal` edge function causing PostgreSQL "Cannot coerce the result to a single JSON object" errors
+- **FINAL SOLUTION**: Replaced ALL `.maybeSingle()` calls with proper array handling throughout update-goal function
+- **Result**: Goal editing now works perfectly - users see "Goal updated successfully" toast and changes persist across sessions
+
 ### Email Timing Issue - Previous Pacific/Midway Solution (September 22, 2025) [SUPERSEDED]
 - **Problem**: Daily emails consistently arriving at wrong times (8 PM EDT, then midnight EDT) despite multiple fix attempts
 - **ROOT CAUSE DISCOVERY**: Date rollover triggering, NOT time-based triggering

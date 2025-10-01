@@ -124,7 +124,12 @@ export const EditGoalDialog = ({ goal, open, onOpenChange, onSave }: EditGoalDia
                   mode="single"
                   selected={formData.targetDate || undefined}
                   onSelect={(date) => setFormData({ ...formData, targetDate: date || null })}
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) => {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(0, 0, 0, 0);
+                    return date < tomorrow;
+                  }}
                   initialFocus
                 />
               </PopoverContent>

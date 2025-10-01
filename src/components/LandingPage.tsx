@@ -41,6 +41,7 @@ export const LandingPage = ({
           <div className="mb-8">
             <h1 className="text-6xl md:text-7xl font-bold tracking-tight mb-8">
               <span className="text-blue-500 font-semibold">Goal</span><span className="text-foreground">Mine.ai</span>
+              {/* DEPLOYMENT TEST: Oct 1 2025 - Testing if changes reach live site */}
             </h1>
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
