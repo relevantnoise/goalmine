@@ -177,7 +177,7 @@ export const PricingPage = ({
           {/* Professional Coach Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
-              Premium Coaching
+              Strategic Advisory
             </div>
             <CardHeader className="pt-12">
               <div className="flex items-center gap-3 mb-4">
@@ -185,8 +185,8 @@ export const PricingPage = ({
                   <Users className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">Professional Coach</CardTitle>
-                  <p className="text-muted-foreground">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+                  <CardTitle className="text-2xl">Strategic Advisory</CardTitle>
+                  <p className="text-muted-foreground">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
                   <button 
                     onClick={() => setIsDanBioOpen(true)}
                     className="text-green-600 hover:text-green-700 text-sm underline mt-1 cursor-pointer"
@@ -196,7 +196,7 @@ export const PricingPage = ({
                 </div>
               </div>
               <div className="text-4xl font-bold">
-                $750
+                $1,200
                 <span className="text-lg font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
@@ -208,7 +208,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-6 h-6 text-green-600" />
-                  <span>1-hour monthly 1-on-1 coaching sessions</span>
+                  <span>Strategic business advisory sessions</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-6 h-6 text-green-600" />
@@ -220,7 +220,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-6 h-6 text-green-600" />
-                  <span>Personalized coaching & motivational support</span>
+                  <span>Executive-level strategic guidance</span>
                 </li>
               </ul>
               {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
@@ -276,8 +276,8 @@ export const PricingPage = ({
               <p className="text-muted-foreground">Yes! While you can have one Goal in the 30-day trial, our Personal Plan enables you to have up to 3 Goals for just $4.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
             </div>
             <div>
-              <h3 className="font-semibold mb-2">What's included in Professional Coach?</h3>
-              <p className="text-muted-foreground">Professional Coach includes everything from Personal Plan plus a monthly 1-hour 1-on-1 coaching session with Dan Lynn, a successful and seasoned entrepreneur who is the co-founder of Starting Point Ventures and creator of GoalMine.ai. We'll work together on goal planning, SMART goal development, "right to left" project planning, and provide ongoing motivational support tailored to your specific needs.</p>
+              <h3 className="font-semibold mb-2">What's included in Strategic Advisory?</h3>
+              <p className="text-muted-foreground">Strategic Advisory includes everything from Personal Plan plus a monthly 1-hour strategic business session with Dan Lynn, a successful serial entrepreneur and Fortune 500 executive who is co-founder of Starting Point Ventures. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>

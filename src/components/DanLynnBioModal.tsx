@@ -28,7 +28,7 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
 
           {/* Key Strengths Section */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Key Advisory/Coaching/Mentorship Strengths</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">Strategic Advisory & Business Execution Strengths</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">• Strategic Goal Planning</h4>
@@ -43,16 +43,16 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
                 <p className="text-gray-600 text-sm">Transform vague aspirations into Specific, Measurable, Achievable, Relevant, and Time-bound goals</p>
               </div>
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-2">• Accountability & Motivation Systems</h4>
-                <p className="text-gray-600 text-sm">Proven frameworks for maintaining momentum and overcoming obstacles</p>
+                <h4 className="font-semibold text-gray-800 mb-2">• Executive Accountability Systems</h4>
+                <p className="text-gray-600 text-sm">Proven frameworks for maintaining momentum and overcoming business obstacles</p>
               </div>
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">• Business Strategy & Execution</h4>
                 <p className="text-gray-600 text-sm">Real-world experience from taking ambitious goals from strategy to successful execution</p>
               </div>
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-2">• Milestone Mapping & Accountability Systems</h4>
-                <p className="text-gray-600 text-sm">Custom frameworks for tracking progress and maintaining consistent forward momentum</p>
+                <h4 className="font-semibold text-gray-800 mb-2">• Strategic Milestone Mapping</h4>
+                <p className="text-gray-600 text-sm">Custom executive frameworks for tracking progress and maintaining strategic momentum</p>
               </div>
             </div>
           </div>
@@ -72,32 +72,33 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
             </div>
           </div>
 
-          {/* Coaching Philosophy */}
+          {/* Strategic Advisory Approach */}
           <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Coaching Philosophy</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Strategic Advisory Approach</h3>
             <p className="text-gray-700 leading-relaxed">
-              "Every significant achievement begins with a clear vision and a systematic approach to execution. Through our 
-              monthly coaching sessions, I work with you to not only define your goals but to build the sustainable habits 
-              and accountability systems that ensure you reach them. My ability to break down complex problems and my 'right to left' 
-              planning methodology has helped countless high achievers and business leaders transform their biggest aspirations into measurable, achievable reality."
+              "Every significant business achievement begins with clear strategic vision and systematic execution methodology. Through our 
+              monthly strategic advisory sessions, I work with executives and entrepreneurs to not only define ambitious goals but to build the 
+              frameworks and accountability systems that ensure successful execution. My Fortune 500 leadership experience combined with serial 
+              entrepreneurship and 'right to left' planning methodology has helped countless business leaders transform their biggest strategic 
+              aspirations into measurable, profitable reality."
             </p>
           </div>
 
           {/* What You'll Get */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Monthly Sessions</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Monthly Strategic Advisory Sessions</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p className="text-gray-700">Personalized goal assessment and strategic planning sessions</p>
+                <p className="text-gray-700">Executive-level strategic goal assessment and business planning</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p className="text-gray-700">Custom milestone mapping with accountability checkpoints</p>
+                <p className="text-gray-700">Strategic milestone mapping with executive accountability systems</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p className="text-gray-700">Obstacle identification and solution development</p>
+                <p className="text-gray-700">Business obstacle identification and strategic solution development</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
@@ -105,7 +106,7 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p className="text-gray-700">Motivational support and mindset coaching</p>
+                <p className="text-gray-700">Executive mindset development and leadership guidance</p>
               </div>
             </div>
           </div>

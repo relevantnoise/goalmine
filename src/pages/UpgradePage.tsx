@@ -156,14 +156,14 @@ export const UpgradePage = () => {
           {/* Professional Coach Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
-              Premium Coaching
+              Strategic Advisory
             </div>
             <CardHeader className="pt-8 text-center">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Users className="w-4 h-4 text-green-600" />
               </div>
-              <CardTitle className="text-xl">Professional Coach</CardTitle>
-              <p className="text-sm text-muted-foreground mb-3">1-on-1 monthly coaching directly with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+              <CardTitle className="text-xl">Strategic Advisory</CardTitle>
+              <p className="text-sm text-muted-foreground mb-3">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-green-600 hover:text-green-700 text-sm underline mb-3 cursor-pointer"
@@ -171,7 +171,7 @@ export const UpgradePage = () => {
                 Learn more about Dan
               </button>
               <div className="text-3xl font-bold text-green-600">
-                $750
+                $1,200
                 <span className="text-base font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
@@ -187,8 +187,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">1-Hour Monthly Coaching</span>
-                    <p className="text-xs text-muted-foreground">Direct 1-on-1 sessions with Dan Lynn</p>
+                    <span className="font-semibold">Strategic Business Advisory</span>
+                    <p className="text-xs text-muted-foreground">Direct strategic sessions with Dan Lynn</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -208,8 +208,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Personalized Support</span>
-                    <p className="text-xs text-muted-foreground">Coaching & motivational guidance</p>
+                    <span className="font-semibold">Executive-Level Guidance</span>
+                    <p className="text-xs text-muted-foreground">Strategic business advisory & execution support</p>
                   </div>
                 </li>
               </ul>
