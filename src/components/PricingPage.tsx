@@ -16,6 +16,7 @@ export const PricingPage = ({
   onStartTrial,
   onBack
 }: PricingPageProps) => {
+  // Bio modal functionality added
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const {
     user
