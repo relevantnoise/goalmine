@@ -54,17 +54,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Get current time
     const now = new Date();
     
-    // PACIFIC/MIDWAY TIMEZONE SOLUTION with DATE ADJUSTMENT FIX
-    // Use Pacific/Midway for timing (midnight = 7 AM EDT) but subtract 1 day for proper date logic
-    const midwayDate = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Pacific/Midway'
-    }).format(now);
-    
-    // FIX: Subtract 1 day from Pacific/Midway date to match Eastern date expectation
-    // When it's Wed 12:00 AM Pacific/Midway (Tue 7:00 AM EDT), use Tuesday's date
-    const midwayDateObj = new Date(midwayDate + 'T00:00:00Z');
-    midwayDateObj.setDate(midwayDateObj.getDate() - 1);
-    const todayDate = midwayDateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
+    // SIMPLE UTC SOLUTION: Use UTC date consistently for both query and marking
+    // Cron runs at 11:00 UTC = 7:00 AM EDT, so use UTC date for all operations
+    const todayDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     const easternTime = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
@@ -75,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     const currentHour = parseInt(easternTime.split(':')[0]);
     
-    console.log(`[SIMPLE-EMAILS] Pacific/Midway date: ${todayDate}`);
+    console.log(`[SIMPLE-EMAILS] UTC date for processing: ${todayDate}`);
     console.log(`[SIMPLE-EMAILS] Current Eastern time: ${easternTime}`);
 
     // Keep delivery window check (simplified)
