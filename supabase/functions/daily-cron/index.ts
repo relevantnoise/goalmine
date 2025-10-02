@@ -27,8 +27,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // 1. Send daily motivation emails
     try {
-      console.log('[DAILY-CRON] Invoking send-daily-emails function');
-      const dailyEmailsResponse = await supabase.functions.invoke('send-daily-emails', {
+      console.log('[DAILY-CRON] Invoking send-daily-emails-fixed function');
+      const dailyEmailsResponse = await supabase.functions.invoke('send-daily-emails-fixed', {
         body: {},
         headers: {
           Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
