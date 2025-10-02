@@ -4,36 +4,34 @@
 
 GoalMine.ai is a goal tracking and motivational platform built with React, TypeScript, and Supabase. The application helps users create goals, track daily progress through streaks, and receive AI-enhanced motivational messages via email and on-demand nudges.
 
-## ✅ DEVELOPMENT WORKFLOW (Updated September 27, 2025)
+## ✅ DEVELOPMENT WORKFLOW (Updated October 2, 2025)
 
-**BRANCH-BASED ARCHITECTURE IMPLEMENTED**: True environment separation eliminates systematic email bugs.
+**SIMPLIFIED SINGLE-BRANCH ARCHITECTURE**: Domain-based email protection eliminates complexity.
 
 ### **Repository Structure**
 ```
 GitHub: relevantnoise/goalmine
-├── main branch → GoalMine project (goalmine.ai) [PRODUCTION + CRON JOBS]
-└── dev branch  → steady-aim-coach project [DEVELOPMENT + NO CRON JOBS]
+└── main branch → Both environments with automatic protection
+    ├── goalmine.ai [PRODUCTION - emails enabled]
+    └── steady-aim-coach.vercel.app [STAGING - emails blocked]
 ```
 
-### **Your Son's Development Pattern (Now Standard)**
+### **Simplified Development Pattern**
 ```bash
-# 1. Development work
-git checkout dev
+# All development on main branch
+git checkout main
 npm run dev  # localhost:5173
 
-# 2. Push to staging
+# Deploy to both environments
 git add -A && git commit -m "Feature: description"
-git push origin dev  # → steady-aim-coach.vercel.app (SAFE)
-
-# 3. Production deployment
-git checkout main && git merge dev && git push origin main  # → goalmine.ai
+git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel.app
 ```
 
 ### **Benefits Achieved**
-- ✅ **Architectural email bug prevention**: Dev environment cannot send emails
-- ✅ **Safe development**: Break things without affecting users  
-- ✅ **Industry standard**: Proper dev/staging/production pipeline
-- ✅ **No more environment detection code**: Architecture prevents issues
+- ✅ **Domain-based email protection**: `api/trigger-daily-emails.js` blocks non-production domains
+- ✅ **No branch confusion**: Single source of truth eliminates sync issues
+- ✅ **Automatic deployment**: Both environments stay in sync automatically
+- ✅ **Safe development**: Staging environment cannot send emails regardless of branch
 
 ## Complete User Flow
 
@@ -661,8 +659,17 @@ if (goal.user_id.includes('@')) {
 ### Content Generation Rules
 1. **Never generate content on-demand** for goal detail pages (performance)
 2. **Always generate during goal creation** for immediate user satisfaction  
-3. **Use daily cron jobs** for regular content updates
+3. **Use daily cron jobs** for regular content updates with ADVANCED AI system
 4. **Cache generated content** in memory for session performance
 5. **Handle missing content gracefully** with user-friendly messages
+
+## Recent Technical Developments
+
+### AI Content Generation System Restored (October 2, 2025)
+- **Critical Fix**: Daily emails upgraded from basic to advanced AI generation system
+- **Function Change**: `generate-daily-motivation-simple` → `generate-daily-motivation`
+- **Quality Upgrade**: Generic content (C-) → Expert coaching (A+)
+- **Features Restored**: Goal-specific expertise, authentic tone personalities, proven strategies
+- **Impact**: Core value proposition now fully operational in daily motivation emails
 
 This documentation provides a comprehensive overview for developers working on GoalMine.ai, covering architecture, features, user flow, performance optimizations, and critical UX patterns that must be maintained.
