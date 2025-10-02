@@ -47,7 +47,7 @@
 ## 🔑 Quick Context for AI Assistants
 
 **Tell your AI assistant:**
-"🚨 READ DATABASE_SAFETY.md FIRST! Then read STATUS.md, then CLAUDE.md before we start working on GoalMine.ai. NEVER delete user data without explicit permission - we had catastrophic data loss incidents from AI assistants running cleanup functions. The database safety rules are MANDATORY. ✅ ARCHITECTURAL FIX COMPLETE: Branch-based development workflow eliminates systematic email bugs. Use dev branch for development (safe), main branch for production (live)."
+"🚨 READ DATABASE_SAFETY.md FIRST! Then read STATUS.md, then CLAUDE.md before we start working on GoalMine.ai. NEVER delete user data without explicit permission - we had catastrophic data loss incidents from AI assistants running cleanup functions. The database safety rules are MANDATORY. ✅ SIMPLIFIED ARCHITECTURE: Single-branch workflow with domain-based email protection eliminates complexity. Work directly on main branch - email safety is automatic via domain detection."
 
 ---
 
@@ -108,9 +108,9 @@ npm install && npm run dev  # localhost:5173
 git add -A && git commit -m "Feature: description"
 git push origin dev  # → steady-aim-coach.vercel.app
 
-# Deploy to production (when ready)
-git checkout main && git merge dev && git push origin main
-# → goalmine.ai (live)
+# Deploy to both environments (simplified workflow)
+git add -A && git commit -m "Feature: description" && git push origin main
+# → Updates both goalmine.ai (production) and steady-aim-coach.vercel.app (staging)
 ```
 
 ---

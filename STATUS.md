@@ -19,7 +19,7 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 - ✅ **WORKING Email System**: Chronic daily email failure resolved - automated 7 AM EDT delivery confirmed working
 - ✅ **Firebase Authentication**: Scalable auth system with proper user ID handling
 - ✅ **Environment Separation**: Dev and production environments properly isolated
-- ✅ **ARCHITECTURAL FIX**: Branch-based development eliminates systematic email bugs
+- ✅ **SIMPLIFIED ARCHITECTURE**: Single-branch workflow with domain-based email protection (Oct 2, 2025)
 - ✅ **DEPLOYMENT WORKFLOW**: Vercel schema validation fixed, automatic deployments restored (Sept 29, 2025)
 - ✅ **STRATEGIC ADVISORY TIER**: Repositioned from Professional Coach to Strategic Advisory at $1,200/month (Oct 1, 2025)
 - ✅ **AI CONTENT GENERATION RESTORED**: Advanced AI coaching now active in daily emails with goal-specific expertise (Oct 2, 2025)
@@ -43,6 +43,27 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 - **Tomorrow 7 AM EDT**: Users receive personalized, expert-level AI coaching
 - **Value Proposition**: True AI-powered motivation delivered as promised
 - **User Experience**: Goal-specific guidance with authentic personality match
+
+---
+
+## 🔧 ARCHITECTURE SIMPLIFICATION (October 2, 2025)
+
+### **DUAL-BRANCH COMPLEXITY ELIMINATED**
+- **Issue**: Dual-branch architecture (main/dev) causing sync confusion and development overhead
+- **Root Cause**: Unnecessary complexity when domain-based email protection already existed
+- **Solution**: Single-branch workflow with automatic environment protection
+
+### **SIMPLIFIED DEPLOYMENT WORKFLOW**
+- **Before**: `dev` branch → merge to `main` → deploy (complex sync required)
+- **After**: Work directly on `main` → automatic deployment to both environments
+- **Email Safety**: `api/trigger-daily-emails.js` blocks emails on non-production domains
+- **Result**: No more branch sync discussions, environments stay automatically synchronized
+
+### **IMMEDIATE BENEFITS**
+- **Development Speed**: Faster workflow without branch management overhead
+- **Reduced Confusion**: Single source of truth eliminates sync issues
+- **Maintained Safety**: Email protection via domain detection, not branch separation
+- **Future Stability**: No more "environments out of sync" issues
 
 ---
 
