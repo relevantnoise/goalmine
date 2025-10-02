@@ -171,7 +171,7 @@ export const UpgradePage = () => {
                 Learn more about Dan
               </button>
               <div className="text-3xl font-bold text-green-600">
-                $1,200
+                $950
                 <span className="text-base font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>

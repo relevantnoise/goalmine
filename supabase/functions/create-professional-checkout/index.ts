@@ -25,13 +25,13 @@ serve(async (req) => {
       timeout: 5000, // 5 second timeout
     });
 
-    // Create checkout session for Strategic Advisory tier - $1,200/month
+    // Create checkout session for Strategic Advisory tier - $950/month
     // Includes everything from Personal Plan + strategic business advisory sessions
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
         {
-          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Strategic Advisory $1,200/month
+          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Strategic Advisory $950/month
           quantity: 1,
         },
       ],

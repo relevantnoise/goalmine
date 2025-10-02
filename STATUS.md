@@ -21,7 +21,7 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 - ✅ **Environment Separation**: Dev and production environments properly isolated
 - ✅ **SIMPLIFIED ARCHITECTURE**: Single-branch workflow with domain-based email protection (Oct 2, 2025)
 - ✅ **DEPLOYMENT WORKFLOW**: Vercel schema validation fixed, automatic deployments restored (Sept 29, 2025)
-- ✅ **STRATEGIC ADVISORY TIER**: Repositioned from Professional Coach to Strategic Advisory at $1,200/month (Oct 1, 2025)
+- ✅ **STRATEGIC ADVISORY TIER**: Repositioned from Professional Coach to Strategic Advisory at $950/month (Oct 1, 2025)
 - ✅ **AI CONTENT GENERATION RESTORED**: Advanced AI coaching now active in daily emails with goal-specific expertise (Oct 2, 2025)
 
 ---
@@ -71,11 +71,11 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 
 ### **PREMIUM REPOSITIONING COMPLETE**
 - **From**: "Professional Coach" at $750/month
-- **To**: "Strategic Advisory" at $1,200/month
+- **To**: "Strategic Advisory" at $950/month
 - **Positioning**: Fortune 500 executive + serial entrepreneur advisor
 - **Target Market**: Executives and entrepreneurs seeking strategic guidance
 - **Content Updates**: Executive-focused messaging across all touchpoints
-- **Stripe Integration**: Updated to $1,200/month with Strategic Advisory metadata
+- **Stripe Integration**: Updated to $950/month with Strategic Advisory metadata
 - **Bio Modal**: Repositioned from coaching to strategic advisory approach
 
 ### **Value Proposition Enhancement**
