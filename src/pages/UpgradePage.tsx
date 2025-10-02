@@ -57,7 +57,7 @@ export const UpgradePage = () => {
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
             You've reached the limit for free users. Upgrade to Personal Plan to set up to 3 goals 
-            and unlock powerful features to achieve more.
+            and unlock powerful features to achieve more. One-on-one Strategic Advisory sessions are also available.
           </p>
         </div>
 
