@@ -97,11 +97,12 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
-      console.log('🎯 Calling create-professional-checkout function...');
-      const { data, error } = await supabase.functions.invoke('create-professional-checkout', {
+      console.log('🎯 Using create-checkout with professional tier flag...');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
           userId: user.id,
+          tier: 'strategic_advisory', // Flag to indicate Strategic Advisory tier
         },
       });
 

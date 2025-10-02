@@ -12,8 +12,15 @@ serve(async (req) => {
   }
 
   try {
-    const { email, userId } = await req.json();
-    console.log("🛒 Simple checkout for:", email);
+    const { email, userId, tier } = await req.json();
+    // Determine plan based on tier parameter
+    const isStrategicAdvisory = tier === 'strategic_advisory';
+    const planName = isStrategicAdvisory ? 'Strategic Advisory' : 'Personal Plan';
+    const priceId = isStrategicAdvisory 
+      ? "price_1SCPJLCElVmMOup293vWqNTQ" // Strategic Advisory $950/month
+      : "price_1RwNO0CElVmMOup2B7WPCzlH"; // Personal Plan $4.99/month
+    
+    console.log(`🛒 ${planName} checkout for:`, email);
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
@@ -30,7 +37,7 @@ serve(async (req) => {
       customer_email: email,
       line_items: [
         {
-          price: "price_1RwNO0CElVmMOup2B7WPCzlH", // Personal Plan $4.99/month
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -38,7 +45,10 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/success`,
       cancel_url: `${req.headers.get("origin")}/`,
       subscription_data: {
-        metadata: { user_id: userId },
+        metadata: { 
+          user_id: userId,
+          tier: planName,
+        },
       },
     });
 
