@@ -14,9 +14,9 @@ export const UpgradePrompt = ({
   // EDIT THIS CONTENT AS NEEDED
   const upgradeContent = {
     title: "Unlock Premium Features",
-    subtitle: "Get the most out of GoalMine.ai with premium features",
-    pricing: "Just $4.99/month",
-    buttonText: "Upgrade Now",
+    subtitle: "Choose from Personal Plan or Strategic Advisory services",
+    pricing: "From $4.99/month",
+    buttonText: "View Plans",
     features: [{
       text: "Up to 3 active goals (vs 1)"
     }, {
@@ -24,7 +24,7 @@ export const UpgradePrompt = ({
     }, {
       text: "Priority email delivery"
     }, {
-      text: "Priority feature releases"
+      text: "One-on-one coaching available"
     }]
   };
   if (compact) {
@@ -35,7 +35,7 @@ export const UpgradePrompt = ({
             <h4 className="font-semibold text-foreground text-base">Let's Get Personal!</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Unlock up to 3 goals & more
+            Personal Plan & Strategic Advisory available
           </p>
           <Button onClick={() => navigate('/upgrade')} size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
             <Crown className="w-3 h-3 mr-1" />
