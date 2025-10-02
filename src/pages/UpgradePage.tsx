@@ -29,9 +29,7 @@ export const UpgradePage = () => {
       window.location.href = '/auth';
       return;
     }
-    // Temporary: Redirect to pricing page where Professional Coach function works
-    // TODO: Replace with createProfessionalCheckout() once function is deployed
-    navigate('/');
+    createProfessionalCheckout();
   };
 
   return (
