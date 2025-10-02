@@ -88,8 +88,6 @@ export const useSubscription = () => {
 
   const createProfessionalCheckout = async () => {
     const userEmail = user?.email;
-    console.log('🎯 Strategic Advisory checkout attempt:', { userEmail, userId: user?.id, user });
-    
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
       return;
@@ -97,24 +95,20 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
-      console.log('🎯 Using create-checkout with professional tier flag...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
           userId: user.id,
-          tier: 'strategic_advisory', // Flag to indicate Strategic Advisory tier
+          tier: 'strategic_advisory',
         },
       });
-
-      console.log('🎯 Response:', { data, error });
 
       if (error) throw new Error(error.message || 'Strategic Advisory checkout failed');
       if (!data?.url) throw new Error('No checkout URL received');
 
-      console.log('🎯 Redirecting to:', data.url);
       window.location.href = data.url;
     } catch (error) {
-      console.error('Error creating professional checkout:', error);
+      console.error('Error creating Strategic Advisory checkout:', error);
       toast.error(`Failed to start Strategic Advisory checkout: ${error.message}`);
       setLoading(false);
     }
