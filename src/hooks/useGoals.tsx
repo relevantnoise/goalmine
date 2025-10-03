@@ -362,12 +362,22 @@ export const useGoals = () => {
 
       if (error) {
         // Handle specific check-in errors from server
-        const errorMessage = error.message || 'Check-in failed';
+        // For 403/400 responses, the detailed error message is often in data.error
+        const serverErrorMessage = data?.error;
+        const genericErrorMessage = error.message || 'Check-in failed';
+        const errorMessage = serverErrorMessage || genericErrorMessage;
+        
         if (errorMessage.includes('already checked in')) {
           toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
         } else if (data?.alreadyCheckedIn) {
           // Handle server-side duplicate detection
           toast.error(data.error || "You've already checked in today! Come back tomorrow after 3 AM EST.");
+        } else if (errorMessage.includes('target date')) {
+          // Handle expired goal case
+          toast.error(errorMessage);
+        } else if (errorMessage.includes('trial has expired')) {
+          // Handle trial expiration case
+          toast.error(errorMessage);
         } else {
           toast.error(`Check-in failed: ${errorMessage}`);
         }
