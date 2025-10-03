@@ -89,10 +89,9 @@ export default async function handler(req, res) {
       
       console.log('[VERCEL-CRON] Scheduling AI-powered email for tomorrow 7 AM EDT to danlynn@gmail.com...');
       
-      // Calculate tomorrow at 7 AM EDT (11:00 UTC)
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setUTCHours(11, 0, 0, 0); // 7 AM EDT = 11 AM UTC
+      // Calculate today at 1:30 PM EDT (17:30 UTC) for testing
+      const testTime = new Date();
+      testTime.setUTCHours(17, 30, 0, 0); // 1:30 PM EDT = 17:30 UTC
       
       const response1 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
@@ -114,7 +113,7 @@ export default async function handler(req, res) {
             isNudge: false,
             userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
             goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
-            scheduledAt: tomorrow.toISOString()
+            scheduledAt: testTime.toISOString()
           })
         }
       );
@@ -197,10 +196,9 @@ export default async function handler(req, res) {
       
       console.log('[VERCEL-CRON] Scheduling AI-powered email for tomorrow 7 AM EDT to dandlynn@yahoo.com...');
       
-      // Calculate tomorrow at 7 AM EDT (11:00 UTC)
-      const tomorrow2 = new Date();
-      tomorrow2.setDate(tomorrow2.getDate() + 1);
-      tomorrow2.setUTCHours(11, 0, 0, 0); // 7 AM EDT = 11 AM UTC
+      // Calculate today at 1:30 PM EDT (17:30 UTC) for testing
+      const testTime2 = new Date();
+      testTime2.setUTCHours(17, 30, 0, 0); // 1:30 PM EDT = 17:30 UTC
       
       const response2 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
@@ -222,7 +220,7 @@ export default async function handler(req, res) {
             isNudge: false,
             userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
             goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
-            scheduledAt: tomorrow2.toISOString()
+            scheduledAt: testTime2.toISOString()
           })
         }
       );
