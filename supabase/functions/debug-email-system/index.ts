@@ -12,137 +12,165 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DEBUG-HIJACKED] 🚀 HIJACKED FUNCTION - SENDING EMAILS NOW');
-
+    console.log('[SIMPLE-REBUILD] 🚀 Starting ULTRA-SIMPLE daily email system');
+    
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // NUCLEAR: Reset all goals and send emails RIGHT NOW
-    const todayUTC = new Date().toISOString().split('T')[0];
-    console.log('[DEBUG-HIJACKED] Today UTC:', todayUTC);
+    // SIMPLE UTC DATE LOGIC - No timezone complexity
+    const now = new Date();
+    const todayUTC = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    console.log('[SIMPLE-REBUILD] 📅 Today UTC date:', todayUTC);
+    console.log('[SIMPLE-REBUILD] 🕐 Current UTC time:', now.toISOString());
 
-    // Reset ALL goals
-    console.log('[DEBUG-HIJACKED] Resetting ALL goals...');
-    const { data: resetGoals, error: resetError } = await supabase
-      .from('goals')
-      .update({ last_motivation_date: null })
-      .eq('is_active', true)
-      .select();
-
-    if (resetError) {
-      console.error('[DEBUG-HIJACKED] Reset error:', resetError);
-      return new Response(JSON.stringify({ error: resetError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-
-    console.log(`[DEBUG-HIJACKED] Reset ${resetGoals?.length || 0} goals`);
-
-    // Get ALL active goals
-    const { data: activeGoals, error: goalsError } = await supabase
+    // STEP 1: Find ALL active goals (no complex filters)
+    console.log('[SIMPLE-REBUILD] 🔍 Finding all active goals...');
+    const { data: allGoals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
       .eq('is_active', true);
 
     if (goalsError) {
-      console.error('[DEBUG-HIJACKED] Goals error:', goalsError);
-      return new Response(JSON.stringify({ error: goalsError.message }), {
-        status: 500,
+      console.error('[SIMPLE-REBUILD] ❌ Error fetching goals:', goalsError);
+      throw goalsError;
+    }
+
+    console.log(`[SIMPLE-REBUILD] 📊 Found ${allGoals?.length || 0} total active goals`);
+    
+    if (!allGoals || allGoals.length === 0) {
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: 'No active goals found',
+        emailsSent: 0,
+        errors: 0
+      }), {
+        status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    console.log(`[DEBUG-HIJACKED] Found ${activeGoals?.length || 0} active goals`);
-
+    // STEP 2: Process each goal with SIMPLE logic
     let emailsSent = 0;
     let errors = 0;
-    const results = [];
 
-    if (activeGoals && activeGoals.length > 0) {
-      for (const goal of activeGoals) {
-        try {
-          console.log(`[DEBUG-HIJACKED] Processing: "${goal.title}" for ${goal.user_id}`);
+    for (const goal of allGoals) {
+      try {
+        console.log(`[SIMPLE-REBUILD] 🎯 Processing goal: "${goal.title}" (ID: ${goal.id})`);
+        console.log(`[SIMPLE-REBUILD] 📧 User: ${goal.user_id}`);
+        console.log(`[SIMPLE-REBUILD] 📅 Last email date: ${goal.last_motivation_date || 'never'}`);
 
-          // Get email
-          let email = goal.user_id;
-          if (!email.includes('@')) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('email')
-              .eq('id', goal.user_id)
-              .single();
-            email = profile?.email;
+        // SIMPLE CHECK: Skip if already sent today
+        if (goal.last_motivation_date === todayUTC) {
+          console.log(`[SIMPLE-REBUILD] ⏭️ Already sent today, skipping`);
+          continue;
+        }
+
+        // STEP 3: Get user email (handle both email and Firebase UID formats)
+        let userEmail = null;
+        if (goal.user_id.includes('@')) {
+          // Email format - use directly
+          userEmail = goal.user_id;
+          console.log(`[SIMPLE-REBUILD] 📧 Using email directly: ${userEmail}`);
+        } else {
+          // Firebase UID - lookup email from profiles
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', goal.user_id)
+            .single();
+          userEmail = profile?.email;
+          console.log(`[SIMPLE-REBUILD] 🔍 Firebase UID lookup: ${goal.user_id} → ${userEmail}`);
+        }
+
+        if (!userEmail) {
+          console.error(`[SIMPLE-REBUILD] ❌ No email found for goal: ${goal.title}`);
+          errors++;
+          continue;
+        }
+
+        // STEP 4: Generate simple motivation content
+        console.log(`[SIMPLE-REBUILD] 🤖 Generating motivation for: ${goal.title}`);
+        
+        const motivationContent = {
+          message: `Good morning! Time to make progress on your goal: "${goal.title}". Every day is a new opportunity to move closer to what you want to achieve.`,
+          microPlan: [
+            'Take one concrete action toward your goal today',
+            'Track your progress and celebrate small wins', 
+            'Visualize yourself achieving this goal'
+          ],
+          challenge: 'Spend 2 minutes right now planning your next step forward.'
+        };
+
+        console.log(`[SIMPLE-REBUILD] ✅ Simple motivation content ready`);
+
+        // STEP 5: Send email via Resend
+        console.log(`[SIMPLE-REBUILD] 📬 Sending email to: ${userEmail}`);
+        
+        const emailResponse = await supabase.functions.invoke('send-motivation-email', {
+          body: {
+            email: userEmail,
+            name: userEmail.split('@')[0],
+            goal: goal.title,
+            message: motivationContent.message,
+            microPlan: motivationContent.microPlan,
+            challenge: motivationContent.challenge,
+            streak: goal.streak_count || 0,
+            redirectUrl: 'https://goalmine.ai',
+            isNudge: false,
+            userId: goal.user_id,
+            goalId: goal.id
           }
+        });
 
-          if (!email) {
-            console.error(`[DEBUG-HIJACKED] No email for: ${goal.title}`);
-            results.push({ goal: goal.title, status: 'No email found' });
-            errors++;
-            continue;
-          }
+        // STEP 6: Check if email succeeded
+        if (emailResponse.error) {
+          console.error(`[SIMPLE-REBUILD] ❌ Email FAILED for ${goal.title}:`, emailResponse.error);
+          errors++;
+          // Don't mark as sent if email failed
+        } else {
+          console.log(`[SIMPLE-REBUILD] ✅ Email SENT successfully for ${goal.title}`);
+          
+          // Mark as sent today
+          const { error: updateError } = await supabase
+            .from('goals')
+            .update({ last_motivation_date: todayUTC })
+            .eq('id', goal.id);
 
-          console.log(`[DEBUG-HIJACKED] Sending to: ${email}`);
-
-          // Send email via existing function
-          const emailResponse = await supabase.functions.invoke('send-motivation-email', {
-            body: {
-              email: email,
-              name: email.split('@')[0],
-              goal: goal.title,
-              message: `🎯 MANUAL TEST: Daily motivation for "${goal.title}". Today is your day to make progress!`,
-              microPlan: ['Take one step forward', 'Track your progress', 'Celebrate small wins'],
-              challenge: 'Spend 2 minutes planning your next action.',
-              streak: goal.streak_count || 0,
-              redirectUrl: 'https://goalmine.ai',
-              isNudge: false,
-              userId: goal.user_id,
-              goalId: goal.id
-            }
-          });
-
-          if (emailResponse.error) {
-            console.error(`[DEBUG-HIJACKED] Email FAILED for ${goal.title}:`, emailResponse.error);
-            results.push({ goal: goal.title, email, status: 'FAILED', error: emailResponse.error.message });
-            errors++;
+          if (updateError) {
+            console.error(`[SIMPLE-REBUILD] ⚠️ Error marking as sent:`, updateError);
           } else {
-            console.log(`[DEBUG-HIJACKED] ✅ EMAIL SENT for ${goal.title}`);
-            
-            // Mark as sent
-            await supabase
-              .from('goals')
-              .update({ last_motivation_date: todayUTC })
-              .eq('id', goal.id);
-
-            results.push({ goal: goal.title, email, status: 'SUCCESS ✅' });
+            console.log(`[SIMPLE-REBUILD] ✅ Marked as sent: ${goal.title}`);
             emailsSent++;
           }
-
-        } catch (error) {
-          console.error(`[DEBUG-HIJACKED] Error processing ${goal.title}:`, error);
-          results.push({ goal: goal.title, status: 'ERROR', error: error.message });
-          errors++;
         }
+
+      } catch (error) {
+        console.error(`[SIMPLE-REBUILD] ❌ Error processing ${goal.title}:`, error);
+        errors++;
       }
     }
 
-    return new Response(JSON.stringify({
+    const result = {
       success: true,
-      message: `HIJACKED FUNCTION SUCCESS: Sent ${emailsSent} emails to your test accounts`,
       emailsSent,
       errors,
-      totalGoals: activeGoals?.length || 0,
-      results,
-      timestamp: new Date().toISOString()
-    }), {
+      totalGoals: allGoals.length,
+      date: todayUTC,
+      message: `SIMPLE REBUILD: Processed ${allGoals.length} goals. Sent ${emailsSent} emails with ${errors} errors.`
+    };
+
+    console.log('[SIMPLE-REBUILD] 🎉 COMPLETE:', result);
+
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
 
   } catch (error: any) {
-    console.error('[DEBUG-HIJACKED] Error:', error);
+    console.error('[SIMPLE-REBUILD] 💥 FATAL ERROR:', error);
     return new Response(JSON.stringify({ 
       success: false,
       error: error.message,
