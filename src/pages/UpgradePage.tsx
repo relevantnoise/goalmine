@@ -6,30 +6,60 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { DanLynnBioModal } from "@/components/DanLynnBioModal";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export const UpgradePage = () => {
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
+  const [personalLoading, setPersonalLoading] = useState(false);
+  const [strategicLoading, setStrategicLoading] = useState(false);
   const { user } = useAuth();
   const { subscription, loading, createCheckout, createProfessionalCheckout } = useSubscription();
   const navigate = useNavigate();
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🚨 Personal Plan button clicked - THIS SHOULD NOT FIRE WHEN CLICKING STRATEGIC ADVISOR');
+    console.log('🚨 Personal Plan - User:', user?.email);
+    
     if (!user) {
       // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
-    createCheckout();
+    
+    setPersonalLoading(true);
+    try {
+      console.log('🚨 Personal Plan - Calling createCheckout');
+      await createCheckout();
+    } finally {
+      setPersonalLoading(false);
+    }
   };
 
-  const handleProfessionalSubscribe = () => {
+  const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 Strategic Advisor Plan button clicked - START');
+    console.log('🎯 Strategic Advisor Plan - User:', user?.email);
+    console.log('🎯 Strategic Advisor Plan - About to call createProfessionalCheckout');
+    
     if (!user) {
       // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
-    createProfessionalCheckout();
+    
+    setStrategicLoading(true);
+    try {
+      console.log('🎯 Strategic Advisor Plan - Calling createProfessionalCheckout NOW');
+      await createProfessionalCheckout();
+      console.log('🎯 Strategic Advisor Plan - createProfessionalCheckout completed');
+    } catch (error) {
+      console.error('🎯 Strategic Advisor Plan - Error:', error);
+    } finally {
+      setStrategicLoading(false);
+    }
   };
 
   return (
@@ -133,9 +163,9 @@ export const UpgradePage = () => {
                   onClick={handleSubscribe} 
                   className="w-full bg-premium hover:bg-premium/90 text-premium-foreground" 
                   size="lg" 
-                  disabled={loading}
+                  disabled={personalLoading}
                 >
-                  {loading ? (
+                  {personalLoading ? (
                     <>
                       <div className="animate-spin w-4 h-4 border-2 border-premium-foreground border-t-transparent rounded-full mr-2" />
                       Dream Big...
@@ -223,9 +253,9 @@ export const UpgradePage = () => {
                   onClick={handleProfessionalSubscribe} 
                   className="w-full bg-green-600 hover:bg-green-700" 
                   size="lg" 
-                  disabled={loading}
+                  disabled={strategicLoading}
                 >
-                  {loading ? (
+                  {strategicLoading ? (
                     <>
                       <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
                       Dream Big...
