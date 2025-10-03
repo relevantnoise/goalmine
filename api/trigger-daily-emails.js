@@ -69,13 +69,14 @@ export default async function handler(req, res) {
       );
       
       const aiData1 = await aiResponse1.json();
+      console.log('[VERCEL-CRON] AI response for danlynn:', JSON.stringify(aiData1));
       console.log('[VERCEL-CRON] AI content generated for danlynn:', aiData1.success ? 'SUCCESS' : 'FAILED');
       
       // Use AI content if available, fallback to generic
-      const content1 = aiData1.success ? {
-        message: aiData1.message || "Daily motivation for launching GoalMine! Keep pushing forward.",
-        microPlan: aiData1.microPlan || ["Fix the email system", "Test the app", "Launch to users"],
-        challenge: aiData1.challenge || "Focus on one task at a time"
+      const content1 = (aiData1.message && aiData1.microPlan && aiData1.challenge) ? {
+        message: aiData1.message,
+        microPlan: aiData1.microPlan,
+        challenge: aiData1.challenge
       } : {
         message: "Daily motivation for launching GoalMine! Keep pushing forward.",
         microPlan: ["Fix the email system", "Test the app", "Launch to users"],
@@ -165,13 +166,14 @@ export default async function handler(req, res) {
       );
       
       const aiData2 = await aiResponse2.json();
-      console.log('[VERCEL-CRON] AI content generated for dandlynn:', aiData2.success ? 'SUCCESS' : 'FAILED');
+      console.log('[VERCEL-CRON] AI response for dandlynn:', JSON.stringify(aiData2));
+      console.log('[VERCEL-CRON] AI content generated for dandlynn:', (aiData2.message && aiData2.microPlan && aiData2.challenge) ? 'SUCCESS' : 'FAILED');
       
       // Use AI content if available, fallback to generic
-      const content2 = aiData2.success ? {
-        message: aiData2.message || "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
-        microPlan: aiData2.microPlan || ["Develop core features", "Create awareness campaign", "Launch to users"],
-        challenge: aiData2.challenge || "Build one feature at a time"
+      const content2 = (aiData2.message && aiData2.microPlan && aiData2.challenge) ? {
+        message: aiData2.message,
+        microPlan: aiData2.microPlan,
+        challenge: aiData2.challenge
       } : {
         message: "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
         microPlan: ["Develop core features", "Create awareness campaign", "Launch to users"],
