@@ -60,7 +60,7 @@ export const PricingPage = ({
   const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🎯 Strategic Advisory button clicked');
+    console.log('🎯 Strategic Advisor Plan button clicked');
     
     if (!user) {
       // Redirect to auth if not logged in

@@ -103,13 +103,13 @@ export const useSubscription = () => {
         },
       });
 
-      if (error) throw new Error(error.message || 'Strategic Advisory checkout failed');
+      if (error) throw new Error(error.message || 'Strategic Advisor Plan checkout failed');
       if (!data?.url) throw new Error('No checkout URL received');
 
       window.location.href = data.url;
     } catch (error) {
-      console.error('Error creating Strategic Advisory checkout:', error);
-      toast.error(`Failed to start Strategic Advisory checkout: ${error.message}`);
+      console.error('Error creating Strategic Advisor Plan checkout:', error);
+      toast.error(`Failed to start Strategic Advisor Plan checkout: ${error.message}`);
       setLoading(false);
     }
   };

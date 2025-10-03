@@ -55,7 +55,7 @@ export const UpgradePage = () => {
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
             You've reached the limit for free users. Upgrade to Personal Plan to set up to 3 goals 
-            and unlock powerful features to achieve more. One-on-one Strategic Advisory sessions are also available.
+            and unlock powerful features to achieve more. One-on-one Strategic Advisor Plan sessions are also available.
           </p>
         </div>
 
@@ -154,13 +154,13 @@ export const UpgradePage = () => {
           {/* Professional Coach Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
-              Strategic Advisory
+              Strategic Advisor Plan
             </div>
             <CardHeader className="pt-8 text-center">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Users className="w-4 h-4 text-green-600" />
               </div>
-              <CardTitle className="text-xl">Strategic Advisory</CardTitle>
+              <CardTitle className="text-xl">Strategic Advisor Plan</CardTitle>
               <p className="text-sm text-muted-foreground mb-3">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}

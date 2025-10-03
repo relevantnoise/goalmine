@@ -28,7 +28,7 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
 
           {/* Key Strengths Section */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Strategic Advisory & Business Execution Strengths</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">Strategic Advisor Plan & Business Execution Strengths</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">• Strategic Goal Planning</h4>
@@ -72,9 +72,9 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
             </div>
           </div>
 
-          {/* Strategic Advisory Approach */}
+          {/* Strategic Advisor Plan Approach */}
           <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-3 text-gray-800">Strategic Advisory Approach</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Strategic Advisor Plan Approach</h3>
             <p className="text-gray-700 leading-relaxed">
               "Every significant business achievement begins with clear strategic vision and systematic execution methodology. Through our 
               monthly strategic advisory sessions, I work with executives and entrepreneurs to not only define ambitious goals but to build the 
@@ -86,7 +86,7 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
 
           {/* What You'll Get */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Monthly Strategic Advisory Sessions</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Monthly Strategic Advisor Plan Sessions</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>

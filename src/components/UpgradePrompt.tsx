@@ -14,7 +14,7 @@ export const UpgradePrompt = ({
   // EDIT THIS CONTENT AS NEEDED
   const upgradeContent = {
     title: "Unlock Premium Features",
-    subtitle: "Choose from Personal Plan or Strategic Advisory services",
+    subtitle: "Choose from Personal Plan or Strategic Advisor Plan services",
     pricing: "From $4.99/month",
     buttonText: "View Plans",
     features: [{
@@ -35,7 +35,7 @@ export const UpgradePrompt = ({
             <h4 className="font-semibold text-foreground text-base">Let's Get Personal!</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Personal Plan & Strategic Advisory available
+            Personal Plan & Strategic Advisor Plan available
           </p>
           <Button onClick={() => navigate('/upgrade')} size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
             <Crown className="w-3 h-3 mr-1" />
