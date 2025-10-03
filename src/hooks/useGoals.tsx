@@ -362,10 +362,28 @@ export const useGoals = () => {
 
       if (error) {
         // Handle specific check-in errors from server
-        // For 403/400 responses, the detailed error message is often in data.error
-        const serverErrorMessage = data?.error;
+        // For 403/400 responses, the detailed error message can be in multiple places
+        let serverErrorMessage = null;
+        
+        // Try to get error message from different possible locations
+        if (data?.error) {
+          serverErrorMessage = data.error;
+        } else if (error?.context?.body?.error) {
+          serverErrorMessage = error.context.body.error;
+        } else if (error?.details) {
+          serverErrorMessage = error.details;
+        }
+        
         const genericErrorMessage = error.message || 'Check-in failed';
         const errorMessage = serverErrorMessage || genericErrorMessage;
+        
+        console.log('🔍 Check-in error details:', { 
+          error, 
+          data, 
+          serverErrorMessage, 
+          genericErrorMessage, 
+          finalErrorMessage: errorMessage 
+        });
         
         if (errorMessage.includes('already checked in')) {
           toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
