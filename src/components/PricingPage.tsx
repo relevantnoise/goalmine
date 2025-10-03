@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { UserCount } from "@/components/UserCount";
 import { DanLynnBioModal } from "@/components/DanLynnBioModal";
-import { useState } from "react";
+import React, { useState } from "react";
 interface PricingPageProps {
   onStartTrial: () => void;
   onBack: () => void;
