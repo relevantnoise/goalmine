@@ -60,6 +60,7 @@ export const useSubscription = () => {
   };
 
   const createCheckout = async () => {
+    console.log('🔴 createCheckout called - Personal Plan (THIS SHOULD NOT HAPPEN FOR STRATEGIC ADVISOR)');
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
@@ -68,6 +69,7 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
+      console.log('🔴 About to invoke create-checkout with NO tier (Personal Plan)');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
@@ -87,6 +89,7 @@ export const useSubscription = () => {
   };
 
   const createProfessionalCheckout = async () => {
+    console.log('🟢 createProfessionalCheckout called - Strategic Advisor Plan');
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
@@ -95,6 +98,7 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
+      console.log('🟢 About to invoke create-checkout with tier: strategic_advisory');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
@@ -102,6 +106,7 @@ export const useSubscription = () => {
           tier: 'strategic_advisory',
         },
       });
+      console.log('🟢 create-checkout response:', { data, error });
 
       if (error) throw new Error(error.message || 'Strategic Advisor Plan checkout failed');
       if (!data?.url) throw new Error('No checkout URL received');

@@ -32,7 +32,8 @@ export const PricingPage = ({
   const handleSubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🎯 Personal Plan button clicked');
+    console.log('🚨 Personal Plan button clicked - THIS SHOULD NOT FIRE WHEN CLICKING STRATEGIC ADVISOR');
+    console.log('🚨 Personal Plan - User:', user?.email);
     
     if (!user) {
       // Redirect to auth if not logged in
@@ -42,6 +43,7 @@ export const PricingPage = ({
     
     setPersonalLoading(true);
     try {
+      console.log('🚨 Personal Plan - Calling createCheckout');
       await createCheckout();
     } finally {
       setPersonalLoading(false);
@@ -60,7 +62,9 @@ export const PricingPage = ({
   const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🎯 Strategic Advisor Plan button clicked');
+    console.log('🎯 Strategic Advisor Plan button clicked - START');
+    console.log('🎯 Strategic Advisor Plan - User:', user?.email);
+    console.log('🎯 Strategic Advisor Plan - About to call createProfessionalCheckout');
     
     if (!user) {
       // Redirect to auth if not logged in
@@ -70,7 +74,11 @@ export const PricingPage = ({
     
     setStrategicLoading(true);
     try {
+      console.log('🎯 Strategic Advisor Plan - Calling createProfessionalCheckout NOW');
       await createProfessionalCheckout();
+      console.log('🎯 Strategic Advisor Plan - createProfessionalCheckout completed');
+    } catch (error) {
+      console.error('🎯 Strategic Advisor Plan - Error:', error);
     } finally {
       setStrategicLoading(false);
     }
