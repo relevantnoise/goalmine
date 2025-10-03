@@ -41,7 +41,7 @@ export const UpgradePage = () => {
   const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🎯 Strategic Advisor Plan button clicked - DIRECT CALL');
+    console.log('🎯 Strategic Advisor Plan button clicked - FINAL ATTEMPT');
     
     if (!user) {
       window.location.href = '/auth';
