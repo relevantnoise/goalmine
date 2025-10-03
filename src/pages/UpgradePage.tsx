@@ -57,6 +57,8 @@ export const UpgradePage = () => {
           email: user.email,
           userId: user.id,
           tier: 'strategic_advisory',
+          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // FORCE Strategic Advisor Plan price ID
+          planName: 'Strategic Advisor Plan',
         },
       });
 
