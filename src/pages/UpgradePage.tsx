@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { DanLynnBioModal } from "@/components/DanLynnBioModal";
+import { supabase } from "@/integrations/supabase/client";
 import React, { useState } from "react";
 
 export const UpgradePage = () => {
@@ -40,21 +41,28 @@ export const UpgradePage = () => {
   const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('🎯 Strategic Advisor Plan button clicked - START');
-    console.log('🎯 Strategic Advisor Plan - User:', user?.email);
-    console.log('🎯 Strategic Advisor Plan - About to call createProfessionalCheckout');
+    console.log('🎯 Strategic Advisor Plan button clicked - DIRECT CALL');
     
     if (!user) {
-      // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
     
     setStrategicLoading(true);
     try {
-      console.log('🎯 Strategic Advisor Plan - Calling createProfessionalCheckout NOW');
-      await createProfessionalCheckout();
-      console.log('🎯 Strategic Advisor Plan - createProfessionalCheckout completed');
+      // Direct call to create-checkout with explicit strategic_advisory tier
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          email: user.email,
+          userId: user.id,
+          tier: 'strategic_advisory', // EXPLICIT Strategic Advisor Plan
+        },
+      });
+
+      if (error) throw new Error(error.message || 'Strategic Advisor Plan checkout failed');
+      if (!data?.url) throw new Error('No checkout URL received');
+
+      window.location.href = data.url;
     } catch (error) {
       console.error('🎯 Strategic Advisor Plan - Error:', error);
     } finally {
