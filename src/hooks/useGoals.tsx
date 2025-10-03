@@ -356,51 +356,44 @@ export const useGoals = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase.functions.invoke('check-in', {
-        body: { goalId, userId: user.email || user.id }
+      // Use manual fetch to get better error details from 403 responses
+      const SUPABASE_URL = "https://dhlcycjnzwfnadmsptof.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0";
+      
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/check-in`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ goalId, userId: user.email || user.id })
       });
 
-      if (error) {
-        // Handle specific check-in errors from server
-        // For 403/400 responses, the detailed error message can be in multiple places
-        let serverErrorMessage = null;
-        
-        // Try to get error message from different possible locations
-        if (data?.error) {
-          serverErrorMessage = data.error;
-        } else if (error?.context?.body?.error) {
-          serverErrorMessage = error.context.body.error;
-        } else if (error?.details) {
-          serverErrorMessage = error.details;
-        }
-        
-        const genericErrorMessage = error.message || 'Check-in failed';
-        const errorMessage = serverErrorMessage || genericErrorMessage;
-        
-        console.log('🔍 Check-in error details:', { 
-          error, 
-          data, 
-          serverErrorMessage, 
-          genericErrorMessage, 
-          finalErrorMessage: errorMessage 
-        });
+      const responseData = await response.json();
+      console.log('🔍 Manual fetch response:', { status: response.status, data: responseData });
+
+      if (!response.ok) {
+        // Handle 403/400 errors with detailed server messages
+        const errorMessage = responseData?.error || 'Check-in failed';
         
         if (errorMessage.includes('already checked in')) {
           toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
-        } else if (data?.alreadyCheckedIn) {
-          // Handle server-side duplicate detection
-          toast.error(data.error || "You've already checked in today! Come back tomorrow after 3 AM EST.");
         } else if (errorMessage.includes('target date')) {
           // Handle expired goal case
           toast.error(errorMessage);
         } else if (errorMessage.includes('trial has expired')) {
           // Handle trial expiration case
           toast.error(errorMessage);
+        } else if (response.status === 403) {
+          // Show the specific 403 error message
+          toast.error(errorMessage);
         } else {
           toast.error(`Check-in failed: ${errorMessage}`);
         }
         return;
       }
+
+      const data = responseData;
 
       // Also handle server-side validation that returns success:false
       if (data?.alreadyCheckedIn) {
