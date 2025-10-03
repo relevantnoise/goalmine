@@ -68,26 +68,7 @@ export default async function handler(req, res) {
       
       const aiData1 = await aiResponse1.json();
       if (aiData1.message && aiData1.microPlan && aiData1.challenge) {
-        // Store the AI content in motivation_history table for tomorrow's email
-        // Note: Using existing schema - no date_generated column, will use created_at for daily lookup
-        await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Content-Type': 'application/json',
-            'apikey': supabaseKey
-          },
-          body: JSON.stringify({
-            goal_id: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
-            user_id: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
-            message: aiData1.message,
-            micro_plan: Array.isArray(aiData1.microPlan) ? aiData1.microPlan : [aiData1.microPlan],
-            challenge: aiData1.challenge,
-            tone: "drill_sergeant",
-            nudge_count: 0
-          })
-        });
-        
+        // AI content is automatically stored by the generate-daily-motivation edge function
         results.contentGenerated++;
         results.details.push({ user: 'danlynn@gmail.com', goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96", status: 'AI_CONTENT_GENERATED_AND_STORED' });
         console.log('[CONTENT-GEN] ✅ AI content generated and stored for danlynn');
@@ -129,26 +110,7 @@ export default async function handler(req, res) {
       
       const aiData2 = await aiResponse2.json();
       if (aiData2.message && aiData2.microPlan && aiData2.challenge) {
-        // Store the AI content in motivation_history table for tomorrow's email
-        // Note: Using existing schema - no date_generated column, will use created_at for daily lookup
-        await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Content-Type': 'application/json',
-            'apikey': supabaseKey
-          },
-          body: JSON.stringify({
-            goal_id: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
-            user_id: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
-            message: aiData2.message,
-            micro_plan: Array.isArray(aiData2.microPlan) ? aiData2.microPlan : [aiData2.microPlan],
-            challenge: aiData2.challenge,
-            tone: "drill_sergeant",
-            nudge_count: 0
-          })
-        });
-        
+        // AI content is automatically stored by the generate-daily-motivation edge function
         results.contentGenerated++;
         results.details.push({ user: 'dandlynn@yahoo.com', goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644", status: 'AI_CONTENT_GENERATED_AND_STORED' });
         console.log('[CONTENT-GEN] ✅ AI content generated and stored for dandlynn');
