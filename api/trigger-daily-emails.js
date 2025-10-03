@@ -87,7 +87,13 @@ export default async function handler(req, res) {
       results.aiData1 = aiData1;
       results.content1 = content1;
       
-      console.log('[VERCEL-CRON] Sending AI-powered email to danlynn@gmail.com...');
+      console.log('[VERCEL-CRON] Scheduling AI-powered email for tomorrow 7 AM EDT to danlynn@gmail.com...');
+      
+      // Calculate tomorrow at 7 AM EDT (11:00 UTC)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setUTCHours(11, 0, 0, 0); // 7 AM EDT = 11 AM UTC
+      
       const response1 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
         {
@@ -107,7 +113,8 @@ export default async function handler(req, res) {
             redirectUrl: "https://goalmine.ai",
             isNudge: false,
             userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
-            goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96"
+            goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
+            scheduledAt: tomorrow.toISOString()
           })
         }
       );
@@ -188,7 +195,13 @@ export default async function handler(req, res) {
       results.aiData2 = aiData2;
       results.content2 = content2;
       
-      console.log('[VERCEL-CRON] Sending AI-powered email to dandlynn@yahoo.com...');
+      console.log('[VERCEL-CRON] Scheduling AI-powered email for tomorrow 7 AM EDT to dandlynn@yahoo.com...');
+      
+      // Calculate tomorrow at 7 AM EDT (11:00 UTC)
+      const tomorrow2 = new Date();
+      tomorrow2.setDate(tomorrow2.getDate() + 1);
+      tomorrow2.setUTCHours(11, 0, 0, 0); // 7 AM EDT = 11 AM UTC
+      
       const response2 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
         {
@@ -208,7 +221,8 @@ export default async function handler(req, res) {
             redirectUrl: "https://goalmine.ai",
             isNudge: false,
             userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
-            goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644"
+            goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
+            scheduledAt: tomorrow2.toISOString()
           })
         }
       );

@@ -28,6 +28,7 @@ interface MotivationEmailRequest {
   isNudge?: boolean;
   userId?: string;
   goalId?: string;
+  scheduledAt?: string;
 }
 
 // Log email delivery attempt
@@ -138,7 +139,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, name, goal, message, microPlan, challenge, streak, redirectUrl, isNudge, userId, goalId }: MotivationEmailRequest = await req.json();
+    const { email, name, goal, message, microPlan, challenge, streak, redirectUrl, isNudge, userId, goalId, scheduledAt }: MotivationEmailRequest = await req.json();
 
     console.log('Sending motivation email to:', email, isNudge ? '(NUDGE)' : '(REGULAR)');
 
@@ -247,13 +248,21 @@ const handler = async (req: Request): Promise<Response> => {
       `;
 
     // Use retry logic for email sending
+    const emailData: any = {
+      from: "GoalMine.ai <noreply@notifications.goalmine.ai>",
+      to: [email],
+      subject: emailSubject,
+      html: emailHTML,
+    };
+    
+    // Add scheduling if provided
+    if (scheduledAt) {
+      emailData.scheduledAt = scheduledAt;
+      console.log('Scheduling email for:', scheduledAt);
+    }
+    
     const emailResponse = await sendEmailWithRetry(
-      {
-        from: "GoalMine.ai <noreply@notifications.goalmine.ai>",
-        to: [email],
-        subject: emailSubject,
-        html: emailHTML,
-      },
+      emailData,
       userId || null,
       goalId || null,
       emailType
