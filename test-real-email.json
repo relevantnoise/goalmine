@@ -1,0 +1,13 @@
+{
+  "email": "danlynn@gmail.com",
+  "name": "danlynn",
+  "goal": "Launch GoalMine app",
+  "message": "REAL GOAL TEST: Time to make progress on launching GoalMine. You can do this.",
+  "microPlan": ["Fix the email system", "Test the app", "Launch to users"],
+  "challenge": "Focus on one bug fix at a time",
+  "streak": 4,
+  "redirectUrl": "https://goalmine.ai",
+  "isNudge": false,
+  "userId": "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+  "goalId": "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96"
+}

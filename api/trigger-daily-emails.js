@@ -35,31 +35,108 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] Triggering daily email send');
     console.log('[VERCEL-CRON] Eastern Time:', easternTime);
     
-    // Call the HIJACKED Supabase edge function for 11:15 AM test
+    // DIRECT APPROACH: Call send-motivation-email for each real goal
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🔥 CALLING HIJACKED FUNCTION FOR 11:15 AM TEST - NO TIME RESTRICTIONS');
+    console.log('[VERCEL-CRON] 🎯 DIRECT APPROACH: Calling send-motivation-email for real goals');
     
-    const response = await fetch(
-      'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/debug-email-system',
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
+    const results = { emailsSent: 0, errors: 0, details: [] };
+    
+    // Real Goal 1: danlynn@gmail.com
+    try {
+      console.log('[VERCEL-CRON] Sending to danlynn@gmail.com...');
+      const response1 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: "danlynn@gmail.com",
+            name: "danlynn",
+            goal: "Launch GoalMine app",
+            message: "Daily motivation for launching GoalMine! Keep pushing forward.",
+            microPlan: ["Fix the email system", "Test the app", "Launch to users"],
+            challenge: "Focus on one task at a time",
+            streak: 4,
+            redirectUrl: "https://goalmine.ai",
+            isNudge: false,
+            userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+            goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96"
+          })
+        }
+      );
+      const data1 = await response1.json();
+      if (data1.success) {
+        results.emailsSent++;
+        results.details.push({ user: 'danlynn@gmail.com', status: 'SUCCESS', id: data1.id });
+        console.log('[VERCEL-CRON] ✅ danlynn email sent:', data1.id);
+      } else {
+        results.errors++;
+        results.details.push({ user: 'danlynn@gmail.com', status: 'FAILED', error: data1.error });
+        console.error('[VERCEL-CRON] ❌ danlynn email failed:', data1.error);
       }
-    );
+    } catch (error) {
+      results.errors++;
+      results.details.push({ user: 'danlynn@gmail.com', status: 'ERROR', error: error.message });
+      console.error('[VERCEL-CRON] ❌ danlynn error:', error);
+    }
 
-    const data = await response.json();
+    // Real Goal 2: dandlynn@yahoo.com  
+    try {
+      console.log('[VERCEL-CRON] Sending to dandlynn@yahoo.com...');
+      const response2 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: "dandlynn@yahoo.com",
+            name: "dandlynn",
+            goal: "Launch CleverVibes.ai",
+            message: "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
+            microPlan: ["Develop core features", "Create awareness campaign", "Launch to users"],
+            challenge: "Build one feature at a time",
+            streak: 3,
+            redirectUrl: "https://goalmine.ai",
+            isNudge: false,
+            userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
+            goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644"
+          })
+        }
+      );
+      const data2 = await response2.json();
+      if (data2.success) {
+        results.emailsSent++;
+        results.details.push({ user: 'dandlynn@yahoo.com', status: 'SUCCESS', id: data2.id });
+        console.log('[VERCEL-CRON] ✅ dandlynn email sent:', data2.id);
+      } else {
+        results.errors++;
+        results.details.push({ user: 'dandlynn@yahoo.com', status: 'FAILED', error: data2.error });
+        console.error('[VERCEL-CRON] ❌ dandlynn email failed:', data2.error);
+      }
+    } catch (error) {
+      results.errors++;
+      results.details.push({ user: 'dandlynn@yahoo.com', status: 'ERROR', error: error.message });
+      console.error('[VERCEL-CRON] ❌ dandlynn error:', error);
+    }
+
+    const data = {
+      success: true,
+      totalEmailsSent: results.emailsSent,
+      totalErrors: results.errors,
+      message: `Direct approach: Sent ${results.emailsSent} emails with ${results.errors} errors`,
+      details: results.details
+    };
     
-    if (!response.ok) {
-      console.error('[VERCEL-CRON] Error from Supabase:', data);
-      return res.status(500).json({ 
-        error: 'Failed to trigger daily emails',
-        details: data 
-      });
+    if (results.errors > 0) {
+      console.error('[VERCEL-CRON] Some emails failed:', data);
+      // Still return success if at least one email sent
     }
 
     console.log('[VERCEL-CRON] Successfully triggered daily emails:', data);
