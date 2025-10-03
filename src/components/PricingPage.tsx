@@ -196,7 +196,7 @@ export const PricingPage = ({
             </CardContent>
           </Card>
 
-          {/* Professional Coach Card */}
+          {/* Strategic Advisor Plan Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
               Strategic Advisor Plan
