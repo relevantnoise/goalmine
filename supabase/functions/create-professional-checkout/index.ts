@@ -13,7 +13,7 @@ serve(async (req) => {
 
   try {
     const { email, userId } = await req.json();
-    console.log("🎯 Strategic Advisory checkout for:", email);
+    console.log("🎯 Strategic Advisor Plan checkout for:", email);
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
@@ -25,13 +25,13 @@ serve(async (req) => {
       timeout: 5000, // 5 second timeout
     });
 
-    // Create checkout session for Strategic Advisory tier - $950/month
+    // Create checkout session for Strategic Advisor Plan tier - $950/month
     // Includes everything from Personal Plan + strategic business advisory sessions
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
         {
-          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Strategic Advisory $950/month
+          price: "price_1SCPJLCElVmMOup293vWqNTQ", // Strategic Advisor Plan $950/month
           quantity: 1,
         },
       ],
@@ -41,12 +41,12 @@ serve(async (req) => {
       subscription_data: {
         metadata: { 
           user_id: userId,
-          tier: "Strategic Advisory",
+          tier: "Strategic Advisor Plan",
         },
       },
     });
 
-    console.log("🎯 Strategic Advisory session created:", session.url);
+    console.log("🎯 Strategic Advisor Plan session created:", session.url);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

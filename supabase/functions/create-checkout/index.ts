@@ -15,9 +15,9 @@ serve(async (req) => {
     const { email, userId, tier } = await req.json();
     // Determine plan based on tier parameter
     const isStrategicAdvisory = tier === 'strategic_advisory';
-    const planName = isStrategicAdvisory ? 'Strategic Advisory' : 'Personal Plan';
+    const planName = isStrategicAdvisory ? 'Strategic Advisor Plan' : 'Personal Plan';
     const priceId = isStrategicAdvisory 
-      ? "price_1SCPJLCElVmMOup293vWqNTQ" // Strategic Advisory $950/month
+      ? "price_1SCPJLCElVmMOup293vWqNTQ" // Strategic Advisor Plan $950/month
       : "price_1RwNO0CElVmMOup2B7WPCzlH"; // Personal Plan $4.99/month
     
     console.log(`🛒 ${planName} checkout for:`, email);

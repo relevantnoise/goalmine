@@ -199,7 +199,7 @@ export const PricingPage = ({
           {/* Professional Coach Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
-              Strategic Advisory
+              Strategic Advisor Plan
             </div>
             <CardHeader className="pt-12">
               <div className="flex items-center gap-3 mb-4">
@@ -207,7 +207,7 @@ export const PricingPage = ({
                   <Users className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl">Strategic Advisory</CardTitle>
+                  <CardTitle className="text-2xl">Strategic Advisor Plan</CardTitle>
                   <p className="text-muted-foreground">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
                   <button 
                     onClick={() => setIsDanBioOpen(true)}
@@ -298,8 +298,8 @@ export const PricingPage = ({
               <p className="text-muted-foreground">Yes! While you can have one Goal in the 30-day trial, our Personal Plan enables you to have up to 3 Goals for just $4.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
             </div>
             <div>
-              <h3 className="font-semibold mb-2">What's included in Strategic Advisory?</h3>
-              <p className="text-muted-foreground">Strategic Advisory includes everything from Personal Plan plus a monthly 1-hour strategic business session with Dan Lynn, a successful serial entrepreneur and Fortune 500 executive who is co-founder of Starting Point Ventures. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
+              <h3 className="font-semibold mb-2">What's included in Strategic Advisor Plan?</h3>
+              <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus a monthly 1-hour strategic business session with Dan Lynn, a successful serial entrepreneur and Fortune 500 executive who is co-founder of Starting Point Ventures. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>

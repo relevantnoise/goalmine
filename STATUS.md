@@ -89,11 +89,11 @@ GoalMine.ai is a **complete, production-ready goal tracking application** with s
 
 ---
 
-## 🎯 STRATEGIC ADVISORY TIER LAUNCH (October 1, 2025)
+## 🎯 STRATEGIC ADVISOR PLAN LAUNCH (October 1, 2025)
 
 ### **PREMIUM REPOSITIONING COMPLETE**
 - **From**: "Professional Coach" at $750/month
-- **To**: "Strategic Advisory" at $950/month
+- **To**: "Strategic Advisor Plan" at $950/month
 - **Positioning**: Fortune 500 executive + serial entrepreneur advisor
 - **Target Market**: Executives and entrepreneurs seeking strategic guidance
 - **Content Updates**: Executive-focused messaging across all touchpoints
