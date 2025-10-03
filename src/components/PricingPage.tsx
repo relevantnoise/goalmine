@@ -199,6 +199,7 @@ export const PricingPage = ({
               {subscription.subscribed && subscription.subscription_tier === "Personal Plan" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
                 </Badge> : <Button onClick={handleSubscribe} className="w-full bg-premium hover:bg-premium/90" size="lg" disabled={personalLoading}>
+                  <Crown className="w-4 h-4 mr-2" />
                   {personalLoading ? "Dream Big..." : "Subscribe Now"}
                 </Button>}
             </CardContent>
@@ -256,6 +257,7 @@ export const PricingPage = ({
               {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
                 </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-green-600 hover:bg-green-700" size="lg" disabled={strategicLoading}>
+                  <Crown className="w-4 h-4 mr-2" />
                   {strategicLoading ? "Dream Big..." : "Subscribe Now"}
                 </Button>}
             </CardContent>
