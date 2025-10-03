@@ -6,239 +6,127 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Phase 2: Email Skip Logic Helper Functions
-function isGoalExpired(goal: any): boolean {
-  if (!goal.target_date) return false;
-  const targetDate = new Date(goal.target_date);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return targetDate < today;
-}
-
-function isTrialExpired(profile: any): boolean {
-  if (!profile || !profile.trial_expires_at) return false;
-  return new Date(profile.trial_expires_at) < new Date();
-}
-
-function shouldSkipEmailForGoal(goal: any, profile: any, isSubscribed: boolean): { skip: boolean; reason: string } {
-  // Check if trial expired and not subscribed
-  if (isTrialExpired(profile) && !isSubscribed) {
-    return { skip: true, reason: 'Trial expired and user not subscribed' };
-  }
-  
-  // Check if goal is expired
-  if (isGoalExpired(goal)) {
-    return { skip: true, reason: 'Goal has reached its target date' };
-  }
-  
-  return { skip: false, reason: 'Goal is active and eligible for emails' };
-}
-
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('[DAILY-EMAILS-FIXED] Starting daily email send process with processing lock pattern');
+    console.log('[NUCLEAR-SIMPLE] 🚀 ULTRA-SIMPLE email system - no complexity');
     
-    // Initialize Supabase client
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
-    
-    // Check for force delivery and reset parameters
-    const { forceDelivery, resetFirst } = req.method === 'POST' ? await req.json() : {};
-    
-    // TESTING: Reset all goals first if requested
-    if (resetFirst) {
-      console.log(`[DAILY-EMAILS-FIXED] 🔄 RESETTING all goal email dates for testing...`);
-      const { data: resetData, error: resetError } = await supabase
-        .from('goals')
-        .update({ last_motivation_date: null })
-        .eq('is_active', true)
-        .select();
-      
-      if (resetError) {
-        console.error(`[DAILY-EMAILS-FIXED] ❌ Reset error:`, resetError);
-      } else {
-        console.log(`[DAILY-EMAILS-FIXED] ✅ Reset ${resetData?.length || 0} goals for fresh testing`);
-      }
+
+    // DEAD SIMPLE: Today's date in UTC
+    const todayUTC = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    console.log('[NUCLEAR-SIMPLE] 📅 Today UTC:', todayUTC);
+
+    // STEP 1: Reset ALL goals so we can test immediately
+    console.log('[NUCLEAR-SIMPLE] 🔄 Resetting ALL goals for fresh test...');
+    const { data: resetGoals, error: resetError } = await supabase
+      .from('goals')
+      .update({ last_motivation_date: null })
+      .eq('is_active', true)
+      .select();
+
+    if (resetError) {
+      console.error('[NUCLEAR-SIMPLE] ❌ Reset error:', resetError);
+    } else {
+      console.log(`[NUCLEAR-SIMPLE] ✅ Reset ${resetGoals?.length || 0} goals`);
     }
 
-    // Supabase client already initialized above for reset
-
-    // Get current time in Eastern timezone
-    const now = new Date();
-    
-    // SIMPLE UTC DATE LOGIC - No timezone complexity
-    const todayDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
-    
-    const easternTime = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    }).format(now);
-    
-    const currentHour = parseInt(easternTime.split(':')[0]);
-    const currentMinute = parseInt(easternTime.split(':')[1]);
-    
-    console.log(`[DAILY-EMAILS-FIXED] TODAY UTC DATE: ${todayDate}`);
-    console.log(`[DAILY-EMAILS-FIXED] TESTING MODE: Removed time window restrictions`);
-
-    // TESTING: Remove time window restrictions - send anytime
-    console.log(`[DAILY-EMAILS-FIXED] ✅ TESTING MODE - bypassing time window checks`);
-
-    console.log(`[DAILY-EMAILS-FIXED] ✅ Within delivery window, proceeding with email delivery`);
-
-    // NEW APPROACH: Find goals that need emails but DON'T mark them as processed yet
-    const { data: candidateGoals, error: candidateError } = await supabase
+    // STEP 2: Get ALL active goals (super simple)
+    const { data: allGoals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
-      .eq('is_active', true)
-      .or(`last_motivation_date.is.null,last_motivation_date.lt.${todayDate}`);
+      .eq('is_active', true);
 
-    if (candidateError) {
-      console.error('[DAILY-EMAILS-FIXED] Error fetching candidate goals:', candidateError);
-      throw candidateError;
-    }
-
-    console.log(`[DAILY-EMAILS-FIXED] Found ${candidateGoals?.length || 0} candidate goals`);
-    
-    // DEBUG: Show all candidate goals details
-    if (candidateGoals && candidateGoals.length > 0) {
-      candidateGoals.forEach((goal, index) => {
-        console.log(`[DAILY-EMAILS-FIXED] Goal ${index + 1}: "${goal.title}"`, {
-          id: goal.id,
-          user_id: goal.user_id,
-          is_active: goal.is_active,
-          last_motivation_date: goal.last_motivation_date,
-          created_at: goal.created_at
-        });
+    if (goalsError) {
+      console.error('[NUCLEAR-SIMPLE] ❌ Error fetching goals:', goalsError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: goalsError.message,
+        debug: { todayUTC }
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       });
-    } else {
-      console.log(`[DAILY-EMAILS-FIXED] ⚠️ No candidate goals found. Let me check ALL goals...`);
-      
-      // Check ALL goals regardless of criteria
-      const { data: allGoals } = await supabase
-        .from('goals')
-        .select('*')
-        .limit(10);
-      
-      console.log(`[DAILY-EMAILS-FIXED] ALL GOALS (${allGoals?.length || 0}):`);
-      if (allGoals) {
-        allGoals.forEach((goal, index) => {
-          console.log(`[DAILY-EMAILS-FIXED] All Goal ${index + 1}: "${goal.title}"`, {
-            id: goal.id,
-            user_id: goal.user_id,
-            is_active: goal.is_active,
-            last_motivation_date: goal.last_motivation_date,
-            target_date: goal.target_date,
-            created_at: goal.created_at
-          });
-        });
-      }
-    }
-    
-    if (!candidateGoals || candidateGoals.length === 0) {
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: `No goals need processing for ${todayDate}`,
-          emailsSent: 0,
-          errors: 0
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
     }
 
+    console.log(`[NUCLEAR-SIMPLE] 🎯 Found ${allGoals?.length || 0} active goals`);
+    
+    // Debug: Show all goals
+    if (allGoals) {
+      allGoals.forEach((goal, i) => {
+        console.log(`[NUCLEAR-SIMPLE] Goal ${i+1}: "${goal.title}" | User: ${goal.user_id} | Last email: ${goal.last_motivation_date}`);
+      });
+    }
+
+    if (!allGoals || allGoals.length === 0) {
+      return new Response(JSON.stringify({ 
+        success: true,
+        message: 'No active goals found',
+        emailsSent: 0,
+        errors: 0,
+        debug: { todayUTC, totalGoals: 0 }
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // STEP 3: Process each goal - DEAD SIMPLE
     let emailsSent = 0;
     let errors = 0;
+    const results = [];
 
-    // Process each goal with success confirmation pattern
-    for (const goal of candidateGoals) {
+    for (const goal of allGoals) {
       try {
-        console.log(`[DAILY-EMAILS-FIXED] Processing: "${goal.title}"`);
-        
-        // Get profile info for email
-        let profile;
-        if (goal.user_id.includes('@')) {
-          const result = await supabase
+        console.log(`[NUCLEAR-SIMPLE] 📧 Processing: "${goal.title}" for ${goal.user_id}`);
+
+        // Get email address
+        let email = goal.user_id;
+        if (!email.includes('@')) {
+          // Firebase UID - lookup email
+          const { data: profile } = await supabase
             .from('profiles')
-            .select('email, trial_expires_at')
-            .eq('email', goal.user_id)
-            .single();
-          profile = result.data || { email: goal.user_id, trial_expires_at: null };
-        } else {
-          const result = await supabase
-            .from('profiles')
-            .select('email, trial_expires_at')
+            .select('email')
             .eq('id', goal.user_id)
             .single();
-          profile = result.data;
+          email = profile?.email;
         }
-        
-        if (!profile?.email) {
-          console.error(`[DAILY-EMAILS-FIXED] No email for goal: ${goal.title}`);
+
+        if (!email) {
+          console.error(`[NUCLEAR-SIMPLE] ❌ No email for goal: ${goal.title}`);
+          results.push({ goal: goal.title, status: 'No email found' });
           errors++;
           continue;
         }
 
-        // Check subscription
-        let subscriptionData = null;
-        if (goal.user_id.includes('@')) {
-          const { data } = await supabase
-            .from('subscribers')
-            .select('subscribed')
-            .eq('user_id', goal.user_id)
-            .single();
-          subscriptionData = data;
-        } else {
-          const { data } = await supabase
-            .from('subscribers')
-            .select('subscribed')
-            .eq('user_id', profile.email)
-            .single();
-          subscriptionData = data;
-        }
-        
-        const isSubscribed = subscriptionData?.subscribed === true;
-        
-        // Skip check
-        const skipCheck = shouldSkipEmailForGoal(goal, profile, isSubscribed);
-        if (skipCheck.skip) {
-          console.log(`[DAILY-EMAILS-FIXED] Skipping: ${skipCheck.reason}`);
-          // Mark as processed since we're skipping intentionally
-          await supabase
-            .from('goals')
-            .update({ last_motivation_date: todayDate })
-            .eq('id', goal.id);
-          continue;
-        }
+        console.log(`[NUCLEAR-SIMPLE] 📬 Sending to: ${email}`);
 
-        // Generate content
-        let motivationContent = {
-          message: `Today is another opportunity to make progress on your goal: ${goal.title}. Keep building momentum!`,
-          microPlan: ['Take one small action toward your goal today', 'Document your progress', 'Reflect on your progress'],
-          challenge: 'Take 30 seconds to visualize achieving this goal.'
+        // Simple motivation content
+        const content = {
+          message: `Good morning! Time to work on "${goal.title}". Today is a perfect day to make progress toward your goal.`,
+          microPlan: [
+            'Take one concrete step forward today',
+            'Track your progress and celebrate wins',
+            'Visualize achieving this goal'
+          ],
+          challenge: 'Spend 2 minutes planning your next action.'
         };
 
-        console.log(`[DAILY-EMAILS-FIXED] Sending email to: ${profile.email}`);
-        
-        // CRITICAL: Send email via Resend FIRST
+        // Send email
         const emailResponse = await supabase.functions.invoke('send-motivation-email', {
           body: {
-            email: profile.email,
-            name: profile.email.split('@')[0],
+            email: email,
+            name: email.split('@')[0],
             goal: goal.title,
-            message: motivationContent.message,
-            microPlan: motivationContent.microPlan.join('\n• '),
-            challenge: motivationContent.challenge,
+            message: content.message,
+            microPlan: content.microPlan,
+            challenge: content.challenge,
             streak: goal.streak_count || 0,
             redirectUrl: 'https://goalmine.ai',
             isNudge: false,
@@ -247,67 +135,59 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // CRITICAL: Only mark as processed if email succeeded
         if (emailResponse.error) {
-          console.error(`[DAILY-EMAILS-FIXED] ❌ Email failed for ${goal.title}:`, emailResponse.error);
+          console.error(`[NUCLEAR-SIMPLE] ❌ Email FAILED for ${goal.title}:`, emailResponse.error);
+          results.push({ goal: goal.title, email, status: 'Email failed', error: emailResponse.error.message });
           errors++;
-          // DON'T mark as processed - will retry tomorrow
         } else {
-          // SUCCESS! Mark as processed
-          const { error: markError } = await supabase
+          console.log(`[NUCLEAR-SIMPLE] ✅ Email SENT to ${email} for ${goal.title}`);
+          
+          // Mark as sent
+          await supabase
             .from('goals')
-            .update({ last_motivation_date: todayDate })
+            .update({ last_motivation_date: todayUTC })
             .eq('id', goal.id);
 
-          if (markError) {
-            console.error(`[DAILY-EMAILS-FIXED] Error marking processed:`, markError);
-          } else {
-            console.log(`[DAILY-EMAILS-FIXED] ✅ Email sent and marked processed: ${goal.title}`);
-            emailsSent++;
-          }
+          results.push({ goal: goal.title, email, status: 'SUCCESS' });
+          emailsSent++;
         }
 
       } catch (error) {
-        console.error(`[DAILY-EMAILS-FIXED] Error processing ${goal.title}:`, error);
+        console.error(`[NUCLEAR-SIMPLE] ❌ Error processing ${goal.title}:`, error);
+        results.push({ goal: goal.title, status: 'Error', error: error.message });
         errors++;
       }
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] Complete. Sent: ${emailsSent}, Errors: ${errors}`);
-
-    // DEBUG: Get final state for response
-    const { data: finalGoals } = await supabase
-      .from('goals')
-      .select('id, title, user_id, is_active, last_motivation_date')
-      .limit(5);
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        emailsSent, 
-        errors,
-        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`,
-        debug: {
-          todayDate,
-          totalGoalsFound: candidateGoals?.length || 0,
-          finalGoals: finalGoals || []
-        }
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+    const finalResult = {
+      success: true,
+      emailsSent,
+      errors,
+      totalGoals: allGoals.length,
+      message: `NUCLEAR SIMPLE: Sent ${emailsSent} emails, ${errors} errors`,
+      debug: {
+        todayUTC,
+        results
       }
-    );
+    };
+
+    console.log('[NUCLEAR-SIMPLE] 🎉 FINAL RESULT:', finalResult);
+
+    return new Response(JSON.stringify(finalResult), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
 
   } catch (error: any) {
-    console.error('[DAILY-EMAILS-FIXED] Fatal error:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+    console.error('[NUCLEAR-SIMPLE] 💥 FATAL ERROR:', error);
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 
