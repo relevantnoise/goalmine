@@ -515,7 +515,7 @@ export const useGoals = () => {
       console.log('🚀 Calling update-goal edge function (v2)...');
       console.log('🔍 Request details:', {
         goalId,
-        userId: user.email || user.id, 
+        userId: user.id || user.email, 
         userEmail: user.email,
         userFirebaseId: user.id,
         updates
@@ -528,7 +528,7 @@ export const useGoals = () => {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ goalId, userId: user.email || user.id, updates })
+        body: JSON.stringify({ goalId, userId: user.id || user.email, updates })
       });
 
       const responseText = await response.text();

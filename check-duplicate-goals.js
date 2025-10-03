@@ -15,7 +15,7 @@ async function checkDuplicateGoals() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user_id: 'dandlynn@yahoo.com'
+        user_id: 'danlynn@gmail.com'
       })
     });
 
@@ -34,7 +34,7 @@ async function checkDuplicateGoals() {
       });
 
       // Check for goals with same ID
-      const goalId = 'dae2616f-dd2a-41ef-9b49-d90e5c310644';
+      const goalId = '8a0349d0-6c7e-4564-b1e3-53b13cb9ec96';
       const matchingGoals = goalsData.goals.filter(goal => goal.id === goalId);
       
       console.log(`🎯 Goals with ID ${goalId}:`, matchingGoals.length);

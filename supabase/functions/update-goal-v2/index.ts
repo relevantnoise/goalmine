@@ -6,60 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Phase 5: Permission helper functions (copied from frontend)
-function isTrialExpired(profile: any): boolean {
-  if (!profile?.trial_expires_at) return false;
-  return new Date(profile.trial_expires_at) < new Date();
-}
-
-function isGoalExpired(goal: any): boolean {
-  if (!goal.target_date) return false;
-  const targetDate = new Date(goal.target_date);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return targetDate < today;
-}
-
-function getGoalPermissions(goal: any, profile: any, isSubscribed: boolean) {
-  const trialExpired = isTrialExpired(profile);
-  const goalExpired = isGoalExpired(goal);
-  
-  // Priority: Trial expiration > Goal expiration > Normal operation
-  if (trialExpired && !isSubscribed) {
-    // Trial expired, no subscription = no permissions
-    return {
-      canEdit: false,
-      canDelete: false,
-      canCheckIn: false,
-      canShare: false,
-      canReceiveEmails: false,
-      canGenerateNudge: false,
-    };
-  }
-  
-  if (goalExpired) {
-    // Goal expired = edit/delete only
-    return {
-      canEdit: true,
-      canDelete: true,
-      canCheckIn: false,
-      canShare: false,
-      canReceiveEmails: false,
-      canGenerateNudge: false,
-    };
-  }
-  
-  // Normal operation = all permissions
-  return {
-    canEdit: true,
-    canDelete: true,
-    canCheckIn: true,
-    canShare: true,
-    canReceiveEmails: true,
-    canGenerateNudge: true,
-  };
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -194,18 +140,29 @@ serve(async (req) => {
       .eq('user_id', goal.user_id)  // Use the actual user_id from the found goal
       .select();
     
-    const data = updateResults && updateResults.length > 0 ? updateResults[0] : null;
-
-    if (error || !data) {
-      console.error('❌ Database error or no rows updated:', error);
+    if (error) {
+      console.error('❌ Database error:', error);
       return new Response(JSON.stringify({
         success: false,
-        error: error?.message || 'Goal not found or could not be updated'
+        error: error.message
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: error ? 500 : 404,
+        status: 500,
       });
     }
+
+    if (!updateResults || updateResults.length === 0) {
+      console.error('❌ No rows updated - goal not found or permission denied');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Goal not found or could not be updated'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
+    }
+
+    const data = updateResults[0];
 
     console.log('✅ Goal updated successfully:', data.id);
 
