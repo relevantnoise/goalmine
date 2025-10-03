@@ -522,13 +522,13 @@ export const useGoals = () => {
       });
       
       // Use direct fetch to get detailed error response
-      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/simple-update-goal', {
+      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ goalId, userId: '8MZNQ8sG1VfWaBd74A39jNzyZmL2', updates })
+        body: JSON.stringify({ goalId, userId: user.email || user.id, updates })
       });
 
       const responseText = await response.text();
