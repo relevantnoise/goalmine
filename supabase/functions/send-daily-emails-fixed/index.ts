@@ -42,23 +42,38 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log('[DAILY-EMAILS-FIXED] Starting daily email send process with processing lock pattern');
     
-    // Check for force delivery parameter
-    const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
-
     // Initialize Supabase client
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+    
+    // Check for force delivery and reset parameters
+    const { forceDelivery, resetFirst } = req.method === 'POST' ? await req.json() : {};
+    
+    // TESTING: Reset all goals first if requested
+    if (resetFirst) {
+      console.log(`[DAILY-EMAILS-FIXED] 🔄 RESETTING all goal email dates for testing...`);
+      const { data: resetData, error: resetError } = await supabase
+        .from('goals')
+        .update({ last_motivation_date: null })
+        .eq('is_active', true)
+        .select();
+      
+      if (resetError) {
+        console.error(`[DAILY-EMAILS-FIXED] ❌ Reset error:`, resetError);
+      } else {
+        console.log(`[DAILY-EMAILS-FIXED] ✅ Reset ${resetData?.length || 0} goals for fresh testing`);
+      }
+    }
+
+    // Supabase client already initialized above for reset
 
     // Get current time in Eastern timezone
     const now = new Date();
     
-    // Use Pacific/Midway timezone for date calculation (existing fix)
-    const midwayDate = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Pacific/Midway'
-    }).format(now);
-    const todayDate = midwayDate;
+    // SIMPLE UTC DATE LOGIC - No timezone complexity
+    const todayDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     const easternTime = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
@@ -70,27 +85,11 @@ const handler = async (req: Request): Promise<Response> => {
     const currentHour = parseInt(easternTime.split(':')[0]);
     const currentMinute = parseInt(easternTime.split(':')[1]);
     
-    console.log(`[DAILY-EMAILS-FIXED] Pacific/Midway date: ${todayDate}`);
-    console.log(`[DAILY-EMAILS-FIXED] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
+    console.log(`[DAILY-EMAILS-FIXED] TODAY UTC DATE: ${todayDate}`);
+    console.log(`[DAILY-EMAILS-FIXED] TESTING MODE: Removed time window restrictions`);
 
-    // Check delivery window (keep existing logic)
-    const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
-    if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-FIXED] Outside delivery window, skipping.`);
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: `Outside delivery window. Daily emails only send 7-10 AM EDT.`,
-          emailsSent: 0,
-          errors: 0,
-          skipped: true
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
+    // TESTING: Remove time window restrictions - send anytime
+    console.log(`[DAILY-EMAILS-FIXED] ✅ TESTING MODE - bypassing time window checks`);
 
     console.log(`[DAILY-EMAILS-FIXED] ✅ Within delivery window, proceeding with email delivery`);
 
