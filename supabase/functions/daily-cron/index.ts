@@ -93,13 +93,15 @@ const handler = async (req: Request): Promise<Response> => {
               }
             });
             
-            if (emailResponse.error) {
-              console.error(`[DAILY-CRON] Email failed for ${goal.title}:`, emailResponse.error);
+            // CRITICAL: Check BOTH error AND success status
+            if (emailResponse.error || !emailResponse.data?.success) {
+              console.error(`[DAILY-CRON] Email failed for ${goal.title}:`, emailResponse.error || 'Success=false');
               emailErrors++;
+              // DO NOT mark as sent when email fails
             } else {
               console.log(`[DAILY-CRON] ✅ Email sent for ${goal.title}`);
               
-              // Mark as sent
+              // Only mark as sent after confirmed successful delivery
               await supabase
                 .from('goals')
                 .update({ last_motivation_date: todayUTC })
