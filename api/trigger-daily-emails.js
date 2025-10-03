@@ -83,6 +83,10 @@ export default async function handler(req, res) {
         challenge: "Focus on one task at a time"
       };
       
+      // Store for debugging
+      results.aiData1 = aiData1;
+      results.content1 = content1;
+      
       console.log('[VERCEL-CRON] Sending AI-powered email to danlynn@gmail.com...');
       const response1 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
@@ -180,6 +184,10 @@ export default async function handler(req, res) {
         challenge: "Build one feature at a time"
       };
       
+      // Store for debugging
+      results.aiData2 = aiData2;
+      results.content2 = content2;
+      
       console.log('[VERCEL-CRON] Sending AI-powered email to dandlynn@yahoo.com...');
       const response2 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
@@ -225,7 +233,13 @@ export default async function handler(req, res) {
       totalEmailsSent: results.emailsSent,
       totalErrors: results.errors,
       message: `Direct approach: Sent ${results.emailsSent} emails with ${results.errors} errors`,
-      details: results.details
+      details: results.details,
+      debugInfo: {
+        aiResponse1: results.aiData1,
+        aiResponse2: results.aiData2,
+        content1: results.content1,
+        content2: results.content2
+      }
     };
     
     if (results.errors > 0) {

@@ -1,0 +1,13 @@
+{
+  "email": "danlynn@gmail.com",
+  "name": "danlynn",
+  "goal": "Launch GoalMine app",
+  "message": "Listen up, you're 4 days deep—most quit by now, but you're still in the fight. Today, no whining about 'little bugs'—hunt down the nastiest one, crush it, and don't quit until you've made the code cleaner than a barracks floor on inspection day. Excellence isn't luck, it's discipline—show up, stomp excuses, and get one step closer to launch.",
+  "microPlan": ["Identify and write down the top three bugs or friction points currently blocking a smooth user experience in the app (5 minutes).", "Fix or make measurable progress on the highest-impact bug—even if it's ugly, get it working, and document the fix (20-25 minutes).", "Test the app's onboarding flow end-to-end as if you're a brand new user, and jot down every pain point or broken step you discover (10 minutes)."],
+  "challenge": "Before you log off today, write one sentence about how fixing today's bug directly brings you closer to users actually using—and loving—GoalMine.ai.",
+  "streak": 4,
+  "redirectUrl": "https://goalmine.ai",
+  "isNudge": false,
+  "userId": "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+  "goalId": "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96"
+}
