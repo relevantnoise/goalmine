@@ -16,7 +16,7 @@ export const PricingPage = ({
   onStartTrial,
   onBack
 }: PricingPageProps) => {
-  // Bio modal functionality added
+  // Bio modal functionality added - force deployment
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const [personalLoading, setPersonalLoading] = useState(false);
   const [strategicLoading, setStrategicLoading] = useState(false);
