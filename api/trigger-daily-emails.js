@@ -35,11 +35,13 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] Triggering daily email send');
     console.log('[VERCEL-CRON] Eastern Time:', easternTime);
     
-    // Call the Supabase edge function
+    // Call the HIJACKED Supabase edge function for 11:15 AM test
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
+    console.log('[VERCEL-CRON] 🔥 CALLING HIJACKED FUNCTION FOR 11:15 AM TEST - NO TIME RESTRICTIONS');
+    
     const response = await fetch(
-      'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/daily-cron',
+      'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/debug-email-system',
       {
         method: 'POST',
         headers: {

@@ -12,33 +12,33 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[SIMPLE-REBUILD] 🚀 Starting ULTRA-SIMPLE daily email system');
+    console.log('[HIJACKED-11:15] 🚀 HIJACKED FOR 11:15 AM TEST - NO TIME RESTRICTIONS');
     
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // SIMPLE UTC DATE LOGIC - No timezone complexity
+    // NO TIME RESTRICTIONS - SEND EMAILS NOW
     const now = new Date();
-    const todayUTC = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const todayUTC = now.toISOString().split('T')[0];
     
-    console.log('[SIMPLE-REBUILD] 📅 Today UTC date:', todayUTC);
-    console.log('[SIMPLE-REBUILD] 🕐 Current UTC time:', now.toISOString());
+    console.log('[HIJACKED-11:15] 📅 Today UTC date:', todayUTC);
+    console.log('[HIJACKED-11:15] 🕐 Current UTC time:', now.toISOString());
 
-    // STEP 1: Find ALL active goals (no complex filters)
-    console.log('[SIMPLE-REBUILD] 🔍 Finding all active goals...');
+    // Find ALL active goals
+    console.log('[HIJACKED-11:15] 🔍 Finding all active goals...');
     const { data: allGoals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
       .eq('is_active', true);
 
     if (goalsError) {
-      console.error('[SIMPLE-REBUILD] ❌ Error fetching goals:', goalsError);
+      console.error('[HIJACKED-11:15] ❌ Error fetching goals:', goalsError);
       throw goalsError;
     }
 
-    console.log(`[SIMPLE-REBUILD] 📊 Found ${allGoals?.length || 0} total active goals`);
+    console.log(`[HIJACKED-11:15] 📊 Found ${allGoals?.length || 0} total active goals`);
     
     if (!allGoals || allGoals.length === 0) {
       return new Response(JSON.stringify({ 
@@ -52,50 +52,42 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // STEP 2: Process each goal with SIMPLE logic
     let emailsSent = 0;
     let errors = 0;
 
     for (const goal of allGoals) {
       try {
-        console.log(`[SIMPLE-REBUILD] 🎯 Processing goal: "${goal.title}" (ID: ${goal.id})`);
-        console.log(`[SIMPLE-REBUILD] 📧 User: ${goal.user_id}`);
-        console.log(`[SIMPLE-REBUILD] 📅 Last email date: ${goal.last_motivation_date || 'never'}`);
+        console.log(`[HIJACKED-11:15] 🎯 Processing goal: "${goal.title}" (ID: ${goal.id})`);
+        console.log(`[HIJACKED-11:15] 📧 User: ${goal.user_id}`);
+        console.log(`[HIJACKED-11:15] 📅 Last email date: ${goal.last_motivation_date || 'never'}`);
 
-        // SIMPLE CHECK: Skip if already sent today
-        if (goal.last_motivation_date === todayUTC) {
-          console.log(`[SIMPLE-REBUILD] ⏭️ Already sent today, skipping`);
-          continue;
-        }
+        // FORCE PROCESSING - ignore last_motivation_date for testing
+        console.log(`[HIJACKED-11:15] 🔥 FORCING EMAIL SEND - IGNORING LAST SENT DATE FOR TEST`);
 
-        // STEP 3: Get user email (handle both email and Firebase UID formats)
+        // Get user email (handle both email and Firebase UID formats)
         let userEmail = null;
         if (goal.user_id.includes('@')) {
-          // Email format - use directly
           userEmail = goal.user_id;
-          console.log(`[SIMPLE-REBUILD] 📧 Using email directly: ${userEmail}`);
+          console.log(`[HIJACKED-11:15] 📧 Using email directly: ${userEmail}`);
         } else {
-          // Firebase UID - lookup email from profiles
           const { data: profile } = await supabase
             .from('profiles')
             .select('email')
             .eq('id', goal.user_id)
             .single();
           userEmail = profile?.email;
-          console.log(`[SIMPLE-REBUILD] 🔍 Firebase UID lookup: ${goal.user_id} → ${userEmail}`);
+          console.log(`[HIJACKED-11:15] 🔍 Firebase UID lookup: ${goal.user_id} → ${userEmail}`);
         }
 
         if (!userEmail) {
-          console.error(`[SIMPLE-REBUILD] ❌ No email found for goal: ${goal.title}`);
+          console.error(`[HIJACKED-11:15] ❌ No email found for goal: ${goal.title}`);
           errors++;
           continue;
         }
 
-        // STEP 4: Generate simple motivation content
-        console.log(`[SIMPLE-REBUILD] 🤖 Generating motivation for: ${goal.title}`);
-        
+        // Generate motivation content
         const motivationContent = {
-          message: `Good morning! Time to make progress on your goal: "${goal.title}". Every day is a new opportunity to move closer to what you want to achieve.`,
+          message: `🔥 TEST EMAIL 11:15 AM EDT: Daily motivation for "${goal.title}". This is a test of the fixed email system!`,
           microPlan: [
             'Take one concrete action toward your goal today',
             'Track your progress and celebrate small wins', 
@@ -104,10 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
           challenge: 'Spend 2 minutes right now planning your next step forward.'
         };
 
-        console.log(`[SIMPLE-REBUILD] ✅ Simple motivation content ready`);
-
-        // STEP 5: Send email via Resend
-        console.log(`[SIMPLE-REBUILD] 📬 Sending email to: ${userEmail}`);
+        console.log(`[HIJACKED-11:15] 📬 Sending TEST email to: ${userEmail}`);
         
         const emailResponse = await supabase.functions.invoke('send-motivation-email', {
           body: {
@@ -125,30 +114,30 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // STEP 6: Check if email succeeded
-        if (emailResponse.error) {
-          console.error(`[SIMPLE-REBUILD] ❌ Email FAILED for ${goal.title}:`, emailResponse.error);
+        // CRITICAL: Use the FIXED success confirmation logic
+        if (emailResponse.error || !emailResponse.data?.success) {
+          console.error(`[HIJACKED-11:15] ❌ Email FAILED for ${goal.title}:`, emailResponse.error || 'Success=false');
           errors++;
-          // Don't mark as sent if email failed
+          // DO NOT mark as sent when email fails
         } else {
-          console.log(`[SIMPLE-REBUILD] ✅ Email SENT successfully for ${goal.title}`);
+          console.log(`[HIJACKED-11:15] ✅ Email SENT successfully for ${goal.title}`);
           
-          // Mark as sent today
+          // Only mark as sent after confirmed successful delivery
           const { error: updateError } = await supabase
             .from('goals')
             .update({ last_motivation_date: todayUTC })
             .eq('id', goal.id);
 
           if (updateError) {
-            console.error(`[SIMPLE-REBUILD] ⚠️ Error marking as sent:`, updateError);
+            console.error(`[HIJACKED-11:15] ⚠️ Error marking as sent:`, updateError);
           } else {
-            console.log(`[SIMPLE-REBUILD] ✅ Marked as sent: ${goal.title}`);
+            console.log(`[HIJACKED-11:15] ✅ Marked as sent: ${goal.title}`);
             emailsSent++;
           }
         }
 
       } catch (error) {
-        console.error(`[SIMPLE-REBUILD] ❌ Error processing ${goal.title}:`, error);
+        console.error(`[HIJACKED-11:15] ❌ Error processing ${goal.title}:`, error);
         errors++;
       }
     }
@@ -159,10 +148,11 @@ const handler = async (req: Request): Promise<Response> => {
       errors,
       totalGoals: allGoals.length,
       date: todayUTC,
-      message: `SIMPLE REBUILD: Processed ${allGoals.length} goals. Sent ${emailsSent} emails with ${errors} errors.`
+      timestamp: now.toISOString(),
+      message: `HIJACKED 11:15 TEST: Processed ${allGoals.length} goals. Sent ${emailsSent} emails with ${errors} errors.`
     };
 
-    console.log('[SIMPLE-REBUILD] 🎉 COMPLETE:', result);
+    console.log('[HIJACKED-11:15] 🎉 TEST COMPLETE:', result);
 
     return new Response(JSON.stringify(result), {
       status: 200,
@@ -170,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error('[SIMPLE-REBUILD] 💥 FATAL ERROR:', error);
+    console.error('[HIJACKED-11:15] 💥 FATAL ERROR:', error);
     return new Response(JSON.stringify({ 
       success: false,
       error: error.message,
