@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   // CRITICAL: Only allow production environment to send emails
   // Development servers should NEVER send emails to live users
   const host = req.headers.host || '';
-  const isProductionDomain = host === 'goalmine.ai';
+  const isProductionDomain = host === 'goalmine.ai' || host === 'www.goalmine.ai';
   
   if (!isProductionDomain) {
     console.log(`[VERCEL-CRON] 🚫 BLOCKED - Only goalmine.ai can send emails. Current host: ${host}`);
