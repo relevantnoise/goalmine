@@ -154,7 +154,7 @@ export const UpgradePage = () => {
           {/* Professional Coach Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
-              Strategic Advisor Plan
+              One-on-One Coaching
             </div>
             <CardHeader className="pt-8 text-center">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -225,7 +225,17 @@ export const UpgradePage = () => {
                   size="lg" 
                   disabled={loading}
                 >
-                  {loading ? "Dream Big..." : "Subscribe Now"}
+                  {loading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                      Dream Big...
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-4 h-4 mr-2" />
+                      Subscribe Now
+                    </>
+                  )}
                 </Button>
               )}
             </CardContent>
