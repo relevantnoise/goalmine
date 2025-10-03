@@ -119,7 +119,7 @@ export default async function handler(req, res) {
         
         // Mark goal as processed
         try {
-          await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/goals', {
+          await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/goals?id=eq.8a0349d0-6c7e-4564-b1e3-53b13cb9ec96', {
             method: 'PATCH',
             headers: {
               'Authorization': `Bearer ${supabaseKey}`,
@@ -217,6 +217,22 @@ export default async function handler(req, res) {
         results.emailsSent++;
         results.details.push({ user: 'dandlynn@yahoo.com', status: 'SUCCESS', id: data2.id });
         console.log('[VERCEL-CRON] ✅ dandlynn email sent:', data2.id);
+        
+        // Mark goal as processed
+        try {
+          await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/goals?id=eq.dae2616f-dd2a-41ef-9b49-d90e5c310644', {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              'apikey': supabaseKey
+            },
+            body: JSON.stringify({ last_motivation_date: new Date().toISOString().split('T')[0] })
+          });
+          console.log('[VERCEL-CRON] ✅ dandlynn goal marked as processed');
+        } catch (updateError) {
+          console.error('[VERCEL-CRON] ❌ Failed to mark dandlynn goal:', updateError);
+        }
       } else {
         results.errors++;
         results.details.push({ user: 'dandlynn@yahoo.com', status: 'FAILED', error: data2.error });
