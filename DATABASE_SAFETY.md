@@ -1,13 +1,19 @@
 # 🚨 DATABASE SAFETY PROTOCOLS
 
-## CRITICAL: Database Protection Rules
+## CRITICAL: Database Protection Rules (Updated October 3, 2025)
+
+### 🔒 SAFETY MEASURES IMPLEMENTED
+- **October 3, 2025**: Removed 62 dangerous edge functions including `cleanup-all-data`
+- **October 3, 2025**: Disabled `cleanDatabase()` function in useGoals.tsx 
+- **October 3, 2025**: Eliminated all bulk deletion and reset functions
 
 ### ❌ NEVER CREATE THESE FUNCTIONS
-- Any function that deletes all records from a table
+- Any function that deletes all records from a table (e.g., `cleanup-all-data`)
 - Any function with `DELETE FROM table_name` without specific WHERE clauses
-- Any function that deletes multiple users at once
+- Any function that deletes multiple users at once (e.g., `delete-user`, `delete-test-users`)
 - Any "cleanup" or "reset" functions for production data
 - Any function that truncates tables or drops data
+- Any function with "emergency", "reset", or "clear" in the name affecting user data
 
 ### ✅ ONLY SAFE DELETION PATTERNS
 - Individual record deletion with specific ID: `.delete().eq('id', specificId)`

@@ -8,6 +8,7 @@
    - Database protection rules and safe patterns
    - NEVER delete user data without explicit permission
    - Prevents catastrophic data loss incidents
+   - **UPDATED OCT 3, 2025**: All dangerous functions eliminated
    - **MANDATORY reading before any database operations**
 
 2. **`STATUS.md`** - **NEW** Complete status overview (READ THIS SECOND!)

@@ -752,6 +752,18 @@ export const useGoals = () => {
 
       const template = motivationTemplates[goal.tone] || motivationTemplates['kind_encouraging'];
       
+      // First, clean up old motivation content (keep only today's content)
+      const { error: cleanupError } = await supabase
+        .from('motivation_history')
+        .delete()
+        .eq('goal_id', goal.id)
+        .neq('date', today);
+
+      if (cleanupError) {
+        console.error('⚠️ Error cleaning up old motivation content:', cleanupError);
+        // Continue anyway - cleanup failure shouldn't block new content
+      }
+
       // Save to database (upsert - overwrite existing content for this goal/date)
       const { data, error } = await supabase
         .from('motivation_history')
@@ -861,28 +873,10 @@ export const useGoals = () => {
 
   // Clean all data from database
   const cleanDatabase = async () => {
-    try {
-      console.log('🧹 Cleaning database...');
-      const { data, error } = await supabase.functions.invoke('cleanup-all-data');
-
-      if (error) {
-        console.error('❌ Cleanup error:', error);
-        toast.error('Cleanup failed - check console');
-        return;
-      }
-
-      console.log('✅ Database cleaned:', data);
-      toast.success('Database cleaned successfully!');
-      
-      // Clear local state
-      setGoals([]);
-      setTodaysMotivation({});
-      
-      return data;
-    } catch (error) {
-      console.error('❌ Cleanup error:', error);
-      toast.error('Cleanup failed - check console');
-    }
+    // SAFETY: This function has been disabled to prevent accidental data loss
+    console.warn('🚫 cleanDatabase function has been disabled for safety');
+    toast.error('Database cleanup has been disabled to prevent accidental data loss');
+    return null;
   };
 
   return {

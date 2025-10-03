@@ -223,9 +223,23 @@ This person chose you as their coach because they want to achieve something mean
     const data = await response.json();
     const content = JSON.parse(data.choices[0].message.content);
 
-    // Save the generated motivation to the database (upsert - overwrite existing content for this goal/date)
+    // Save the generated motivation to the database (1-day storage only)
     if (goalId) {
       const today = new Date().toISOString().split('T')[0];
+      
+      // First, clean up old motivation content (keep only today's content)
+      const { error: cleanupError } = await supabase
+        .from('motivation_history')
+        .delete()
+        .eq('goal_id', goalId)
+        .neq('date', today);
+
+      if (cleanupError) {
+        console.error('Error cleaning up old motivation:', cleanupError);
+        // Continue anyway - cleanup failure shouldn't block new content
+      }
+
+      // Store today's motivation content
       const { error } = await supabase
         .from('motivation_history')
         .upsert({
@@ -248,31 +262,6 @@ This person chose you as their coach because they want to achieve something mean
     }
 
     console.log(`Generated fresh motivation for goal: ${goalTitle}`);
-
-    // Save motivation to database (only for non-nudge requests with valid goalId)
-    if (!isNudge && goalId) {
-      try {
-        const { error: saveError } = await supabase
-          .from('motivation_history')
-          .insert({
-            goal_id: goalId,
-            user_id: userId,
-            message: content.message,
-            micro_plan: content.microPlan,
-            challenge: content.challenge,
-            tone: tone,
-            nudge_count: isNudge ? 1 : 0
-          });
-
-        if (saveError) {
-          console.error('Error saving motivation to database:', saveError);
-        } else {
-          console.log(`✅ Motivation saved to database for goal: ${goalTitle}`);
-        }
-      } catch (error) {
-        console.error('Exception while saving motivation:', error);
-      }
-    }
 
     return new Response(JSON.stringify(content), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
