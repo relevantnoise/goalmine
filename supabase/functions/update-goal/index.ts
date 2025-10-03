@@ -184,28 +184,73 @@ serve(async (req) => {
     }
 
     // Update the goal using service role (use the actual goal's user_id)
+    console.log('🔄 Attempting to update goal:', { goalId, user_id: goal.user_id, updates });
+    
+    // Clean and validate the updates object
+    const cleanUpdates: any = {};
+    
+    // Only include valid fields to avoid data type issues
+    if (updates.title !== undefined) cleanUpdates.title = String(updates.title);
+    if (updates.description !== undefined) cleanUpdates.description = updates.description ? String(updates.description) : null;
+    if (updates.target_date !== undefined) {
+      // Ensure target_date is in proper YYYY-MM-DD format
+      if (updates.target_date) {
+        const dateStr = String(updates.target_date);
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          cleanUpdates.target_date = dateStr;
+        } else {
+          console.error('❌ Invalid date format:', dateStr);
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Invalid date format. Expected YYYY-MM-DD.'
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 400,
+          });
+        }
+      } else {
+        cleanUpdates.target_date = null;
+      }
+    }
+    if (updates.tone !== undefined) cleanUpdates.tone = String(updates.tone);
+    if (updates.time_of_day !== undefined) cleanUpdates.time_of_day = String(updates.time_of_day);
+    
+    cleanUpdates.updated_at = new Date().toISOString();
+    
+    console.log('🧹 Cleaned updates:', cleanUpdates);
+    
     const { data: updateResults, error } = await supabase
       .from('goals')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
+      .update(cleanUpdates)
       .eq('id', goalId)
       .eq('user_id', goal.user_id)  // Use the actual user_id from the found goal
       .select();
     
-    const data = updateResults && updateResults.length > 0 ? updateResults[0] : null;
-
-    if (error || !data) {
-      console.error('❌ Database error or no rows updated:', error);
+    console.log('🔍 Update query results:', { updateResults, error });
+    
+    if (error) {
+      console.error('❌ Database error:', error);
       return new Response(JSON.stringify({
         success: false,
-        error: error?.message || 'Goal not found or could not be updated'
+        error: error.message
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: error ? 500 : 404,
+        status: 500,
       });
     }
+    
+    if (!updateResults || updateResults.length === 0) {
+      console.error('❌ No rows updated - goal not found or permission denied');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Goal not found or permission denied'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
+    }
+
+    const data = updateResults[0];
 
     console.log('✅ Goal updated successfully:', data.id);
 
