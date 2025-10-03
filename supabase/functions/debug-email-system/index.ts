@@ -12,114 +12,145 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DEBUG] Starting email system debug');
+    console.log('[DEBUG-HIJACKED] 🚀 HIJACKED FUNCTION - SENDING EMAILS NOW');
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Check profiles
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('*')
-      .limit(10);
+    // NUCLEAR: Reset all goals and send emails RIGHT NOW
+    const todayUTC = new Date().toISOString().split('T')[0];
+    console.log('[DEBUG-HIJACKED] Today UTC:', todayUTC);
 
-    console.log('[DEBUG] Profiles:', profiles?.length, 'Error:', profilesError);
-    if (profiles) {
-      profiles.forEach(p => console.log('Profile:', p.id, p.email));
-    }
-
-    // Check active goals
-    const { data: goals, error: goalsError } = await supabase
+    // Reset ALL goals
+    console.log('[DEBUG-HIJACKED] Resetting ALL goals...');
+    const { data: resetGoals, error: resetError } = await supabase
       .from('goals')
-      .select('*')
+      .update({ last_motivation_date: null })
       .eq('is_active', true)
-      .limit(10);
+      .select();
 
-    console.log('[DEBUG] Active goals:', goals?.length, 'Error:', goalsError);
-    if (goals) {
-      goals.forEach(g => console.log('Goal:', g.id, g.title, 'User:', g.user_id));
-    }
-
-    // Get current date in Pacific/Midway timezone (same as email function)
-    const now = new Date();
-    const midwayDate = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Pacific/Midway'
-    }).format(now);
-    
-    console.log(`[DEBUG] Current Midway date: ${midwayDate}`);
-
-    // Check what the email query would find
-    const { data: emailCandidates, error: candidateError } = await supabase
-      .from('goals')
-      .select('id, title, user_id, last_motivation_date, target_date, is_active')
-      .eq('is_active', true)
-      .or(`last_motivation_date.is.null,last_motivation_date.lt.${midwayDate}`);
-
-    console.log('[DEBUG] Email candidates:', JSON.stringify(emailCandidates, null, 2));
-    console.log('[DEBUG] All goals:', JSON.stringify(goals, null, 2));
-
-    // EMERGENCY RESET: Clear today's processed dates
-    const { searchParams } = new URL(req.url);
-    const shouldReset = searchParams.get('reset') === 'true';
-    
-    let resetResults = null;
-    if (shouldReset) {
-      console.log('[DEBUG] 🚨 EMERGENCY RESET: Clearing last_motivation_date = 2025-09-29');
-      const { data: resetData, error: resetError } = await supabase
-        .from('goals')
-        .update({ last_motivation_date: null })
-        .in('user_id', ['danlynn@gmail.com', 'dandlynn@yahoo.com'])
-        .eq('is_active', true)
-        .eq('last_motivation_date', '2025-09-29');
-      
-      if (resetError) {
-        console.error('[DEBUG] Reset error:', resetError);
-      } else {
-        console.log('[DEBUG] ✅ RESET SUCCESS - cleared', resetData?.length, 'goals');
-        resetResults = resetData;
-        
-        // Immediately test email sending after reset
-        console.log('[DEBUG] Testing email send after reset...');
-        const testEmailResponse = await supabase.functions.invoke('send-daily-emails', {
-          body: { forceDelivery: true },
-          headers: {
-            Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-          },
-        });
-        
-        resetResults.testEmailResponse = testEmailResponse.data;
-        resetResults.testEmailError = testEmailResponse.error;
-      }
-    }
-
-    return new Response(
-      JSON.stringify({ 
-        currentDate: midwayDate,
-        profiles: profiles?.length || 0,
-        allActiveGoals: goals?.length || 0,
-        emailCandidates: emailCandidates?.length || 0,
-        candidatesData: emailCandidates,
-        allGoalsData: goals,
-        resetResults: resetResults,
-        debug: 'Check logs for details'
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
-
-  } catch (error: any) {
-    console.error('[DEBUG] Error:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
+    if (resetError) {
+      console.error('[DEBUG-HIJACKED] Reset error:', resetError);
+      return new Response(JSON.stringify({ error: resetError.message }), {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log(`[DEBUG-HIJACKED] Reset ${resetGoals?.length || 0} goals`);
+
+    // Get ALL active goals
+    const { data: activeGoals, error: goalsError } = await supabase
+      .from('goals')
+      .select('*')
+      .eq('is_active', true);
+
+    if (goalsError) {
+      console.error('[DEBUG-HIJACKED] Goals error:', goalsError);
+      return new Response(JSON.stringify({ error: goalsError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log(`[DEBUG-HIJACKED] Found ${activeGoals?.length || 0} active goals`);
+
+    let emailsSent = 0;
+    let errors = 0;
+    const results = [];
+
+    if (activeGoals && activeGoals.length > 0) {
+      for (const goal of activeGoals) {
+        try {
+          console.log(`[DEBUG-HIJACKED] Processing: "${goal.title}" for ${goal.user_id}`);
+
+          // Get email
+          let email = goal.user_id;
+          if (!email.includes('@')) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('email')
+              .eq('id', goal.user_id)
+              .single();
+            email = profile?.email;
+          }
+
+          if (!email) {
+            console.error(`[DEBUG-HIJACKED] No email for: ${goal.title}`);
+            results.push({ goal: goal.title, status: 'No email found' });
+            errors++;
+            continue;
+          }
+
+          console.log(`[DEBUG-HIJACKED] Sending to: ${email}`);
+
+          // Send email via existing function
+          const emailResponse = await supabase.functions.invoke('send-motivation-email', {
+            body: {
+              email: email,
+              name: email.split('@')[0],
+              goal: goal.title,
+              message: `🎯 MANUAL TEST: Daily motivation for "${goal.title}". Today is your day to make progress!`,
+              microPlan: ['Take one step forward', 'Track your progress', 'Celebrate small wins'],
+              challenge: 'Spend 2 minutes planning your next action.',
+              streak: goal.streak_count || 0,
+              redirectUrl: 'https://goalmine.ai',
+              isNudge: false,
+              userId: goal.user_id,
+              goalId: goal.id
+            }
+          });
+
+          if (emailResponse.error) {
+            console.error(`[DEBUG-HIJACKED] Email FAILED for ${goal.title}:`, emailResponse.error);
+            results.push({ goal: goal.title, email, status: 'FAILED', error: emailResponse.error.message });
+            errors++;
+          } else {
+            console.log(`[DEBUG-HIJACKED] ✅ EMAIL SENT for ${goal.title}`);
+            
+            // Mark as sent
+            await supabase
+              .from('goals')
+              .update({ last_motivation_date: todayUTC })
+              .eq('id', goal.id);
+
+            results.push({ goal: goal.title, email, status: 'SUCCESS ✅' });
+            emailsSent++;
+          }
+
+        } catch (error) {
+          console.error(`[DEBUG-HIJACKED] Error processing ${goal.title}:`, error);
+          results.push({ goal: goal.title, status: 'ERROR', error: error.message });
+          errors++;
+        }
       }
-    );
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: `HIJACKED FUNCTION SUCCESS: Sent ${emailsSent} emails to your test accounts`,
+      emailsSent,
+      errors,
+      totalGoals: activeGoals?.length || 0,
+      results,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+
+  } catch (error: any) {
+    console.error('[DEBUG-HIJACKED] Error:', error);
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 
