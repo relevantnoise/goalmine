@@ -361,12 +361,22 @@ export const useGoals = () => {
       });
 
       if (error) {
-        // Handle specific check-in errors
-        if (error.message?.includes('already checked in')) {
+        // Handle specific check-in errors from server
+        const errorMessage = error.message || 'Check-in failed';
+        if (errorMessage.includes('already checked in')) {
           toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
+        } else if (data?.alreadyCheckedIn) {
+          // Handle server-side duplicate detection
+          toast.error(data.error || "You've already checked in today! Come back tomorrow after 3 AM EST.");
         } else {
-          toast.error(`Check-in failed: ${error.message}`);
+          toast.error(`Check-in failed: ${errorMessage}`);
         }
+        return;
+      }
+
+      // Also handle server-side validation that returns success:false
+      if (data?.alreadyCheckedIn) {
+        toast.error(data.error || "You've already checked in today! Come back tomorrow after 3 AM EST.");
         return;
       }
 

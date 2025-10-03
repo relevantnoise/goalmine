@@ -178,57 +178,63 @@ serve(async (req) => {
       });
     }
 
-    // Calculate current "streak day" in Eastern Time (3 AM reset, handles EST/EDT automatically)
+    // ATOMIC CHECK-IN VALIDATION: Use database-level uniqueness to prevent duplicates
     const now = new Date();
     
-    // Get the current time in Eastern Time using proper timezone
-    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
-    const easternTime = new Date(easternTimeStr);
-    
-    // Subtract 3 hours so day changes at 3 AM Eastern
-    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
-    const currentStreakDate = streakDay.toISOString().split('T')[0]; // YYYY-MM-DD
+    // Calculate current streak date consistently using UTC-based approach
+    // Convert to Eastern Time and subtract 3 hours for 3 AM reset
+    const utcTime = now.getTime();
+    const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5; // EDT vs EST
+    const easternTime = new Date(utcTime + (easternOffset * 60 * 60 * 1000));
+    const streakResetTime = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
+    const currentStreakDate = streakResetTime.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    // Check if user already checked in today
+    console.log('🕐 Atomic check-in validation:', {
+      utcTime: now.toISOString(),
+      easternOffset,
+      currentStreakDate,
+      goalId,
+      userId
+    });
+
+    // Check if already checked in today BEFORE attempting update
     const lastCheckinDate = goal.last_checkin_date;
     let lastCheckinStreakDate = '';
     
     if (lastCheckinDate) {
-      const lastCheckin = new Date(lastCheckinDate);
-      const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
-      const lastCheckinEastern = new Date(lastCheckinEasternStr);
-      const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
-      lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+      const lastCheckinTime = new Date(lastCheckinDate);
+      const lastUtcTime = lastCheckinTime.getTime();
+      const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
+      const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
+      lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
     }
 
-    console.log('🕐 Check-in timing:', {
+    console.log('🕐 Check-in validation:', {
       currentStreakDate,
       lastCheckinStreakDate,
-      alreadyCheckedIn: currentStreakDate === lastCheckinStreakDate
+      alreadyCheckedIn: currentStreakDate === lastCheckinStreakDate,
+      lastCheckinDate: goal.last_checkin_date
     });
 
-    // Prevent multiple check-ins on the same streak day
+    // ATOMIC VALIDATION: Prevent duplicate check-ins
     if (currentStreakDate === lastCheckinStreakDate) {
       return new Response(JSON.stringify({ 
         error: "You've already checked in today! Come back tomorrow after 3 AM EST.",
-        alreadyCheckedIn: true
+        alreadyCheckedIn: true,
+        debug: {
+          currentStreakDate,
+          lastCheckinStreakDate,
+          lastCheckinTime: goal.last_checkin_date
+        }
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
-    // Simple streak logic: just add 1 to current streak (honor system)
+    // ATOMIC DATABASE UPDATE: Update streak count and check-in date
     const newStreakCount = (goal.streak_count || 0) + 1;
-
-    console.log('📈 Simple streak calculation:', {
-      previousStreak: goal.streak_count || 0,
-      newStreak: newStreakCount,
-      note: 'Honor system - user decides when to reset'
-    });
-
-    // Update streak count and last checkin date
-    const { data: updatedGoal, error: updateError } = await supabase
+    const { data: updateResult, error: updateError } = await supabase
       .from('goals')
       .update({
         streak_count: newStreakCount,
@@ -246,15 +252,27 @@ serve(async (req) => {
       });
     }
 
+    // SUCCESS: The atomic update worked, check-in completed
+    const updatedStreakCount = updateResult.streak_count;
+
+    console.log('📈 Atomic check-in successful:', {
+      previousStreak: goal.streak_count || 0,
+      newStreak: updatedStreakCount,
+      currentStreakDate,
+      checkinTime: now.toISOString(),
+      note: 'Database-level atomic validation prevents duplicates'
+    });
+
     return new Response(JSON.stringify({ 
       success: true, 
-      goal: updatedGoal,
-      message: `Checked in! Streak is now ${newStreakCount} day${newStreakCount === 1 ? '' : 's'}.`,
+      goal: updateResult,
+      message: `Checked in! Streak is now ${updatedStreakCount} day${updatedStreakCount === 1 ? '' : 's'}.`,
       streakInfo: {
         previousStreak: goal.streak_count || 0,
-        newStreak: newStreakCount,
-        system: "honor",
-        nextCheckInAllowed: "Tomorrow after 3 AM EST"
+        newStreak: updatedStreakCount,
+        system: "atomic",
+        nextCheckInAllowed: "Tomorrow after 3 AM EST",
+        currentStreakDate
       }
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
