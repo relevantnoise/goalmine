@@ -47,9 +47,13 @@ export default async function handler(req, res) {
       console.log('[VERCEL-CRON] Retrieving pre-generated AI content for danlynn@gmail.com...');
       
       // Retrieve pre-generated AI content from motivation_history table
-      const today = new Date().toISOString().split('T')[0];
+      // Look for content created today (within last 24 hours)
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayISO = yesterday.toISOString();
+      
       const motivationResponse1 = await fetch(
-        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.8a0349d0-6c7e-4564-b1e3-53b13cb9ec96&date_generated=eq.${today}&order=created_at.desc&limit=1`,
+        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.8a0349d0-6c7e-4564-b1e3-53b13cb9ec96&created_at=gte.${yesterdayISO}&order=created_at.desc&limit=1`,
         {
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,
@@ -137,9 +141,13 @@ export default async function handler(req, res) {
       console.log('[VERCEL-CRON] Retrieving pre-generated AI content for dandlynn@yahoo.com...');
       
       // Retrieve pre-generated AI content from motivation_history table
-      const today = new Date().toISOString().split('T')[0];
+      // Look for content created today (within last 24 hours)
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayISO = yesterday.toISOString();
+      
       const motivationResponse2 = await fetch(
-        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.dae2616f-dd2a-41ef-9b49-d90e5c310644&date_generated=eq.${today}&order=created_at.desc&limit=1`,
+        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.dae2616f-dd2a-41ef-9b49-d90e5c310644&created_at=gte.${yesterdayISO}&order=created_at.desc&limit=1`,
         {
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,

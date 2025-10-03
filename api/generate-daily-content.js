@@ -69,7 +69,7 @@ export default async function handler(req, res) {
       const aiData1 = await aiResponse1.json();
       if (aiData1.message && aiData1.microPlan && aiData1.challenge) {
         // Store the AI content in motivation_history table for tomorrow's email
-        const today = new Date().toISOString().split('T')[0];
+        // Note: Using existing schema - no date_generated column, will use created_at for daily lookup
         await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history', {
           method: 'POST',
           headers: {
@@ -79,12 +79,12 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             goal_id: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
+            user_id: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
             message: aiData1.message,
             micro_plan: Array.isArray(aiData1.microPlan) ? aiData1.microPlan : [aiData1.microPlan],
             challenge: aiData1.challenge,
             tone: "drill_sergeant",
-            created_at: new Date().toISOString(),
-            date_generated: today
+            nudge_count: 0
           })
         });
         
@@ -130,7 +130,7 @@ export default async function handler(req, res) {
       const aiData2 = await aiResponse2.json();
       if (aiData2.message && aiData2.microPlan && aiData2.challenge) {
         // Store the AI content in motivation_history table for tomorrow's email
-        const today = new Date().toISOString().split('T')[0];
+        // Note: Using existing schema - no date_generated column, will use created_at for daily lookup
         await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history', {
           method: 'POST',
           headers: {
@@ -140,12 +140,12 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             goal_id: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
+            user_id: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
             message: aiData2.message,
             micro_plan: Array.isArray(aiData2.microPlan) ? aiData2.microPlan : [aiData2.microPlan],
             challenge: aiData2.challenge,
             tone: "drill_sergeant",
-            created_at: new Date().toISOString(),
-            date_generated: today
+            nudge_count: 0
           })
         });
         
