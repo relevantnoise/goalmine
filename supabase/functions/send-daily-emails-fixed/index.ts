@@ -275,12 +275,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`[DAILY-EMAILS-FIXED] Complete. Sent: ${emailsSent}, Errors: ${errors}`);
 
+    // DEBUG: Get final state for response
+    const { data: finalGoals } = await supabase
+      .from('goals')
+      .select('id, title, user_id, is_active, last_motivation_date')
+      .limit(5);
+
     return new Response(
       JSON.stringify({ 
         success: true, 
         emailsSent, 
         errors,
-        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`
+        message: `Daily email process completed. Sent ${emailsSent} emails with ${errors} errors.`,
+        debug: {
+          todayDate,
+          totalGoalsFound: candidateGoals?.length || 0,
+          finalGoals: finalGoals || []
+        }
       }),
       {
         status: 200,
