@@ -44,32 +44,39 @@ export default async function handler(req, res) {
     
     // Real Goal 1: danlynn@gmail.com
     try {
-      console.log('[VERCEL-CRON] Retrieving pre-generated AI content for danlynn@gmail.com...');
+      console.log('[VERCEL-CRON] Generating AI content for danlynn@gmail.com...');
       
-      // Retrieve pre-generated AI content from motivation_history table
-      // Look for content created today (within last 24 hours)
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayISO = yesterday.toISOString();
-      
-      const motivationResponse1 = await fetch(
-        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.8a0349d0-6c7e-4564-b1e3-53b13cb9ec96&created_at=gte.${yesterdayISO}&order=created_at.desc&limit=1`,
+      // Generate AI-powered motivation content with proper buffering
+      const aiResponse1 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-daily-motivation',
         {
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
+            goalTitle: "Officially launch the GoalMine.ai app - an ai-powered goal creation and tracking platform.",
+            goalDescription: "I want to launch the goalmine.ai app this month. that means that I need to fix all of the little bugs. it's hard but I can do it.",
+            tone: "drill_sergeant",
+            streakCount: 4,
+            userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+            targetDate: "2025-11-15",
+            isNudge: false
+          })
         }
       );
       
-      const motivationData1 = await motivationResponse1.json();
-      console.log('[VERCEL-CRON] Pre-generated content for danlynn:', motivationData1.length > 0 ? 'FOUND' : 'NOT_FOUND');
+      const aiData1 = await aiResponse1.json();
+      console.log('[VERCEL-CRON] AI response for danlynn:', JSON.stringify(aiData1));
+      console.log('[VERCEL-CRON] AI content generated for danlynn:', (aiData1.message && aiData1.microPlan && aiData1.challenge) ? 'SUCCESS' : 'FAILED');
       
-      // Use pre-generated content if available, fallback to generic
-      const content1 = (motivationData1.length > 0) ? {
-        message: motivationData1[0].message,
-        microPlan: motivationData1[0].micro_plan,
-        challenge: motivationData1[0].challenge
+      // Use AI content if available, fallback to generic
+      const content1 = (aiData1.message && aiData1.microPlan && aiData1.challenge) ? {
+        message: aiData1.message,
+        microPlan: aiData1.microPlan,
+        challenge: aiData1.challenge
       } : {
         message: "Daily motivation for launching GoalMine! Keep pushing forward.",
         microPlan: ["Fix the email system", "Test the app", "Launch to users"],
@@ -77,7 +84,7 @@ export default async function handler(req, res) {
       };
       
       // Store for debugging
-      results.motivationData1 = motivationData1;
+      results.aiData1 = aiData1;
       results.content1 = content1;
       
       console.log('[VERCEL-CRON] Sending AI-powered email to danlynn@gmail.com...');
@@ -138,32 +145,39 @@ export default async function handler(req, res) {
 
     // Real Goal 2: dandlynn@yahoo.com  
     try {
-      console.log('[VERCEL-CRON] Retrieving pre-generated AI content for dandlynn@yahoo.com...');
+      console.log('[VERCEL-CRON] Generating AI content for dandlynn@yahoo.com...');
       
-      // Retrieve pre-generated AI content from motivation_history table
-      // Look for content created today (within last 24 hours)
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayISO = yesterday.toISOString();
-      
-      const motivationResponse2 = await fetch(
-        `https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/motivation_history?goal_id=eq.dae2616f-dd2a-41ef-9b49-d90e5c310644&created_at=gte.${yesterdayISO}&order=created_at.desc&limit=1`,
+      // Generate AI-powered motivation content with proper buffering
+      const aiResponse2 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-daily-motivation',
         {
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,
-            'apikey': supabaseKey
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
+            goalTitle: "Launch CleverVibes.ai - an application developed to help create awareness for vibe coders.",
+            goalDescription: "I want to launch CleverVibes.ai in order to help all of the innovative vibe coders create awareness of their inventions.",
+            tone: "drill_sergeant",
+            streakCount: 3,
+            userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
+            targetDate: "2024-10-15",
+            isNudge: false
+          })
         }
       );
       
-      const motivationData2 = await motivationResponse2.json();
-      console.log('[VERCEL-CRON] Pre-generated content for dandlynn:', motivationData2.length > 0 ? 'FOUND' : 'NOT_FOUND');
+      const aiData2 = await aiResponse2.json();
+      console.log('[VERCEL-CRON] AI response for dandlynn:', JSON.stringify(aiData2));
+      console.log('[VERCEL-CRON] AI content generated for dandlynn:', (aiData2.message && aiData2.microPlan && aiData2.challenge) ? 'SUCCESS' : 'FAILED');
       
-      // Use pre-generated content if available, fallback to generic
-      const content2 = (motivationData2.length > 0) ? {
-        message: motivationData2[0].message,
-        microPlan: motivationData2[0].micro_plan,
-        challenge: motivationData2[0].challenge
+      // Use AI content if available, fallback to generic
+      const content2 = (aiData2.message && aiData2.microPlan && aiData2.challenge) ? {
+        message: aiData2.message,
+        microPlan: aiData2.microPlan,
+        challenge: aiData2.challenge
       } : {
         message: "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
         microPlan: ["Develop core features", "Create awareness campaign", "Launch to users"],
@@ -171,7 +185,7 @@ export default async function handler(req, res) {
       };
       
       // Store for debugging
-      results.motivationData2 = motivationData2;
+      results.aiData2 = aiData2;
       results.content2 = content2;
       
       console.log('[VERCEL-CRON] Sending AI-powered email to dandlynn@yahoo.com...');
@@ -221,8 +235,8 @@ export default async function handler(req, res) {
       message: `Direct approach: Sent ${results.emailsSent} emails with ${results.errors} errors`,
       details: results.details,
       debugInfo: {
-        motivationData1: results.motivationData1,
-        motivationData2: results.motivationData2,
+        aiResponse1: results.aiData1,
+        aiResponse2: results.aiData2,
         content1: results.content1,
         content2: results.content2
       }
