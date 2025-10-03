@@ -50,15 +50,12 @@ export const UpgradePage = () => {
     
     setStrategicLoading(true);
     try {
-      // Call create-checkout with EXPLICIT tier parameter  
-      console.log('🎯 Calling create-checkout with tier: strategic_advisory');
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      // Call existing create-strategic-advisor-checkout function (HARDCODED $950/month)
+      console.log('🎯 Calling create-strategic-advisor-checkout');
+      const { data, error } = await supabase.functions.invoke('create-strategic-advisor-checkout', {
         body: {
           email: user.email,
           userId: user.id,
-          tier: 'strategic_advisory',
-          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // FORCE Strategic Advisor Plan price ID
-          planName: 'Strategic Advisor Plan',
         },
       });
 
