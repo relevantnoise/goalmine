@@ -107,6 +107,41 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`[DAILY-EMAILS-FIXED] Found ${candidateGoals?.length || 0} candidate goals`);
     
+    // DEBUG: Show all candidate goals details
+    if (candidateGoals && candidateGoals.length > 0) {
+      candidateGoals.forEach((goal, index) => {
+        console.log(`[DAILY-EMAILS-FIXED] Goal ${index + 1}: "${goal.title}"`, {
+          id: goal.id,
+          user_id: goal.user_id,
+          is_active: goal.is_active,
+          last_motivation_date: goal.last_motivation_date,
+          created_at: goal.created_at
+        });
+      });
+    } else {
+      console.log(`[DAILY-EMAILS-FIXED] ⚠️ No candidate goals found. Let me check ALL goals...`);
+      
+      // Check ALL goals regardless of criteria
+      const { data: allGoals } = await supabase
+        .from('goals')
+        .select('*')
+        .limit(10);
+      
+      console.log(`[DAILY-EMAILS-FIXED] ALL GOALS (${allGoals?.length || 0}):`);
+      if (allGoals) {
+        allGoals.forEach((goal, index) => {
+          console.log(`[DAILY-EMAILS-FIXED] All Goal ${index + 1}: "${goal.title}"`, {
+            id: goal.id,
+            user_id: goal.user_id,
+            is_active: goal.is_active,
+            last_motivation_date: goal.last_motivation_date,
+            target_date: goal.target_date,
+            created_at: goal.created_at
+          });
+        });
+      }
+    }
+    
     if (!candidateGoals || candidateGoals.length === 0) {
       return new Response(
         JSON.stringify({ 
