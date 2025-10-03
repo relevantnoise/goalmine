@@ -512,7 +512,7 @@ export const useGoals = () => {
     }
 
     try {
-      console.log('🚀 Calling update-goal edge function...');
+      console.log('🚀 Calling update-goal edge function (v2)...');
       console.log('🔍 Request details:', {
         goalId,
         userId: user.email || user.id, 
