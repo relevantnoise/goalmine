@@ -44,7 +44,42 @@ export default async function handler(req, res) {
     
     // Real Goal 1: danlynn@gmail.com
     try {
-      console.log('[VERCEL-CRON] Sending to danlynn@gmail.com...');
+      console.log('[VERCEL-CRON] Generating AI content for danlynn@gmail.com...');
+      
+      // First, generate AI-powered motivation content
+      const aiResponse1 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-daily-motivation',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
+            userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+            goal: "Officially launch the GoalMine.ai app - an ai-powered goal creation and tracking platform.",
+            tone: "drill_sergeant",
+            streak: 4
+          })
+        }
+      );
+      
+      const aiData1 = await aiResponse1.json();
+      console.log('[VERCEL-CRON] AI content generated for danlynn:', aiData1.success ? 'SUCCESS' : 'FAILED');
+      
+      // Use AI content if available, fallback to generic
+      const content1 = aiData1.success ? {
+        message: aiData1.message || "Daily motivation for launching GoalMine! Keep pushing forward.",
+        microPlan: aiData1.microPlan || ["Fix the email system", "Test the app", "Launch to users"],
+        challenge: aiData1.challenge || "Focus on one task at a time"
+      } : {
+        message: "Daily motivation for launching GoalMine! Keep pushing forward.",
+        microPlan: ["Fix the email system", "Test the app", "Launch to users"],
+        challenge: "Focus on one task at a time"
+      };
+      
+      console.log('[VERCEL-CRON] Sending AI-powered email to danlynn@gmail.com...');
       const response1 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
         {
@@ -57,9 +92,9 @@ export default async function handler(req, res) {
             email: "danlynn@gmail.com",
             name: "danlynn",
             goal: "Launch GoalMine app",
-            message: "Daily motivation for launching GoalMine! Keep pushing forward.",
-            microPlan: ["Fix the email system", "Test the app", "Launch to users"],
-            challenge: "Focus on one task at a time",
+            message: content1.message,
+            microPlan: content1.microPlan,
+            challenge: content1.challenge,
             streak: 4,
             redirectUrl: "https://goalmine.ai",
             isNudge: false,
@@ -73,6 +108,22 @@ export default async function handler(req, res) {
         results.emailsSent++;
         results.details.push({ user: 'danlynn@gmail.com', status: 'SUCCESS', id: data1.id });
         console.log('[VERCEL-CRON] ✅ danlynn email sent:', data1.id);
+        
+        // Mark goal as processed
+        try {
+          await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/goals', {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              'apikey': supabaseKey
+            },
+            body: JSON.stringify({ last_motivation_date: new Date().toISOString().split('T')[0] })
+          });
+          console.log('[VERCEL-CRON] ✅ danlynn goal marked as processed');
+        } catch (updateError) {
+          console.error('[VERCEL-CRON] ❌ Failed to mark danlynn goal:', updateError);
+        }
       } else {
         results.errors++;
         results.details.push({ user: 'danlynn@gmail.com', status: 'FAILED', error: data1.error });
@@ -86,7 +137,42 @@ export default async function handler(req, res) {
 
     // Real Goal 2: dandlynn@yahoo.com  
     try {
-      console.log('[VERCEL-CRON] Sending to dandlynn@yahoo.com...');
+      console.log('[VERCEL-CRON] Generating AI content for dandlynn@yahoo.com...');
+      
+      // First, generate AI-powered motivation content
+      const aiResponse2 = await fetch(
+        'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-daily-motivation',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
+            userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
+            goal: "Launch CleverVibes.ai - an application developed to help create awareness for vibe coders.",
+            tone: "drill_sergeant",
+            streak: 3
+          })
+        }
+      );
+      
+      const aiData2 = await aiResponse2.json();
+      console.log('[VERCEL-CRON] AI content generated for dandlynn:', aiData2.success ? 'SUCCESS' : 'FAILED');
+      
+      // Use AI content if available, fallback to generic
+      const content2 = aiData2.success ? {
+        message: aiData2.message || "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
+        microPlan: aiData2.microPlan || ["Develop core features", "Create awareness campaign", "Launch to users"],
+        challenge: aiData2.challenge || "Build one feature at a time"
+      } : {
+        message: "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
+        microPlan: ["Develop core features", "Create awareness campaign", "Launch to users"],
+        challenge: "Build one feature at a time"
+      };
+      
+      console.log('[VERCEL-CRON] Sending AI-powered email to dandlynn@yahoo.com...');
       const response2 = await fetch(
         'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-motivation-email',
         {
@@ -99,9 +185,9 @@ export default async function handler(req, res) {
             email: "dandlynn@yahoo.com",
             name: "dandlynn",
             goal: "Launch CleverVibes.ai",
-            message: "Daily motivation for CleverVibes.ai! Help those vibe coders create awareness.",
-            microPlan: ["Develop core features", "Create awareness campaign", "Launch to users"],
-            challenge: "Build one feature at a time",
+            message: content2.message,
+            microPlan: content2.microPlan,
+            challenge: content2.challenge,
             streak: 3,
             redirectUrl: "https://goalmine.ai",
             isNudge: false,
