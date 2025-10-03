@@ -18,6 +18,8 @@ export const PricingPage = ({
 }: PricingPageProps) => {
   // Bio modal functionality added
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
+  const [personalLoading, setPersonalLoading] = useState(false);
+  const [strategicLoading, setStrategicLoading] = useState(false);
   const {
     user
   } = useAuth();
@@ -27,13 +29,23 @@ export const PricingPage = ({
     createCheckout,
     createProfessionalCheckout
   } = useSubscription();
-  const handleSubscribe = () => {
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 Personal Plan button clicked');
+    
     if (!user) {
       // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
-    createCheckout();
+    
+    setPersonalLoading(true);
+    try {
+      await createCheckout();
+    } finally {
+      setPersonalLoading(false);
+    }
   };
 
   const handleStartTrial = () => {
@@ -45,13 +57,23 @@ export const PricingPage = ({
     onStartTrial();
   };
 
-  const handleProfessionalSubscribe = () => {
+  const handleProfessionalSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 Strategic Advisory button clicked');
+    
     if (!user) {
       // Redirect to auth if not logged in
       window.location.href = '/auth';
       return;
     }
-    createProfessionalCheckout();
+    
+    setStrategicLoading(true);
+    try {
+      await createProfessionalCheckout();
+    } finally {
+      setStrategicLoading(false);
+    }
   };
   return <div className="min-h-screen bg-background">
       <Header onLogoClick={onBack} />
@@ -168,8 +190,8 @@ export const PricingPage = ({
               </ul>
               {subscription.subscribed && subscription.subscription_tier === "Personal Plan" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
-                </Badge> : <Button onClick={handleSubscribe} className="w-full bg-premium hover:bg-premium/90" size="lg" disabled={loading}>
-                  {loading ? "Dream Big..." : "Subscribe Now"}
+                </Badge> : <Button onClick={handleSubscribe} className="w-full bg-premium hover:bg-premium/90" size="lg" disabled={personalLoading}>
+                  {personalLoading ? "Dream Big..." : "Subscribe Now"}
                 </Button>}
             </CardContent>
           </Card>
@@ -225,8 +247,8 @@ export const PricingPage = ({
               </ul>
               {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
-                </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-green-600 hover:bg-green-700" size="lg" disabled={loading}>
-                  {loading ? "Dream Big..." : "Subscribe Now"}
+                </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-green-600 hover:bg-green-700" size="lg" disabled={strategicLoading}>
+                  {strategicLoading ? "Dream Big..." : "Subscribe Now"}
                 </Button>}
             </CardContent>
           </Card>
