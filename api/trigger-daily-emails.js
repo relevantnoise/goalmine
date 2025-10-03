@@ -57,10 +57,13 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             goalId: "8a0349d0-6c7e-4564-b1e3-53b13cb9ec96",
-            userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
-            goal: "Officially launch the GoalMine.ai app - an ai-powered goal creation and tracking platform.",
+            goalTitle: "Officially launch the GoalMine.ai app - an ai-powered goal creation and tracking platform.",
+            goalDescription: "I want to launch the goalmine.ai app this month. that means that I need to fix all of the little bugs. it's hard but I can do it.",
             tone: "drill_sergeant",
-            streak: 4
+            streakCount: 4,
+            userId: "bWnU7yuQnqSWNqfgJpBX06qlTgC3",
+            targetDate: "2025-11-15",
+            isNudge: false
           })
         }
       );
@@ -150,10 +153,13 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             goalId: "dae2616f-dd2a-41ef-9b49-d90e5c310644",
-            userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
-            goal: "Launch CleverVibes.ai - an application developed to help create awareness for vibe coders.",
+            goalTitle: "Launch CleverVibes.ai - an application developed to help create awareness for vibe coders.",
+            goalDescription: "I want to launch CleverVibes.ai in order to help all of the innovative vibe coders create awareness of their inventions.",
             tone: "drill_sergeant",
-            streak: 3
+            streakCount: 3,
+            userId: "8MZNQ8sG1VfWaBd74A39jNzyZmL2",
+            targetDate: "2024-10-15",
+            isNudge: false
           })
         }
       );
