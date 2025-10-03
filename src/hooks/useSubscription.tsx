@@ -98,14 +98,15 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
-      console.log('🟢 About to invoke create-professional-checkout (dedicated function)');
-      const { data, error } = await supabase.functions.invoke('create-professional-checkout', {
+      console.log('🟢 FORCING Strategic Advisor Plan - tier: strategic_advisory');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
           userId: user.id,
+          tier: 'strategic_advisory'  // FORCE this to be strategic_advisory
         },
       });
-      console.log('🟢 create-professional-checkout response:', { data, error });
+      console.log('🟢 create-checkout response for Strategic Advisor Plan:', { data, error });
 
       if (error) throw new Error(error.message || 'Strategic Advisor Plan checkout failed');
       if (!data?.url) throw new Error('No checkout URL received');

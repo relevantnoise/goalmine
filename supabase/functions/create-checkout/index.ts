@@ -13,6 +13,9 @@ serve(async (req) => {
 
   try {
     const { email, userId, tier } = await req.json();
+    
+    console.log('🔍 DEBUG: Raw request body:', { email, userId, tier });
+    
     // Determine plan based on tier parameter
     const isStrategicAdvisory = tier === 'strategic_advisory';
     const planName = isStrategicAdvisory ? 'Strategic Advisor Plan' : 'Personal Plan';
@@ -20,6 +23,7 @@ serve(async (req) => {
       ? "price_1SCPJLCElVmMOup293vWqNTQ" // Strategic Advisor Plan $950/month
       : "price_1RwNO0CElVmMOup2B7WPCzlH"; // Personal Plan $4.99/month
     
+    console.log(`🔍 DEBUG: tier=${tier}, isStrategicAdvisory=${isStrategicAdvisory}, planName=${planName}, priceId=${priceId}`);
     console.log(`🛒 ${planName} checkout for:`, email);
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
