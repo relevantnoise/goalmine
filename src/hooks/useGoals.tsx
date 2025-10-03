@@ -543,45 +543,34 @@ export const useGoals = () => {
         throw new Error(`Server returned invalid JSON: ${responseText}`);
       }
 
-      // TEMPORARY: Always show success to test UI (ignore backend errors)
-      console.log('🧪 TESTING: Showing success regardless of backend response');
-      console.log('🎉 About to show toast message...');
-      
-      // Fix date timezone issue - ensure date is stored as YYYY-MM-DD format
+      // Check if the backend update actually succeeded
+      if (!response.ok || !data.success) {
+        const errorMessage = data?.error || `Server error: ${response.status}`;
+        console.error('❌ Backend update failed:', errorMessage);
+        toast.error(`Failed to update goal: ${errorMessage}`);
+        return;
+      }
+
+      // Only update frontend state if backend succeeded
       const processedUpdates = { ...updates };
       if (updates.target_date) {
-        // If it's a date string like "2025-12-26", keep it as is
-        // If it's a Date object, convert to YYYY-MM-DD format
         if (updates.target_date instanceof Date) {
           processedUpdates.target_date = updates.target_date.toISOString().split('T')[0];
         } else if (typeof updates.target_date === 'string') {
-          // Ensure it's in YYYY-MM-DD format (already should be from date input)
           processedUpdates.target_date = updates.target_date;
         }
         console.log('🗓️ Date processing:', { original: updates.target_date, processed: processedUpdates.target_date });
       }
       
-      // Optimistic update with localStorage persistence
+      // Update frontend state only after successful backend update
       const updatedGoal = { ...processedUpdates, updated_at: new Date().toISOString() };
-      setGoals(prev => {
-        const newGoals = prev.map(goal => 
-          goal.id === goalId 
-            ? { ...goal, ...updatedGoal }
-            : goal
-        );
-        
-        // Persist changes to localStorage as backup
-        const editedGoals = JSON.parse(localStorage.getItem('editedGoals') || '{}');
-        editedGoals[goalId] = updatedGoal;
-        localStorage.setItem('editedGoals', JSON.stringify(editedGoals));
-        console.log('💾 Saved edit to localStorage:', { goalId, updates: updatedGoal });
-        
-        return newGoals;
-      });
+      setGoals(prev => prev.map(goal => 
+        goal.id === goalId 
+          ? { ...goal, ...updatedGoal }
+          : goal
+      ));
       
-      console.log('🎉 Calling toast.success...');
       toast.success('Goal updated successfully!');
-      console.log('🎉 Toast called successfully');
     } catch (error) {
       console.error('❌ Error updating goal via edge function:', error);
       
