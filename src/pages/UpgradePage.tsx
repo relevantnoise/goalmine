@@ -50,9 +50,9 @@ export const UpgradePage = () => {
     
     setStrategicLoading(true);
     try {
-      // Call existing create-strategic-advisor-checkout function (HARDCODED $950/month)
-      console.log('🎯 Calling create-strategic-advisor-checkout');
-      const { data, error } = await supabase.functions.invoke('create-strategic-advisor-checkout', {
+      // Call strategic-checkout function (HARDCODED $950/month)
+      console.log('🎯 Calling strategic-checkout');
+      const { data, error } = await supabase.functions.invoke('strategic-checkout', {
         body: {
           email: user.email,
           userId: user.id,
