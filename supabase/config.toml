@@ -53,3 +53,6 @@ verify_jwt = false
 
 [functions.create-user-profile]
 verify_jwt = false
+
+[functions.strategic-checkout]
+verify_jwt = false
