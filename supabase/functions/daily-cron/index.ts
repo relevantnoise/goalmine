@@ -33,13 +33,13 @@ const handler = async (req: Request): Promise<Response> => {
       const todayUTC = new Date().toISOString().split('T')[0];
       console.log('[DAILY-CRON] Today UTC:', todayUTC);
       
-      // Reset goals for fresh send
+      // Reset ALL goals for fresh send (TESTING ONLY)
       const { data: resetGoals } = await supabase
         .from('goals')
         .update({ last_motivation_date: null })
         .eq('is_active', true)
         .select();
-      console.log(`[DAILY-CRON] Reset ${resetGoals?.length || 0} goals`);
+      console.log(`[DAILY-CRON] TESTING: Reset ${resetGoals?.length || 0} goals for fresh send`);
       
       // Get active goals
       const { data: activeGoals } = await supabase
