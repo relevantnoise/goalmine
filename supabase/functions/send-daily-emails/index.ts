@@ -70,14 +70,14 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
     console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
-    // TEMPORARY TEST: Allow 7 PM EDT delivery window for testing
-    const isProperDeliveryWindow = (currentHour >= 7 && currentHour <= 10) || (currentHour >= 19 && currentHour <= 22);
+    // Check delivery window (back to normal 7-10 AM EDT)
+    const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
     if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-TEST] Outside delivery window, skipping. Current hour: ${currentHour}`);
+      console.log(`[DAILY-EMAILS-FINAL] Outside delivery window, skipping. Current hour: ${currentHour}`);
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Outside delivery window. Daily emails send 7-10 AM or 7-10 PM EDT for testing.`,
+          message: `Outside delivery window. Daily emails only send 7-10 AM EDT.`,
           emailsSent: 0,
           errors: 0,
           skipped: true
