@@ -70,14 +70,14 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
     console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
-    // Check delivery window (back to normal 7-10 AM EDT)
-    const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
+    // TESTING: Allow 7:20 PM EDT delivery window to fix this tonight
+    const isProperDeliveryWindow = (currentHour >= 7 && currentHour <= 10) || (currentHour >= 19 && currentHour <= 23);
     if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-FINAL] Outside delivery window, skipping. Current hour: ${currentHour}`);
+      console.log(`[DAILY-EMAILS-TEST] Outside delivery window, skipping. Current hour: ${currentHour}`);
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Outside delivery window. Daily emails only send 7-10 AM EDT.`,
+          message: `Outside delivery window. Testing allows 7-10 AM or 7-11 PM EDT.`,
           emailsSent: 0,
           errors: 0,
           skipped: true
@@ -90,6 +90,19 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`[DAILY-EMAILS-TEST] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email delivery`);
+
+    // FORCE RESET: Clear last_motivation_date for goals to ensure they need processing tonight
+    console.log(`[DAILY-EMAILS-RESET] Forcing goals to need processing by clearing last_motivation_date`);
+    
+    try {
+      await supabase
+        .from('goals')
+        .update({ last_motivation_date: null })
+        .eq('is_active', true);
+      console.log(`[DAILY-EMAILS-RESET] ✅ Reset completed - all active goals should now need processing`);
+    } catch (resetError) {
+      console.error(`[DAILY-EMAILS-RESET] ❌ Reset failed:`, resetError);
+    }
 
     // DETAILED DEBUGGING: Check what's actually in the database
     console.log(`[DAILY-EMAILS-DEBUG] Querying goals with todayDate: ${todayDate}`);

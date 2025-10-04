@@ -35,13 +35,13 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] Triggering daily email send');
     console.log('[VERCEL-CRON] Eastern Time:', easternTime);
     
-    // WORKING APPROACH: Use manual function until database query is fixed
+    // FIX IT RIGHT: Use the real database-driven function and fix the actual issue
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🚀 WORKING APPROACH: Using manual email function that bypasses database query issues');
+    console.log('[VERCEL-CRON] 🔥 FIX IT RIGHT: Using real database function - no hardcoding, fix the actual issue');
     
     const response = await fetch(
-      'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails-manual',
+      'https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails',
       {
         method: 'POST',
         headers: {
