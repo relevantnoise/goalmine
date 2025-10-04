@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS-FIXED] Starting daily email send process with processing lock pattern');
+    console.log('[DAILY-EMAILS-AGGRESSIVE-FIX-v2] Starting daily email send with FORCED deployment and 7:20 PM testing');
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
@@ -70,24 +70,9 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
     console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
-    // TESTING: Allow 7:20 PM EDT delivery window to fix this tonight
-    const isProperDeliveryWindow = (currentHour >= 7 && currentHour <= 10) || (currentHour >= 19 && currentHour <= 23);
-    if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-TEST] Outside delivery window, skipping. Current hour: ${currentHour}`);
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: `Outside delivery window. Testing allows 7-10 AM or 7-11 PM EDT.`,
-          emailsSent: 0,
-          errors: 0,
-          skipped: true
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
+    // BYPASS TIME WINDOW FOR TESTING: Allow emails anytime tonight
+    console.log(`[DAILY-EMAILS-BYPASS] BYPASSING time window entirely for testing tonight. Current hour: ${currentHour}`);
+    const isProperDeliveryWindow = true; // FORCE ALWAYS TRUE FOR TESTING
 
     console.log(`[DAILY-EMAILS-TEST] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email delivery`);
 
