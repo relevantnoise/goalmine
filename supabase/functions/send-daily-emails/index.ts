@@ -91,7 +91,22 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`[DAILY-EMAILS-TEST] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email delivery`);
 
-    // NEW APPROACH: Find goals that need emails but DON'T mark them as processed yet
+    // DETAILED DEBUGGING: Check what's actually in the database
+    console.log(`[DAILY-EMAILS-DEBUG] Querying goals with todayDate: ${todayDate}`);
+    
+    // First, get ALL goals to see what exists
+    const { data: allGoals, error: allGoalsError } = await supabase
+      .from('goals')
+      .select('id, title, user_id, is_active, last_motivation_date, created_at');
+    
+    console.log(`[DAILY-EMAILS-DEBUG] Total goals in database: ${allGoals?.length || 0}`);
+    if (allGoals) {
+      allGoals.forEach(goal => {
+        console.log(`[DAILY-EMAILS-DEBUG] Goal: "${goal.title}" | Active: ${goal.is_active} | Last email: ${goal.last_motivation_date} | User: ${goal.user_id}`);
+      });
+    }
+    
+    // Now the specific query
     const { data: candidateGoals, error: candidateError } = await supabase
       .from('goals')
       .select('*')
@@ -99,11 +114,11 @@ const handler = async (req: Request): Promise<Response> => {
       .or(`last_motivation_date.is.null,last_motivation_date.lt.${todayDate}`);
 
     if (candidateError) {
-      console.error('[DAILY-EMAILS-FIXED] Error fetching candidate goals:', candidateError);
+      console.error('[DAILY-EMAILS-DEBUG] Error fetching candidate goals:', candidateError);
       throw candidateError;
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] Found ${candidateGoals?.length || 0} candidate goals`);
+    console.log(`[DAILY-EMAILS-DEBUG] Found ${candidateGoals?.length || 0} candidate goals after filtering`);
     
     if (!candidateGoals || candidateGoals.length === 0) {
       return new Response(
