@@ -222,7 +222,7 @@ export const useGoals = () => {
       console.log('✅ Goals fetched via edge function:', fetchedGoals.length, 'goals');
       
       // Apply localStorage edits to fetched goals
-      const editedGoals = JSON.parse(localStorage.getItem('editedGoals') || '{}');
+      const editedGoals = JSON.parse(localStorage.getItem('goalEdits') || '{}');
       if (Object.keys(editedGoals).length > 0) {
         console.log('💾 Applying localStorage edits:', editedGoals);
         fetchedGoals = fetchedGoals.map(goal => {
