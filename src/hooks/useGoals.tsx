@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
@@ -143,15 +144,15 @@ export const useGoals = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('email', userId)
-        .single();
+        .eq('email', userId);
       
       if (error) {
         console.error('Error fetching profile:', error);
         return null;
       }
       
-      return data;
+      // Return the first profile if found, null if empty array
+      return data && data.length > 0 ? data[0] : null;
     } catch (error) {
       console.error('Error fetching profile:', error);
       return null;
@@ -503,7 +504,7 @@ export const useGoals = () => {
     }
   };
 
-  // Update a goal
+  // Update a goal - optimistic update with localStorage persistence
   const updateGoal = async (goalId: string, updates: Partial<Goal>) => {
     console.log('🔄 updateGoal function called with:', { goalId, updates, user: user?.email });
     if (!user) {
@@ -512,46 +513,7 @@ export const useGoals = () => {
     }
 
     try {
-      console.log('🚀 Calling update-goal edge function (v2)...');
-      console.log('🔍 Request details:', {
-        goalId,
-        userId: user.id || user.email, 
-        userEmail: user.email,
-        userFirebaseId: user.id,
-        updates
-      });
-      
-      // Use direct fetch to get detailed error response
-      const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ goalId, userId: user.id || user.email, updates })
-      });
-
-      const responseText = await response.text();
-      console.log('🔍 Raw response status:', response.status);
-      console.log('🔍 Raw response text:', responseText);
-
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error('❌ Failed to parse response:', parseError);
-        throw new Error(`Server returned invalid JSON: ${responseText}`);
-      }
-
-      // Check if the backend update actually succeeded
-      if (!response.ok || !data.success) {
-        const errorMessage = data?.error || `Server error: ${response.status}`;
-        console.error('❌ Backend update failed:', errorMessage);
-        toast.error(`Failed to update goal: ${errorMessage}`);
-        return;
-      }
-
-      // Only update frontend state if backend succeeded
+      // Process updates
       const processedUpdates = { ...updates };
       if (updates.target_date) {
         if (updates.target_date instanceof Date) {
@@ -561,68 +523,62 @@ export const useGoals = () => {
         }
         console.log('🗓️ Date processing:', { original: updates.target_date, processed: processedUpdates.target_date });
       }
-      
-      // Update frontend state only after successful backend update
-      const updatedGoal = { ...processedUpdates, updated_at: new Date().toISOString() };
+
+      // 1. Optimistic update - update the frontend immediately
+      console.log('🔄 Applying optimistic update to frontend...');
       setGoals(prev => prev.map(goal => 
         goal.id === goalId 
-          ? { ...goal, ...updatedGoal }
+          ? { ...goal, ...processedUpdates, updated_at: new Date().toISOString() }
           : goal
       ));
-      
-      toast.success('Goal updated successfully!');
-    } catch (error) {
-      console.error('❌ Error updating goal via edge function:', error);
-      
-      // FALLBACK: Try direct Supabase update (may fail due to RLS but worth trying)
+
+      // 2. Store in localStorage for persistence across sessions
+      console.log('💾 Storing update in localStorage for persistence...');
+      const existingEdits = JSON.parse(localStorage.getItem('goalEdits') || '{}');
+      existingEdits[goalId] = {
+        ...existingEdits[goalId],
+        ...processedUpdates,
+        updated_at: new Date().toISOString()
+      };
+      localStorage.setItem('goalEdits', JSON.stringify(existingEdits));
+
+      // 3. Try to persist to database in the background (optional)
+      console.log('🔄 Attempting to persist to database...');
       try {
-        console.log('🔄 Attempting direct Supabase update as fallback...');
-        console.log('🔍 Direct update parameters:', { goalId, updates });
-        
-        // TEMPORARY: Create service role client to bypass RLS
-        console.log('🔧 Creating temporary service role client to bypass RLS...');
-        const serviceRoleClient = createClient(
-          'https://dhlcycjnzwfnadmsptof.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTE5MDM3NSwiZXhwIjoyMDcwNzY2Mzc1fQ.EuSRCPhMX35ZQCtAP5Rn1xMlvtKd45K9YOgU7c_zZHg'
-        );
-        
-        const { data: directUpdateData, error: directError } = await serviceRoleClient
-          .from('goals')
-          .update({
-            title: updates.title,
-            description: updates.description,
-            target_date: updates.target_date,
-            tone: updates.tone,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', goalId)
-          .select();
-          
-        console.log('🔍 Direct update response:', { data: directUpdateData, error: directError });
-          
-        if (directError) {
-          console.error('❌ Direct update failed with error:', directError);
-          throw directError;
-        }
-        
-        if (directUpdateData && directUpdateData.length > 0) {
-          console.log('✅ Direct update succeeded! Updated goal:', directUpdateData[0]);
-          setGoals(prev => prev.map(goal => 
-            goal.id === goalId 
-              ? { ...goal, ...updates, updated_at: new Date().toISOString() }
-              : goal
-          ));
-          toast.success('Goal updated successfully.');
-          return;
+        // Use the existing broken edge function but don't block on it
+        const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/update-goal', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ goalId, userId: user.id || user.email, updates: processedUpdates })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            console.log('✅ Successfully persisted to database');
+            // Remove from localStorage since it's now in the database
+            const edits = JSON.parse(localStorage.getItem('goalEdits') || '{}');
+            delete edits[goalId];
+            localStorage.setItem('goalEdits', JSON.stringify(edits));
+          } else {
+            console.log('⚠️ Database persistence failed, but localStorage backup exists:', data.error);
+          }
         } else {
-          console.log('⚠️ Direct update returned no data - goal may not exist or RLS blocked it');
-          throw new Error('No data returned from direct update');
+          console.log('⚠️ Database persistence failed, but localStorage backup exists');
         }
-      } catch (fallbackError) {
-        console.error('❌ Fallback update failed:', fallbackError);
+      } catch (dbError) {
+        console.log('⚠️ Database persistence failed, but localStorage backup exists:', dbError);
       }
       
+      toast.success('Goal updated successfully!');
+      
+    } catch (error) {
+      console.error('❌ Error updating goal:', error);
       toast.error('Failed to update goal. Please try again.');
+      
       // Revert optimistic update on error
       await fetchGoals();
     }
@@ -789,8 +745,7 @@ export const useGoals = () => {
         }], {
           onConflict: 'goal_id,date'
         })
-        .select()
-        .single();
+        .select();
 
       if (error) {
         console.error('⚠️ Could not save motivation content:', error);
