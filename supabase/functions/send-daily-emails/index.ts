@@ -51,14 +51,11 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get current time in Eastern timezone
+    // Get current time and use SIMPLE UTC date for consistency
     const now = new Date();
     
-    // Use Pacific/Midway timezone for date calculation (existing fix)
-    const midwayDate = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Pacific/Midway'
-    }).format(now);
-    const todayDate = midwayDate;
+    // FINAL FIX: Use UTC date for both query and marking (eliminates timezone complexity)
+    const todayDate = now.toISOString().split('T')[0];
     
     const easternTime = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/New_York',
@@ -70,8 +67,8 @@ const handler = async (req: Request): Promise<Response> => {
     const currentHour = parseInt(easternTime.split(':')[0]);
     const currentMinute = parseInt(easternTime.split(':')[1]);
     
-    console.log(`[DAILY-EMAILS-FIXED] Pacific/Midway date: ${todayDate}`);
-    console.log(`[DAILY-EMAILS-FIXED] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
+    console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
+    console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
     // Check delivery window (keep existing logic)
     const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
@@ -239,33 +236,34 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // CRITICAL: Only mark as processed if email succeeded
-        if (emailResponse.error) {
-          console.error(`[DAILY-EMAILS-FIXED] ❌ Email failed for ${goal.title}:`, emailResponse.error);
+        // BULLETPROOF: Only mark as processed if Resend confirmed successful delivery
+        if (emailResponse.error || !emailResponse.data?.success) {
+          console.error(`[DAILY-EMAILS-FINAL] ❌ Email failed for ${goal.title}:`, emailResponse.error || 'No success confirmation');
           errors++;
-          // DON'T mark as processed - will retry tomorrow
+          // DON'T mark as processed - will retry tomorrow automatically
         } else {
-          // SUCCESS! Mark as processed
+          // CONFIRMED SUCCESS! Mark as processed only after Resend confirmation
           const { error: markError } = await supabase
             .from('goals')
             .update({ last_motivation_date: todayDate })
             .eq('id', goal.id);
 
           if (markError) {
-            console.error(`[DAILY-EMAILS-FIXED] Error marking processed:`, markError);
+            console.error(`[DAILY-EMAILS-FINAL] Error marking processed:`, markError);
+            errors++; // Count as error since goal wasn't marked
           } else {
-            console.log(`[DAILY-EMAILS-FIXED] ✅ Email sent and marked processed: ${goal.title}`);
+            console.log(`[DAILY-EMAILS-FINAL] ✅ Email sent and confirmed by Resend, marked processed: ${goal.title}`);
             emailsSent++;
           }
         }
 
       } catch (error) {
-        console.error(`[DAILY-EMAILS-FIXED] Error processing ${goal.title}:`, error);
+        console.error(`[DAILY-EMAILS-FINAL] Error processing ${goal.title}:`, error);
         errors++;
       }
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] Complete. Sent: ${emailsSent}, Errors: ${errors}`);
+    console.log(`[DAILY-EMAILS-FINAL] Complete. Sent: ${emailsSent}, Errors: ${errors}`);
 
     return new Response(
       JSON.stringify({ 
