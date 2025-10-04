@@ -49,7 +49,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          forceDelivery: false // Respect time window checks
+          forceDelivery: true // FORCE DELIVERY - BYPASS TIME WINDOW FOR TESTING
         })
       }
     );
