@@ -70,14 +70,14 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
     console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
-    // Check delivery window (keep existing logic)
-    const isProperDeliveryWindow = currentHour >= 7 && currentHour <= 10;
+    // TEMPORARY TEST: Allow 7 PM EDT delivery window for testing
+    const isProperDeliveryWindow = (currentHour >= 7 && currentHour <= 10) || (currentHour >= 19 && currentHour <= 22);
     if (!isProperDeliveryWindow && !forceDelivery) {
-      console.log(`[DAILY-EMAILS-FIXED] Outside delivery window, skipping.`);
+      console.log(`[DAILY-EMAILS-TEST] Outside delivery window, skipping. Current hour: ${currentHour}`);
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: `Outside delivery window. Daily emails only send 7-10 AM EDT.`,
+          message: `Outside delivery window. Daily emails send 7-10 AM or 7-10 PM EDT for testing.`,
           emailsSent: 0,
           errors: 0,
           skipped: true
@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`[DAILY-EMAILS-FIXED] ✅ Within delivery window, proceeding with email delivery`);
+    console.log(`[DAILY-EMAILS-TEST] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email delivery`);
 
     // NEW APPROACH: Find goals that need emails but DON'T mark them as processed yet
     const { data: candidateGoals, error: candidateError } = await supabase
