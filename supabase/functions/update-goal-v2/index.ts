@@ -6,6 +6,77 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Helper function to check if user's free trial has expired
+function isTrialExpired(profile: any): boolean {
+  if (!profile || !profile.trial_expires_at) return false;
+  return new Date(profile.trial_expires_at) < new Date();
+}
+
+// Helper function to check if a goal has expired based on target_date
+function isGoalExpired(goal: any): boolean {
+  if (!goal.target_date) return false;
+  const targetDate = new Date(goal.target_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Compare dates only, ignore time
+  return targetDate < today;
+}
+
+// Helper function to determine goal status (most restrictive wins)
+function getGoalStatus(goal: any, profile: any, isSubscribed: boolean): string {
+  // Trial expired and not subscribed = most restrictive
+  if (isTrialExpired(profile) && !isSubscribed) {
+    return 'trial-expired';
+  }
+  
+  // Goal expired = moderately restrictive
+  if (isGoalExpired(goal)) {
+    return 'goal-expired';
+  }
+  
+  // Normal operation
+  return 'active';
+}
+
+// Helper function to get what user can do with a goal
+function getGoalPermissions(goal: any, profile: any, isSubscribed: boolean): any {
+  const status = getGoalStatus(goal, profile, isSubscribed);
+  
+  switch (status) {
+    case 'trial-expired':
+      // Trial expired: completely read-only
+      return {
+        canEdit: false,
+        canDelete: false,
+        canCheckIn: false,
+        canShare: false,
+        canReceiveEmails: false,
+        canGenerateNudge: false,
+      };
+      
+    case 'goal-expired':
+      // Goal expired: only edit/delete allowed
+      return {
+        canEdit: true,
+        canDelete: true,
+        canCheckIn: false,
+        canShare: false,
+        canReceiveEmails: false,
+        canGenerateNudge: false,
+      };
+      
+    default: // 'active'
+      // Normal operation: all actions allowed
+      return {
+        canEdit: true,
+        canDelete: true,
+        canCheckIn: true,
+        canShare: true,
+        canReceiveEmails: true,
+        canGenerateNudge: true,
+      };
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });

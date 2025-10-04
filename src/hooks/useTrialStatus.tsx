@@ -48,11 +48,12 @@ export const useTrialStatus = () => {
       }
 
       // Get user profile to check trial expiration
-      const { data: profile, error: profileError } = await supabase
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('trial_expires_at')
-        .eq('id', user.id)
-        .single();
+        .eq('id', user.id);
+      
+      const profile = profileData && profileData.length > 0 ? profileData[0] : null;
 
       if (profileError) {
         console.error('Error fetching profile:', profileError);
