@@ -50,12 +50,14 @@ export const UpgradePage = () => {
     
     setStrategicLoading(true);
     try {
-      // Call strategic-checkout function (HARDCODED $950/month)
-      console.log('🎯 Calling strategic-checkout');
-      const { data, error } = await supabase.functions.invoke('strategic-checkout', {
+      // Call create-checkout function with strategic_advisory tier
+      console.log('🎯 Calling create-checkout with strategic_advisory tier');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: user.email,
           userId: user.id,
+          tier: 'strategic_advisory',
+          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // Explicit $950/month price
         },
       });
 

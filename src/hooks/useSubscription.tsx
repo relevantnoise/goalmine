@@ -89,7 +89,7 @@ export const useSubscription = () => {
   };
 
   const createProfessionalCheckout = async () => {
-    console.log('🎯 createProfessionalCheckout called - Strategic Advisor Plan using existing create-checkout');
+    console.log('🎯 createProfessionalCheckout called - Strategic Advisor Plan using explicit price ID');
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
@@ -98,12 +98,13 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
-      console.log('🎯 CALLING create-checkout with strategic_advisory tier');
+      console.log('🎯 CALLING create-checkout with strategic_advisory tier and debugging');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
           userId: user.id,
-          tier: 'strategic_advisory', // This triggers $950/month Strategic Advisor Plan
+          tier: 'strategic_advisory', // This should trigger $950/month Strategic Advisor Plan
+          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // Explicit price ID as fallback
         },
       });
       console.log('🎯 create-checkout response:', { data, error });
