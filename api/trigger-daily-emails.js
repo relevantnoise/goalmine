@@ -33,12 +33,31 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] UTC Time:', utcTime);
     console.log('[VERCEL-CRON] UTC Hour:Minutes:', `${utcHour}:${utcMinutes}`);
     
-    // REAL SYSTEM: Call the actual send-daily-emails edge function
+    // NUCLEAR OPTION: Force reset goals and manual email delivery
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🚀 DAILY UTC MIDNIGHT: Using REAL email system');
+    console.log('[VERCEL-CRON] 🚀 NUCLEAR OPTION: Forcing goal reset and manual delivery');
     
-    // Call the real send-daily-emails function
+    // STEP 1: Reset goals' last_motivation_date to null
+    console.log('[VERCEL-CRON] Step 1: Resetting goal dates to null');
+    const resetResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/rest/v1/goals', {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+        'apikey': supabaseKey,
+      },
+      body: JSON.stringify({
+        last_motivation_date: null
+      })
+    });
+    
+    console.log('[VERCEL-CRON] Reset response status:', resetResponse.status);
+    
+    // STEP 2: Wait a moment then call send-daily-emails
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    console.log('[VERCEL-CRON] Step 2: Calling send-daily-emails after reset');
     const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails', {
       method: 'POST',
       headers: {
@@ -51,6 +70,8 @@ export default async function handler(req, res) {
     });
 
     const data = await emailResponse.json();
+    
+    console.log('[VERCEL-CRON] Final result:', data);
     
     return res.status(200).json({ 
       success: data.success,
