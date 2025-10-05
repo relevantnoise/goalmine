@@ -70,53 +70,39 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`[DAILY-EMAILS-FINAL] UTC date: ${todayDate}`);
     console.log(`[DAILY-EMAILS-FINAL] Current Eastern time: ${easternTime} (${currentHour}:${currentMinute})`);
 
-    // BYPASS TIME WINDOW FOR TESTING: Allow emails anytime tonight
-    console.log(`[DAILY-EMAILS-BYPASS] BYPASSING time window entirely for testing tonight. Current hour: ${currentHour}`);
-    const isProperDeliveryWindow = true; // FORCE ALWAYS TRUE FOR TESTING
-
-    console.log(`[DAILY-EMAILS-TEST] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email delivery`);
-
-    // FORCE RESET: Clear last_motivation_date for goals to ensure they need processing tonight
-    console.log(`[DAILY-EMAILS-RESET] Forcing goals to need processing by clearing last_motivation_date`);
+    // PRODUCTION: Check if we're in the proper delivery window (optional for forceDelivery)
+    const isProperDeliveryWindow = forceDelivery || (currentHour >= 6 && currentHour <= 10); // 6-10 AM EDT window
     
-    try {
-      await supabase
-        .from('goals')
-        .update({ last_motivation_date: null })
-        .eq('is_active', true);
-      console.log(`[DAILY-EMAILS-RESET] ✅ Reset completed - all active goals should now need processing`);
-    } catch (resetError) {
-      console.error(`[DAILY-EMAILS-RESET] ❌ Reset failed:`, resetError);
-    }
-
-    // DETAILED DEBUGGING: Check what's actually in the database
-    console.log(`[DAILY-EMAILS-DEBUG] Querying goals with todayDate: ${todayDate}`);
-    
-    // First, get ALL goals to see what exists
-    const { data: allGoals, error: allGoalsError } = await supabase
-      .from('goals')
-      .select('id, title, user_id, is_active, last_motivation_date, created_at');
-    
-    console.log(`[DAILY-EMAILS-DEBUG] Total goals in database: ${allGoals?.length || 0}`);
-    if (allGoals) {
-      allGoals.forEach(goal => {
-        console.log(`[DAILY-EMAILS-DEBUG] Goal: "${goal.title}" | Active: ${goal.is_active} | Last email: ${goal.last_motivation_date} | User: ${goal.user_id}`);
+    if (!isProperDeliveryWindow) {
+      console.log(`[DAILY-EMAILS] Outside delivery window (${currentHour}:${currentMinute} EDT). Daily emails only send 6-10 AM EDT.`);
+      return new Response(JSON.stringify({
+        success: true,
+        message: `Outside delivery window (${currentHour}:${currentMinute} EDT). Daily emails only send 6-10 AM EDT.`,
+        emailsSent: 0,
+        errors: 0,
+        skipped: true
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+
+    console.log(`[DAILY-EMAILS] ✅ Within delivery window (${currentHour}:${currentMinute} EDT), proceeding with email processing`);
+
+    // Query goals that need processing (last_motivation_date is null OR less than today's UTC date)
+    console.log(`[DAILY-EMAILS] Querying goals that need processing for ${todayDate}`);
     
-    // Now the specific query
-    const { data: candidateGoals, error: candidateError } = await supabase
+    const { data: candidateGoals, error } = await supabase
       .from('goals')
       .select('*')
       .eq('is_active', true)
       .or(`last_motivation_date.is.null,last_motivation_date.lt.${todayDate}`);
 
-    if (candidateError) {
-      console.error('[DAILY-EMAILS-DEBUG] Error fetching candidate goals:', candidateError);
-      throw candidateError;
+    if (error) {
+      console.error('[DAILY-EMAILS] Error fetching goals:', error);
+      throw error;
     }
 
-    console.log(`[DAILY-EMAILS-DEBUG] Found ${candidateGoals?.length || 0} candidate goals after filtering`);
+    console.log(`[DAILY-EMAILS] Found ${candidateGoals?.length || 0} goals that need processing`);
     
     if (!candidateGoals || candidateGoals.length === 0) {
       return new Response(

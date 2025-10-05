@@ -203,7 +203,7 @@ supabase/
 - **Micro-Plans**: 3 actionable steps for the day
 - **Mini-Challenges**: Quick 2-minute tasks
 - **Nudges**: On-demand motivation boosts
-- **Email Delivery**: Daily motivational emails at 7 AM Eastern (fixed time for all users)
+- **Email Delivery**: Daily motivational emails at 7 AM Eastern via external cron service (FIXED October 5, 2025)
 
 ### 4. Subscription System & Business Logic
 - **Free Tier**: 1 goal, 1 daily nudge, 30-day trial
@@ -294,11 +294,11 @@ interface MotivationContent {
 ### Daily Emails
 - **Frequency**: 1 separate email per goal (not consolidated per user)
 - **Scheduled**: 7 AM Eastern delivery time (intentionally fixed for simplicity)
-- **Automation**: Vercel cron job triggers at 12:00 UTC (7:00 AM EDT) daily
-- **Content**: AI-generated motivation + progress tracking per goal
+- **Automation**: External cron service (cronjob.org) triggers production API endpoint at 7:00 AM EDT daily
+- **Content**: AI-generated motivation + progress tracking per goal  
 - **Templates**: Professional HTML email templates with "CHECK IN NOW" links
 - **Delivery**: Resend email service using custom domain noreply@notifications.goalmine.ai
-- **Status**: ✅ FULLY AUTOMATED AND STABLE (Fixed Sept 17, 2025 - timing corrected for morning delivery)
+- **Status**: ✅ FULLY AUTOMATED AND STABLE (FINAL FIX October 5, 2025 - routing issue resolved)
 
 ### Email Link Flow
 - **Check-In Links**: Include `?checkin=true&user=email&goal=goalId&t=timestamp` parameters for user-specific access
@@ -599,7 +599,16 @@ if (goal.user_id.includes('@')) {
 
 ## Recent Technical Developments
 
-### Email System Failure - FINAL RESOLUTION with Simple UTC Fix (October 1, 2025)
+### Email System Failure - ULTIMATE RESOLUTION: API Routing Fix (October 5, 2025)
+- **BREAKTHROUGH**: Identified and fixed the actual root cause after months of date logic troubleshooting
+- **Real Problem**: Vercel routing configuration was redirecting ALL API calls to `/index.html`
+- **Routing Issue**: `vercel.json` rewrite rule `"source": "/(.*)"` caught `/api/*` paths
+- **Fix Applied**: Changed to `"source": "/((?!api).*)"` to exclude API routes  
+- **Result**: External cron services can now successfully reach the production endpoint
+- **Verification**: `https://www.goalmine.ai/api/trigger-daily-emails` returns proper JSON response
+- **Status**: ✅ AUTOMATED DAILY EMAILS FULLY OPERATIONAL (October 5, 2025)
+
+### Email System Failure - Previous UTC Fix Attempt (October 1, 2025)
 - **NEW PROBLEM**: Pacific/Midway solution created date logic mismatch causing zero emails to be sent
 - **Root Cause**: Query date vs marking date inconsistency
   - **Query date**: `2025-09-30` (Pacific/Midway - 1 day adjustment)
