@@ -25,20 +25,18 @@ export default async function handler(req, res) {
 
   try {
     const now = new Date();
-    const easternTime = now.toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const utcTime = now.toISOString();
+    const utcHour = now.getUTCHours();
+    const utcMinutes = now.getUTCMinutes();
     
-    console.log('[VERCEL-CRON] Triggering daily email send');
-    console.log('[VERCEL-CRON] Eastern Time:', easternTime);
+    console.log('[VERCEL-CRON] Triggering daily email send - PURE UTC');
+    console.log('[VERCEL-CRON] UTC Time:', utcTime);
+    console.log('[VERCEL-CRON] UTC Hour:Minutes:', `${utcHour}:${utcMinutes}`);
     
     // WORKING SOLUTION: Use manual approach with real AI generation
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🚀 DAILY 7:40 PM: Using working manual approach with REAL AI content');
+    console.log('[VERCEL-CRON] 🚀 DAILY UTC MIDNIGHT: Using working manual approach with REAL AI content');
     
     // Known active users with real goal data
     const knownUsers = [
