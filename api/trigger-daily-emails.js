@@ -9,6 +9,14 @@ export default async function handler(req, res) {
   const host = req.headers.host || '';
   const isProductionDomain = host === 'goalmine.ai' || host === 'www.goalmine.ai';
   
+  // DEBUG: Log all request details for troubleshooting
+  console.log(`[VERCEL-CRON] REQUEST DEBUG:`);
+  console.log(`[VERCEL-CRON] Host header: "${host}"`);
+  console.log(`[VERCEL-CRON] User-Agent: "${req.headers['user-agent'] || 'none'}"`);
+  console.log(`[VERCEL-CRON] Method: ${req.method}`);
+  console.log(`[VERCEL-CRON] URL: ${req.url}`);
+  console.log(`[VERCEL-CRON] Is production domain: ${isProductionDomain}`);
+  
   if (!isProductionDomain) {
     console.log(`[VERCEL-CRON] 🚫 BLOCKED - Only goalmine.ai can send emails. Current host: ${host}`);
     return res.status(200).json({ 
@@ -17,7 +25,12 @@ export default async function handler(req, res) {
       environment: 'development_or_staging',
       host: host,
       timestamp: new Date().toISOString(),
-      blocked: true
+      blocked: true,
+      debug: {
+        userAgent: req.headers['user-agent'],
+        method: req.method,
+        url: req.url
+      }
     });
   }
 
@@ -52,6 +65,8 @@ export default async function handler(req, res) {
 
     const data = await emailResponse.json();
     
+    console.log('[VERCEL-CRON] Email response status:', emailResponse.status);
+    console.log('[VERCEL-CRON] Email response headers:', Object.fromEntries(emailResponse.headers.entries()));
     console.log('[VERCEL-CRON] Real system result:', data);
     
     return res.status(200).json({ 
