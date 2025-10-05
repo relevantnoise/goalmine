@@ -1,14 +1,16 @@
 {
-  "_comment": "PRODUCTION ONLY: Cron jobs for goalmine.ai production environment",
-  "crons": [
+  "_comment": "PRODUCTION ONLY: Cron disabled to eliminate duplicates - using external cronjob.org only",
+  "_disabled_cron_comment": "Commented out 2025-10-05 to fix duplicate emails - external cronjob.org handles 11:00 UTC trigger",
+  "disabled_crons": [
     {
+      "_comment": "DISABLED: This was causing duplicate emails with external cronjob.org",
       "path": "/api/trigger-daily-emails",
       "schedule": "0 11 * * *"
     }
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!api).*)",
       "destination": "/index.html"
     }
   ]

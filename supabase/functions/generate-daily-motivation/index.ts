@@ -114,29 +114,60 @@ Return a JSON object with exactly these fields:
   "challenge": "Give a 3-second micro-thought. Under 5 words."
 }`;
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openAIApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4.1-2025-04-14',
-          messages: [
-            { role: 'system', content: generalPrompt },
-            { role: 'user', content: 'Generate a quick motivation boost - keep it short and punchy.' }
-          ],
-          temperature: 0.8,
-          max_tokens: 300,
-        }),
-      });
+      // Use the same bulletproof generation for general nudges
+      let content;
+      let lastError;
+      
+      const models = ['gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo'];
+      
+      for (const model of models) {
+        try {
+          console.log(`[GENERAL-NUDGE] Trying model: ${model}`);
+          
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000);
+          
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openAIApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [
+                { role: 'system', content: generalPrompt },
+                { role: 'user', content: 'Generate a quick motivation boost - keep it short and punchy.' }
+              ],
+              temperature: 0.8,
+              max_tokens: 300,
+            }),
+            signal: controller.signal
+          });
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.statusText}`);
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`OpenAI API error (${model}): ${response.status} ${errorText}`);
+          }
+
+          const data = await response.json();
+          content = JSON.parse(data.choices[0].message.content);
+          
+          console.log(`[GENERAL-NUDGE] ✅ Success with ${model}`);
+          break; // Success!
+          
+        } catch (error) {
+          lastError = error;
+          console.log(`[GENERAL-NUDGE] ❌ Failed with ${model}: ${error.message}`);
+        }
       }
-
-      const data = await response.json();
-      const content = JSON.parse(data.choices[0].message.content);
+      
+      if (!content) {
+        console.error(`[GENERAL-NUDGE] All models failed. Last error:`, lastError);
+        throw new Error(`General nudge generation failed: ${lastError?.message}`);
+      }
 
       console.log('Generated general motivation nudge');
 
@@ -199,29 +230,72 @@ CRITICAL REQUIREMENTS:
 
 This person chose you as their coach because they want to achieve something meaningful. Help them WIN.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Generate today's motivation for my goal: "${goalTitle}"` }
-        ],
-        temperature: 0.8,
-        max_tokens: 500,
-      }),
-    });
+    // Bulletproof AI generation with retry logic and multiple models
+    let content;
+    let lastError;
+    
+    const models = ['gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo'];
+    const maxRetries = 3;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      for (const model of models) {
+        try {
+          console.log(`[AI-GENERATION] Attempt ${attempt}, trying model: ${model}`);
+          
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+          
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openAIApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: `Generate today's motivation for my goal: "${goalTitle}"` }
+              ],
+              temperature: 0.8,
+              max_tokens: 500,
+            }),
+            signal: controller.signal
+          });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`OpenAI API error (${model}): ${response.status} ${errorText}`);
+          }
+
+          const data = await response.json();
+          content = JSON.parse(data.choices[0].message.content);
+          
+          console.log(`[AI-GENERATION] ✅ Success with ${model} on attempt ${attempt}`);
+          break; // Success! Exit both loops
+          
+        } catch (error) {
+          lastError = error;
+          console.log(`[AI-GENERATION] ❌ Failed with ${model}: ${error.message}`);
+          
+          // If this was our last model in this attempt, wait before next attempt
+          if (model === models[models.length - 1] && attempt < maxRetries) {
+            const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // Exponential backoff, max 5s
+            console.log(`[AI-GENERATION] Waiting ${delay}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
+        }
+      }
+      
+      if (content) break; // Success! Exit retry loop
     }
-
-    const data = await response.json();
-    const content = JSON.parse(data.choices[0].message.content);
+    
+    if (!content) {
+      console.error(`[AI-GENERATION] All attempts failed. Last error:`, lastError);
+      throw new Error(`AI generation failed after ${maxRetries} attempts with all models: ${lastError?.message}`);
+    }
 
     // Save the generated motivation to the database (1-day storage only)
     if (goalId) {
