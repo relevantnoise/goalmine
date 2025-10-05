@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/trigger-daily-emails", 
-      "schedule": "40 0 * * *"
+      "schedule": "45 0 * * *"
     }
   ],
   "rewrites": [
