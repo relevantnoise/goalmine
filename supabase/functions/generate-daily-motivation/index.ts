@@ -203,13 +203,13 @@ CURRENT SITUATION:
 CREATE LIFE-CHANGING CONTENT:
 
 ${isNudge ? `
-Generate URGENT NUDGE content - this person needs immediate motivation RIGHT NOW:
+Generate URGENT NUDGE content - pure motivational fuel for immediate action:
 
 Return JSON with:
 {
-  "message": "Write ONE powerful sentence that cuts through procrastination and pushes immediate action toward '${goalTitle}'. Be direct, specific to their goal, and use ${tone} tone. Maximum 15 words.",
-  "microPlan": ["Give ONE specific 2-minute action they can take RIGHT NOW toward '${goalTitle}'. Be concrete and actionable."],
-  "challenge": "Give a powerful micro-thought that connects to '${goalTitle}' and their ${tone} coaching style. Maximum 8 words."
+  "message": "Write a powerful 20-30 word motivational message specifically for '${goalTitle}'. Use authentic ${tone} voice. Be direct about WHY this goal matters to their life. Create emotional urgency without being preachy. Reference their specific goal situation, not generic motivation. Make them WANT to take action right now.",
+  "microPlan": [""],
+  "challenge": ""
 }` : `
 Generate DAILY MOTIVATION content - this person needs meaningful, specific guidance:
 

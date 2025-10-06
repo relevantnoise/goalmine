@@ -382,6 +382,12 @@ supabase gen types typescript --local > src/integrations/supabase/types.ts
 3. Adjust fallback content in `useGoals.tsx`
 4. Test tone variations
 
+### Nudge Content Enhancement (October 6, 2025)
+- **Improvement**: Enhanced nudge prompt from generic 15-word messages to 20-30 word goal-specific motivation
+- **Structure**: Simplified from message+microPlan+challenge to pure motivational message
+- **Impact**: Personalized coaching that references specific goals and user's chosen tone
+- **Result**: Transformed nudges from generic fluff to meaningful motivational fuel
+
 ### Subscription Changes
 1. Update Stripe price IDs in `create-checkout` function
 2. Modify feature limits in components

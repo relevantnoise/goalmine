@@ -648,8 +648,8 @@ export const useGoals = () => {
 
       return {
         message: data.message,
-        microPlan: Array.isArray(data.microPlan) ? data.microPlan : [data.microPlan],
-        challenge: data.challenge || '',
+        microPlan: [], // Simplified nudges don't include plans
+        challenge: '', // Simplified nudges don't include challenges
         tone: 'encouraging'
       };
     } catch (error) {
