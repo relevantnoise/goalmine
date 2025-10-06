@@ -300,38 +300,49 @@ This person chose you as their coach because they want to achieve something mean
     // Save the generated motivation to the database (1-day storage only)
     if (goalId) {
       const today = new Date().toISOString().split('T')[0];
+      const todayStart = new Date(today + 'T00:00:00.000Z').toISOString();
+      const todayEnd = new Date(today + 'T23:59:59.999Z').toISOString();
       
       // First, clean up old motivation content (keep only today's content)
       const { error: cleanupError } = await supabase
         .from('motivation_history')
         .delete()
         .eq('goal_id', goalId)
-        .neq('date', today);
+        .lt('created_at', todayStart);
 
       if (cleanupError) {
         console.error('Error cleaning up old motivation:', cleanupError);
         // Continue anyway - cleanup failure shouldn't block new content
       }
 
-      // Store today's motivation content
-      const { error } = await supabase
+      // Check if we already have motivation for today
+      const { data: existingMotivation } = await supabase
         .from('motivation_history')
-        .upsert({
-          goal_id: goalId,
-          user_id: userId,
-          date: today,
-          message: content.message,
-          micro_plan: content.microPlan,
-          challenge: content.challenge,
-          tone: tone,
-          nudge_count: 1
-        }, {
-          onConflict: 'goal_id,date'
-        });
+        .select('id')
+        .eq('goal_id', goalId)
+        .gte('created_at', todayStart)
+        .lte('created_at', todayEnd)
+        .limit(1);
 
-      if (error) {
-        console.error('Error saving motivation:', error);
-        throw error;
+      // Only create new motivation if we don't have any for today
+      if (!existingMotivation || existingMotivation.length === 0) {
+        // Store today's motivation content
+        const { error } = await supabase
+          .from('motivation_history')
+          .insert({
+            goal_id: goalId,
+            user_id: userId,
+            message: content.message,
+            micro_plan: content.microPlan,
+            challenge: content.challenge,
+            tone: tone,
+            nudge_count: 1
+          });
+
+        if (error) {
+          console.error('Error saving motivation:', error);
+          throw error;
+        }
       }
     }
 
