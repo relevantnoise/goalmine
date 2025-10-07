@@ -8,7 +8,7 @@
   "crons": [
     {
       "path": "/api/trigger-daily-emails",
-      "schedule": "0 10 * * *"
+      "schedule": "47 14 * * *"
     }
   ]
 }
