@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
-import { AIGenerator } from "../_shared/ai-generation.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -43,12 +42,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log('🚀 [DIRECT-AI-v5] FORCE REDEPLOY: Direct AI generation with shared module - bypassing function calls completely');
     
-    // Initialize AI generator with OpenAI API key
+    // Initialize AI generation (direct approach)
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not found');
     }
-    const aiGenerator = new AIGenerator(openAIApiKey);
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
@@ -219,30 +217,86 @@ const handler = async (req: Request): Promise<Response> => {
             }
           };
         } else {
-          console.log(`[DAILY-EMAILS] No pre-generated content found, generating DIRECT AI for: ${goal.title}`);
+          console.log(`[DAILY-EMAILS] No pre-generated content found, generating DIRECT OpenAI for: ${goal.title}`);
           try {
-            const aiContent = await aiGenerator.generateMotivation({
-              goalId: goal.id,
-              goalTitle: goal.title,
-              goalDescription: goal.description || '',
-              tone: goal.tone || 'kind_encouraging',
-              streakCount: goal.streak_count || 0,
-              userId: goal.user_id,
-              isNudge: false,
-              targetDate: goal.target_date
+            // Your sophisticated ChatGPT prompt system (inlined)
+            const tone = goal.tone || 'kind_encouraging';
+            const streakCount = goal.streak_count || 0;
+            const isNewGoal = streakCount <= 3;
+            const isStrongStreak = streakCount >= 7;
+            
+            const tonePersonalities = {
+              drill_sergeant: "You are a no-nonsense military drill instructor who demands excellence. You're tough but fair, direct but caring. You use military-style language, challenge excuses, and focus on discipline, commitment, and action. You don't coddle - you push. But everything comes from wanting to see this person WIN.",
+              kind_encouraging: "You are a warm, empathetic coach who believes deeply in this person's potential. You're gentle but not soft, supportive but not enabling. You use nurturing language, acknowledge struggles with compassion, and focus on self-compassion, gradual progress, and inner strength. You celebrate every small win.",
+              teammate: "You are their equal partner in this journey - not above them, but beside them. You use 'we' language, share in both struggles and victories, and focus on collaboration, mutual support, and collective problem-solving. You're the friend who shows up and does the hard work alongside them.",
+              wise_mentor: "You are a sage advisor with deep life experience and wisdom. You use thoughtful, reflective language, share philosophical insights, and focus on the deeper meaning, life lessons, and long-term growth. You help them see the bigger picture and their goal as part of their life's journey."
+            };
+
+            const systemPrompt = `You are an AI-powered personal coach for GoalMine.ai, specifically helping someone achieve: "${goal.title}"${goal.description ? ` (${goal.description})` : ''}.
+
+COACHING PERSONALITY:
+${tonePersonalities[tone] || tonePersonalities.kind_encouraging}
+
+CURRENT SITUATION:
+- Goal: "${goal.title}"
+- Current streak: ${streakCount} days
+- Status: ${isNewGoal ? 'Just getting started' : isStrongStreak ? 'Strong momentum' : 'Making progress'}
+- Deadline: ${goal.target_date || 'No deadline set'}
+
+CREATE LIFE-CHANGING CONTENT:
+
+Generate DAILY MOTIVATION content - this person needs meaningful, specific guidance:
+
+Return JSON with:
+{
+  "message": "Write 2-3 sentences of deeply specific advice for TODAY's work on '${goal.title}'. Address their current streak (${streakCount} days), use authentic ${tone} tone. Avoid generic motivation - be practical and insightful.",
+  "microPlan": ["Give exactly 3 specific actions they can take today (each 5-30 minutes) to advance '${goal.title}'. Be concrete, build on each other logically, and specific to this goal type."],
+  "challenge": "Create a meaningful reflection or mini-challenge tied specifically to '${goal.title}' that encourages deeper engagement. One impactful sentence."
+}
+
+CRITICAL REQUIREMENTS:
+- Be SPECIFIC to "${goal.title}" - not generic goal advice
+- Use authentic ${tone} voice throughout
+- Reference their ${streakCount}-day streak contextually
+- Make every word count toward their success
+
+This person chose you as their coach because they want to achieve something meaningful. Help them WIN.`;
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openAIApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o',
+                messages: [
+                  { role: 'system', content: systemPrompt },
+                  { role: 'user', content: `Generate today's motivation for my goal: "${goal.title}"` }
+                ],
+                temperature: 0.8,
+                max_tokens: 500,
+              })
             });
+
+            if (!response.ok) {
+              throw new Error(`OpenAI API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const content = JSON.parse(data.choices[0].message.content);
             
             aiResponse = {
               data: {
                 success: true,
-                message: aiContent.message,
-                microPlan: aiContent.microPlan,
-                challenge: aiContent.challenge
+                message: content.message,
+                microPlan: Array.isArray(content.microPlan) ? content.microPlan : [content.microPlan].filter(Boolean),
+                challenge: content.challenge
               }
             };
-            console.log(`[DAILY-EMAILS] ✅ DIRECT AI generation success for: ${goal.title}`);
+            console.log(`[DAILY-EMAILS] ✅ DIRECT OpenAI generation success for: ${goal.title}`);
           } catch (aiError) {
-            console.error(`[DAILY-EMAILS] DIRECT AI generation failed for: ${goal.title}:`, aiError);
+            console.error(`[DAILY-EMAILS] DIRECT OpenAI generation failed for: ${goal.title}:`, aiError);
             aiResponse = { error: aiError.message };
           }
         }

@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.strategic-checkout]
 verify_jwt = false
+
+[functions.send-daily-emails-new]
+verify_jwt = false
