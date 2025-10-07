@@ -183,21 +183,48 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
 
-        // Generate AI content
-        console.log(`[DAILY-EMAILS] Generating AI content for: ${goal.title}`);
+        // Check for pre-generated content first
+        console.log(`[DAILY-EMAILS] Checking for pre-generated content for: ${goal.title}`);
         
-        const aiResponse = await supabase.functions.invoke('generate-daily-motivation', {
-          body: {
-            goalId: goal.id,
-            goalTitle: goal.title,
-            goalDescription: goal.description || '',
-            tone: goal.tone || 'kind_encouraging',
-            streakCount: goal.streak_count || 0,
-            userId: goal.user_id,
-            isNudge: false,
-            targetDate: goal.target_date
-          }
-        });
+        const today = new Date().toISOString().split('T')[0];
+        const todayStart = new Date(today + 'T00:00:00.000Z').toISOString();
+        const todayEnd = new Date(today + 'T23:59:59.999Z').toISOString();
+        
+        const { data: preGeneratedContent } = await supabase
+          .from('motivation_history')
+          .select('message, micro_plan, challenge')
+          .eq('goal_id', goal.id)
+          .gte('created_at', todayStart)
+          .lte('created_at', todayEnd)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        let aiResponse;
+        if (preGeneratedContent && preGeneratedContent.length > 0) {
+          console.log(`[DAILY-EMAILS] ✅ Using pre-generated content for: ${goal.title}`);
+          aiResponse = {
+            data: {
+              success: true,
+              message: preGeneratedContent[0].message,
+              microPlan: preGeneratedContent[0].micro_plan,
+              challenge: preGeneratedContent[0].challenge
+            }
+          };
+        } else {
+          console.log(`[DAILY-EMAILS] No pre-generated content found, generating real-time for: ${goal.title}`);
+          aiResponse = await supabase.functions.invoke('generate-daily-motivation', {
+            body: {
+              goalId: goal.id,
+              goalTitle: goal.title,
+              goalDescription: goal.description || '',
+              tone: goal.tone || 'kind_encouraging',
+              streakCount: goal.streak_count || 0,
+              userId: goal.user_id,
+              isNudge: false,
+              targetDate: goal.target_date
+            }
+          });
+        }
 
         let motivationContent;
         if (aiResponse.error || !aiResponse.data?.success) {
