@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     console.log('[VERCEL-CRON] 🚀 REAL EMAIL SYSTEM: Using deployed fixed edge function');
     
     // Call the REAL send-daily-emails function (now fixed with UTC date)
-    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails', {
+    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails-new', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${supabaseKey}`,
