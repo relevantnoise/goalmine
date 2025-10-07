@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS-AGGRESSIVE-FIX-v2] Starting daily email send with FORCED deployment and 7:20 PM testing');
+    console.log('[DAILY-EMAILS-FIXED-v3] Starting daily email send with LATEST AI fixes and pre-generated content support');
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
