@@ -29,6 +29,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log('[AI-GENERATION-v4] Using sophisticated ChatGPT prompt system with goal-specific expertise');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { goalId, goalTitle, goalDescription, tone, streakCount, userId, isNudge, isGeneralNudge, targetDate }: GenerateMotivationRequest = await req.json();
 
