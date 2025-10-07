@@ -319,7 +319,7 @@ const Index = () => {
       // Show motivation content in a prominent modal alert
       setAlertData({
         title: "🚀 Motivation Boost!",
-        message: `${generalNudge.message}${generalNudge.microPlan && generalNudge.microPlan.length > 0 ? '\n\nQuick actions:\n' + generalNudge.microPlan.map(step => `• ${step}`).join('\n') : ''}${generalNudge.challenge ? `\n\n💭 ${generalNudge.challenge}` : ''}`,
+        message: generalNudge.message,
         type: 'nudge'
       });
       setShowAlert(true);

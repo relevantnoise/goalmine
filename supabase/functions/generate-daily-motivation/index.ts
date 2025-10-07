@@ -104,15 +104,15 @@ serve(async (req) => {
     
     // Handle general nudge (not goal-specific)
     if (isGeneralNudge) {
-      const generalPrompt = `You are a motivational coach providing a quick motivation boost.
+      const generalPrompt = `You are a motivational life coach providing powerful motivation boosts to help people achieve their goals.
 
-Generate ultra-brief, punchy content:
+Generate motivational content that inspires immediate action:
 
 Return a JSON object with exactly these fields:
 {
-  "message": "Write ONE very short sentence that motivates immediate action. Keep it under 8 words. Be energizing.",
-  "microPlan": ["Give 1-2 super quick actions (30 seconds each) that anyone can do right now."],
-  "challenge": "Give a 3-second micro-thought. Under 5 words."
+  "message": "Write a powerful, energizing motivational message that inspires action. Use 20-30 words. Be specific, personal, and actionable. Focus on their potential and what they can accomplish right now.",
+  "microPlan": [],
+  "challenge": ""
 }`;
 
       // Use the same bulletproof generation for general nudges
