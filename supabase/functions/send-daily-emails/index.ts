@@ -201,7 +201,10 @@ const handler = async (req: Request): Promise<Response> => {
 
         let motivationContent;
         if (aiResponse.error || !aiResponse.data?.success) {
-          console.log(`[DAILY-EMAILS] AI generation failed, using fallback for ${goal.title}:`, aiResponse.error);
+          console.log(`[DAILY-EMAILS] AI generation failed for ${goal.title}`);
+          console.log(`[DAILY-EMAILS] Error:`, aiResponse.error);
+          console.log(`[DAILY-EMAILS] Data:`, aiResponse.data);
+          console.log(`[DAILY-EMAILS] Full response:`, aiResponse);
           motivationContent = {
             message: `Today is another opportunity to make progress on your goal: ${goal.title}. Keep building momentum!`,
             microPlan: ['Take one small action toward your goal today', 'Document your progress', 'Reflect on your progress'],
