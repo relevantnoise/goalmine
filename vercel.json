@@ -4,5 +4,11 @@
       "source": "/((?!api).*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/trigger-daily-emails",
+      "schedule": "30 14 * * *"
+    }
   ]
 }
