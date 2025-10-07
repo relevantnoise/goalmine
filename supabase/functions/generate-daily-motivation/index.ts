@@ -341,7 +341,7 @@ This person chose you as their coach because they want to achieve something mean
 
         if (error) {
           console.error('Error saving motivation:', error);
-          throw error;
+          // Don't throw error - continue with generated content even if save fails
         }
       }
     }
