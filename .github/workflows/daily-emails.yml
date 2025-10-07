@@ -2,8 +2,8 @@ name: Daily Email Trigger
 
 on:
   schedule:
-    # Runs at 10:00 UTC (6:00 AM EDT) every day
-    - cron: '0 10 * * *'
+    # Runs at 15:00 UTC (11:00 AM EDT) for testing
+    - cron: '0 15 * * *'
   workflow_dispatch: # Allows manual triggering for testing
 
 jobs:
