@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS-FIXED-v4] Starting daily email send with DIRECT AI generation - no function calls');
+    console.log('🚀 [DIRECT-AI-v5] FORCE REDEPLOY: Direct AI generation with shared module - bypassing function calls completely');
     
     // Initialize AI generator with OpenAI API key
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
