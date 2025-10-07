@@ -1,0 +1,15 @@
+name: Daily Email Trigger
+
+on:
+  schedule:
+    # Runs at 10:00 UTC (6:00 AM EDT) every day
+    - cron: '0 10 * * *'
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  trigger-emails:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Emails
+        run: |
+          curl -X GET "https://www.goalmine.ai/api/trigger-daily-emails"
