@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
+import { AIGenerator } from "../_shared/ai-generation.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -40,7 +41,14 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log('[DAILY-EMAILS-FIXED-v3] Starting daily email send with LATEST AI fixes and pre-generated content support');
+    console.log('[DAILY-EMAILS-FIXED-v4] Starting daily email send with DIRECT AI generation - no function calls');
+    
+    // Initialize AI generator with OpenAI API key
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not found');
+    }
+    const aiGenerator = new AIGenerator(openAIApiKey);
     
     // Check for force delivery parameter
     const { forceDelivery } = req.method === 'POST' ? await req.json() : {};
@@ -211,9 +219,9 @@ const handler = async (req: Request): Promise<Response> => {
             }
           };
         } else {
-          console.log(`[DAILY-EMAILS] No pre-generated content found, generating real-time for: ${goal.title}`);
-          aiResponse = await supabase.functions.invoke('generate-daily-motivation', {
-            body: {
+          console.log(`[DAILY-EMAILS] No pre-generated content found, generating DIRECT AI for: ${goal.title}`);
+          try {
+            const aiContent = await aiGenerator.generateMotivation({
               goalId: goal.id,
               goalTitle: goal.title,
               goalDescription: goal.description || '',
@@ -222,8 +230,21 @@ const handler = async (req: Request): Promise<Response> => {
               userId: goal.user_id,
               isNudge: false,
               targetDate: goal.target_date
-            }
-          });
+            });
+            
+            aiResponse = {
+              data: {
+                success: true,
+                message: aiContent.message,
+                microPlan: aiContent.microPlan,
+                challenge: aiContent.challenge
+              }
+            };
+            console.log(`[DAILY-EMAILS] ✅ DIRECT AI generation success for: ${goal.title}`);
+          } catch (aiError) {
+            console.error(`[DAILY-EMAILS] DIRECT AI generation failed for: ${goal.title}:`, aiError);
+            aiResponse = { error: aiError.message };
+          }
         }
 
         let motivationContent;
