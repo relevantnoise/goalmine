@@ -227,7 +227,7 @@ export const PricingPage = ({
                 </div>
               </div>
               <div className="text-4xl font-bold">
-                $750
+                $950
                 <span className="text-lg font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>

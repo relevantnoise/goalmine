@@ -57,7 +57,7 @@ export const UpgradePage = () => {
           email: user.email,
           userId: user.id,
           tier: 'strategic_advisory',
-          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // Explicit $750/month price
+          priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // Explicit $950/month price
         },
       });
 
@@ -209,7 +209,7 @@ export const UpgradePage = () => {
                 Learn more about Dan
               </button>
               <div className="text-3xl font-bold text-green-600">
-                $750
+                $950
                 <span className="text-base font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
