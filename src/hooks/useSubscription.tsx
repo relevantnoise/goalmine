@@ -103,7 +103,7 @@ export const useSubscription = () => {
         body: {
           email: userEmail,
           userId: user.id,
-          tier: 'strategic_advisory', // This should trigger $950/month Strategic Advisor Plan
+          tier: 'strategic_advisory', // This should trigger $750/month Strategic Advisor Plan
           priceId: 'price_1SCPJLCElVmMOup293vWqNTQ', // Explicit price ID as fallback
         },
       });
