@@ -4,6 +4,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // SECURITY: Verify CRON_SECRET from Vercel (recommended best practice)
+  const authHeader = req.headers.authorization;
+  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
+
+  if (authHeader !== expectedAuth) {
+    console.log('[VERCEL-CRON] ❌ UNAUTHORIZED: Invalid or missing CRON_SECRET');
+    console.log('[VERCEL-CRON] Expected:', expectedAuth);
+    console.log('[VERCEL-CRON] Received:', authHeader);
+    return res.status(401).json({ error: 'Unauthorized - Invalid CRON_SECRET' });
+  }
+
   // CRITICAL: Only allow production environment to send emails
   // Development servers should NEVER send emails to live users
   const host = req.headers.host || '';
