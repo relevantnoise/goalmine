@@ -5,5 +5,10 @@
       "destination": "/index.html"
     }
   ],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/trigger-daily-emails",
+      "schedule": "0 10 * * *"
+    }
+  ]
 }

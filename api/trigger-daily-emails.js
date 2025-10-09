@@ -7,7 +7,8 @@ export default async function handler(req, res) {
   // CRITICAL: Only allow production environment to send emails
   // Development servers should NEVER send emails to live users
   const host = req.headers.host || '';
-  const isProductionDomain = host === 'goalmine.ai' || host === 'www.goalmine.ai' || host.includes('goalmine-mlnv01h4u-dans-projects');
+  const userAgent = req.headers['user-agent'] || '';
+  const isProductionDomain = host === 'goalmine.ai' || host === 'www.goalmine.ai' || host.includes('goalmine-mlnv01h4u-dans-projects') || userAgent.includes('vercel-cron');
   
   // DEBUG: Log all request details for troubleshooting
   console.log(`[VERCEL-CRON] REQUEST DEBUG:`);
