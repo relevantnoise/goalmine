@@ -33,20 +33,16 @@ export const useAuth = () => {
   
   // Enhanced loading state setter with logging
   const setLoadingWithLog = (loading: boolean, source: string) => {
-    console.log(`📊 Setting loading to ${loading} from: ${source}`);
     setIsLoading(loading);
   };
   
   // Force loading to false after maximum wait time
   useEffect(() => {
-    console.log('📊 useAuth hook initialized, setting up max loading timer');
     const maxLoadingTimer = setTimeout(() => {
-      console.log('🚨 Maximum loading time exceeded - forcing loading to false');
       setLoadingWithLog(false, 'MAX_TIMEOUT');
     }, 5000); // 5 seconds maximum loading time
     
     return () => {
-      console.log('📊 Cleaning up max loading timer');
       clearTimeout(maxLoadingTimer);
     };
   }, []);

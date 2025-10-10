@@ -31,12 +31,11 @@ const Index = () => {
   }
 
   // Version check log
-  console.log('🔥 Index component loaded - using bundled Firebase v2');
   
   const { user, firebaseUser, isAuthenticated, loading: authLoading } = useAuth();
   const { subscription } = useSubscription();
   const { trialStatus, loading: trialLoading } = useTrialStatus();
-  const { goals, loading: goalsLoading, fetchGoals, generateMotivationForGoals, generateGeneralNudge } = useGoals();
+  const { goals, loading: goalsLoading, fetchGoals, generateMotivationForGoals, generateGoalSpecificNudge, generateGeneralNudge } = useGoals();
   const { nudgeStatus, useNudge, loading: nudgeLoading } = useNudgeLimit();
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,19 +65,6 @@ const Index = () => {
 
   // Initialize view based on user state and goals
   useEffect(() => {
-    console.log('🔍 View initialization effect triggered:', {
-      user: !!user,
-      firebaseUser: !!firebaseUser,
-      isAuthenticated,
-      userId: user?.id,
-      firebaseUid: firebaseUser?.uid,
-      authLoading,
-      goalsLoading,
-      hasInitialized: hasInitialized.current,
-      forceReset: searchParams.get('reset') === 'true',
-      currentView,
-      pathname: location.pathname
-    });
 
     // Force reset if we're stuck - check URL params for reset or dashboard view
     const forceReset = searchParams.get('reset') === 'true';
@@ -89,15 +75,9 @@ const Index = () => {
     const checkinGoal = searchParams.get('goal'); // Goal ID from check-in link
     const forceHome = searchParams.get('home') === 'true';
     // DEBUG: Log all URL parameters
-    console.log('🔍 URL Search Parameters:', {
-      emailVerified,
-      allParams: Object.fromEntries(searchParams.entries()),
-      currentURL: window.location.href
-    });
     
     // SIMPLE: If user completed email verification, go directly to onboarding
     if (verified && !isRedirecting) {
-      console.log('📧 Email verification completed - going to goal creation!');
       hasInitialized.current = true;
       setCurrentView('onboarding');
       navigate('/', { replace: true });
@@ -116,7 +96,6 @@ const Index = () => {
     }
     
     if (forceReset) {
-      console.log('🔄 Force reset triggered');
       setCurrentView('landing');
       hasInitialized.current = false;
       // Clear the reset param
@@ -125,7 +104,6 @@ const Index = () => {
     }
     
     if (forceDashboard && user) {
-      console.log('🎯 Force dashboard view triggered from Continue button');
       hasInitialized.current = true;
       setCurrentView('dashboard');
       // Clear the force-dashboard param
@@ -133,12 +111,10 @@ const Index = () => {
       
       // For danlynn@gmail.com, we'll let the Dashboard component handle the temporary goals display
       // since the RLS/JWT issue prevents normal goal loading
-      console.log('🎯 Dashboard will handle goal display with temporary fix');
       return;
     }
 
     if (forceOnboarding) {
-      console.log('🎯 Force onboarding view triggered from email verification');
       hasInitialized.current = true;
       setCurrentView('onboarding');
       // Clear the force-onboarding param
@@ -148,7 +124,6 @@ const Index = () => {
 
     // Handle force home request - show landing page regardless of authentication
     if (forceHome) {
-      console.log('🏠 Force home view triggered from logo click');
       hasInitialized.current = true;
       setCurrentView('landing');
       // Clear the home param
@@ -323,13 +298,16 @@ const Index = () => {
     }
     
     // Generate a general motivational nudge (not goal-specific)
-    const generalNudge = await generateGeneralNudge();
+    // Use goal-specific nudges when goals exist, fallback to general
+    const motivationContent = goals.length > 0 
+      ? await generateGoalSpecificNudge()
+      : await generateGeneralNudge();
     
-    if (generalNudge) {
+    if (motivationContent) {
       // Show motivation content in a prominent modal alert
       setAlertData({
-        title: "🚀 Motivation Boost!",
-        message: generalNudge.message,
+        title: goals.length > 0 ? "🎯 Goal-Specific Boost!" : "🚀 Motivation Boost!",
+        message: motivationContent.message,
         type: 'nudge'
       });
       setShowAlert(true);

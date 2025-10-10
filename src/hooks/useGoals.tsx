@@ -188,21 +188,15 @@ export const useGoals = () => {
   // Fetch user's goals using edge function to bypass RLS
   const fetchGoals = async () => {
     if (!user) {
-      console.log('🔍 fetchGoals called but no user available yet');
       return;
     }
 
-    console.log('🔍 fetchGoals starting for user:', user.id);
     setLoading(true);
 
     try {
-      console.log('🔍 Using edge function to fetch goals (bypasses RLS)');
       
       // Make sure we're using the same user_id format as when creating goals
       const userId = user.email || user.id;
-      console.log('🔍 DEBUG: user.email =', user.email);
-      console.log('🔍 DEBUG: user.id =', user.id);
-      console.log('🔍 Fetching goals for user_id:', userId);
       
       // Phase 3: Fetch goals, profile, and subscription in parallel
       const [goalsResponse, profile, subscribed] = await Promise.all([
@@ -219,15 +213,12 @@ export const useGoals = () => {
       }
 
       let fetchedGoals = goalsResponse.data.goals;
-      console.log('✅ Goals fetched via edge function:', fetchedGoals.length, 'goals');
       
       // Apply localStorage edits to fetched goals
       const editedGoals = JSON.parse(localStorage.getItem('goalEdits') || '{}');
       if (Object.keys(editedGoals).length > 0) {
-        console.log('💾 Applying localStorage edits:', editedGoals);
         fetchedGoals = fetchedGoals.map(goal => {
           if (editedGoals[goal.id]) {
-            console.log('🔄 Applying edit to goal:', goal.id, editedGoals[goal.id]);
             return { ...goal, ...editedGoals[goal.id] };
           }
           return goal;
@@ -262,7 +253,6 @@ export const useGoals = () => {
     tone?: 'drill_sergeant' | 'kind_encouraging' | 'teammate' | 'wise_mentor';
     time_of_day?: string;
   }) => {
-    console.log('🚀 ULTRA-SIMPLE: Creating goal for user:', user?.email);
     if (!user) {
       toast.error('Please sign in to create a goal');
       return null;
@@ -632,7 +622,46 @@ export const useGoals = () => {
     }
   };
 
-  // Generate general motivational nudge (not goal-specific)
+  // Generate goal-specific motivational nudge (ENHANCED)
+  const generateGoalSpecificNudge = async (): Promise<MotivationContent | null> => {
+    if (!user || goals.length === 0) return null;
+
+    try {
+      // Pick the most recently active goal or first goal
+      const activeGoals = goals.filter(g => g.is_active);
+      const targetGoal = activeGoals.length > 0 ? activeGoals[0] : goals[0];
+      
+      console.log('🎯 Generating GOAL-SPECIFIC nudge for:', targetGoal.title);
+
+      const { data, error } = await supabase.functions.invoke('generate-daily-motivation', {
+        body: { 
+          goalId: targetGoal.id,
+          goalTitle: targetGoal.title,
+          goalDescription: targetGoal.description,
+          tone: targetGoal.tone,
+          streakCount: targetGoal.streak_count,
+          userId: user.email || user.id,
+          targetDate: targetGoal.target_date,
+          isNudge: true, // This is a nudge (30-45 words)
+          isGeneralNudge: false // This is goal-specific
+        }
+      });
+
+      if (error) throw error;
+
+      return {
+        message: data.message,
+        microPlan: [], // Simplified nudges don't include plans
+        challenge: '', // Simplified nudges don't include challenges
+        tone: targetGoal.tone
+      };
+    } catch (error) {
+      console.error('❌ Error generating goal-specific nudge:', error);
+      return null;
+    }
+  };
+
+  // Fallback: Generate general motivational nudge (when no goals available)
   const generateGeneralNudge = async (): Promise<MotivationContent | null> => {
     if (!user) return null;
 
@@ -853,6 +882,7 @@ export const useGoals = () => {
     deleteGoal,
     resetStreak,
     updateGoal,
+    generateGoalSpecificNudge,
     generateGeneralNudge,
     generateGoalMotivation,
     generateMotivationForGoals,

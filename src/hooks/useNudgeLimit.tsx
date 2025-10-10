@@ -25,7 +25,7 @@ export const useNudgeLimit = () => {
 
   // Fetch current nudge status
   const fetchNudgeStatus = async () => {
-    if (!user?.id) {
+    if (!user?.email) {
       setNudgeStatus({
         currentCount: 0,
         maxNudges: 1,
@@ -38,17 +38,11 @@ export const useNudgeLimit = () => {
 
     try {
       setLoading(true);
-      const { data, error } = await supabase.rpc('get_daily_nudge_status', {
-        target_user_id: user.id
-      });
-
-      if (error) {
-        console.error('Error fetching nudge status:', error);
-        // Fallback to localStorage for backwards compatibility
-        const fallbackStatus = getFallbackNudgeStatus();
-        setNudgeStatus(fallbackStatus);
-        return;
-      }
+      // TEMPORARY: Use localStorage until database UUID issue is fixed
+      console.log('🔄 Using localStorage fallback for status due to UUID constraint issue');
+      const fallbackStatus = getFallbackNudgeStatus();
+      setNudgeStatus(fallbackStatus);
+      return;
 
       setNudgeStatus(data as NudgeStatus);
     } catch (error) {
@@ -80,21 +74,15 @@ export const useNudgeLimit = () => {
 
   // Attempt to use a nudge (increment counter)
   const useNudge = async (): Promise<{ success: boolean; error?: string; data?: NudgeStatus }> => {
-    if (!user?.id) {
+    if (!user?.email) {
       return { success: false, error: 'No user authenticated' };
     }
 
     try {
       setLoading(true);
-      const { data, error } = await supabase.rpc('increment_daily_nudge_count', {
-        target_user_id: user.id
-      });
-
-      if (error) {
-        console.error('Error incrementing nudge count:', error);
-        // Fallback to localStorage
-        return handleFallbackNudge();
-      }
+      // TEMPORARY: Use localStorage until database UUID issue is fixed
+      console.log('🔄 Using localStorage fallback for nudge tracking due to UUID constraint issue');
+      return handleFallbackNudge();
 
       const result = data as { success: boolean; error?: string; current_count: number; max_nudges: number; user_subscribed: boolean; remaining: number };
       

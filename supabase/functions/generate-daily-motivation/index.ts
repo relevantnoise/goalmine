@@ -111,7 +111,7 @@ Generate motivational content that inspires immediate action:
 
 Return a JSON object with exactly these fields:
 {
-  "message": "Write a powerful, energizing motivational message that inspires action. Use 20-30 words. Be specific, personal, and actionable. Focus on their potential and what they can accomplish right now.",
+  "message": "Write a powerful, emotionally compelling motivational burst that creates immediate urgency. Use 30-45 words. Include both emotional WHY (deeper meaning) and specific action. Make them feel the cost of inaction and excitement of progress. Be personally transformative.",
   "microPlan": [],
   "challenge": ""
 }`;
@@ -171,7 +171,7 @@ Return a JSON object with exactly these fields:
         throw new Error(`General nudge generation failed: ${lastError?.message}`);
       }
 
-      console.log('[ENHANCED-NUDGE-v2] ✅ Generated ENHANCED 20-30 word motivation nudge:', content.message);
+      console.log('[ENHANCED-NUDGE-v3] ✅ Generated POWERFUL 30-45 word motivation burst:', content.message);
 
       return new Response(JSON.stringify(content), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -209,7 +209,7 @@ Generate URGENT NUDGE content - pure motivational fuel for immediate action:
 
 Return JSON with:
 {
-  "message": "Write a powerful 20-30 word motivational message specifically for '${goalTitle}'. Use authentic ${tone} voice. Be direct about WHY this goal matters to their life. Create emotional urgency without being preachy. Reference their specific goal situation, not generic motivation. Make them WANT to take action right now.",
+  "message": "Write a powerful 30-45 word motivational burst specifically for '${goalTitle}'. Use authentic ${tone} voice. Include both the emotional WHY (life impact) and immediate WHAT (specific action). Create visceral urgency about the cost of waiting vs reward of acting. Reference their exact goal situation. Make them feel transformation is happening right now.",
   "microPlan": [""],
   "challenge": ""
 }` : `
