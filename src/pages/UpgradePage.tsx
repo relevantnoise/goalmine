@@ -201,7 +201,7 @@ export const UpgradePage = () => {
                 <Users className="w-4 h-4 text-green-600" />
               </div>
               <CardTitle className="text-xl">Strategic Advisor Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-3">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+              <p className="text-sm text-muted-foreground mb-3">2-hour monthly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures. Also includes the ability to email him from time-to-time during the month with questions that may come up between sessions.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-green-600 hover:text-green-700 text-sm underline mb-3 cursor-pointer"

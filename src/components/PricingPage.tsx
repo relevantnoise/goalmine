@@ -106,13 +106,13 @@ export const PricingPage = ({
               Great Way To Start
             </div>
             <CardHeader className="pt-12">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-trial-light rounded-full flex items-center justify-center">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 bg-trial-light rounded-full flex items-center justify-center flex-shrink-0">
                   <Zap className="w-6 h-6 text-trial" />
                 </div>
-                <div>
-                  <CardTitle className="text-2xl">Free Trial</CardTitle>
-                  <p className="text-muted-foreground">Perfect to get started on your journey.</p>
+                <div className="min-h-[80px] flex flex-col justify-start">
+                  <CardTitle className="text-2xl mb-2">Free Trial</CardTitle>
+                  <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey.</p>
                 </div>
               </div>
               <div className="text-4xl font-bold">
@@ -159,13 +159,13 @@ export const PricingPage = ({
               Most Popular
             </div>
             <CardHeader className="pt-12">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-premium-light rounded-full flex items-center justify-center">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 bg-premium-light rounded-full flex items-center justify-center flex-shrink-0">
                   <Crown className="w-6 h-6 text-premium" />
                 </div>
-                <div>
-                  <CardTitle className="text-2xl">Personal Plan</CardTitle>
-                  <p className="text-muted-foreground">The perfect option after your 30-day free trial. And, if you aren't 100% satisfied, you can cancel anytime.</p>
+                <div className="min-h-[80px] flex flex-col justify-start">
+                  <CardTitle className="text-2xl mb-2">Personal Plan</CardTitle>
+                  <p className="text-muted-foreground text-sm">The perfect option after your free trial. Cancel anytime.</p>
                 </div>
               </div>
               <div className="text-4xl font-bold">
@@ -211,13 +211,13 @@ export const PricingPage = ({
               One-on-One Coaching
             </div>
             <CardHeader className="pt-12">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <Users className="w-6 h-6 text-green-600" />
                 </div>
-                <div>
-                  <CardTitle className="text-2xl">Strategic Advisor Plan</CardTitle>
-                  <p className="text-muted-foreground">1-hour monthly strategic business sessions with Dan Lynn, co-Founder at Starting Point Ventures.</p>
+                <div className="min-h-[80px] flex flex-col justify-start">
+                  <CardTitle className="text-2xl mb-2">Strategic Advisor Plan</CardTitle>
+                  <p className="text-muted-foreground text-sm">2-hour monthly 1-on-1 coaching sessions with Dan Lynn.</p>
                   <button 
                     onClick={() => setIsDanBioOpen(true)}
                     className="text-green-600 hover:text-green-700 text-sm underline mt-1 cursor-pointer"
@@ -309,7 +309,7 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">What's included in Strategic Advisor Plan?</h3>
-              <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus a monthly 1-hour strategic business session with Dan Lynn, a successful serial entrepreneur and Fortune 500 executive who is co-founder of Starting Point Ventures. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
+              <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus 2-hour monthly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures, a successful serial entrepreneur and Fortune 500 executive. Also includes the ability to email him from time-to-time during the month with questions that may come up between sessions. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>
