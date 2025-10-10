@@ -104,6 +104,7 @@ serve(async (req) => {
     
     // Handle general nudge (not goal-specific)
     if (isGeneralNudge) {
+      console.log('[ENHANCED-NUDGE-v2] 🚀 ENHANCED 20-30 WORD NUDGE FUNCTION CALLED - This confirms the enhanced version is active');
       const generalPrompt = `You are a motivational life coach providing powerful motivation boosts to help people achieve their goals.
 
 Generate motivational content that inspires immediate action:
@@ -170,7 +171,7 @@ Return a JSON object with exactly these fields:
         throw new Error(`General nudge generation failed: ${lastError?.message}`);
       }
 
-      console.log('Generated general motivation nudge');
+      console.log('[ENHANCED-NUDGE-v2] ✅ Generated ENHANCED 20-30 word motivation nudge:', content.message);
 
       return new Response(JSON.stringify(content), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

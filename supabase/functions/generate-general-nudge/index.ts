@@ -21,6 +21,8 @@ serve(async (req) => {
       });
     }
 
+    console.log('[LEGACY-NUDGE] ⚠️ OLD LEGACY NUDGE FUNCTION CALLED - This should NOT be happening!');
+    
     // Generate general motivational content
     const prompt = `Generate motivational content for someone who needs an instant boost. Format as JSON:
     {

@@ -18,8 +18,18 @@ import { MotivationAlert } from "@/components/MotivationAlert";
 import { TrialExpiredModal } from "@/components/TrialExpiredModal";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
+import { CrawlerLandingPage } from "@/components/CrawlerLandingPage";
+import { isCrawler, logCrawlerDetection } from "@/utils/crawlerDetection";
 
 const Index = () => {
+  // CRAWLER OPTIMIZATION: Return immediate static content for web crawlers
+  // This bypasses all authentication, loading states, and dynamic functionality
+  // to provide instant SEO-friendly content
+  if (isCrawler()) {
+    logCrawlerDetection();
+    return <CrawlerLandingPage />;
+  }
+
   // Version check log
   console.log('🔥 Index component loaded - using bundled Firebase v2');
   
