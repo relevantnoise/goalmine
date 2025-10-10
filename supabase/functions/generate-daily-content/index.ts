@@ -1,196 +1,281 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface MotivationContent {
-  message: string;
-  microPlan: string[];
-  challenge: string;
-  tone: string;
+// Phase 2: Email Skip Logic Helper Functions  
+function isGoalExpired(goal: any): boolean {
+  if (!goal.target_date) return false;
+  const targetDate = new Date(goal.target_date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return targetDate < today;
 }
 
-serve(async (req) => {
+function isTrialExpired(profile: any): boolean {
+  if (!profile || !profile.trial_expires_at) return false;
+  return new Date(profile.trial_expires_at) < new Date();
+}
+
+function shouldSkipContentGeneration(goal: any, profile: any, isSubscribed: boolean): { skip: boolean; reason: string } {
+  // Check if trial expired and not subscribed
+  if (isTrialExpired(profile) && !isSubscribed) {
+    return { skip: true, reason: 'Trial expired and user not subscribed' };
+  }
+  
+  // Check if goal is expired
+  if (isGoalExpired(goal)) {
+    return { skip: true, reason: 'Goal has reached its target date' };
+  }
+  
+  return { skip: false, reason: 'Goal is active and eligible for content generation' };
+}
+
+const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('🔄 Daily content generation started');
-
-    // Create Supabase client with service role
+    console.log('🚀 [CONTENT-PRE-GENERATION] BULLETPROOF AI Content Generation Starting');
+    console.log('🚀 [CONTENT-PRE-GENERATION] Stage 1: Generate AI content for all active goals');
+    
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get all active goals that need fresh content for today
-    const today = new Date().toISOString().split('T')[0];
-    const { data: goals, error: goalsError } = await supabase
+    // Get current time
+    const now = new Date();
+    const todayDate = now.toISOString().split('T')[0];
+    
+    const easternTime = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(now);
+    
+    console.log(`[CONTENT-PRE-GENERATION] UTC date: ${todayDate}`);
+    console.log(`[CONTENT-PRE-GENERATION] Eastern time: ${easternTime}`);
+
+    // Get all active goals
+    console.log(`[CONTENT-PRE-GENERATION] Fetching all active goals...`);
+    
+    const { data: allGoals, error: goalsError } = await supabase
       .from('goals')
       .select('*')
       .eq('is_active', true);
 
     if (goalsError) {
-      console.error('❌ Error fetching goals:', goalsError);
+      console.error('[CONTENT-PRE-GENERATION] Error fetching goals:', goalsError);
       throw goalsError;
     }
 
-    console.log(`📊 Found ${goals.length} active goals to generate content for`);
+    console.log(`[CONTENT-PRE-GENERATION] Found ${allGoals?.length || 0} active goals`);
+    
+    if (!allGoals || allGoals.length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: `No active goals found for content generation`,
+          contentGenerated: 0,
+          errors: 0,
+          skipped: 0
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
-    // Generate content for each goal
+    let contentGenerated = 0;
+    let errors = 0;
+    let skipped = 0;
     const results = [];
-    for (const goal of goals) {
+
+    // Check what content already exists for today
+    const todayStart = new Date(todayDate + 'T00:00:00.000Z').toISOString();
+    const todayEnd = new Date(todayDate + 'T23:59:59.999Z').toISOString();
+    
+    const { data: existingContent } = await supabase
+      .from('motivation_history')
+      .select('goal_id')
+      .gte('created_at', todayStart)
+      .lte('created_at', todayEnd);
+
+    const goalsWithContent = new Set(existingContent?.map(c => c.goal_id) || []);
+    console.log(`[CONTENT-PRE-GENERATION] ${goalsWithContent.size} goals already have content for today`);
+
+    // Process each goal
+    for (const goal of allGoals) {
       try {
-        console.log(`🎯 Generating content for goal: ${goal.title}`);
-
-        // Check if we already have content for today
-        const { data: existingContent } = await supabase
-          .from('motivation_history')
-          .select('id')
-          .eq('goal_id', goal.id)
-          .eq('date', today)
-          .single();
-
-        if (existingContent) {
-          console.log(`⏭️  Content already exists for ${goal.title} today`);
-          continue;
-        }
-
-        // Generate new content using OpenAI
-        const motivationContent = await generateMotivationContent(goal);
-        
-        if (!motivationContent) {
-          console.error(`❌ Failed to generate content for ${goal.title}`);
-          continue;
-        }
-
-        // Save to database (upsert - overwrite existing content for this goal/date)
-        const { error: saveError } = await supabase
-          .from('motivation_history')
-          .upsert({
+        // Skip if we already have content for today
+        if (goalsWithContent.has(goal.id)) {
+          console.log(`[CONTENT-PRE-GENERATION] ⏭️ Skipping ${goal.title} - content already exists for today`);
+          skipped++;
+          results.push({
             goal_id: goal.id,
-            user_id: goal.user_id,
-            date: today,
-            message: motivationContent.message,
-            micro_plan: motivationContent.microPlan,
-            challenge: motivationContent.challenge,
-            tone: motivationContent.tone,
-          }, {
-            onConflict: 'goal_id,date'
+            title: goal.title,
+            status: 'skipped',
+            reason: 'Content already exists for today'
           });
-
-        if (saveError) {
-          console.error(`❌ Error saving content for ${goal.title}:`, saveError);
           continue;
         }
 
-        console.log(`✅ Generated and saved content for: ${goal.title}`);
-        results.push({ goalId: goal.id, title: goal.title, success: true });
+        console.log(`[CONTENT-PRE-GENERATION] 🎯 Processing: "${goal.title}"`);
+        
+        // Get profile info for skip logic
+        let profile;
+        if (goal.user_id.includes('@')) {
+          const result = await supabase
+            .from('profiles')
+            .select('email, trial_expires_at')
+            .eq('email', goal.user_id)
+            .single();
+          profile = result.data || { email: goal.user_id, trial_expires_at: null };
+        } else {
+          const result = await supabase
+            .from('profiles')
+            .select('email, trial_expires_at')
+            .eq('id', goal.user_id)
+            .single();
+          profile = result.data;
+        }
+        
+        if (!profile?.email) {
+          console.error(`[CONTENT-PRE-GENERATION] No profile for goal: ${goal.title}`);
+          errors++;
+          results.push({
+            goal_id: goal.id,
+            title: goal.title,
+            status: 'error',
+            reason: 'No profile found'
+          });
+          continue;
+        }
+
+        // Check subscription
+        let subscriptionData = null;
+        if (goal.user_id.includes('@')) {
+          const { data } = await supabase
+            .from('subscribers')
+            .select('subscribed')
+            .eq('user_id', goal.user_id)
+            .single();
+          subscriptionData = data;
+        } else {
+          const { data } = await supabase
+            .from('subscribers')
+            .select('subscribed')
+            .eq('user_id', profile.email)
+            .single();
+          subscriptionData = data;
+        }
+        
+        const isSubscribed = subscriptionData?.subscribed === true;
+        
+        // Skip check
+        const skipCheck = shouldSkipContentGeneration(goal, profile, isSubscribed);
+        if (skipCheck.skip) {
+          console.log(`[CONTENT-PRE-GENERATION] ⏭️ Skipping: ${skipCheck.reason}`);
+          skipped++;
+          results.push({
+            goal_id: goal.id,
+            title: goal.title,
+            status: 'skipped',
+            reason: skipCheck.reason
+          });
+          continue;
+        }
+
+        // Generate AI content using existing sophisticated function
+        console.log(`[CONTENT-PRE-GENERATION] 🤖 Generating AI content for: ${goal.title}`);
+        
+        const aiResponse = await supabase.functions.invoke('generate-daily-motivation', {
+          body: {
+            goalId: goal.id,
+            goalTitle: goal.title,
+            goalDescription: goal.description,
+            tone: goal.tone || 'kind_encouraging',
+            streakCount: goal.streak_count || 0,
+            userId: goal.user_id,
+            isNudge: false,
+            targetDate: goal.target_date
+          }
+        });
+
+        if (aiResponse.error || !aiResponse.data) {
+          console.error(`[CONTENT-PRE-GENERATION] ❌ AI generation failed for ${goal.title}:`, aiResponse.error);
+          errors++;
+          results.push({
+            goal_id: goal.id,
+            title: goal.title,
+            status: 'error',
+            reason: `AI generation failed: ${aiResponse.error?.message || 'Unknown error'}`
+          });
+          continue;
+        }
+
+        console.log(`[CONTENT-PRE-GENERATION] ✅ AI content generated for: ${goal.title}`);
+        contentGenerated++;
+        results.push({
+          goal_id: goal.id,
+          title: goal.title,
+          status: 'success',
+          reason: 'AI content generated and stored'
+        });
 
       } catch (error) {
-        console.error(`❌ Error processing goal ${goal.title}:`, error);
-        results.push({ goalId: goal.id, title: goal.title, success: false, error: error.message });
+        console.error(`[CONTENT-PRE-GENERATION] Error processing ${goal.title}:`, error);
+        errors++;
+        results.push({
+          goal_id: goal.id,
+          title: goal.title,
+          status: 'error',
+          reason: error.message
+        });
       }
     }
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      processed: goals.length,
-      results: results
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+    console.log(`[CONTENT-PRE-GENERATION] ✅ Content generation complete!`);
+    console.log(`[CONTENT-PRE-GENERATION] Generated: ${contentGenerated}, Errors: ${errors}, Skipped: ${skipped}`);
 
-  } catch (error) {
-    console.error('❌ Error in generate-daily-content:', error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error.message || "Unknown error occurred" 
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
-  }
-});
-
-async function generateMotivationContent(goal: any): Promise<MotivationContent | null> {
-  try {
-    console.log(`🤖 Generating LLM content for: ${goal.title}`);
-    
-    // Build context for AI generation
-    const contextInfo = [];
-    if (goal.description) contextInfo.push(`Goal description: ${goal.description}`);
-    if (goal.target_date) contextInfo.push(`Target date: ${goal.target_date}`);
-    contextInfo.push(`Current streak: ${goal.streak_count} days`);
-    
-    const toneInstructions = {
-      'drill_sergeant': 'Be direct, commanding, and motivational like a military drill sergeant. Use strong, action-oriented language.',
-      'kind_encouraging': 'Be warm, supportive, and encouraging like a caring friend. Use gentle but motivating language.',
-      'teammate': 'Be collaborative and supportive like a workout partner. Use "we" language and team-oriented motivation.',
-      'wise_mentor': 'Be thoughtful and wise like an experienced mentor. Provide insightful guidance and perspective.'
-    };
-
-    const prompt = `You are a ${goal.tone.replace('_', ' ')} helping someone with their goal: "${goal.title}"
-
-${contextInfo.length > 0 ? contextInfo.join('\n') + '\n' : ''}
-
-Generate motivational content in this exact JSON format:
-{
-  "message": "A motivational message (2-3 sentences) in the ${goal.tone.replace('_', ' ')} style",
-  "microPlan": ["Action step 1", "Action step 2", "Action step 3"],
-  "challenge": "A quick 2-minute challenge they can do today"
-}
-
-${toneInstructions[goal.tone]}
-
-Keep it concise, actionable, and motivating. This is for day ${goal.streak_count + 1} of their streak.`;
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
-        max_tokens: 500,
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: `Content pre-generation completed. Generated ${contentGenerated} pieces of AI content.`,
+        contentGenerated,
+        errors,
+        skipped,
+        totalGoals: allGoals.length,
+        details: results,
+        timestamp: new Date().toISOString()
       }),
-    });
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
-
-    const aiResponse = await response.json();
-    const content = JSON.parse(aiResponse.choices[0].message.content);
-    
-    return {
-      message: content.message,
-      microPlan: content.microPlan,
-      challenge: content.challenge,
-      tone: goal.tone
-    };
-
-  } catch (aiError) {
-    console.error('⚠️ AI generation failed, using fallback content:', aiError);
-    
-    // Fallback content if AI fails
-    return {
-      message: `Great work on day ${goal.streak_count + 1} of "${goal.title}"! Every day you show up is a victory. Keep building this incredible momentum.`,
-      microPlan: [
-        'Take 5 minutes to visualize your success',
-        'Write down one reason why this goal matters to you',
-        'Plan your next small action step'
-      ],
-      challenge: 'Spend 2 minutes right now writing down one thing you learned about yourself through pursuing this goal.',
-      tone: goal.tone
-    };
+  } catch (error: any) {
+    console.error('[CONTENT-PRE-GENERATION] Fatal error:', error);
+    return new Response(
+      JSON.stringify({ 
+        success: false,
+        error: error.message,
+        message: 'Content pre-generation failed'
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
   }
-}
+};
+
+serve(handler);

@@ -61,10 +61,10 @@ export default async function handler(req, res) {
     // REAL SYSTEM: Now that the edge function is fixed and deployed
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🚀 REAL EMAIL SYSTEM: Using deployed fixed edge function');
+    console.log('[VERCEL-CRON] 🚀 STAGE 2: BULLETPROOF EMAIL SYSTEM using pre-generated content');
     
-    // Call the REAL send-daily-emails function (now fixed with UTC date)
-    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails-new', {
+    // Call the simplified email delivery function (uses pre-generated content ONLY)
+    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails-simple', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${supabaseKey}`,
@@ -83,11 +83,12 @@ export default async function handler(req, res) {
     
     return res.status(200).json({ 
       success: data.success,
-      message: 'Bulletproof daily email system executed',
+      stage: 'email-delivery',
+      message: 'Bulletproof email delivery system executed',
       timestamp: new Date().toISOString(),
       emailsSent: data.emailsSent || 0,
       errors: data.errors || 0,
-      details: data.message || 'Email processing completed',
+      details: data.message || 'Email delivery completed',
       environment: 'production'
     });
     
