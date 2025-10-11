@@ -104,14 +104,21 @@ serve(async (req) => {
     
     // Handle general nudge (not goal-specific)
     if (isGeneralNudge) {
-      console.log('[ENHANCED-NUDGE-v2] 🚀 ENHANCED 20-30 WORD NUDGE FUNCTION CALLED - This confirms the enhanced version is active');
-      const generalPrompt = `You are a motivational life coach providing powerful motivation boosts to help people achieve their goals.
+      console.log('[UNIVERSAL-NUDGE-v3] 🚀 UNIVERSAL NUDGE SYSTEM - Works for all users regardless of goals');
+      const generalPrompt = `You are an elite life transformation coach providing instant motivation boosts. Your role is to create immediate momentum and urgency for anyone pursuing their dreams.
 
-Generate motivational content that inspires immediate action:
+You speak to high-achievers, dreamers, and people committed to growth. Your message should work for anyone - whether they're building a business, improving health, learning skills, or chasing any meaningful goal.
+
+Generate a powerful motivational burst that:
+- Creates immediate emotional urgency about taking action RIGHT NOW
+- Reminds them that every moment counts in their journey
+- Focuses on the universal truth that progress beats perfection
+- Emphasizes that small actions compound into massive results
+- Makes them feel capable of breakthrough moments TODAY
 
 Return a JSON object with exactly these fields:
 {
-  "message": "Write a powerful, emotionally compelling motivational burst that creates immediate urgency. Use 30-45 words. Include both emotional WHY (deeper meaning) and specific action. Make them feel the cost of inaction and excitement of progress. Be personally transformative.",
+  "message": "Write a universally powerful 35-50 word motivational burst that creates immediate action urgency. Include both emotional WHY (transformation is happening) and universal WHAT (take the next step). Make them feel their breakthrough moment is RIGHT NOW. Be personally transformative yet universally applicable.",
   "microPlan": [],
   "challenge": ""
 }`;
@@ -139,7 +146,7 @@ Return a JSON object with exactly these fields:
               model: model,
               messages: [
                 { role: 'system', content: generalPrompt },
-                { role: 'user', content: 'Generate a quick motivation boost - keep it short and punchy.' }
+                { role: 'user', content: 'I need an instant motivation boost right now. Generate powerful universal motivation that will spark immediate action and momentum.' }
               ],
               temperature: 0.8,
               max_tokens: 300,

@@ -137,14 +137,14 @@ git push origin main
 - [ ] Dashboard loads without "No Active Goals" flash
 - [ ] Check-ins work (once per day)
 - [ ] Streaks calculate correctly
-- [ ] Nudges generate properly
+- [ ] Universal nudges generate properly (work for all users regardless of goals)
 - [ ] ✅ **FIXED Sept 12**: Daily motivation emails sending via Resend (duplicate issue resolved)
 
 #### Subscription Limits & Business Logic
 - [ ] Free users: 1 goal maximum
-- [ ] Free users: 1 nudge per day
+- [ ] Free users: 1 universal nudge per day
 - [ ] Premium users: 3 goals maximum
-- [ ] Premium users: 3 nudges per day
+- [ ] Premium users: 3 universal nudges per day
 - [ ] Upgrade prompts appear correctly
 - [ ] ✅ **DEPLOYED**: Expired goals show "GOAL EXPIRED" badge with edit/delete only
 - [ ] ✅ **DEPLOYED**: Trial-expired users show "TRIAL EXPIRED" badge with upgrade prompts
@@ -158,6 +158,14 @@ git push origin main
 - [ ] Mobile responsive design works
 - [ ] No console errors
 
+#### Latest Features (October 11, 2025)
+- [ ] **Universal Nudge System**: Dashboard nudge button works for users with 0, 1, or multiple goals
+- [ ] **Universal Nudge Content**: Nudges show "🚀 Instant Motivation Boost!" title consistently
+- [ ] **Universal Nudge Quality**: Nudge content is 35-50 words of powerful universal motivation
+- [ ] **Goal Detail Intelligence**: Content updates when goal title/tone is edited
+- [ ] **Goal Detail Performance**: Content loads quickly for unchanged goals (cached)
+- [ ] **Goal Detail Regeneration**: Fresh content appears after streak changes (check-ins)
+
 ### Production Testing (After Deployment)
 
 #### Critical Path Testing
@@ -165,14 +173,14 @@ git push origin main
    - [ ] Sign up with fresh email
    - [ ] Receive verification email
    - [ ] Complete goal creation
-   - [ ] View goal detail page with motivation content
+   - [ ] View goal detail page with smart motivation content (real-time when goal changes)
    - [ ] Land on dashboard with goal visible
 
 2. **Returning User Flow**
    - [ ] Log in successfully
    - [ ] Dashboard loads with existing goals
    - [ ] Can check in once per day
-   - [ ] Can get nudges (respecting limits)
+   - [ ] Can get universal nudges (respecting limits, work regardless of goal count)
    - [ ] Can edit/delete goals
 
 3. **Subscription Flow**

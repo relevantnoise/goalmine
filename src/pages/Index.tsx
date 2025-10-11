@@ -297,22 +297,20 @@ const Index = () => {
       return null;
     }
     
-    // Generate a general motivational nudge (not goal-specific)
-    // Use goal-specific nudges when goals exist, fallback to general
-    const motivationContent = goals.length > 0 
-      ? await generateGoalSpecificNudge()
-      : await generateGeneralNudge();
+    // Generate universal motivational nudge that works for all users
+    // Always use universal nudge system regardless of goal count
+    const motivationContent = await generateGeneralNudge();
     
     if (motivationContent) {
       // Show motivation content in a prominent modal alert
       setAlertData({
-        title: goals.length > 0 ? "🎯 Goal-Specific Boost!" : "🚀 Motivation Boost!",
+        title: "🚀 Instant Motivation Boost!",
         message: motivationContent.message,
         type: 'nudge'
       });
       setShowAlert(true);
       
-      return generalNudge;
+      return motivationContent;
     } else {
       // Fallback alert if generation fails
       setAlertData({
