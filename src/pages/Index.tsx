@@ -342,7 +342,19 @@ const Index = () => {
     
     const freshGoalCount = goalsData?.success ? goalsData.goals.length : goals.length;
     const isSubscribed = subData?.subscribed || false;
-    const maxGoals = isSubscribed ? 3 : 1;
+    
+    // Determine max goals based on subscription tier (matches create-goal function logic)
+    const getMaxGoals = (subscription) => {
+      if (!subscription?.subscribed) return 1; // Free users
+      
+      const tier = subscription.subscription_tier;
+      if (tier === 'Pro Plan') return 5;
+      if (tier === 'Strategic Advisor Plan') return 5;
+      if (tier === 'Professional Coach') return 5; // Legacy tier
+      return 3; // Personal Plan (default for subscribed users)
+    };
+    
+    const maxGoals = getMaxGoals(subData || { subscribed: false });
     
     console.log('🎯 Fresh limit check:', { 
       freshGoalCount, 

@@ -19,6 +19,7 @@ export const PricingPage = ({
   // Bio modal functionality added - force deployment
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const [personalLoading, setPersonalLoading] = useState(false);
+  const [proLoading, setProLoading] = useState(false);
   const [strategicLoading, setStrategicLoading] = useState(false);
   const {
     user
@@ -27,6 +28,7 @@ export const PricingPage = ({
     subscription,
     loading,
     createCheckout,
+    createProPlanCheckout,
     createProfessionalCheckout
   } = useSubscription();
   const handleSubscribe = async (e: React.MouseEvent) => {
@@ -83,6 +85,30 @@ export const PricingPage = ({
       setStrategicLoading(false);
     }
   };
+
+  const handleProPlanSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 Pro Plan button clicked');
+    console.log('🎯 Pro Plan - User:', user?.email);
+    
+    if (!user) {
+      // Redirect to auth if not logged in
+      window.location.href = '/auth';
+      return;
+    }
+    
+    setProLoading(true);
+    try {
+      console.log('🎯 Pro Plan - Calling createProPlanCheckout');
+      await createProPlanCheckout();
+      console.log('🎯 Pro Plan - createProPlanCheckout completed');
+    } catch (error) {
+      console.error('🎯 Pro Plan - Error:', error);
+    } finally {
+      setProLoading(false);
+    }
+  };
   return <div className="min-h-screen bg-background">
       <Header onLogoClick={onBack} />
       <div className="container mx-auto px-6 py-12 max-w-4xl">
@@ -94,56 +120,51 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your First Goal</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transform your goals into achievements with personalized daily motivation. 
-            Try free for 30 days, then continue for just $4.99/month. Professional coaching is also available.
+            Try free for 30 days, then continue for just $4.99/month. Professional plans and one-on-one strategic coaching are also available.
           </p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {/* Trial Card */}
           <Card className="border-2 border-trial relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-trial text-trial-foreground text-center py-2 text-sm font-medium">
               Great Way To Start
             </div>
-            <CardHeader className="pt-12">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-12 h-12 bg-trial-light rounded-full flex items-center justify-center flex-shrink-0">
-                  <Zap className="w-6 h-6 text-trial" />
-                </div>
-                <div className="min-h-[80px] flex flex-col justify-start">
-                  <CardTitle className="text-2xl mb-2">Free Trial</CardTitle>
-                  <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey.</p>
-                </div>
+            <CardHeader className="pt-12 text-center">
+              <div className="mb-4">
+                <CardTitle className="text-lg mb-2">Free Trial</CardTitle>
+                <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey.</p>
               </div>
-              <div className="text-4xl font-bold">
+              <div className="text-2xl font-bold">
                 $0
-                <span className="text-lg font-normal text-muted-foreground">/30 days</span>
+                <span className="text-sm font-normal text-muted-foreground">/30 days</span>
               </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+              <ul className="space-y-1 mb-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>1 active Goal</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>Daily personalized motivation</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>Choose from 4 AI-powered coaching tones</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>Daily micro-plans & mini-challenges</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>Daily motivational email</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-trial" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
                   <span>Streak tracking</span>
                 </li>
               </ul>
@@ -158,41 +179,36 @@ export const PricingPage = ({
             <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
               Most Popular
             </div>
-            <CardHeader className="pt-12">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-12 h-12 bg-premium-light rounded-full flex items-center justify-center flex-shrink-0">
-                  <Crown className="w-6 h-6 text-premium" />
-                </div>
-                <div className="min-h-[80px] flex flex-col justify-start">
-                  <CardTitle className="text-2xl mb-2">Personal Plan</CardTitle>
-                  <p className="text-muted-foreground text-sm">The perfect option after your free trial. Cancel anytime.</p>
-                </div>
+            <CardHeader className="pt-12 text-center">
+              <div className="mb-4">
+                <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
+                <p className="text-muted-foreground text-sm">The perfect option after your free trial. Cancel anytime.</p>
               </div>
-              <div className="text-4xl font-bold">
+              <div className="text-2xl font-bold">
                 $4.99
-                <span className="text-lg font-normal text-muted-foreground">/month</span>
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-premium" />
+              <ul className="space-y-1 mb-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Everything in the free trial plus...</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-premium" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Up to 3 active Goals</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-premium" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Up to 3 daily "Nudge Me" requests</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-premium" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Priority chat support</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-premium" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Priority new feature announcements</span>
                 </li>
               </ul>
@@ -205,52 +221,103 @@ export const PricingPage = ({
             </CardContent>
           </Card>
 
+          {/* Pro Plan Card */}
+          <Card className="border-2 border-blue-600 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-medium">
+              Power User Choice
+            </div>
+            <CardHeader className="pt-12 text-center">
+              <div className="mb-4">
+                <CardTitle className="text-lg mb-2">Pro Plan</CardTitle>
+                <p className="text-muted-foreground text-sm mb-2">For ambitious individuals managing multiple life areas.</p>
+                <button 
+                  onClick={() => setIsDanBioOpen(true)}
+                  className="text-blue-600 hover:text-blue-700 text-sm underline cursor-pointer"
+                >
+                  Learn more about Dan
+                </button>
+              </div>
+              <div className="text-2xl font-bold">
+                $199.99
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-1 mb-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Everything in Personal Plan plus...</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Up to 5 active Goals</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Up to 5 daily "Nudge Me" requests</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>1-hour monthly group Q&A with Dan Lynn</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Priority support & feature access</span>
+                </li>
+              </ul>
+              {subscription.subscribed && subscription.subscription_tier === "Pro Plan" ? 
+                <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
+                  Current Plan
+                </Badge> : 
+                <Button onClick={handleProPlanSubscribe} className="w-full bg-blue-600 hover:bg-blue-700" size="lg" disabled={proLoading}>
+                  <Target className="w-4 h-4 mr-2" />
+                  {proLoading ? "Dream Big..." : "Subscribe Now"}
+                </Button>
+              }
+            </CardContent>
+          </Card>
+
           {/* Strategic Advisor Plan Card */}
           <Card className="border-2 border-green-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
               One-on-One Coaching
             </div>
-            <CardHeader className="pt-12">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Users className="w-6 h-6 text-green-600" />
-                </div>
-                <div className="min-h-[80px] flex flex-col justify-start">
-                  <CardTitle className="text-2xl mb-2">Strategic Advisor Plan</CardTitle>
-                  <p className="text-muted-foreground text-sm">2-hour monthly 1-on-1 coaching sessions with Dan Lynn.</p>
-                  <button 
-                    onClick={() => setIsDanBioOpen(true)}
-                    className="text-green-600 hover:text-green-700 text-sm underline mt-1 cursor-pointer"
-                  >
-                    Learn more about Dan
-                  </button>
-                </div>
+            <CardHeader className="pt-12 text-center">
+              <div className="mb-4">
+                <CardTitle className="text-lg mb-2">Strategic Advisor Plan</CardTitle>
+                <p className="text-muted-foreground text-sm mb-2">2-hour quarterly 1-on-1 coaching sessions with Dan Lynn.</p>
+                <button 
+                  onClick={() => setIsDanBioOpen(true)}
+                  className="text-green-600 hover:text-green-700 text-sm underline cursor-pointer"
+                >
+                  Learn more about Dan
+                </button>
               </div>
-              <div className="text-4xl font-bold">
+              <div className="text-2xl font-bold">
                 $950
-                <span className="text-lg font-normal text-muted-foreground">/month</span>
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-600" />
-                  <span>Everything in Personal Plan plus...</span>
+              <ul className="space-y-1 mb-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+                  <span>Everything in Pro Plan plus...</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-600" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <span>Strategic business advisory sessions</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-600" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <span>Personal goal planning & SMART goal development</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-600" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <span>"Right to left" project planning methodology</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Check className="w-6 h-6 text-green-600" />
+                <li className="flex items-start gap-3">
+                  <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <span>Executive-level strategic guidance</span>
                 </li>
               </ul>
@@ -309,7 +376,7 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">What's included in Strategic Advisor Plan?</h3>
-              <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus 2-hour monthly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures, a successful serial entrepreneur and Fortune 500 executive. Also includes the ability to email him from time-to-time during the month with questions that may come up between sessions. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
+              <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus 2-hour quarterly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures, a successful serial entrepreneur and Fortune 500 executive. Also includes the ability to email him from time-to-time during the quarter with questions that may come up between sessions. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>

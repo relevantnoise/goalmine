@@ -18,12 +18,21 @@ serve(async (req) => {
     
     // Determine plan based on tier parameter or explicit priceId
     const isStrategicAdvisory = tier === 'strategic_advisory';
-    const planName = isStrategicAdvisory ? 'Strategic Advisor Plan' : 'Personal Plan';
-    const finalPriceId = priceId || (isStrategicAdvisory 
-      ? "price_1SCPJLCElVmMOup293vWqNTQ" // Strategic Advisor Plan $950/month
-      : "price_1RwNO0CElVmMOup2B7WPCzlH"); // Personal Plan $4.99/month
+    const isProPlan = tier === 'pro_plan';
     
-    console.log(`🔍 DEBUG: tier=${tier}, isStrategicAdvisory=${isStrategicAdvisory}, planName=${planName}, finalPriceId=${finalPriceId}`);
+    const planName = (() => {
+      if (isStrategicAdvisory) return 'Strategic Advisor Plan';
+      if (isProPlan) return 'Pro Plan';
+      return 'Personal Plan';
+    })();
+    
+    const finalPriceId = priceId || (() => {
+      if (isStrategicAdvisory) return "price_1SCPJLCElVmMOup293vWqNTQ"; // Strategic Advisor Plan $950/month
+      if (isProPlan) return "price_1SHE5DCElVmMOup2zX8H4qnJ"; // Pro Plan $199.99/month
+      return "price_1RwNO0CElVmMOup2B7WPCzlH"; // Personal Plan $4.99/month
+    })();
+    
+    console.log(`🔍 DEBUG: tier=${tier}, isStrategicAdvisory=${isStrategicAdvisory}, isProPlan=${isProPlan}, planName=${planName}, finalPriceId=${finalPriceId}`);
     console.log(`🛒 ${planName} checkout for:`, email);
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");

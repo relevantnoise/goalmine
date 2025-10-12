@@ -71,9 +71,11 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 - **Content Types**: Motivational messages, micro-plans (3 actionable steps), mini-challenges (2-minute tasks)
 - **Tone Consistency**: All content matches user's selected coaching style
 
-### Subscription Tiers
+### Subscription Tiers (Updated October 12, 2025)
 - **Free Users**: 1 goal, 1 daily nudge, 30-day trial
-- **Premium Users**: 3 goals, 3 daily nudges, $4.99/month
+- **Personal Plan**: 3 goals, 3 daily nudges, $4.99/month
+- **Pro Plan**: 5 goals, 5 daily nudges + 1-hour monthly group Q&A, $199.99/month [NEW - TESTING IN PROGRESS]
+- **Strategic Advisor Plan**: 5 goals, 5 daily nudges + 2-hour monthly 1-on-1 coaching, $950/month
 - **Feature Gates**: UI dynamically adapts based on subscription status
 
 ## Tech Stack
@@ -709,6 +711,18 @@ if (goal.user_id.includes('@')) {
 6. **Universal nudges** eliminate goal-selection complexity
 
 ## Recent Technical Developments
+
+### Pro Plan Implementation & UI Improvements (October 12, 2025)
+- **NEW SUBSCRIPTION TIER**: Added Pro Plan at $199.99/month between Personal ($4.99) and Strategic Advisor ($950)
+- **Pro Plan Features**: 5 goals, 5 daily nudges + 1-hour monthly group Q&A sessions with Dan Lynn
+- **Stripe Integration**: Configured with price ID `price_1SHE5DCElVmMOup2zX8H4qnJ`
+- **Backend Updates**: Updated `create-checkout`, `create-goal`, `useNudgeLimit` functions for 5-goal/5-nudge limits
+- **UI Architecture**: Implemented 4-tier pricing layout (Free → Personal → Pro → Strategic)
+- **Design Optimizations**: Font size reductions, centered layouts, improved spacing for cramped 4-tier display
+- **Button Text Fixes**: Resolved overflow issues with "Upgrade Now" standardization
+- **Bio Integration**: Added Dan Lynn bio links to Pro Plan cards for group Q&A context
+- **STATUS**: ✅ IMPLEMENTATION COMPLETE - TESTING IN PROGRESS (not yet deployed to production)
+- **SAFETY**: All changes are additive - existing functionality preserved and working perfectly
 
 ### Universal Nudge System & Goal Detail Intelligence (October 11, 2025)
 - **Universal Nudge Implementation**: Completely redesigned nudge system for dashboard-level operation

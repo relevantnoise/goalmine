@@ -136,14 +136,34 @@ serve(async (req) => {
     } else if (!subscriber) {
       console.log('📝 No subscriber record found - treating as free user');
     }
-    const maxGoals = isSubscribed ? 3 : 1;
+    // Determine max goals based on subscription tier
+    const getMaxGoals = (subscriber) => {
+      if (!subscriber?.subscribed) return 1; // Free users
+      
+      const tier = subscriber.subscription_tier;
+      if (tier === 'Pro Plan') return 5;
+      if (tier === 'Strategic Advisor Plan') return 5;
+      if (tier === 'Professional Coach') return 5; // Legacy tier
+      return 3; // Personal Plan (default for subscribed users)
+    };
+    
+    const maxGoals = getMaxGoals(subscriber);
     
     console.log('💳 User subscription status:', { isSubscribed, maxGoals, currentGoalCount });
 
     if (currentGoalCount >= maxGoals) {
-      const errorMessage = isSubscribed 
-        ? `Premium users can have a maximum of 3 goals. You currently have ${currentGoalCount} goals.`
-        : `Free users can have a maximum of 1 goal. Upgrade to Premium to create up to 3 goals.`;
+      const getErrorMessage = (subscriber, currentCount) => {
+        if (!subscriber?.subscribed) {
+          return `Free users can have a maximum of 1 goal. Upgrade to Personal Plan to create up to 3 goals.`;
+        }
+        
+        const tier = subscriber.subscription_tier || 'Personal Plan';
+        const maxForTier = tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 5 : 3;
+        
+        return `${tier} users can have a maximum of ${maxForTier} goals. You currently have ${currentCount} goals.`;
+      };
+      
+      const errorMessage = getErrorMessage(subscriber, currentGoalCount);
       
       console.log('❌ Goal limit reached:', errorMessage);
       throw new Error(errorMessage);

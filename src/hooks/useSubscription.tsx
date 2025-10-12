@@ -120,6 +120,37 @@ export const useSubscription = () => {
     }
   };
 
+  const createProPlanCheckout = async () => {
+    console.log('🎯 createProPlanCheckout called - Pro Plan ($199.99)');
+    const userEmail = user?.email;
+    if (!userEmail || !user.id) {
+      toast.error('Please sign in to subscribe');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log('🎯 CALLING create-checkout with pro_plan tier');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          email: userEmail,
+          userId: user.id,
+          tier: 'pro_plan', // This should trigger $199.99/month Pro Plan
+        },
+      });
+      console.log('🎯 create-checkout response:', { data, error });
+
+      if (error) throw new Error(error.message || 'Pro Plan checkout failed');
+      if (!data?.url) throw new Error('No checkout URL received');
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Error creating Pro Plan checkout:', error);
+      toast.error(`Failed to start Pro Plan checkout: ${error.message}`);
+      setLoading(false);
+    }
+  };
+
   const openCustomerPortal = async () => {
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
@@ -162,6 +193,7 @@ export const useSubscription = () => {
     loading,
     checkSubscription,
     createCheckout,
+    createProPlanCheckout,
     createProfessionalCheckout,
     openCustomerPortal,
   };

@@ -12,9 +12,10 @@ import React, { useState } from "react";
 export const UpgradePage = () => {
   const [isDanBioOpen, setIsDanBioOpen] = useState(false);
   const [personalLoading, setPersonalLoading] = useState(false);
+  const [proLoading, setProLoading] = useState(false);
   const [strategicLoading, setStrategicLoading] = useState(false);
   const { user } = useAuth();
-  const { subscription, loading, createCheckout, createProfessionalCheckout } = useSubscription();
+  const { subscription, loading, createCheckout, createProPlanCheckout, createProfessionalCheckout } = useSubscription();
   const navigate = useNavigate();
 
   const handleSubscribe = async (e: React.MouseEvent) => {
@@ -72,6 +73,27 @@ export const UpgradePage = () => {
     }
   };
 
+  const handleProPlanSubscribe = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🎯 Pro Plan button clicked from UpgradePage');
+    
+    if (!user) {
+      window.location.href = '/auth';
+      return;
+    }
+    
+    setProLoading(true);
+    try {
+      console.log('🎯 Pro Plan - Calling createProPlanCheckout');
+      await createProPlanCheckout();
+    } catch (error) {
+      console.error('🎯 Pro Plan - Error:', error);
+    } finally {
+      setProLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header onLogoClick={() => navigate('/dashboard')} />
@@ -100,24 +122,21 @@ export const UpgradePage = () => {
         </div>
 
         {/* Premium Plan Cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-6">
+        <div className="grid md:grid-cols-3 gap-4 max-w-6xl mx-auto mb-6">
           <Card className="border-2 border-premium relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
               Most Popular Plan
             </div>
-            <CardHeader className="pt-8 text-center">
-              <div className="w-8 h-8 bg-premium-light rounded-full flex items-center justify-center mx-auto mb-2">
-                <Crown className="w-4 h-4 text-premium" />
-              </div>
-              <CardTitle className="text-xl">Personal Plan</CardTitle>
+            <CardHeader className="pt-12 text-center">
+              <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
               <p className="text-sm text-muted-foreground mb-3">Everything you need to achieve your goals</p>
-              <div className="text-3xl font-bold text-premium">
+              <div className="text-2xl font-bold text-premium">
                 $4.99
-                <span className="text-base font-normal text-muted-foreground">/month</span>
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2 mb-4">
+              <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
@@ -183,7 +202,94 @@ export const UpgradePage = () => {
                   ) : (
                     <>
                       <Crown className="w-4 h-4 mr-2" />
-                      Upgrade to Personal Plan
+                      Upgrade Now
+                    </>
+                  )}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Pro Plan Card */}
+          <Card className="border-2 border-blue-600 relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-medium">
+              Power User Choice
+            </div>
+            <CardHeader className="pt-12 text-center">
+              <CardTitle className="text-lg mb-2">Pro Plan</CardTitle>
+              <p className="text-sm text-muted-foreground mb-2">For ambitious individuals managing multiple life areas</p>
+              <button 
+                onClick={() => setIsDanBioOpen(true)}
+                className="text-blue-600 hover:text-blue-700 text-sm underline mb-3 cursor-pointer"
+              >
+                Learn more about Dan
+              </button>
+              <div className="text-2xl font-bold text-blue-600">
+                $199.99
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-1 mb-3">
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Everything in Personal Plan</span>
+                    <p className="text-xs text-muted-foreground">All Personal Plan features included</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Up to 5 Goals</span>
+                    <p className="text-xs text-muted-foreground">Track more goals simultaneously</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Up to 5 Daily Nudges</span>
+                    <p className="text-xs text-muted-foreground">More motivation throughout your day</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">1-hour Monthly Group Q&A</span>
+                    <p className="text-xs text-muted-foreground">Exclusive group sessions with Dan Lynn</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Priority Support</span>
+                    <p className="text-xs text-muted-foreground">Enhanced support and feature access</p>
+                  </div>
+                </li>
+              </ul>
+
+              {subscription.subscribed && subscription.subscription_tier === "Pro Plan" ? (
+                <div className="bg-success-light/20 text-success border border-success/20 rounded-lg p-4 text-center">
+                  <Target className="w-6 h-6 mx-auto mb-2" />
+                  <p className="font-semibold">You're a Pro Plan member!</p>
+                  <p className="text-sm opacity-90">Enjoy your enhanced features</p>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleProPlanSubscribe} 
+                  className="w-full bg-blue-600 hover:bg-blue-700" 
+                  size="lg" 
+                  disabled={proLoading}
+                >
+                  {proLoading ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                      Dream Big...
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4 mr-2" />
+                      Upgrade Now
                     </>
                   )}
                 </Button>
@@ -196,30 +302,27 @@ export const UpgradePage = () => {
             <div className="absolute top-0 left-0 right-0 bg-green-600 text-white text-center py-2 text-sm font-medium">
               One-on-One Coaching
             </div>
-            <CardHeader className="pt-8 text-center">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Users className="w-4 h-4 text-green-600" />
-              </div>
-              <CardTitle className="text-xl">Strategic Advisor Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-3">2-hour monthly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures. Also includes the ability to email him from time-to-time during the month with questions that may come up between sessions.</p>
+            <CardHeader className="pt-12 text-center">
+              <CardTitle className="text-lg mb-2">Strategic Advisor Plan</CardTitle>
+              <p className="text-sm text-muted-foreground mb-2">2-hour quarterly 1-on-1 coaching sessions with Dan Lynn.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-green-600 hover:text-green-700 text-sm underline mb-3 cursor-pointer"
               >
                 Learn more about Dan
               </button>
-              <div className="text-3xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-green-600">
                 $950
-                <span className="text-base font-normal text-muted-foreground">/month</span>
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2 mb-4">
+              <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Everything in Personal Plan</span>
-                    <p className="text-xs text-muted-foreground">All features from Personal Plan included</p>
+                    <span className="font-semibold">Everything in Pro Plan</span>
+                    <p className="text-xs text-muted-foreground">All Pro Plan features included</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">

@@ -158,7 +158,17 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">Add More Goals</h3>
                     <p className="text-sm text-muted-foreground">
-                      {subscription.subscribed ? `Create up to ${3 - goals.length} more goals` : "First goal is free. Upgrade to create more."}
+                      {subscription.subscribed ? (() => {
+                        const tier = subscription.subscription_tier || 'Personal Plan';
+                        const maxGoals = (() => {
+                          if (tier === 'Pro Plan') return 5;
+                          if (tier === 'Strategic Advisor Plan') return 5;
+                          if (tier === 'Professional Coach') return 5; // Legacy tier
+                          return 3; // Personal Plan
+                        })();
+                        const remaining = maxGoals - goals.length;
+                        return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
+                      })() : "First goal is free. Upgrade to create more."}
                     </p>
                   </div>
                 </div>
@@ -215,15 +225,31 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                 <h4 className="font-medium mb-3">Your Plan:</h4>
                 <div className="text-sm space-y-2">
                   {subscription.subscribed ? (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <Crown className="w-4 h-4 text-premium" />
-                        <span className="font-medium">Personal Plan Member</span>
-                      </div>
-                      <div className="text-muted-foreground">• Up to 3 goals ({goals.length}/3 used)</div>
-                      <div className="text-muted-foreground">• Up to 3 daily nudges</div>
-                      <div className="text-muted-foreground">• Priority email delivery</div>
-                    </>
+                    (() => {
+                      const tier = subscription.subscription_tier || 'Personal Plan';
+                      const maxGoals = (() => {
+                        if (tier === 'Pro Plan') return 5;
+                        if (tier === 'Strategic Advisor Plan') return 5;
+                        if (tier === 'Professional Coach') return 5; // Legacy tier
+                        return 3; // Personal Plan
+                      })();
+                      const maxNudges = maxGoals === 5 ? 5 : 3;
+                      
+                      return (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <Crown className="w-4 h-4 text-premium" />
+                            <span className="font-medium">{tier} Member</span>
+                          </div>
+                          <div className="text-muted-foreground">• Up to {maxGoals} goals ({goals.length}/{maxGoals} used)</div>
+                          <div className="text-muted-foreground">• Up to {maxNudges} daily nudges</div>
+                          <div className="text-muted-foreground">• Priority email delivery</div>
+                          {(tier === 'Pro Plan' || tier === 'Strategic Advisor Plan') && (
+                            <div className="text-muted-foreground">• Enhanced features & support</div>
+                          )}
+                        </>
+                      );
+                    })()
                   ) : (
                     <>
                       <div className="text-muted-foreground">Free User</div>

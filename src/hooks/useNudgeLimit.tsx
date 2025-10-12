@@ -61,7 +61,19 @@ export const useNudgeLimit = () => {
     const storedDate = localStorage.getItem('lastNudgeDate');
     const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
-    const maxNudges = subscription.subscribed ? 3 : 1;
+    
+    // Determine max nudges based on subscription tier
+    const getNudgeLimit = (subscription) => {
+      if (!subscription.subscribed) return 1; // Free users
+      
+      const tier = subscription.subscription_tier;
+      if (tier === 'Pro Plan') return 5;
+      if (tier === 'Strategic Advisor Plan') return 5;
+      if (tier === 'Professional Coach') return 5; // Legacy tier
+      return 3; // Personal Plan (default for subscribed users)
+    };
+    
+    const maxNudges = getNudgeLimit(subscription);
 
     return {
       currentCount: todayNudgeCount,
@@ -114,13 +126,24 @@ export const useNudgeLimit = () => {
     const storedDate = localStorage.getItem('lastNudgeDate');
     const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
-    const maxNudges = subscription.subscribed ? 3 : 1;
+    // Determine max nudges based on subscription tier
+    const getNudgeLimit = (subscription) => {
+      if (!subscription.subscribed) return 1; // Free users
+      
+      const tier = subscription.subscription_tier;
+      if (tier === 'Pro Plan') return 5;
+      if (tier === 'Strategic Advisor Plan') return 5;
+      if (tier === 'Professional Coach') return 5; // Legacy tier
+      return 3; // Personal Plan (default for subscribed users)
+    };
+    
+    const maxNudges = getNudgeLimit(subscription);
 
     if (todayNudgeCount >= maxNudges) {
       return { 
         success: false, 
         error: subscription.subscribed 
-          ? 'You\'ve reached your daily nudge limit of 3.'
+          ? `You've reached your daily nudge limit of ${maxNudges}.`
           : 'You get 1 free nudge per day, but you can upgrade to get up to 3 nudges daily!'
       };
     }
