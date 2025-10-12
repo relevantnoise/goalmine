@@ -86,7 +86,7 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
 
           {/* What You'll Get */}
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Monthly Strategic Advisor Plan Sessions</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">What You'll Get in Our Quarterly Strategic Advisor Plan Sessions</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
