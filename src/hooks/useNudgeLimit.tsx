@@ -140,11 +140,23 @@ export const useNudgeLimit = () => {
     const maxNudges = getNudgeLimit(subscription);
 
     if (todayNudgeCount >= maxNudges) {
+      const getErrorMessage = (subscription, maxNudges) => {
+        if (!subscription.subscribed) {
+          return 'You get 1 free nudge per day, but you can upgrade to get up to 3 nudges daily!';
+        }
+        
+        const tier = subscription.subscription_tier;
+        if (tier === 'Personal Plan') {
+          return `You've reached your limit of ${maxNudges} nudges per day, but you can upgrade to Pro Plan to get up to 5 nudges daily!`;
+        }
+        
+        // Pro Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
+        return `You've reached your daily nudge limit of ${maxNudges}.`;
+      };
+      
       return { 
         success: false, 
-        error: subscription.subscribed 
-          ? `You've reached your daily nudge limit of ${maxNudges}.`
-          : 'You get 1 free nudge per day, but you can upgrade to get up to 3 nudges daily!'
+        error: getErrorMessage(subscription, maxNudges)
       };
     }
 

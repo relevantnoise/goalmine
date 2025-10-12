@@ -158,8 +158,13 @@ serve(async (req) => {
         }
         
         const tier = subscriber.subscription_tier || 'Personal Plan';
-        const maxForTier = tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 5 : 3;
         
+        if (tier === 'Personal Plan') {
+          return `Personal Plan users can have a maximum of 3 goals. Upgrade to Pro Plan to create up to 5 goals.`;
+        }
+        
+        // Pro Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
+        const maxForTier = tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 5 : 3;
         return `${tier} users can have a maximum of ${maxForTier} goals. You currently have ${currentCount} goals.`;
       };
       
