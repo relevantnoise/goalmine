@@ -14,9 +14,10 @@
 import { ArrowRight, Target, Zap, Heart, CheckCircle, Star } from "lucide-react";
 
 export const CrawlerLandingPage = () => {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
     "name": "GoalMine.ai",
     "description": "Turn your ambitions into action with a personalized, AI-powered daily goal tracker & motivator that's as committed to your success as you are.",
     "url": "https://goalmine.ai",
@@ -73,7 +74,46 @@ export const CrawlerLandingPage = () => {
       "Multiple goal management",
       "Professional coaching available"
     ]
-  };
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does the AI coaching work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our AI analyzes your goal type, progress patterns, and chosen personality style to generate personalized motivation, micro-plans, and challenges. It adapts based on your consistency and feedback to provide increasingly effective support."
+          }
+        },
+        {
+          "@type": "Question", 
+          "name": "Can I work on multiple goals at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! Personal Plan users can track up to 3 goals, while Pro Plan users can manage up to 5 goals simultaneously. Our system helps you balance progress across different life areas without overwhelming you."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do daily emails and nudges work?",
+          "acceptedAnswer": {
+            "@type": "Answer", 
+            "text": "You receive one powerful daily wake-up call each morning at 7 AM with fresh AI-generated motivation. Additionally, you can request instant 'nudges' throughout the day when you need extra motivation or guidance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What types of goals work best with GoalMine.ai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "GoalMine.ai excels with any goal requiring consistent daily action: fitness, learning, career development, business growth, creative projects, habit formation, and personal transformation. Our AI adapts to your specific goal type."
+          }
+        }
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,14 +144,13 @@ export const CrawlerLandingPage = () => {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-6xl md:text-7xl font-bold tracking-tight mb-8">
-            <span className="text-blue-500 font-semibold">Goal</span><span className="text-foreground">Mine.ai</span>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
+            <span className="text-primary">Unearth your full potential with AI-powered motivation</span>
           </h1>
           
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
-            <span className="text-primary">Unearth your full potential</span><br />
-            with AI-powered motivation
-          </h2>
+          <div className="text-6xl md:text-7xl font-bold tracking-tight mb-8">
+            <span className="text-blue-500 font-semibold">Goal</span><span className="text-foreground">Mine.ai</span>
+          </div>
           
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
             Turn your ambitions into action with a personalized, AI-powered daily goal tracker & motivator 
