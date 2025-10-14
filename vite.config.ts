@@ -22,7 +22,8 @@ export default defineConfig(() => ({
       lastmod: new Date().toISOString().split('T')[0],
       changefreq: 'weekly',
       priority: 1.0,
-      outDir: 'dist'
+      outDir: 'dist',
+      generateRobotsTxt: false // Prevent plugin from overwriting our custom robots.txt
     })
   ],
   resolve: {
