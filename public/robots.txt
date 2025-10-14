@@ -1,14 +1,96 @@
+# GoalMine.ai Robots.txt - Comprehensive crawler permissions
+
+# Major Search Engines
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
-User-agent: Bingbot
+User-agent: Bingbot  
+Allow: /
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
 Allow: /
 
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# AI/LLM Crawlers (2024-2025 Critical)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Social Media Crawlers
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: DiscordBot
+Allow: /
+
+# SEO & Analytics Tools
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: SemrushBot
+Allow: /
+
+User-agent: MJ12bot
+Allow: /
+
+User-agent: DotBot
+Allow: /
+
+# Archive & Research
+User-agent: ia_archiver
+Allow: /
+
+User-agent: Wayback
+Allow: /
+
+# Default rule for all other bots
 User-agent: *
 Allow: /
+Crawl-delay: 2
+
+# Sitemap locations
+Sitemap: https://goalmine.ai/sitemap.xml
+Sitemap: https://goalmine.ai/api/sitemap
+
+# Optional: Block sensitive areas (currently none)
+# Disallow: /admin/
+# Disallow: /api/internal/
