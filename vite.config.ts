@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import sitemap from 'vite-plugin-sitemap';
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
@@ -11,20 +10,8 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
-    sitemap({
-      hostname: 'https://goalmine.ai',
-      routes: [
-        '/',
-        '/auth',
-        '/#features',
-        '/#pricing'
-      ],
-      lastmod: new Date().toISOString().split('T')[0],
-      changefreq: 'weekly',
-      priority: 1.0,
-      outDir: 'dist',
-      generateRobotsTxt: false // Prevent plugin from overwriting our custom robots.txt
-    })
+    // Removed sitemap plugin - using static /public/sitemap.xml + dynamic /api/sitemap instead
+    // This prevents plugin conflicts and gives us full control over sitemap content
   ],
   resolve: {
     alias: {
