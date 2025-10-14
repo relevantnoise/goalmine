@@ -81,7 +81,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) =>
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create Your Goal</CardTitle>
-          <p className="text-muted-foreground">Set your goal, timeline, and get personalized daily motivation emails</p>
+          <p className="text-muted-foreground">Set your goal, timeline, and get your powerful daily wake-up call</p>
         </CardHeader>
         
         <CardContent>

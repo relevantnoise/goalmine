@@ -168,7 +168,7 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Daily Email Motivation</span>
+                    <span className="font-semibold">Daily Wake-Up Call</span>
                     <p className="text-xs text-muted-foreground">Never miss your daily dose of inspiration</p>
                   </div>
                 </li>

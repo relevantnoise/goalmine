@@ -32,7 +32,7 @@ export const EmailCollector = ({
               <Mail className="w-8 h-8 text-primary" />
             </div>
             <CardTitle className="text-2xl">Ready to create your Goal?</CardTitle>
-            <p className="text-muted-foreground mt-2">Enter your email to begin your 30-day free trial and receive your daily motivational email.</p>
+            <p className="text-muted-foreground mt-2">Enter your email to begin your 30-day free trial and receive your powerful daily wake-up call.</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -53,7 +53,7 @@ export const EmailCollector = ({
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                We'll send your daily motivation to this email. 
+                We'll send your daily wake-up call to this email. 
                 <br />
                 No spam, unsubscribe anytime.
               </p>

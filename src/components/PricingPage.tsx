@@ -161,7 +161,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>Daily motivational email</span>
+                  <span>Daily wake-up call email</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />

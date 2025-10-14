@@ -61,18 +61,16 @@ export default async function handler(req, res) {
     // REAL SYSTEM: Now that the edge function is fixed and deployed
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
     
-    console.log('[VERCEL-CRON] 🚀 STAGE 2: BULLETPROOF EMAIL SYSTEM using pre-generated content');
+    console.log('[VERCEL-CRON] 🚀 NEW CONSOLIDATED EMAIL SYSTEM using daily-cron');
     
-    // Call the simplified email delivery function (uses pre-generated content ONLY)
-    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/send-daily-emails-simple', {
+    // Call the new daily-cron function (with safety switch for consolidated emails)
+    const emailResponse = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/daily-cron', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        forceDelivery: true // Force delivery regardless of time window
-      })
+      body: JSON.stringify({})
     });
 
     const data = await emailResponse.json();
@@ -83,13 +81,14 @@ export default async function handler(req, res) {
     
     return res.status(200).json({ 
       success: data.success,
-      stage: 'email-delivery',
-      message: 'Bulletproof email delivery system executed',
+      stage: 'consolidated-email-system',
+      message: 'New consolidated email system executed',
       timestamp: new Date().toISOString(),
-      emailsSent: data.emailsSent || 0,
-      errors: data.errors || 0,
-      details: data.message || 'Email delivery completed',
-      environment: 'production'
+      totalEmailsSent: data.totalEmailsSent || 0,
+      totalErrors: data.totalErrors || 0,
+      details: data.message || 'Consolidated email delivery completed',
+      environment: 'production',
+      systemUsed: data.details?.dailyEmails?.message || 'consolidated-emails'
     });
     
   } catch (error) {

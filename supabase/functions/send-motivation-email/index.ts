@@ -29,6 +29,7 @@ interface MotivationEmailRequest {
   userId?: string;
   goalId?: string;
   scheduledAt?: string;
+  isWakeUpCall?: boolean;
 }
 
 // Log email delivery attempt
@@ -139,18 +140,58 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, name, goal, message, microPlan, challenge, streak, redirectUrl, isNudge, userId, goalId, scheduledAt }: MotivationEmailRequest = await req.json();
+    const { email, name, goal, message, microPlan, challenge, streak, redirectUrl, isNudge, userId, goalId, scheduledAt, isWakeUpCall }: MotivationEmailRequest = await req.json();
 
-    console.log('Sending motivation email to:', email, isNudge ? '(NUDGE)' : '(REGULAR)');
+    console.log('Sending motivation email to:', email, isWakeUpCall ? '(WAKE-UP-CALL)' : isNudge ? '(NUDGE)' : '(REGULAR)');
 
-    // Different email templates for nudges vs regular motivation
-    const emailSubject = isNudge 
-      ? `🔔 NUDGE: ${goal} - Day ${streak}` 
-      : `Day ${streak} - Keep pushing towards: ${goal}`;
+    // Different email templates for wake-up calls vs nudges vs regular motivation
+    const emailSubject = isWakeUpCall
+      ? `🔥 Let's Make Today Count`
+      : isNudge 
+        ? `🔔 NUDGE: ${goal} - Day ${streak}` 
+        : `Day ${streak} - Keep pushing towards: ${goal}`;
     
-    const emailType = isNudge ? 'nudge' : 'daily_motivation';
+    const emailType = isWakeUpCall ? 'daily_wake_up_call' : isNudge ? 'nudge' : 'daily_motivation';
 
-    const emailHTML = isNudge ? 
+    const emailHTML = isWakeUpCall ? 
+      // Powerful wake-up call email template
+      `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #6c47ff; font-size: 36px; margin-bottom: 10px;">🔥 GoalMine.ai</h1>
+            <p style="color: #666; font-size: 18px; font-weight: bold;">Your Daily Shot in the Arm</p>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #ff6b35, #f7941d); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center;">
+            <h2 style="color: white; font-size: 24px; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">🚀 TODAY IS YOUR MOMENT</h2>
+            <p style="color: white; font-size: 18px; line-height: 1.6; margin-bottom: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${message}</p>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 30px;">
+            <a href="${redirectUrl || 'https://goalmine.ai'}/?user=${encodeURIComponent(email)}&t=${Date.now()}" 
+               style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 18px 36px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; display: inline-block; box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+              🎯 CHECK IN NOW - LET'S DO THIS!
+            </a>
+          </div>
+
+          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
+            <p style="color: #555; font-size: 16px; margin-bottom: 15px;">
+              <strong>${goal}</strong> ${goal.includes('Goal') ? 'are' : 'is'} waiting for you on your dashboard.
+            </p>
+            <p style="color: #777; font-size: 14px; margin: 0;">
+              Every moment you wait is a moment your competition gets ahead. 
+              <br><strong>Your time is NOW.</strong>
+            </p>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="color: #999; font-size: 12px;">
+              GoalMine.ai - Where Dreams Become Reality
+            </p>
+          </div>
+        </div>
+      `
+      : isNudge ? 
       // Short, punchy nudge email
       `
         <div style="font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 15px;">

@@ -82,7 +82,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Daily AI-powered motivation emails
+                Daily AI-powered wake-up calls
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />

@@ -14,8 +14,73 @@
 import { ArrowRight, Target, Zap, Heart, CheckCircle, Star } from "lucide-react";
 
 export const CrawlerLandingPage = () => {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "GoalMine.ai",
+    "description": "Turn your ambitions into action with a personalized, AI-powered daily goal tracker & motivator that's as committed to your success as you are.",
+    "url": "https://goalmine.ai",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Web Browser",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free Trial",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "30-day free trial with 1 active goal",
+        "validFrom": "2024-01-01"
+      },
+      {
+        "@type": "Offer", 
+        "name": "Personal Plan",
+        "price": "4.99",
+        "priceCurrency": "USD",
+        "description": "Up to 3 active goals with AI coaching",
+        "validFrom": "2024-01-01"
+      },
+      {
+        "@type": "Offer",
+        "name": "Pro Plan", 
+        "price": "199.99",
+        "priceCurrency": "USD",
+        "description": "Up to 5 goals plus monthly group Q&A",
+        "validFrom": "2024-01-01"
+      },
+      {
+        "@type": "Offer",
+        "name": "Strategic Advisor Plan",
+        "price": "950",
+        "priceCurrency": "USD", 
+        "description": "Everything in Pro Plan plus quarterly 1-on-1 coaching",
+        "validFrom": "2024-01-01"
+      }
+    ],
+    "author": {
+      "@type": "Organization",
+      "name": "GoalMine.ai"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "150"
+    },
+    "featureList": [
+      "Personalized AI coaching",
+      "Daily micro-plans",
+      "Smart email reminders",
+      "Progress tracking",
+      "Multiple goal management",
+      "Professional coaching available"
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Simple Header */}
       <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-6 py-4">
@@ -115,8 +180,8 @@ export const CrawlerLandingPage = () => {
               </div>
               <h3 className="text-lg font-semibold mb-3">Smart Email Reminders</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Receive daily motivational emails at 7 AM with fresh content tailored to your goals 
-                and current progress streak.
+                Receive a powerful daily wake-up call at 7 AM with AI-generated motivation 
+                that energizes your entire day and drives you to your dashboard.
               </p>
             </div>
           </div>
@@ -479,7 +544,7 @@ export const CrawlerLandingPage = () => {
             <div className="bg-card rounded-xl p-6 border border-border">
               <h3 className="font-semibold mb-2">How do daily emails and nudges work?</h3>
               <p className="text-muted-foreground">
-                You receive personalized motivation emails each morning at 7 AM with fresh content for each goal. 
+                You receive one powerful daily wake-up call each morning at 7 AM with fresh AI-generated motivation. 
                 Additionally, you can request instant "nudges" throughout the day when you need extra motivation or guidance.
               </p>
             </div>

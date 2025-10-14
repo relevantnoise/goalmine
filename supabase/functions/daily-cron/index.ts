@@ -25,106 +25,114 @@ const handler = async (req: Request): Promise<Response> => {
       timestamp: new Date().toISOString()
     };
 
-    // 1. Send daily motivation emails
+    // 1. Send daily motivation emails - NEW CONSOLIDATED SYSTEM
+    // Safety switch: Change to false to revert to old goal-specific emails
+    const USE_CONSOLIDATED_EMAILS = true;
+    
     try {
-      console.log('[DAILY-CRON] Bypassing function call - using direct database approach');
+      let dailyEmailsResponse;
       
-      // NUCLEAR SIMPLE: Do the email sending directly in daily-cron
-      const todayUTC = new Date().toISOString().split('T')[0];
-      console.log('[DAILY-CRON] Today UTC:', todayUTC);
-      
-      // Reset ALL goals for fresh send (TESTING ONLY)
-      const { data: resetGoals } = await supabase
-        .from('goals')
-        .update({ last_motivation_date: null })
-        .eq('is_active', true)
-        .select();
-      console.log(`[DAILY-CRON] TESTING: Reset ${resetGoals?.length || 0} goals for fresh send`);
-      
-      // Get active goals
-      const { data: activeGoals } = await supabase
-        .from('goals')
-        .select('*')
-        .eq('is_active', true);
-      
-      console.log(`[DAILY-CRON] Found ${activeGoals?.length || 0} active goals`);
-      
-      let emailsSent = 0;
-      let emailErrors = 0;
-      
-      if (activeGoals && activeGoals.length > 0) {
-        for (const goal of activeGoals) {
-          try {
-            console.log(`[DAILY-CRON] Processing goal: "${goal.title}" for ${goal.user_id}`);
-            
-            // Get email
-            let email = goal.user_id;
-            if (!email.includes('@')) {
-              const { data: profile } = await supabase
-                .from('profiles')
-                .select('email')
-                .eq('id', goal.user_id)
-                .single();
-              email = profile?.email;
-            }
-            
-            if (!email) {
-              console.error(`[DAILY-CRON] No email for goal: ${goal.title}`);
-              emailErrors++;
-              continue;
-            }
-            
-            console.log(`[DAILY-CRON] Sending email to: ${email}`);
-            
-            // Send email
-            const emailResponse = await supabase.functions.invoke('send-motivation-email', {
-              body: {
-                email: email,
-                name: email.split('@')[0],
-                goal: goal.title,
-                message: `Good morning! Time to work on "${goal.title}". Today is a perfect day to make progress.`,
-                microPlan: ['Take one step forward', 'Track your progress', 'Visualize success'],
-                challenge: 'Spend 2 minutes planning your next action.',
-                streak: goal.streak_count || 0,
-                redirectUrl: 'https://goalmine.ai',
-                isNudge: false,
-                userId: goal.user_id,
-                goalId: goal.id
+      if (USE_CONSOLIDATED_EMAILS) {
+        console.log('[DAILY-CRON] 🚀 NEW SYSTEM: Using consolidated wake-up call - ONE email per user');
+        
+        dailyEmailsResponse = await supabase.functions.invoke('send-daily-wake-up-call', {
+          body: {},
+          headers: {
+            Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+          },
+        });
+        
+      } else {
+        console.log('[DAILY-CRON] 🔄 OLD SYSTEM: Using goal-specific emails - multiple emails per user');
+        
+        // OLD SYSTEM: Direct database approach with goal-specific emails
+        const todayUTC = new Date().toISOString().split('T')[0];
+        console.log('[DAILY-CRON] Today UTC:', todayUTC);
+        
+        // Get active goals
+        const { data: activeGoals } = await supabase
+          .from('goals')
+          .select('*')
+          .eq('is_active', true);
+        
+        console.log(`[DAILY-CRON] Found ${activeGoals?.length || 0} active goals`);
+        
+        let emailsSent = 0;
+        let emailErrors = 0;
+        
+        if (activeGoals && activeGoals.length > 0) {
+          for (const goal of activeGoals) {
+            try {
+              console.log(`[DAILY-CRON] Processing goal: "${goal.title}" for ${goal.user_id}`);
+              
+              // Get email
+              let email = goal.user_id;
+              if (!email.includes('@')) {
+                const { data: profile } = await supabase
+                  .from('profiles')
+                  .select('email')
+                  .eq('id', goal.user_id)
+                  .single();
+                email = profile?.email;
               }
-            });
-            
-            // CRITICAL: Check BOTH error AND success status
-            if (emailResponse.error || !emailResponse.data?.success) {
-              console.error(`[DAILY-CRON] Email failed for ${goal.title}:`, emailResponse.error || 'Success=false');
+              
+              if (!email) {
+                console.error(`[DAILY-CRON] No email for goal: ${goal.title}`);
+                emailErrors++;
+                continue;
+              }
+              
+              console.log(`[DAILY-CRON] Sending email to: ${email}`);
+              
+              // Send goal-specific email
+              const emailResponse = await supabase.functions.invoke('send-motivation-email', {
+                body: {
+                  email: email,
+                  name: email.split('@')[0],
+                  goal: goal.title,
+                  message: `Good morning! Time to work on "${goal.title}". Today is a perfect day to make progress.`,
+                  microPlan: ['Take one step forward', 'Track your progress', 'Visualize success'],
+                  challenge: 'Spend 2 minutes planning your next action.',
+                  streak: goal.streak_count || 0,
+                  redirectUrl: 'https://goalmine.ai',
+                  isNudge: false,
+                  userId: goal.user_id,
+                  goalId: goal.id
+                }
+              });
+              
+              // Check BOTH error AND success status
+              if (emailResponse.error || !emailResponse.data?.success) {
+                console.error(`[DAILY-CRON] Email failed for ${goal.title}:`, emailResponse.error || 'Success=false');
+                emailErrors++;
+              } else {
+                console.log(`[DAILY-CRON] ✅ Email sent for ${goal.title}`);
+                
+                // Mark as sent after confirmed successful delivery
+                await supabase
+                  .from('goals')
+                  .update({ last_motivation_date: todayUTC })
+                  .eq('id', goal.id);
+                
+                emailsSent++;
+              }
+            } catch (error) {
+              console.error(`[DAILY-CRON] Error processing ${goal.title}:`, error);
               emailErrors++;
-              // DO NOT mark as sent when email fails
-            } else {
-              console.log(`[DAILY-CRON] ✅ Email sent for ${goal.title}`);
-              
-              // Only mark as sent after confirmed successful delivery
-              await supabase
-                .from('goals')
-                .update({ last_motivation_date: todayUTC })
-                .eq('id', goal.id);
-              
-              emailsSent++;
             }
-          } catch (error) {
-            console.error(`[DAILY-CRON] Error processing ${goal.title}:`, error);
-            emailErrors++;
           }
         }
+        
+        dailyEmailsResponse = {
+          data: {
+            success: true,
+            emailsSent,
+            errors: emailErrors,
+            message: `OLD SYSTEM: Sent ${emailsSent} individual emails with ${emailErrors} errors`
+          },
+          error: null
+        };
       }
-      
-      const dailyEmailsResponse = {
-        data: {
-          success: true,
-          emailsSent,
-          errors: emailErrors,
-          message: `Direct approach: Sent ${emailsSent} emails with ${emailErrors} errors`
-        },
-        error: null
-      };
       
       console.log('[DAILY-CRON] Raw daily emails response:', dailyEmailsResponse);
       

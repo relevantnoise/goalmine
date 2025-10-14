@@ -19,6 +19,7 @@ import { TrialExpiredModal } from "@/components/TrialExpiredModal";
 import { Button } from "@/components/ui/button";
 import { Crown } from "lucide-react";
 import { CrawlerLandingPage } from "@/components/CrawlerLandingPage";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { isCrawler, logCrawlerDetection } from "@/utils/crawlerDetection";
 
 const Index = () => {
@@ -247,7 +248,7 @@ const Index = () => {
       // Show premium success modal
       setAlertData({
         title: "🎯 Goal Created!",
-        message: "Your goal is ready! You'll receive daily motivational emails starting tomorrow.",
+        message: "Your goal is ready! You'll receive your powerful daily wake-up call starting tomorrow.",
         type: 'achievement'
       });
       setShowAlert(true);
@@ -582,6 +583,10 @@ const Index = () => {
 
     return (
       <>
+        <CanonicalHead 
+          title="GoalMine.ai - Your Personal Goal Achievement Dashboard"
+          description="Track your goals with AI-powered daily motivation. Check in daily, build streaks, and achieve your dreams with personalized coaching."
+        />
         <Dashboard
           onNudgeMe={handleNudgeMe}
           onStartOver={handleStartOver}
