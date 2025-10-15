@@ -144,9 +144,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending motivation email to:', email, isWakeUpCall ? '(WAKE-UP-CALL)' : isNudge ? '(NUDGE)' : '(REGULAR)');
 
-    // Different email templates for wake-up calls vs nudges vs regular motivation
+    // Different email templates for daily boosts vs nudges vs regular motivation
     const emailSubject = isWakeUpCall
-      ? `🔥 Let's Make Today Count`
+      ? `⚡ Your Daily Boost is Here`
       : isNudge 
         ? `🔔 NUDGE: ${goal} - Day ${streak}` 
         : `Day ${streak} - Keep pushing towards: ${goal}`;
@@ -154,39 +154,36 @@ const handler = async (req: Request): Promise<Response> => {
     const emailType = isWakeUpCall ? 'daily_wake_up_call' : isNudge ? 'nudge' : 'daily_motivation';
 
     const emailHTML = isWakeUpCall ? 
-      // Powerful wake-up call email template
+      // Brand-aligned Daily Boost template
       `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #6c47ff; font-size: 36px; margin-bottom: 10px;">🔥 GoalMine.ai</h1>
-            <p style="color: #666; font-size: 18px; font-weight: bold;">Your Daily Shot in the Arm</p>
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #ff6b35, #f7941d); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center;">
-            <h2 style="color: white; font-size: 24px; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">🚀 TODAY IS YOUR MOMENT</h2>
-            <p style="color: white; font-size: 18px; line-height: 1.6; margin-bottom: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${message}</p>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background: #ffffff;">
+          <!-- Header -->
+          <div style="text-align: center; padding: 60px 40px 50px 40px;">
+            <h1 style="font-size: 42px; font-weight: 700; margin: 0 0 20px 0; letter-spacing: -1px;">
+              <span style="color: #4285f4;">Goal</span><span style="color: #1a1a1a;">Mine.ai</span>
+            </h1>
+            <p style="color: #6b7280; font-size: 18px; margin: 0; font-weight: 400;">Your daily motivation boost</p>
           </div>
 
-          <div style="text-align: center; margin-bottom: 30px;">
+          <!-- Main Message -->
+          <div style="margin: 0 40px 50px 40px;">
+            <div style="background: #fafbfc; border: 1px solid #e8ebed; padding: 40px 32px; border-radius: 16px; text-align: center;">
+              <p style="color: #2c3e50; font-size: 20px; line-height: 1.6; margin: 0; font-weight: 500;">${message}</p>
+            </div>
+          </div>
+
+          <!-- CTA Button -->
+          <div style="text-align: center; margin: 0 40px 60px 40px;">
             <a href="${redirectUrl || 'https://goalmine.ai'}/?user=${encodeURIComponent(email)}&t=${Date.now()}" 
-               style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 18px 36px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; display: inline-block; box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4); text-transform: uppercase; letter-spacing: 1px;">
-              🎯 CHECK IN NOW - LET'S DO THIS!
+               style="display: inline-block; background: #4285f4; color: white; padding: 18px 36px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 18px; box-shadow: 0 4px 16px rgba(66, 133, 244, 0.2); transition: all 0.2s; border: none;">
+              Open Dashboard & Check In →
             </a>
           </div>
 
-          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <p style="color: #555; font-size: 16px; margin-bottom: 15px;">
-              <strong>${goal}</strong> ${goal.includes('Goal') ? 'are' : 'is'} waiting for you on your dashboard.
-            </p>
-            <p style="color: #777; font-size: 14px; margin: 0;">
-              Every moment you wait is a moment your competition gets ahead. 
-              <br><strong>Your time is NOW.</strong>
-            </p>
-          </div>
-
-          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-            <p style="color: #999; font-size: 12px;">
-              GoalMine.ai - Where Dreams Become Reality
+          <!-- Footer -->
+          <div style="text-align: center; padding: 40px; border-top: 1px solid #f0f0f0;">
+            <p style="color: #9ca3af; font-size: 14px; margin: 0;">
+              Turn your ambitions into action with AI-powered motivation
             </p>
           </div>
         </div>
