@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Zap, Plus, Crown, Calendar, Flame } from "lucide-react";
+import { Target, Zap, Plus, Crown, Calendar, Flame, Heart, Users, Briefcase, BookOpen, Activity } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -187,6 +187,44 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   )}
                 </Button>
               </div>
+
+              {/* Circle Summary Card */}
+              {goals.some(goal => goal.circle_type) && (
+                <div className="bg-card border rounded-lg p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Target className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">Your Circles</h3>
+                      <p className="text-sm text-muted-foreground">Goals organized by life areas</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'Spiritual', icon: Heart, color: 'text-purple-600' },
+                      { name: 'Friends & Family', icon: Users, color: 'text-blue-600' },
+                      { name: 'Work', icon: Briefcase, color: 'text-green-600' },
+                      { name: 'Personal Development', icon: BookOpen, color: 'text-orange-600' },
+                      { name: 'Health & Fitness', icon: Activity, color: 'text-red-600' }
+                    ].map(circle => {
+                      const circleGoals = goals.filter(goal => goal.circle_type === circle.name);
+                      const CircleIcon = circle.icon;
+                      return circleGoals.length > 0 ? (
+                        <div key={circle.name} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2">
+                            <CircleIcon className={`w-4 h-4 ${circle.color}`} />
+                            <span>{circle.name}</span>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {circleGoals.length}
+                          </Badge>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Nudge Me Card */}
               <div className="bg-card border rounded-lg p-6">

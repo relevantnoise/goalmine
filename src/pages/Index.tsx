@@ -13,7 +13,7 @@ import { PricingPage } from "@/components/PricingPage";
 import { EmailCollector } from "@/components/EmailCollector";
 import { OnboardingForm } from "@/components/OnboardingForm";
 import { SimpleGoalForm } from "@/components/SimpleGoalForm";
-import { FiveCircleDashboard } from "@/components/FiveCircleDashboard";
+import { Dashboard } from "@/components/Dashboard";
 import { FiveCircleOnboarding } from "@/components/FiveCircleOnboarding";
 import { FiveCircleGoalWorkshop } from "@/components/FiveCircleGoalWorkshop";
 import { MotivationAlert } from "@/components/MotivationAlert";
@@ -648,7 +648,7 @@ const Index = () => {
           title="GoalMine.ai - Your Personal Goal Achievement Dashboard"
           description="Track your goals with AI-powered daily motivation. Check in daily, build streaks, and achieve your dreams with personalized coaching."
         />
-        <FiveCircleDashboard
+        <Dashboard
           onNudgeMe={handleNudgeMe}
           onStartOver={handleStartOver}
           onLogoClick={() => {

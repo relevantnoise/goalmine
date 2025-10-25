@@ -10,6 +10,15 @@ import { useNavigate } from "react-router-dom";
 import { SimpleEditGoalDialog } from "./SimpleEditGoalDialog";
 import { useShare } from "@/hooks/useShare";
 
+// Circle badge colors
+const circleColors = {
+  'Spiritual': 'bg-purple-100 text-purple-800 border-purple-200',
+  'Friends & Family': 'bg-blue-100 text-blue-800 border-blue-200',
+  'Work': 'bg-green-100 text-green-800 border-green-200',
+  'Personal Development': 'bg-orange-100 text-orange-800 border-orange-200',
+  'Health & Fitness': 'bg-red-100 text-red-800 border-red-200'
+};
+
 // Phase 4: Enhanced GoalCard props with status and permissions
 interface GoalCardProps {
   goal: Goal;
@@ -172,6 +181,14 @@ export const GoalCard = ({
               </div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold mb-1">Goal</h3>
+                
+                {/* Circle Badge */}
+                {goal.circle_type && (
+                  <Badge variant="secondary" className={`text-xs font-medium ${circleColors[goal.circle_type as keyof typeof circleColors] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
+                    {goal.circle_type}
+                  </Badge>
+                )}
+                
                 {/* Phase 4: Status Badge */}
                 {status === 'goal-expired' && (
                   <Badge variant="destructive" className="text-xs font-semibold">
