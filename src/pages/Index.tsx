@@ -15,6 +15,7 @@ import { OnboardingForm } from "@/components/OnboardingForm";
 import { SimpleGoalForm } from "@/components/SimpleGoalForm";
 import { Dashboard } from "@/components/Dashboard";
 import { FiveCircleOnboarding } from "@/components/FiveCircleOnboarding";
+import { FiveCircleFrameworkReport } from "@/components/FiveCircleFrameworkReport";
 import { FiveCircleGoalWorkshop } from "@/components/FiveCircleGoalWorkshop";
 import { MotivationAlert } from "@/components/MotivationAlert";
 import { TrialExpiredModal } from "@/components/TrialExpiredModal";
@@ -44,7 +45,7 @@ const Index = () => {
   const location = useLocation();
   // No need for custom supabase client with native auth
   const [searchParams] = useSearchParams();
-  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'five-circle-onboarding' | 'goal-workshop' | 'dashboard'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'five-circle-onboarding' | 'framework-report' | 'goal-workshop' | 'dashboard'>('landing');
   const [userEmail, setUserEmail] = useState<string>('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState<{title: string, message: string, type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade'}>({title: '', message: ''});
@@ -266,14 +267,14 @@ const Index = () => {
 
 
   const handleFiveCircleComplete = () => {
-    console.log('✅ 5 Circle Framework setup complete, moving to goal workshop');
+    console.log('✅ 5 Circle Framework setup complete, showing framework report');
     hasInitialized.current = true;
-    setCurrentView('goal-workshop');
+    setCurrentView('framework-report');
     
     // Show success message
     setAlertData({
       title: "🎯 5 Circle Framework™ Activated!",
-      message: "Framework created! Now let's create meaningful goals for each circle.",
+      message: "Your personalized framework is ready! Review your consultant analysis below.",
       type: 'achievement'
     });
     setShowAlert(true);
@@ -585,13 +586,34 @@ const Index = () => {
     );
   }
 
+  if (currentView === 'framework-report') {
+    const storedAnalysis = sessionStorage.getItem('frameworkAnalysis');
+    const analysis = storedAnalysis ? JSON.parse(storedAnalysis) : null;
+    
+    if (!analysis) {
+      // Fallback if no analysis found
+      setCurrentView('goal-workshop');
+      return null;
+    }
+    
+    return (
+      <FiveCircleFrameworkReport 
+        analysis={analysis}
+        onContinue={() => {
+          console.log('📋 Moving from framework report to goal workshop');
+          setCurrentView('goal-workshop');
+        }}
+      />
+    );
+  }
+
   if (currentView === 'goal-workshop') {
     return (
       <FiveCircleGoalWorkshop 
         onComplete={handleGoalWorkshopComplete}
         onBack={() => {
-          console.log('🔙 Going back from goal workshop');
-          setCurrentView('five-circle-onboarding');
+          console.log('🔙 Going back from goal workshop to framework report');
+          setCurrentView('framework-report');
         }}
       />
     );
