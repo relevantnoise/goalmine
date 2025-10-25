@@ -234,7 +234,7 @@ export const PricingPage = ({
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
                 <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  ADVANCED FEATURES
+                  GET ALL 5 CIRCLES
                 </div>
                 <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all circles. Maximize your 5 Circle Framework experience.</p>
                 <button 
