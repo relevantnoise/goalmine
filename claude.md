@@ -39,23 +39,25 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 
 ## Complete User Flow
 
-### New User Registration & Onboarding
+### New User Registration & Onboarding (UPDATED - 5 Circle Framework)
 1. Landing page → registration (Google/email)
-2. Email verification → goal creation process
+2. Email verification → 5 Circle Framework onboarding
 3. 30-day free trial automatically activated
 
-### Goal Creation Process
-1. 4-step form: Title → Description → Target Date → Tone
-2. Immediate AI content generation
-3. Success notification & redirect to dashboard
+### Goal Creation Process (5 Circle Framework)
+1. Universal 5 Circle interview (15-20 minutes)
+2. AI-guided goal workshop with circle-specific suggestions
+3. Goals created with circle assignment and context
+4. Success notification & redirect to 5 Circle Dashboard
 
-### Dashboard Experience
-- Goals grid with progress display
-- Share, Edit, Delete with confirmations
+### Dashboard Experience (5 Circle Framework PRIMARY)
+- Circle-organized goal management with time allocation tracking
+- Goals grouped by life circles with progress visualization
+- Circle-specific goal creation with proper assignment
 - Daily check-ins with 3 AM EST reset
 - Universal nudge system (real-time AI)
 - Goal detail pages with motivation content
-- Subscription management
+- Subscription management with goal limits
 
 ### Daily Motivation System
 - Goal detail pages: Smart AI content (real-time/cached)
@@ -63,12 +65,71 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 - Content: Messages, micro-plans, mini-challenges
 - Tone consistency with user preferences
 
-### Subscription Tiers (Updated October 12, 2025)
+### Subscription Tiers (Updated October 25, 2025)
 - **Free Users**: 1 goal, 1 daily nudge, 30-day trial
 - **Personal Plan**: 3 goals, 3 daily nudges, $4.99/month
-- **Pro Plan**: 5 goals, 5 daily nudges + 1-hour monthly group Q&A, $199.99/month [NEW - TESTING IN PROGRESS]
-- **Strategic Advisor Plan**: 5 goals, 5 daily nudges + 2-hour monthly 1-on-1 coaching, $950/month
+- **Pro Plan**: 5 goals, 5 daily nudges + 5 Circle Framework™ + 1-hour monthly group Q&A, $199.99/month [5 CIRCLE FRAMEWORK INTEGRATED]
+- **Strategic Advisor Plan**: 5 goals, 5 daily nudges + 5 Circle Framework™ + 2-hour monthly 1-on-1 coaching, $950/month
 - **Feature Gates**: UI dynamically adapts based on subscription status
+
+## 🔥 5 CIRCLE FRAMEWORK™ INTEGRATION (October 25, 2025)
+
+### DEPLOYMENT PLAN (October 25, 2025)
+**Current Status**: Framework integrated, waiting for trial expiration test
+1. **Test Period**: 4-5 days to observe danlynn@gmail.com trial expiration behavior
+2. **Production Reset**: Clean slate deployment removing existing goals/frameworks
+3. **Full Launch**: Universal 5 Circle Framework experience for all users
+4. **User Count**: 3 users (Dan Lynn + family) - safe for fresh start approach
+
+### Revolutionary Life Management System
+Transform GoalMine.ai from simple goal tracking into comprehensive life complexity management using Dan Lynn's proprietary 30-year framework.
+
+### Complete 5 Circle User Journey (UNIVERSAL - October 25, 2025)
+1. **Universal Onboarding** → ALL users route to 5 Circle Framework™ (no choice component)
+2. **Circle Interview** → 15-20 minute personalized assessment across 5 life circles
+3. **AI Goal Workshop** → Intelligent goal suggestions based on personal definitions with subscription limits
+4. **Circle Dashboard** → Goals organized by life circles with time allocation tracking (PRIMARY experience)
+5. **Ongoing Management** → Circle-aware goal tracking and optimization
+6. **Subscription Benefits** → Goal limits: Free (1), Personal (3), Pro (5), Strategic (5)
+
+### Technical Architecture
+```
+5 Circle Database Schema:
+├── circle_frameworks (user framework instances)
+├── circle_profiles (individual circle definitions) 
+├── circle_specific_data (detailed circle information)
+├── weekly_circle_plans (time allocation plans)
+└── goals (enhanced with circle_type, weekly_commitment_hours)
+
+Components Added:
+├── FiveCircleOnboarding (universal interview process)
+├── FiveCircleGoalWorkshop (AI-guided goal creation with limits)
+├── FiveCircleDashboard (PRIMARY dashboard experience)
+├── SmartDashboard (REMOVED - simplified to direct FiveCircleDashboard)
+└── GoalCreationChoice (REMOVED - universal experience)
+
+Edge Functions:
+├── create-five-circle-framework (saves interview data)
+└── generate-goal-suggestions (AI goal recommendations)
+```
+
+### The Five Circles
+- **Spiritual**: Inner purpose, values, meaning
+- **Friends & Family**: Relationships, social connections
+- **Work**: Career, professional development, income
+- **Personal Development**: Learning, growth, skills
+- **Health & Fitness**: Physical wellbeing, energy, vitality
+
+### Smart Dashboard System
+- **Auto-Detection**: Checks for existing 5 Circle Framework data
+- **Toggle Functionality**: Switch between traditional and circle views
+- **Circle Analytics**: Progress tracking, time allocation, streak monitoring per circle
+- **Goal Organization**: Goals displayed within appropriate life circles
+
+### Testing Setup (Current)
+- **Production**: danlynn@gmail.com remains free user (4 days trial remaining)
+- **Development**: danlynn@gmail.com appears as Pro Plan via code override
+- **Purpose**: Test 5 Circle experience while preserving real trial expiration flow
 
 ## Tech Stack
 - Frontend: Vite + React + TypeScript

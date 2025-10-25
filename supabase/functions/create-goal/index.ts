@@ -53,11 +53,14 @@ serve(async (req) => {
       description, 
       target_date, 
       tone, 
-      time_of_day 
+      time_of_day,
+      circle_type,
+      weekly_commitment_hours,
+      circle_interview_data
     } = requestBody;
 
     console.log('🎯 Creating goal for user:', user_id);
-    console.log('🎯 Goal data:', { title, description, target_date, tone, time_of_day });
+    console.log('🎯 Goal data:', { title, description, target_date, tone, time_of_day, circle_type, weekly_commitment_hours });
 
     if (!user_id || !title || !tone || !time_of_day) {
       throw new Error('Missing required fields: user_id, title, tone, time_of_day');

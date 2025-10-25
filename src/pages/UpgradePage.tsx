@@ -113,11 +113,11 @@ export const UpgradePage = () => {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Upgrade Now To Set More Goals
+            Ready for More Advanced Goal Management?
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
-            You've reached the limit for free users. Upgrade to Personal Plan to set up to 3 goals 
-            and unlock powerful features to achieve more. One-on-one Strategic Advisor Plan sessions are also available.
+            You've reached the free limit. Upgrade to Personal Plan for traditional multi-goal tracking, 
+            or discover our revolutionary <strong>5 Circle Life Management™</strong> system - a proven framework for managing complex life priorities.
           </p>
         </div>
 
@@ -125,7 +125,7 @@ export const UpgradePage = () => {
         <div className="grid md:grid-cols-3 gap-4 max-w-6xl mx-auto mb-6">
           <Card className="border-2 border-premium relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
-              Most Popular Plan
+              Most Affordable
             </div>
             <CardHeader className="pt-12 text-center">
               <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
@@ -140,8 +140,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 3 Goals</span>
-                    <p className="text-xs text-muted-foreground">Set and track multiple goals simultaneously</p>
+                    <span className="font-semibold">Up to 3 Goals Across Any Circles</span>
+                    <p className="text-xs text-muted-foreground">Create goals in multiple life circles simultaneously</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -210,19 +210,22 @@ export const UpgradePage = () => {
             </CardContent>
           </Card>
 
-          {/* Pro Plan Card */}
+          {/* Pro Plan Card - 5 Circle Framework */}
           <Card className="border-2 border-blue-600 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-medium">
-              Power User Choice
+              Most Popular
             </div>
             <CardHeader className="pt-12 text-center">
-              <CardTitle className="text-lg mb-2">Pro Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-2">For ambitious individuals managing multiple life areas</p>
+              <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
+              <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
+                ADVANCED FEATURES
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Advanced features for complete life management across all circles. Maximize your 5 Circle Framework experience.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-blue-600 hover:text-blue-700 text-sm underline mb-3 cursor-pointer"
               >
-                Learn more about Dan
+                Learn about the creator
               </button>
               <div className="text-2xl font-bold text-blue-600">
                 $199.99
@@ -241,29 +244,36 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 5 Goals</span>
-                    <p className="text-xs text-muted-foreground">Track more goals simultaneously</p>
+                    <span className="font-semibold">Up to 5 Goals Across All Circles</span>
+                    <p className="text-xs text-muted-foreground">Complete life coverage with multiple goals per circle</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 5 Daily Nudges</span>
-                    <p className="text-xs text-muted-foreground">More motivation throughout your day</p>
+                    <span className="font-semibold">Enhanced Circle Dashboard</span>
+                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and circle integration</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">1-hour Monthly Group Q&A</span>
-                    <p className="text-xs text-muted-foreground">Exclusive group sessions with Dan Lynn</p>
+                    <span className="font-semibold">AI Life Assessment</span>
+                    <p className="text-xs text-muted-foreground">Intelligent integration & optimization</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Priority Support</span>
-                    <p className="text-xs text-muted-foreground">Enhanced support and feature access</p>
+                    <span className="font-semibold">Up to 5 Goals + 5 Nudges</span>
+                    <p className="text-xs text-muted-foreground">One goal per circle + daily motivation</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Stress Reduction System</span>
+                    <p className="text-xs text-muted-foreground">Break overwhelm into manageable pieces</p>
                   </div>
                 </li>
               </ul>

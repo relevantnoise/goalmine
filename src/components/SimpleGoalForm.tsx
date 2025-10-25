@@ -41,9 +41,10 @@ const toneOptions = [
 interface SimpleGoalFormProps {
   onComplete: (goalId?: string) => void;
   onCancel: () => void;
+  defaultCircle?: string;
 }
 
-export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) => {
+export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGoalFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [targetDate, setTargetDate] = useState('');
@@ -63,7 +64,8 @@ export const SimpleGoalForm = ({ onComplete, onCancel }: SimpleGoalFormProps) =>
         title: title.trim(),
         description: description.trim() || undefined,
         target_date: targetDate ? new Date(targetDate) : undefined,
-        tone: selectedTone
+        tone: selectedTone,
+        circle_type: defaultCircle || undefined
       });
       if (result) {
         console.log('✅ Goal created with tone and target date, calling onComplete');

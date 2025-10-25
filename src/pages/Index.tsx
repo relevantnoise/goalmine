@@ -13,7 +13,9 @@ import { PricingPage } from "@/components/PricingPage";
 import { EmailCollector } from "@/components/EmailCollector";
 import { OnboardingForm } from "@/components/OnboardingForm";
 import { SimpleGoalForm } from "@/components/SimpleGoalForm";
-import { Dashboard } from "@/components/Dashboard";
+import { FiveCircleDashboard } from "@/components/FiveCircleDashboard";
+import { FiveCircleOnboarding } from "@/components/FiveCircleOnboarding";
+import { FiveCircleGoalWorkshop } from "@/components/FiveCircleGoalWorkshop";
 import { MotivationAlert } from "@/components/MotivationAlert";
 import { TrialExpiredModal } from "@/components/TrialExpiredModal";
 import { Button } from "@/components/ui/button";
@@ -42,7 +44,7 @@ const Index = () => {
   const location = useLocation();
   // No need for custom supabase client with native auth
   const [searchParams] = useSearchParams();
-  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'onboarding' | 'dashboard'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'five-circle-onboarding' | 'goal-workshop' | 'dashboard'>('landing');
   const [userEmail, setUserEmail] = useState<string>('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState<{title: string, message: string, type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade'}>({title: '', message: ''});
@@ -195,11 +197,11 @@ const Index = () => {
         return;
       }
       
-      // SIMPLE LOGIC: No goals = Onboarding (goal creation), Has goals = Dashboard
+      // UNIVERSAL 5 CIRCLE LOGIC: All users get 5 Circle onboarding when they have no goals
       if (goals.length === 0) {
-        console.log('📝 No goals found → Onboarding (Goal Creation)');
+        console.log('📝 No goals found → Universal 5 Circle Framework onboarding');
         setUserEmail(user.email || '');
-        setCurrentView('onboarding');
+        setCurrentView('five-circle-onboarding');
       } else {
         console.log('✅', goals.length, 'goals found → Dashboard');
         setCurrentView('dashboard');
@@ -224,7 +226,7 @@ const Index = () => {
       firebaseUser: !!firebaseUser,
       isAuthenticated
     });
-  }, [user, firebaseUser, isAuthenticated, authLoading, searchParams, navigate, supabase, fetchGoals, generateMotivationForGoals]);
+  }, [user, firebaseUser, isAuthenticated, authLoading, searchParams, navigate, supabase, fetchGoals, generateMotivationForGoals, subscription]);
 
   // Remove the debug logging that might cause re-renders
   // useEffect(() => {
@@ -234,7 +236,8 @@ const Index = () => {
 
   const handleEmailSubmit = (email: string) => {
     setUserEmail(email);
-    setCurrentView('onboarding');
+    // Universal 5 Circle onboarding for all users
+    setCurrentView('five-circle-onboarding');
   };
 
   const handleOnboardingComplete = async (goalId?: string) => {
@@ -259,6 +262,38 @@ const Index = () => {
     
     // ✅ No need for fetchGoals - already updated optimistically in createGoal
     // ✅ No need for complex background operations
+  };
+
+
+  const handleFiveCircleComplete = () => {
+    console.log('✅ 5 Circle Framework setup complete, moving to goal workshop');
+    hasInitialized.current = true;
+    setCurrentView('goal-workshop');
+    
+    // Show success message
+    setAlertData({
+      title: "🎯 5 Circle Framework™ Activated!",
+      message: "Framework created! Now let's create meaningful goals for each circle.",
+      type: 'achievement'
+    });
+    setShowAlert(true);
+  };
+
+  const handleGoalWorkshopComplete = (goals: any[]) => {
+    console.log('✅ Goal workshop complete, created', goals.length, 'goals');
+    hasInitialized.current = true;
+    setCurrentView('dashboard');
+    
+    // Show completion message
+    setAlertData({
+      title: "🎉 Goals Created Successfully!",
+      message: `${goals.length} goal${goals.length !== 1 ? 's' : ''} created! Your 5 Circle journey begins now.`,
+      type: 'achievement'
+    });
+    setShowAlert(true);
+    
+    // Refresh goals in background to show new ones
+    fetchGoals();
   };
 
   const handleNudgeMe = async () => {
@@ -383,8 +418,8 @@ const Index = () => {
       return;
     }
 
-    // User has room for more goals, proceed to form
-    setCurrentView('onboarding');
+    // User has room for more goals, proceed to 5 Circle onboarding
+    setCurrentView('five-circle-onboarding');
     
     // Scroll to top when showing goal creation form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -441,10 +476,10 @@ const Index = () => {
       <LandingPage 
         onGetStarted={async () => {
           if (user) {
-            // Skip all database checks and just go to onboarding
-            console.log('User authenticated, going to onboarding');
+            // Skip all database checks and go to universal 5 Circle onboarding
+            console.log('User authenticated, going to 5 Circle onboarding');
             setUserEmail(user.email || '');
-            setCurrentView('onboarding');
+            setCurrentView('five-circle-onboarding');
           } else {
             navigate('/auth');
           }
@@ -487,10 +522,10 @@ const Index = () => {
                 await fetchGoals();
                 await generateMotivationForGoals();
               } else {
-                // No goals, start onboarding
-                console.log('No goals found, starting onboarding');
+                // No goals, start 5 Circle onboarding
+                console.log('No goals found, starting 5 Circle onboarding');
                 setUserEmail(user.email || '');
-                setCurrentView('onboarding');
+                setCurrentView('five-circle-onboarding');
               }
             } catch (error) {
               console.error('Error in onStartTrial:', error);
@@ -512,7 +547,8 @@ const Index = () => {
     // If user is authenticated, skip email collection
     if (user) {
       setUserEmail(user.email || '');
-      setCurrentView('onboarding');
+      // Universal 5 Circle onboarding for all users
+      setCurrentView('five-circle-onboarding');
       return null;
     }
     return (
@@ -531,6 +567,31 @@ const Index = () => {
           console.log('🔙 Cancel button pressed, returning to landing');
           setCurrentView('landing');
           hasInitialized.current = false;
+        }}
+      />
+    );
+  }
+
+
+  if (currentView === 'five-circle-onboarding') {
+    return (
+      <FiveCircleOnboarding 
+        onComplete={handleFiveCircleComplete}
+        onBack={() => {
+          console.log('🔙 Going back from 5 Circle onboarding');
+          setCurrentView('landing');
+        }}
+      />
+    );
+  }
+
+  if (currentView === 'goal-workshop') {
+    return (
+      <FiveCircleGoalWorkshop 
+        onComplete={handleGoalWorkshopComplete}
+        onBack={() => {
+          console.log('🔙 Going back from goal workshop');
+          setCurrentView('five-circle-onboarding');
         }}
       />
     );
@@ -587,7 +648,7 @@ const Index = () => {
           title="GoalMine.ai - Your Personal Goal Achievement Dashboard"
           description="Track your goals with AI-powered daily motivation. Check in daily, build streaks, and achieve your dreams with personalized coaching."
         />
-        <Dashboard
+        <FiveCircleDashboard
           onNudgeMe={handleNudgeMe}
           onStartOver={handleStartOver}
           onLogoClick={() => {

@@ -145,7 +145,11 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>1 active Goal</span>
+                  <span>5 Circle Framework™ experience</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
+                  <span>1 goal from any circle</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
@@ -177,7 +181,7 @@ export const PricingPage = ({
           {/* Premium Card */}
           <Card className="border-2 border-premium relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-premium text-premium-foreground text-center py-2 text-sm font-medium">
-              Most Popular
+              Most Affordable
             </div>
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
@@ -197,7 +201,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Up to 3 active Goals</span>
+                  <span>Up to 3 goals across any circles</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
@@ -221,20 +225,23 @@ export const PricingPage = ({
             </CardContent>
           </Card>
 
-          {/* Pro Plan Card */}
+          {/* Pro Plan Card - 5 Circle Framework */}
           <Card className="border-2 border-blue-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-medium">
-              Power User Choice
+              Most Popular
             </div>
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
-                <CardTitle className="text-lg mb-2">Pro Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">For ambitious individuals managing multiple life areas.</p>
+                <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
+                <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
+                  ADVANCED FEATURES
+                </div>
+                <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all circles. Maximize your 5 Circle Framework experience.</p>
                 <button 
                   onClick={() => setIsDanBioOpen(true)}
                   className="text-blue-600 hover:text-blue-700 text-sm underline cursor-pointer"
                 >
-                  Learn more about Dan
+                  Learn about the creator
                 </button>
               </div>
               <div className="text-2xl font-bold">
@@ -250,19 +257,27 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 5 active Goals</span>
+                  <span>Up to 5 goals across all circles</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 5 daily "Nudge Me" requests</span>
+                  <span><strong>Enhanced Circle Dashboard</strong> - Advanced tracking & analytics</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>1-hour monthly group Q&A with Dan Lynn</span>
+                  <span>Circle integration optimization & conflict detection</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Priority support & feature access</span>
+                  <span>Weekly optimization & synergy recommendations</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Stress reduction through systematic complexity breakdown</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>Up to 5 active goals + 5 daily nudges</span>
                 </li>
               </ul>
               {subscription.subscribed && subscription.subscription_tier === "Pro Plan" ? 
@@ -331,33 +346,85 @@ export const PricingPage = ({
           </Card>
         </div>
 
+        {/* 5 Circle Framework Showcase */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">The 5 Circle Framework™</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              A revolutionary approach to managing life's complexity, developed over 30 years and proven with hundreds of ambitious professionals
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">The Problem It Solves</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>• Feeling overwhelmed by competing life priorities</li>
+                <li>• Struggling to make progress on everything that matters</li>
+                <li>• Stress from reactive vs. proactive life management</li>
+                <li>• Guilt about always "neglecting something important"</li>
+                <li>• Lack of systematic approach to complex life goals</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">The 5 Circle Solution</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>• <strong>Spiritual:</strong> Meaning, purpose, inner peace</li>
+                <li>• <strong>Friends & Family:</strong> Relationships that matter</li>
+                <li>• <strong>Work:</strong> Career growth and performance</li>
+                <li>• <strong>Personal Development:</strong> Skills and growth</li>
+                <li>• <strong>Health & Fitness:</strong> Physical vitality and energy</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 border border-blue-200">
+            <div className="flex items-start gap-4">
+              <div className="text-blue-600">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-semibold text-blue-900 mb-2">Born from Real-World Success</h4>
+                <p className="text-blue-800 text-sm">
+                  "30 years ago, as a rising professional juggling a demanding strategy job at AT&T, pursuing my MBA at Rutgers, 
+                  with a wife and two kids under 3, I was overwhelmed. I developed this framework out of necessity - and it worked. 
+                  Since then, I've helped hundreds of ambitious professionals use this system to reduce stress, increase happiness, 
+                  and systematically achieve their complex life goals." - Dan Lynn, Creator
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="text-center">
             <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Personalized Goals</h3>
+            <h3 className="text-xl font-semibold mb-2">Systematic Complexity Management</h3>
             <p className="text-muted-foreground">
-              Each Goal is tailored to your specific goal and preferred coaching style.
+              Break down overwhelming life complexity into manageable, integrated components.
             </p>
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-success-light rounded-full flex items-center justify-center mx-auto mb-4">
               <Zap className="w-8 h-8 text-success" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Daily Motivation</h3>
+            <h3 className="text-xl font-semibold mb-2">AI-Powered Optimization</h3>
             <p className="text-muted-foreground">
-              Get fresh inspiration and actionable micro-plans delivered daily.
+              Get intelligent insights, synergy opportunities, and weekly optimization recommendations.
             </p>
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
               <Crown className="w-8 h-8 text-warning" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Proven Results</h3>
+            <h3 className="text-xl font-semibold mb-2">Proven Track Record</h3>
             <p className="text-muted-foreground">
-              Small daily actions compound into life-changing achievements.
+              30+ years of development, refined through real-world application with hundreds of professionals.
             </p>
           </div>
         </div>

@@ -56,8 +56,8 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <h3 className="font-semibold text-destructive mb-2">Access Restricted</h3>
               <p className="text-sm text-muted-foreground">
-                Your 30-day free trial has ended. Upgrade to the Personal Plan to continue 
-                tracking your goals and receiving daily motivation.
+                Your 30-day free trial has ended. Upgrade to Personal Plan for traditional goal tracking,
+                or discover our revolutionary 5 Circle Life Management™ system for comprehensive life complexity management.
               </p>
             </div>
           ) : (
@@ -73,24 +73,24 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2">
               <Shield className="w-4 h-4 text-premium" />
-              Personal Plan Benefits
+              Premium Plan Options
             </h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Up to 3 simultaneous goals
+                Personal Plan: Up to 3 traditional goals ($4.99/month)
+              </li>
+              <li className="flex items-center gap-2">
+                <Crown className="w-4 h-4 text-blue-600" />
+                5 Circle Framework™: Revolutionary life management system
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Daily AI-powered wake-up calls
+                Daily AI-powered motivation & wake-up calls
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Progress tracking & streak building
-              </li>
-              <li className="flex items-center gap-2">
-                <Crown className="w-4 h-4 text-premium" />
-                Customizable motivation tones
+                Systematic complexity management & optimization
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
@@ -111,7 +111,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
               className={`bg-premium hover:bg-premium/90 ${isExpired ? 'flex-1' : 'flex-1'}`}
             >
               <Crown className="w-4 h-4 mr-2" />
-              {loading ? "Dream Big..." : "Upgrade to Personal - $4.99/month"}
+{loading ? "Dream Big..." : "View All Plans - From $4.99/month"}
             </Button>
           </div>
 

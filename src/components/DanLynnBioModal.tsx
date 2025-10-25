@@ -20,9 +20,11 @@ export const DanLynnBioModal = ({ isOpen, onClose }: DanLynnBioModalProps) => {
             <p className="text-gray-700 leading-relaxed">
               Dan is a seasoned business leader and successful serial entrepreneur. His experience spans from senior 
               roles at Fortune 500 companies to founding several award-winning entrepreneurial ventures. His companies 
-              have been recognized for Best Places to Work and Fastest Growing Technology Company awards. Dan has now 
-              dedicated his career to helping entrepreneurs, business leaders, and high-performers achieve their most 
-              ambitious goals through proven methodologies, strategic advisory services, and personalized coaching.
+              have been recognized for Best Places to Work and Fastest Growing Technology Company awards. 
+              <strong>Creator of the proprietary 5 Circle Framework™</strong> - a revolutionary life management system 
+              developed over 30 years and proven with hundreds of professionals. Dan has now dedicated his career to 
+              helping entrepreneurs, business leaders, and high-performers achieve their most ambitious goals through 
+              proven methodologies, strategic advisory services, and personalized coaching.
             </p>
           </div>
 

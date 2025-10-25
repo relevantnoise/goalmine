@@ -18,6 +18,9 @@ export interface Goal {
   last_checkin_date?: string;
   created_at: string;
   updated_at: string;
+  circle_type?: string;
+  weekly_commitment_hours?: number;
+  circle_interview_data?: any;
 }
 
 export interface MotivationContent {
@@ -252,6 +255,8 @@ export const useGoals = () => {
     target_date?: Date;
     tone?: 'drill_sergeant' | 'kind_encouraging' | 'teammate' | 'wise_mentor';
     time_of_day?: string;
+    circle_type?: string;
+    weekly_commitment_hours?: number;
   }) => {
     if (!user) {
       toast.error('Please sign in to create a goal');
@@ -272,7 +277,9 @@ export const useGoals = () => {
         description: goalData.description || null,
         target_date: goalData.target_date ? goalData.target_date.toISOString().split('T')[0] : null,
         tone: goalData.tone || 'kind_encouraging',
-        time_of_day: '07:00', // Default early morning time for daily motivation
+        time_of_day: goalData.time_of_day || '07:00', // Default early morning time for daily motivation
+        circle_type: goalData.circle_type || null,
+        weekly_commitment_hours: goalData.weekly_commitment_hours || null,
         streak_count: 0,
         is_active: true
       };

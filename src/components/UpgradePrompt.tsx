@@ -13,18 +13,18 @@ export const UpgradePrompt = ({
 
   // EDIT THIS CONTENT AS NEEDED
   const upgradeContent = {
-    title: "Unlock Premium Features",
-    subtitle: "Choose from Personal Plan or Strategic Advisor Plan services",
+    title: "Ready for Advanced Goal Management?",
+    subtitle: "5 Circle Life Management™ system or Personal Plan available",
     pricing: "From $4.99/month",
     buttonText: "View Plans",
     features: [{
-      text: "Up to 3 active goals (vs 1)"
+      text: "Up to 3 traditional goals OR 5 Circle Framework™"
     }, {
-      text: "3 daily nudges (vs 1)"
+      text: "Systematic life complexity management"
     }, {
-      text: "Priority email delivery"
+      text: "AI-powered integration & optimization"
     }, {
-      text: "One-on-one coaching available"
+      text: "Strategic coaching sessions available"
     }]
   };
   if (compact) {
@@ -32,10 +32,10 @@ export const UpgradePrompt = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="w-4 h-4 text-primary" />
-            <h4 className="font-semibold text-foreground text-base">Let's Get Personal!</h4>
+            <h4 className="font-semibold text-foreground text-base">5 Circle Framework™ Available!</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Personal Plan & Strategic Advisor Plan available
+            Revolutionary life management system + Personal Plan options
           </p>
           <Button onClick={() => navigate('/upgrade')} size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
             <Crown className="w-3 h-3 mr-1" />

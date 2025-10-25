@@ -43,16 +43,17 @@ export const useSubscription = () => {
     } catch (error) {
       console.error('Error checking subscription:', error);
       
-      // TEST: Commented out for production
-      // TEMPORARY: For known users, provide a fallback subscription check
-      // if (userEmail === 'danlynn@gmail.com' || userEmail === 'dandlynn@yahoo.com') {
-      //   console.log('✅ TEMPORARY: Using fallback subscription status for known user');
-      //   setSubscription({ 
-      //     subscribed: true, 
-      //     subscription_tier: 'Personal Plan',
-      //     subscription_end: '2025-12-31T23:59:59.000Z'
-      //   });
-      // }
+      // TEMPORARY: For testing 5 Circle Framework with danlynn@gmail.com
+      if (userEmail === 'danlynn@gmail.com') {
+        console.log('🧪 TESTING MODE: Using Pro Plan for danlynn@gmail.com');
+        setSubscription({ 
+          subscribed: true, 
+          subscription_tier: 'Pro Plan',
+          subscription_end: '2025-12-31T23:59:59.000Z'
+        });
+        return;
+      }
+      
       setSubscription({ subscribed: false });
     } finally {
       setLoading(false);
