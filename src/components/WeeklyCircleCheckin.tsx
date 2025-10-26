@@ -251,7 +251,7 @@ export const WeeklyCircleCheckin = ({ onComplete, onSkip }: WeeklyCircleCheckinP
                           <Slider
                             value={[circle.actual_hours]}
                             onValueChange={(value) => updateCircleHours(circle.circle_name, value[0])}
-                            max={Math.max(40, circle.ideal_hours * 2)}
+                            max={Math.max(100, circle.ideal_hours * 2)}
                             min={0}
                             step={0.5}
                             className="w-full"

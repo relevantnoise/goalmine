@@ -284,7 +284,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               <Slider
                 value={[data.current_hours_per_week || 0]}
                 onValueChange={([value]) => updateCircleAllocation(currentCircle.name, { current_hours_per_week: value })}
-                max={50}
+                max={100}
                 min={0}
                 step={currentCircle.name === 'Spiritual' ? 0.5 : 1}
                 className="mt-2"
@@ -297,7 +297,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               <Slider
                 value={[data.ideal_hours_per_week || 5]}
                 onValueChange={([value]) => updateCircleAllocation(currentCircle.name, { ideal_hours_per_week: value })}
-                max={50}
+                max={100}
                 min={0}
                 step={currentCircle.name === 'Spiritual' ? 0.5 : 1}
                 className="mt-2"

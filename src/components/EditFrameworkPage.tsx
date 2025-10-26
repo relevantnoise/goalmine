@@ -345,7 +345,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
             <Slider
               value={[timeContext.commute_hours_per_week]}
               onValueChange={(value) => setTimeContext(prev => ({ ...prev, commute_hours_per_week: value[0] }))}
-              max={40}
+              max={100}
               min={0}
               step={1}
               className="w-full"
@@ -408,7 +408,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
               <Slider
                 value={[allocation.current_hours_per_week]}
                 onValueChange={(value) => updateCircleAllocation(circle.name, 'current_hours_per_week', value[0])}
-                max={40}
+                max={100}
                 min={0}
                 step={0.5}
                 className="w-full"
@@ -425,7 +425,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
               <Slider
                 value={[allocation.ideal_hours_per_week]}
                 onValueChange={(value) => updateCircleAllocation(circle.name, 'ideal_hours_per_week', value[0])}
-                max={40}
+                max={100}
                 min={0}
                 step={0.5}
                 className="w-full"
