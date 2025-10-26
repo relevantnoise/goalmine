@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Target, Heart, Users, BookOpen } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Target, Heart, Users, BookOpen, Activity, Briefcase } from "lucide-react";
 import { useGoals } from "@/hooks/useGoals";
 
 const toneOptions = [
@@ -38,6 +39,44 @@ const toneOptions = [
   }
 ];
 
+const circleOptions = [
+  {
+    value: 'Spiritual',
+    label: 'Spiritual',
+    icon: Heart,
+    description: 'Inner purpose, values, meaning, meditation, prayer',
+    color: 'text-purple-600'
+  },
+  {
+    value: 'Friends & Family',
+    label: 'Friends & Family', 
+    icon: Users,
+    description: 'Relationships, social connections, quality time',
+    color: 'text-blue-600'
+  },
+  {
+    value: 'Work',
+    label: 'Work',
+    icon: Briefcase,
+    description: 'Career, professional development, income',
+    color: 'text-green-600'
+  },
+  {
+    value: 'Personal Development',
+    label: 'Personal Development',
+    icon: BookOpen, 
+    description: 'Learning, growth, skills, education',
+    color: 'text-orange-600'
+  },
+  {
+    value: 'Health & Fitness',
+    label: 'Health & Fitness',
+    icon: Activity,
+    description: 'Physical health, exercise, nutrition, energy',
+    color: 'text-red-600'
+  }
+];
+
 interface SimpleGoalFormProps {
   onComplete: (goalId?: string) => void;
   onCancel: () => void;
@@ -49,15 +88,16 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
   const [description, setDescription] = useState('');
   const [targetDate, setTargetDate] = useState('');
   const [selectedTone, setSelectedTone] = useState<'drill_sergeant' | 'kind_encouraging' | 'teammate' | 'wise_mentor'>('kind_encouraging');
+  const [selectedCircle, setSelectedCircle] = useState<string>(defaultCircle || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createGoal } = useGoals();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim() || !selectedCircle) return;
 
     setIsSubmitting(true);
-    console.log('🎯 Enhanced form: Creating goal with:', { title, tone: selectedTone, description });
+    console.log('🎯 Enhanced form: Creating goal with:', { title, tone: selectedTone, description, circle: selectedCircle });
 
     try {
       const result = await createGoal({ 
@@ -65,7 +105,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
         description: description.trim() || undefined,
         target_date: targetDate ? new Date(targetDate) : undefined,
         tone: selectedTone,
-        circle_type: defaultCircle || undefined
+        circle_type: selectedCircle
       });
       if (result) {
         console.log('✅ Goal created with tone and target date, calling onComplete');
@@ -83,7 +123,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create Your Goal</CardTitle>
-          <p className="text-muted-foreground">Set your goal, timeline, and get your powerful daily wake-up call</p>
+          <p className="text-muted-foreground">Set your goal, assign it to a life circle, and get personalized daily motivation</p>
         </CardHeader>
         
         <CardContent>
@@ -141,10 +181,41 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
               </p>
             </div>
 
-            {/* Step 4: Coaching Style Selection */}
+            {/* Step 4: Circle Assignment */}
             <div>
               <Label className="text-base font-medium mb-3 block">
-                4. Choose your AI coaching style
+                4. Which life circle is this goal for?
+              </Label>
+              <Select value={selectedCircle} onValueChange={setSelectedCircle}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a life circle..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {circleOptions.map((circle) => {
+                    const IconComponent = circle.icon;
+                    return (
+                      <SelectItem key={circle.value} value={circle.value}>
+                        <div className="flex items-center gap-3">
+                          <IconComponent className={`w-4 h-4 ${circle.color}`} />
+                          <div>
+                            <div className="font-medium">{circle.label}</div>
+                            <div className="text-xs text-muted-foreground">{circle.description}</div>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                This helps organize your goals and creates better motivation
+              </p>
+            </div>
+
+            {/* Step 5: Coaching Style Selection */}
+            <div>
+              <Label className="text-base font-medium mb-3 block">
+                5. Choose your AI coaching style
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {toneOptions.map((option) => {
@@ -193,7 +264,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
               </Button>
               <Button
                 type="submit"
-                disabled={!title.trim() || isSubmitting}
+                disabled={!title.trim() || !selectedCircle || isSubmitting}
                 className="flex-1"
               >
                 {isSubmitting ? (

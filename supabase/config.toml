@@ -62,3 +62,9 @@ verify_jwt = false
 
 [functions.send-daily-wake-up-call]
 verify_jwt = false
+
+[functions.setup-circle-database]
+verify_jwt = false
+
+[functions.create-simple-circle-framework]
+verify_jwt = false

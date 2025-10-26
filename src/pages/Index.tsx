@@ -5,6 +5,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { useGoals } from "@/hooks/useGoals";
 import { useNudgeLimit } from "@/hooks/useNudgeLimit";
+import { useCircleFramework } from "@/hooks/useCircleFramework";
 import { supabase } from "@/integrations/supabase/client";
 // Ensure Firebase bundled version is loaded
 import "@/lib/firebase";
@@ -17,6 +18,7 @@ import { Dashboard } from "@/components/Dashboard";
 import { FiveCircleOnboarding } from "@/components/FiveCircleOnboarding";
 import { FiveCircleFrameworkReport } from "@/components/FiveCircleFrameworkReport";
 import { FiveCircleGoalWorkshop } from "@/components/FiveCircleGoalWorkshop";
+import { WeeklyCircleCheckin } from "@/components/WeeklyCircleCheckin";
 import { MotivationAlert } from "@/components/MotivationAlert";
 import { TrialExpiredModal } from "@/components/TrialExpiredModal";
 import { Button } from "@/components/ui/button";
@@ -41,11 +43,12 @@ const Index = () => {
   const { trialStatus, loading: trialLoading } = useTrialStatus();
   const { goals, loading: goalsLoading, fetchGoals, generateMotivationForGoals, generateGoalSpecificNudge, generateGeneralNudge } = useGoals();
   const { nudgeStatus, useNudge, loading: nudgeLoading } = useNudgeLimit();
+  const { framework, hasFramework, loading: frameworkLoading, refetchFramework } = useCircleFramework();
   const navigate = useNavigate();
   const location = useLocation();
   // No need for custom supabase client with native auth
   const [searchParams] = useSearchParams();
-  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'five-circle-onboarding' | 'framework-report' | 'goal-workshop' | 'dashboard'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'pricing' | 'email' | 'five-circle-onboarding' | 'framework-report' | 'goal-workshop' | 'dashboard' | 'circle-checkin'>('landing');
   const [userEmail, setUserEmail] = useState<string>('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState<{title: string, message: string, type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade'}>({title: '', message: ''});
@@ -185,9 +188,10 @@ const Index = () => {
       // If still loading, continue with normal flow and let it resolve
     }
 
-    // SIMPLE ROUTING: If user is authenticated and on root path, route based on goals
-    if (location.pathname === '/' && user && !authLoading && !goalsLoading && !hasInitialized.current) {
-      console.log('🎯 SIMPLE USER ROUTING for:', user.email);
+    // 3-STEP ROUTING: If user is authenticated and on root path, route based on framework and goals
+    if (location.pathname === '/' && user && !authLoading && !goalsLoading && !frameworkLoading && !hasInitialized.current) {
+      console.log('🎯 3-STEP USER ROUTING for:', user.email);
+      console.log('🔄 Framework found:', hasFramework);
       console.log('🔄 Goals found:', goals.length);
       hasInitialized.current = true;
       
@@ -198,15 +202,28 @@ const Index = () => {
         return;
       }
       
-      // UNIVERSAL 5 CIRCLE LOGIC: All users get 5 Circle onboarding when they have no goals
-      if (goals.length === 0) {
-        console.log('📝 No goals found → Universal 5 Circle Framework onboarding');
+      // STEP 1: If no framework, start with Simple Circle Framework setup
+      if (!hasFramework) {
+        console.log('📝 No framework found → Step 1: Simple Circle Framework setup');
         setUserEmail(user.email || '');
         setCurrentView('five-circle-onboarding');
-      } else {
-        console.log('✅', goals.length, 'goals found → Dashboard');
-        setCurrentView('dashboard');
+        return;
       }
+      
+      // STEP 2: If framework exists but no goals, go to goal creation
+      if (hasFramework && goals.length === 0) {
+        console.log('📝 Framework exists, no goals → Step 2: Goal creation');
+        setCurrentView('onboarding');
+        return;
+      }
+      
+      // STEP 3: If framework and goals exist, show dashboard
+      if (hasFramework && goals.length > 0) {
+        console.log('✅ Framework and goals exist → Step 3: Dashboard');
+        setCurrentView('dashboard');
+        return;
+      }
+      
       return;
     }
 
@@ -267,14 +284,19 @@ const Index = () => {
 
 
   const handleFiveCircleComplete = () => {
-    console.log('✅ 5 Circle Framework setup complete, showing framework report');
+    console.log('✅ Step 1 Complete: 5 Circle Framework setup → Step 2: Goal creation');
     hasInitialized.current = true;
-    setCurrentView('framework-report');
+    
+    // Refresh framework data to ensure hasFramework is updated
+    refetchFramework();
+    
+    // Move directly to Step 2: Goal creation (not framework report)
+    setCurrentView('onboarding');
     
     // Show success message
     setAlertData({
-      title: "🎯 5 Circle Framework™ Activated!",
-      message: "Your personalized framework is ready! Review your consultant analysis below.",
+      title: "🎯 Step 1 Complete!",
+      message: "Your 5 Circle Framework™ is ready! Now let's create your first goal.",
       type: 'achievement'
     });
     setShowAlert(true);
@@ -361,6 +383,30 @@ const Index = () => {
     }
   };
 
+  const handleEditFramework = () => {
+    console.log('🔧 Navigating to Edit Framework page');
+    navigate('/edit-framework');
+  };
+
+  const handleCircleCheckin = () => {
+    console.log('📊 Starting weekly circle check-in');
+    hasInitialized.current = true;
+    setCurrentView('circle-checkin');
+  };
+
+  const handleCircleCheckinComplete = () => {
+    console.log('✅ Circle check-in completed, returning to dashboard');
+    setCurrentView('dashboard');
+    
+    // Show success message
+    setAlertData({
+      title: "🎯 Circle Check-in Complete!",
+      message: "Your weekly circle balance has been recorded. Keep up the great work!",
+      type: 'achievement'
+    });
+    setShowAlert(true);
+  };
+
   const handleStartOver = async () => {
     if (!user) return;
 
@@ -419,8 +465,18 @@ const Index = () => {
       return;
     }
 
-    // User has room for more goals, proceed to 5 Circle onboarding
-    setCurrentView('five-circle-onboarding');
+    // 3-STEP LOGIC: Check framework status to determine next step
+    console.log('🎯 3-Step routing check:', { hasFramework });
+    
+    if (hasFramework) {
+      // User has framework → Step 3: Direct goal creation ("Add More Goals")
+      console.log('📝 Framework exists → Direct goal creation');
+      setCurrentView('onboarding');
+    } else {
+      // User has no framework → Step 1: Framework setup first
+      console.log('📝 No framework → Step 1: Framework setup');
+      setCurrentView('five-circle-onboarding');
+    }
     
     // Scroll to top when showing goal creation form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -433,7 +489,7 @@ const Index = () => {
   const forceDashboard = searchParams.get('force-dashboard') === 'true';
   const emailVerified = searchParams.get('email-verified') === 'true';
   const verified = searchParams.get('verified') === 'true';
-  const shouldShowLoading = (authLoading || (user && goalsLoading && !hasInitialized.current) || isRedirecting || emailVerified) && !forceDashboard;
+  const shouldShowLoading = (authLoading || (user && (goalsLoading || frameworkLoading) && !hasInitialized.current) || isRedirecting || emailVerified) && !forceDashboard;
   
   // Remove debug logging in production
   // console.log('🔍 Loading state check:', {
@@ -677,6 +733,9 @@ const Index = () => {
             // Navigate to landing page using React state, not page reload
             setCurrentView('landing');
           }}
+          hasFramework={hasFramework}
+          onEditFramework={handleEditFramework}
+          onCircleCheckin={handleCircleCheckin}
         />
         {showAlert && (
           <MotivationAlert
@@ -692,6 +751,18 @@ const Index = () => {
           daysRemaining={trialStatus.daysRemaining}
         />
       </>
+    );
+  }
+
+  if (currentView === 'circle-checkin') {
+    return (
+      <WeeklyCircleCheckin 
+        onComplete={handleCircleCheckinComplete}
+        onSkip={() => {
+          console.log('⏭️ Skipping weekly circle check-in');
+          setCurrentView('dashboard');
+        }}
+      />
     );
   }
 

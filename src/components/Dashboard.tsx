@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Zap, Plus, Crown, Calendar, Flame, Heart, Users, Briefcase, BookOpen, Activity } from "lucide-react";
+import { Target, Zap, Plus, Crown, Calendar, Flame, Heart, Users, Briefcase, BookOpen, Activity, Settings, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useCircleCheckin } from "@/hooks/useCircleCheckin";
 import { GoalCard } from "./GoalCard";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
@@ -16,12 +17,16 @@ interface DashboardProps {
   onNudgeMe: () => Promise<any>;
   onStartOver: () => void;
   onLogoClick: () => void;
+  hasFramework?: boolean;
+  onEditFramework?: () => void;
+  onCircleCheckin?: () => void;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onCircleCheckin }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
+  const { checkinStatus, loading: checkinLoading } = useCircleCheckin();
   const [isNudging, setIsNudging] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
 
@@ -156,19 +161,25 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                     <Plus className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1">Add More Goals</h3>
+                    <h3 className="font-semibold mb-1">
+                      {hasFramework ? "Add More Goals" : "Set Up Your Framework"}
+                    </h3>
                     <p className="text-sm text-muted-foreground">
-                      {subscription.subscribed ? (() => {
-                        const tier = subscription.subscription_tier || 'Personal Plan';
-                        const maxGoals = (() => {
-                          if (tier === 'Pro Plan') return 5;
-                          if (tier === 'Strategic Advisor Plan') return 5;
-                          if (tier === 'Professional Coach') return 5; // Legacy tier
-                          return 3; // Personal Plan
-                        })();
-                        const remaining = maxGoals - goals.length;
-                        return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
-                      })() : "First goal is free. Upgrade to create more."}
+                      {hasFramework ? (
+                        subscription.subscribed ? (() => {
+                          const tier = subscription.subscription_tier || 'Personal Plan';
+                          const maxGoals = (() => {
+                            if (tier === 'Pro Plan') return 5;
+                            if (tier === 'Strategic Advisor Plan') return 5;
+                            if (tier === 'Professional Coach') return 5; // Legacy tier
+                            return 3; // Personal Plan
+                          })();
+                          const remaining = maxGoals - goals.length;
+                          return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
+                        })() : "First goal is free. Upgrade to create more."
+                      ) : (
+                        "Complete your 5 Circle Framework™ to start creating goals"
+                      )}
                     </p>
                   </div>
                 </div>
@@ -181,12 +192,69 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick }: DashboardProp
                   ) : (
                     <>
                       <Plus className="w-4 h-4 mr-2" />
-                      Create A Goal
+                      {hasFramework ? "Create A Goal" : "Get Started"}
                       {!subscription.subscribed && <Crown className="w-4 h-4 ml-2" />}
                     </>
                   )}
                 </Button>
               </div>
+
+              {/* Edit Framework Card */}
+              {hasFramework && onEditFramework && (
+                <div className="bg-card border rounded-lg p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Settings className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">Edit Your Framework</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Update your time allocation and circle priorities as life changes
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={onEditFramework} 
+                    variant="outline" 
+                    className="w-full flex items-center gap-2"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Edit 5 Circle Framework™
+                  </Button>
+                </div>
+              )}
+
+              {/* Circle Check-in Card */}
+              {hasFramework && checkinStatus.needsCheckin && onCircleCheckin && (
+                <div className="bg-card border rounded-lg p-6 border-l-4 border-l-blue-500">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">Weekly Circle Check-in</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {checkinStatus.weeksSinceLastCheckin === 0 
+                          ? "How did you balance your 5 circles this week?" 
+                          : `It's been ${checkinStatus.weeksSinceLastCheckin} week${checkinStatus.weeksSinceLastCheckin !== 1 ? 's' : ''} since your last check-in`
+                        }
+                      </p>
+                      {checkinStatus.weeksSinceLastCheckin > 1 && (
+                        <div className="mt-2 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded">
+                          Regular check-ins help maintain life balance
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={onCircleCheckin} 
+                    className="w-full flex items-center gap-2"
+                  >
+                    <Clock className="w-4 h-4" />
+                    Complete Weekly Check-in
+                  </Button>
+                </div>
+              )}
 
               {/* Circle Summary Card */}
               {goals.some(goal => goal.circle_type) && (

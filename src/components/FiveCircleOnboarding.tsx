@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { VoiceTextarea } from "@/components/ui/voice-textarea";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, ArrowRight, Target, Heart, Briefcase, BookOpen, Activity } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -81,6 +82,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
   const [consultantQuestion, setConsultantQuestion] = useState('');
   const [conversationHistory, setConversationHistory] = useState<Array<{role: string, content: string}>>([]);
   const [userResponse, setUserResponse] = useState('');
+  const [showValidationError, setShowValidationError] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -109,6 +111,16 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
 
   const handleNext = async () => {
     console.log('🔵 handleNext called, current step:', step);
+    
+    // Check validation before proceeding
+    const validation = getValidationStatus();
+    if (!validation.canProceed) {
+      setShowValidationError(true);
+      return;
+    }
+    
+    // Clear validation error if we're proceeding
+    setShowValidationError(false);
     
     if (step < 8) { // 3 life context steps + 5 circle steps
       setStep(step + 1);
@@ -226,6 +238,9 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
   };
 
   const handleBack = () => {
+    // Clear validation error when going back
+    setShowValidationError(false);
+    
     if (step > 1) {
       setStep(step - 1);
     } else {
@@ -389,13 +404,14 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="response" className="text-base font-medium">Your response:</Label>
-          <Textarea
+          <Label htmlFor="response" className="text-base font-medium">Your response: <span className="text-sm text-muted-foreground">(Voice input available)</span></Label>
+          <VoiceTextarea
             id="response"
             value={userResponse}
-            onChange={(e) => setUserResponse(e.target.value)}
+            onChange={(value) => setUserResponse(value)}
             placeholder="Share your thoughts..."
-            className="min-h-[120px] text-base"
+            minHeight="min-h-[120px]"
+            className="text-base"
             disabled={isSubmitting}
           />
           <p className="text-sm text-gray-600">
@@ -460,14 +476,14 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
           
           <div className="space-y-2 mt-6">
             <Label htmlFor="challenge" className="text-base font-medium">
-              What's your biggest challenge right now?
+              What's your biggest challenge right now? <span className="text-sm text-muted-foreground">(Voice input available)</span>
             </Label>
-            <Textarea
+            <VoiceTextarea
               id="challenge"
               placeholder="e.g., Balancing work demands with family time, feeling overwhelmed by competing priorities..."
               value={lifeContext.primary_challenge}
-              onChange={(e) => setLifeContext(prev => ({ ...prev, primary_challenge: e.target.value }))}
-              className="min-h-[100px]"
+              onChange={(value) => setLifeContext(prev => ({ ...prev, primary_challenge: value }))}
+              minHeight="min-h-[100px]"
             />
           </div>
         </div>
@@ -478,14 +494,14 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
       return (
         <div className="space-y-4">
           <Label htmlFor="priority" className="text-base font-medium">
-            What's your #1 priority for the next 90 days?
+            What's your #1 priority for the next 90 days? <span className="text-sm text-muted-foreground">(Voice input available)</span>
           </Label>
-          <Textarea
+          <VoiceTextarea
             id="priority"
             placeholder="The one thing that would make the biggest difference in your life..."
             value={lifeContext.primary_90_day_priority}
-            onChange={(e) => setLifeContext(prev => ({ ...prev, primary_90_day_priority: e.target.value }))}
-            className="min-h-[120px]"
+            onChange={(value) => setLifeContext(prev => ({ ...prev, primary_90_day_priority: value }))}
+            minHeight="min-h-[120px]"
           />
           <p className="text-sm text-muted-foreground">
             This helps us understand what matters most to you right now.
@@ -508,8 +524,8 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
               <Slider
                 value={[lifeContext.work_hours_per_week]}
                 onValueChange={([value]) => setLifeContext(prev => ({ ...prev, work_hours_per_week: value }))}
-                max={80}
-                min={20}
+                max={100}
+                min={0}
                 step={5}
                 className="mt-2"
               />
@@ -573,12 +589,13 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
 
         <div className="space-y-4">
           <div>
-            <Label className="text-base font-medium">What does "{currentCircle.title}" mean to you personally?</Label>
-            <Textarea
+            <Label className="text-base font-medium">What does "{currentCircle.title}" mean to you personally? <span className="text-sm text-muted-foreground">(Voice input available)</span></Label>
+            <VoiceTextarea
               placeholder={`Describe what ${currentCircle.title.toLowerCase()} means in your life...`}
               value={data.personal_definition || ''}
-              onChange={(e) => updateCircleData(currentCircle.name, { personal_definition: e.target.value })}
-              className="mt-2 min-h-[80px]"
+              onChange={(value) => updateCircleData(currentCircle.name, { personal_definition: value })}
+              className="mt-2"
+              minHeight="min-h-[80px]"
             />
           </div>
 
@@ -618,7 +635,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
                 onValueChange={([value]) => updateCircleData(currentCircle.name, { current_time_per_week: value })}
                 max={50}
                 min={0}
-                step={1}
+                step={currentCircle.name === 'spiritual' ? 0.5 : 1}
                 className="mt-2"
               />
               <div className="text-sm text-muted-foreground mt-1">{data.current_time_per_week || 0} hours</div>
@@ -631,7 +648,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
                 onValueChange={([value]) => updateCircleData(currentCircle.name, { ideal_time_per_week: value })}
                 max={50}
                 min={0}
-                step={1}
+                step={currentCircle.name === 'spiritual' ? 0.5 : 1}
                 className="mt-2"
               />
               <div className="text-sm text-muted-foreground mt-1">{data.ideal_time_per_week || 5} hours</div>
@@ -639,12 +656,13 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
           </div>
 
           <div>
-            <Label className="text-base font-medium">What would success look like in 90 days?</Label>
-            <Textarea
+            <Label className="text-base font-medium">What would success look like in 90 days? <span className="text-sm text-muted-foreground">(Voice input available)</span></Label>
+            <VoiceTextarea
               placeholder={`Describe what ${currentCircle.title.toLowerCase()} success would look like...`}
               value={data.success_definition_90_days || ''}
-              onChange={(e) => updateCircleData(currentCircle.name, { success_definition_90_days: e.target.value })}
-              className="mt-2 min-h-[80px]"
+              onChange={(value) => updateCircleData(currentCircle.name, { success_definition_90_days: value })}
+              className="mt-2"
+              minHeight="min-h-[80px]"
             />
           </div>
         </div>
@@ -697,7 +715,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
             {/* Validation feedback */}
             {!isInConversation && (() => {
               const validation = getValidationStatus();
-              if (!validation.canProceed && validation.missingFields.length > 0) {
+              if (showValidationError && !validation.canProceed && validation.missingFields.length > 0) {
                 return (
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                     <div className="flex items-center">
@@ -730,7 +748,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
                   </Button>
                   <Button 
                     onClick={handleNext} 
-                    disabled={!canProceed() || isSubmitting} 
+                    disabled={isSubmitting} 
                     className="flex-1 bg-primary hover:bg-primary-hover"
                   >
                     {isSubmitting ? (
