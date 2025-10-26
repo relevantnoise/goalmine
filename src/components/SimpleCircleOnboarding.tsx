@@ -308,11 +308,15 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
 
           {isWorkCircle && (
             <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold mb-4">Business Happiness Assessment</h4>
+              <h4 className="text-lg font-semibold mb-2">Business Happiness Assessment</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                This proven happiness formula was developed over 10 years of coaching entrepreneurs. 
+                Rate your current satisfaction and desired goals across these four key dimensions of work fulfillment.
+              </p>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Impact - Current (1-10)</Label>
+                    <Label className="text-sm font-medium">Current Level of Impact (1-10)</Label>
                     <Slider
                       value={[workHappiness.impact_current]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, impact_current: value }))}
@@ -324,7 +328,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
                     <div className="text-xs text-muted-foreground mt-1">{workHappiness.impact_current}/10</div>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Impact - Desired (1-10)</Label>
+                    <Label className="text-sm font-medium">Desired Level of Impact (1-10)</Label>
                     <Slider
                       value={[workHappiness.impact_desired]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, impact_desired: value }))}
@@ -339,7 +343,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Fun - Current (1-10)</Label>
+                    <Label className="text-sm font-medium">Current Level of Fun (1-10)</Label>
                     <Slider
                       value={[workHappiness.fun_current]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, fun_current: value }))}
@@ -351,7 +355,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
                     <div className="text-xs text-muted-foreground mt-1">{workHappiness.fun_current}/10</div>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Fun - Desired (1-10)</Label>
+                    <Label className="text-sm font-medium">Desired Level of Fun (1-10)</Label>
                     <Slider
                       value={[workHappiness.fun_desired]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, fun_desired: value }))}
@@ -366,7 +370,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Money - Current (1-10)</Label>
+                    <Label className="text-sm font-medium">Current Satisfaction with Income (1-10)</Label>
                     <Slider
                       value={[workHappiness.money_current]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, money_current: value }))}
@@ -378,7 +382,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
                     <div className="text-xs text-muted-foreground mt-1">{workHappiness.money_current}/10</div>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Money - Desired (1-10)</Label>
+                    <Label className="text-sm font-medium">Desired Satisfaction with Income (1-10)</Label>
                     <Slider
                       value={[workHappiness.money_desired]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, money_desired: value }))}
@@ -393,7 +397,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm font-medium">Work from Anywhere - Current (1-10)</Label>
+                    <Label className="text-sm font-medium">Current Ability to Work from Anywhere (1-10)</Label>
                     <Slider
                       value={[workHappiness.remote_current]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, remote_current: value }))}
@@ -405,7 +409,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
                     <div className="text-xs text-muted-foreground mt-1">{workHappiness.remote_current}/10</div>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Work from Anywhere - Desired (1-10)</Label>
+                    <Label className="text-sm font-medium">Desired Ability to Work from Anywhere (1-10)</Label>
                     <Slider
                       value={[workHappiness.remote_desired]}
                       onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, remote_desired: value }))}

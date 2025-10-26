@@ -439,10 +439,14 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
           {circle.name === 'Work' && (
             <div className="border-t pt-6 space-y-6">
               <h3 className="font-semibold text-lg">Work Happiness Formula</h3>
+              <p className="text-sm text-muted-foreground">
+                This proven happiness formula was developed over 10 years of coaching entrepreneurs. 
+                Rate your current satisfaction and desired goals across these four key dimensions of work fulfillment.
+              </p>
               
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-sm font-medium">Impact - Current Level</Label>
+                  <Label className="text-sm font-medium">Current Level of Impact</Label>
                   <Slider
                     value={[workHappiness.impact_current]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, impact_current: value[0] }))}
@@ -456,7 +460,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium">Impact - Desired Level</Label>
+                  <Label className="text-sm font-medium">Desired Level of Impact</Label>
                   <Slider
                     value={[workHappiness.impact_desired]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, impact_desired: value[0] }))}
@@ -471,7 +475,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium">Fun - Current Level</Label>
+                  <Label className="text-sm font-medium">Current Level of Fun</Label>
                   <Slider
                     value={[workHappiness.fun_current]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, fun_current: value[0] }))}
@@ -485,7 +489,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium">Fun - Desired Level</Label>
+                  <Label className="text-sm font-medium">Desired Level of Fun</Label>
                   <Slider
                     value={[workHappiness.fun_desired]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, fun_desired: value[0] }))}
@@ -500,7 +504,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium">Money - Current Level</Label>
+                  <Label className="text-sm font-medium">Current Satisfaction with Income</Label>
                   <Slider
                     value={[workHappiness.money_current]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, money_current: value[0] }))}
@@ -529,7 +533,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium">Remote Work - Current</Label>
+                  <Label className="text-sm font-medium">Current Ability to Work from Anywhere</Label>
                   <Slider
                     value={[workHappiness.remote_current]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, remote_current: value[0] }))}
@@ -543,7 +547,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium">Remote Work - Desired</Label>
+                  <Label className="text-sm font-medium">Desired Ability to Work from Anywhere</Label>
                   <Slider
                     value={[workHappiness.remote_desired]}
                     onValueChange={(value) => setWorkHappiness(prev => ({ ...prev, remote_desired: value[0] }))}
