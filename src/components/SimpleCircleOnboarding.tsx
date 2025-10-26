@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -129,27 +129,37 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
   };
 
   const updateCircleAllocation = (circleName: string, updates: Partial<CircleAllocation>) => {
-    setCircleAllocations(prev => ({
-      ...prev,
+    console.log('🔄 Updating circle allocation:', circleName, updates);
+    const newAllocations = {
+      ...circleAllocations,
       [circleName]: {
         circle_name: circleName,
         importance_level: 5,
         current_hours_per_week: 0,
-        ideal_hours_per_week: 5,
-        ...prev[circleName],
+        ideal_hours_per_week: 0,
+        ...circleAllocations[circleName],
         ...updates
       }
-    }));
+    };
+    console.log('📊 New allocations:', newAllocations);
+    setCircleAllocations(newAllocations);
   };
 
-  // Calculate remaining hours for ideal allocation
-  const getRemainingHours = () => {
+  // Calculate remaining hours for ideal allocation (with useMemo for reactivity)
+  const getRemainingHours = useMemo(() => {
     const totalIdealHours = Object.values(circleAllocations).reduce(
       (sum, allocation) => sum + (allocation.ideal_hours_per_week || 0), 
       0
     );
-    return Math.max(0, timeContext.available_hours_per_week - totalIdealHours);
-  };
+    const remaining = timeContext.available_hours_per_week - totalIdealHours;
+    console.log('💡 Calculating remaining hours:', {
+      availableHours: timeContext.available_hours_per_week,
+      totalIdealHours,
+      remaining,
+      circleAllocations
+    });
+    return Math.max(0, remaining);
+  }, [circleAllocations, timeContext.available_hours_per_week]);
 
   // Calculate allocated hours for the current circle being edited
   const getAllocatedHoursExceptCurrent = (currentCircleName: string) => {
@@ -181,7 +191,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
         circle_name: circle.name,
         importance_level: circleAllocations[circle.name]?.importance_level || 5,
         current_hours_per_week: circleAllocations[circle.name]?.current_hours_per_week || 0,
-        ideal_hours_per_week: circleAllocations[circle.name]?.ideal_hours_per_week || 5
+        ideal_hours_per_week: circleAllocations[circle.name]?.ideal_hours_per_week || 0
       };
     });
 
@@ -278,13 +288,37 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
           </div>
         </div>
 
-        <div className="bg-primary/10 p-4 rounded-lg">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Clock className="w-5 h-5 text-primary" />
-              <div className="text-2xl font-bold text-primary">{timeContext.available_hours_per_week}</div>
+        {/* AVAILABLE HOURS DISPLAY - MATCHING STEPS 2-6 FORMAT */}
+        <div style={{ 
+          backgroundColor: '#dbeafe', 
+          border: '3px solid #3b82f6', 
+          padding: '16px', 
+          borderRadius: '8px',
+          margin: '16px 0'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ 
+              fontSize: '20px', 
+              fontWeight: 'bold', 
+              color: '#1d4ed8',
+              marginBottom: '8px'
+            }}>
+              ⏱️ {timeContext.available_hours_per_week || 0} hours available
             </div>
-            <div className="text-sm text-muted-foreground">hours available per week for your 5 circles</div>
+            <div style={{ 
+              fontSize: '14px', 
+              color: '#1e40af',
+              fontWeight: '500'
+            }}>
+              Total hours per week for your 5 circles
+            </div>
+            <div style={{ 
+              fontSize: '12px', 
+              color: '#3730a3',
+              marginTop: '4px'
+            }}>
+              Work: {timeContext.work_hours_per_week || 0} | Sleep: {(timeContext.sleep_hours_per_night || 0) * 7} | Commute: {timeContext.commute_hours_per_week || 0}
+            </div>
           </div>
         </div>
       </div>
@@ -325,7 +359,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               color: '#1d4ed8',
               marginBottom: '8px'
             }}>
-              ⏱️ {getRemainingHours() || 0} hours remaining
+              ⏱️ {getRemainingHours || 0} hours remaining
             </div>
             <div style={{ 
               fontSize: '14px', 
@@ -340,7 +374,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               marginTop: '4px'
             }}>
               Total Available: {timeContext.available_hours_per_week || 0} | 
-              Already Allocated: {(timeContext.available_hours_per_week || 0) - (getRemainingHours() || 0)}
+              Already Allocated: {(timeContext.available_hours_per_week || 0) - (getRemainingHours || 0)}
             </div>
           </div>
         </div>
@@ -376,7 +410,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
             <div>
               <Label className="text-base font-medium">Ideal weekly hours</Label>
               <Slider
-                value={[data.ideal_hours_per_week || 5]}
+                value={[data.ideal_hours_per_week || 0]}
                 onValueChange={([value]) => updateCircleAllocation(currentCircle.name, { ideal_hours_per_week: value })}
                 max={getMaxHoursForCircle(currentCircle.name)}
                 min={0}
@@ -384,7 +418,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
                 className="mt-2"
               />
               <div className="text-sm text-muted-foreground mt-1">
-                {data.ideal_hours_per_week || 5} hours
+                {data.ideal_hours_per_week || 0} hours
                 {getMaxHoursForCircle(currentCircle.name) === 0 && (
                   <span className="text-red-500 block">No hours remaining</span>
                 )}
@@ -553,7 +587,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               </Button>
               <Button 
                 onClick={handleNext} 
-                disabled={isSubmitting || (step === 6 && getRemainingHours() < 0)} 
+                disabled={isSubmitting || (step === 6 && getRemainingHours < 0)} 
                 className="flex-1 bg-primary hover:bg-primary-hover"
               >
                 {isSubmitting ? (
@@ -570,9 +604,9 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               </Button>
             </div>
             
-            {step === 6 && getRemainingHours() < 0 && (
+            {step === 6 && getRemainingHours < 0 && (
               <div className="text-center text-red-600 text-sm mt-2">
-                ⚠️ You've allocated {Math.abs(getRemainingHours())} more hours than available. Please adjust your ideal hours.
+                ⚠️ You've allocated {Math.abs(getRemainingHours)} more hours than available. Please adjust your ideal hours.
               </div>
             )}
           </CardContent>
