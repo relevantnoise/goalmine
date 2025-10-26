@@ -15,7 +15,7 @@ import { EmailCollector } from "@/components/EmailCollector";
 import { OnboardingForm } from "@/components/OnboardingForm";
 import { SimpleGoalForm } from "@/components/SimpleGoalForm";
 import { Dashboard } from "@/components/Dashboard";
-import { FiveCircleOnboarding } from "@/components/FiveCircleOnboarding";
+import { SimpleCircleOnboarding } from "@/components/SimpleCircleOnboarding";
 import { FiveCircleFrameworkReport } from "@/components/FiveCircleFrameworkReport";
 import { FiveCircleGoalWorkshop } from "@/components/FiveCircleGoalWorkshop";
 import { WeeklyCircleCheckin } from "@/components/WeeklyCircleCheckin";
@@ -632,7 +632,7 @@ const Index = () => {
 
   if (currentView === 'five-circle-onboarding') {
     return (
-      <FiveCircleOnboarding 
+      <SimpleCircleOnboarding 
         onComplete={handleFiveCircleComplete}
         onBack={() => {
           console.log('🔙 Going back from 5 Circle onboarding');
