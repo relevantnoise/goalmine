@@ -46,12 +46,12 @@ export const LandingPage = ({
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
               <span className="text-primary">Master Life's Complexities</span><br />
-              with the 5 Circle Framework™
+              with The 6 Elements of Life™
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
               Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing the complexity of modern life. 
-              Our proprietary 5 Circle Framework™ transforms scattered goals into integrated life management.
+              Our proprietary 6 Elements of Life™ transforms scattered goals into integrated life management.
             </p>
 
             {/* 5 Circle Visual */}
@@ -114,11 +114,11 @@ export const LandingPage = ({
               </>}
           </div>
           
-          <p className="text-sm text-muted-foreground">30-day free trial • Everyone experiences the 5 Circle Framework™ • Upgrade for more goals across all circles</p>
+          <p className="text-sm text-muted-foreground">30-day free trial • Everyone experiences The 6 Elements of Life™ • Upgrade for more goals across all elements</p>
         </div>
       </div>
 
-      {/* 5 Circle Framework Deep Dive */}
+      {/* 6 Elements of Life Deep Dive */}
       <div className="bg-gradient-to-br from-blue-50 to-purple-50 py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
@@ -192,16 +192,16 @@ export const LandingPage = ({
                 </div>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                "I developed the 5 Circle Framework™ 30 years ago while juggling a demanding strategy role at AT&T, 
+                "I developed the original framework 30 years ago while juggling a demanding strategy role at AT&T, 
                 MBA studies at Rutgers, marriage, and two kids under 3. Traditional time management failed me. 
                 I needed a <strong>systematic approach to life complexity</strong> that worked for ambitious professionals 
-                who refuse to choose between success and fulfillment."
+                who refuse to choose between success and fulfillment. Now evolved into The 6 Elements of Life™."
               </p>
             </div>
 
             {/* How It Works */}
             <div className="text-center mb-12">
-              <h4 className="text-3xl font-bold mb-8">How the 5 Circle Framework™ Works</h4>
+              <h4 className="text-3xl font-bold mb-8">How The 6 Elements of Life™ Works</h4>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">

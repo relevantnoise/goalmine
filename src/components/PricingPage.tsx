@@ -145,7 +145,7 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>5 Circle Framework™ experience</span>
+                  <span>6 Elements of Life™ experience</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
@@ -225,7 +225,7 @@ export const PricingPage = ({
             </CardContent>
           </Card>
 
-          {/* Pro Plan Card - 5 Circle Framework */}
+          {/* Pro Plan Card - 6 Elements of Life */}
           <Card className="border-2 border-blue-600 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-medium">
               Most Popular
@@ -236,7 +236,7 @@ export const PricingPage = ({
                 <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
                   GET ALL 5 CIRCLES
                 </div>
-                <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all circles. Maximize your 5 Circle Framework experience.</p>
+                <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
                 <button 
                   onClick={() => setIsDanBioOpen(true)}
                   className="text-blue-600 hover:text-blue-700 text-sm underline cursor-pointer"
@@ -346,10 +346,10 @@ export const PricingPage = ({
           </Card>
         </div>
 
-        {/* 5 Circle Framework Showcase */}
+        {/* 6 Elements of Life Showcase */}
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 mb-12">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The 5 Circle Framework™</h2>
+            <h2 className="text-3xl font-bold mb-4">The 6 Elements of Life™</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               A revolutionary approach to managing life's complexity, developed over 30 years and proven with hundreds of ambitious professionals
             </p>
@@ -367,7 +367,7 @@ export const PricingPage = ({
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4">The 5 Circle Solution</h3>
+              <h3 className="text-xl font-semibold mb-4">The 6 Elements Solution</h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li>• <strong>Spiritual:</strong> Meaning, purpose, inner peace</li>
                 <li>• <strong>Friends & Family:</strong> Relationships that matter</li>
