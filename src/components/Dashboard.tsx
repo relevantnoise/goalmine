@@ -328,7 +328,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
 
               {/* Subscription Status */}
               <div className="bg-card border rounded-lg p-4">
-                <h4 className="font-medium mb-3">Your Plan:</h4>
+                <h4 className="font-medium mb-3">Your Current Plan:</h4>
                 <div className="text-sm space-y-2">
                   {subscription.subscribed ? (
                     (() => {
