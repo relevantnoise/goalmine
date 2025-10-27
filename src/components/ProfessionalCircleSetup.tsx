@@ -233,12 +233,12 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
             {currentSection === 'circles' && (
               <div className="space-y-6">
                 <Card className="shadow-lg border-0">
-                  <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+                  <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                     <CardTitle className="flex items-center gap-3 text-2xl">
                       <TrendingUp className="w-7 h-7" />
                       Your 6 Life Elements
                     </CardTitle>
-                    <p className="text-purple-100">Allocate your weekly hours across these essential life elements. Focus on importance and ideal time investment.</p>
+                    <p className="text-blue-100">Allocate your weekly hours across these essential life elements. Focus on importance and ideal time investment.</p>
                   </CardHeader>
                 </Card>
 
@@ -326,7 +326,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   <Button 
                     onClick={() => setCurrentSection('work')}
                     disabled={allocatedHours === 0}
-                    className="px-8 py-3 text-lg bg-purple-600 hover:bg-purple-700"
+                    className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
                   >
                     Continue to Work Assessment
                   </Button>
@@ -337,12 +337,12 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
             {/* Work Happiness Section */}
             {currentSection === 'work' && (
               <Card className="shadow-lg border-0">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+                <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                   <CardTitle className="flex items-center gap-3 text-2xl">
                     <Briefcase className="w-7 h-7" />
                     Business Happiness Assessment
                   </CardTitle>
-                  <p className="text-green-100">
+                  <p className="text-blue-100">
                     This proven formula was developed over 10 years of coaching high-achieving professionals
                   </p>
                 </CardHeader>
@@ -406,7 +406,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                     <Button 
                       onClick={handleSubmit}
                       disabled={isSubmitting}
-                      className="px-8 py-3 text-lg bg-green-600 hover:bg-green-700"
+                      className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
                     >
                       {isSubmitting ? (
                         <>
