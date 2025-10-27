@@ -429,17 +429,53 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
               <Card className="shadow-lg border-0 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <Clock className="w-5 h-5" />
-                    Hour Allocation
+                    {currentSection === 'circles' ? (
+                      <>
+                        <Clock className="w-5 h-5" />
+                        Hour Allocation
+                      </>
+                    ) : (
+                      <>
+                        <Briefcase className="w-5 h-5" />
+                        Business Happiness
+                      </>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-center p-4 bg-white/10 rounded-lg">
-                    <div className="text-3xl font-bold text-blue-300">
-                      168
-                    </div>
-                    <div className="text-sm text-blue-200">Total Weekly Hours</div>
-                  </div>
+                  {currentSection === 'circles' ? (
+                    <>
+                      <div className="text-center p-4 bg-white/10 rounded-lg">
+                        <div className="text-3xl font-bold text-blue-300">
+                          168
+                        </div>
+                        <div className="text-sm text-blue-200">Total Weekly Hours</div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-center p-4 bg-white/10 rounded-lg">
+                        <div className="text-3xl font-bold text-orange-300">
+                          {((workHappiness.impact_current + workHappiness.fun_current + workHappiness.money_current + workHappiness.remote_current) / 4).toFixed(1)}
+                        </div>
+                        <div className="text-sm text-orange-200">Current Score</div>
+                      </div>
+                      
+                      <div className="text-center p-4 bg-white/10 rounded-lg">
+                        <div className="text-3xl font-bold text-green-300">
+                          {((workHappiness.impact_desired + workHappiness.fun_desired + workHappiness.money_desired + workHappiness.remote_desired) / 4).toFixed(1)}
+                        </div>
+                        <div className="text-sm text-green-200">Desired Score</div>
+                      </div>
+                      
+                      <div className="text-center p-4 bg-white/10 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-300">
+                          +{(((workHappiness.impact_desired + workHappiness.fun_desired + workHappiness.money_desired + workHappiness.remote_desired) / 4) - ((workHappiness.impact_current + workHappiness.fun_current + workHappiness.money_current + workHappiness.remote_current) / 4)).toFixed(1)}
+                        </div>
+                        <div className="text-sm text-blue-200">Growth Target</div>
+                      </div>
+                    </>
+                  )}
 
                   {currentSection === 'circles' && (
                     <>
@@ -471,7 +507,11 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
                   <div className="space-y-2 text-sm">
                     <div className="text-center text-blue-200 leading-relaxed">
-                      Allocate your 168 weekly hours across all 6 essential life elements for optimal balance
+                      {currentSection === 'circles' ? (
+                        "Allocate your 168 weekly hours across all 6 essential life elements for optimal balance"
+                      ) : (
+                        "Dan Lynn's proven 10-year formula for measuring and optimizing work satisfaction"
+                      )}
                     </div>
                   </div>
                 </CardContent>
