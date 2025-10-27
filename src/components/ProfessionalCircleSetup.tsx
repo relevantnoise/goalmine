@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -14,12 +14,6 @@ interface ProfessionalCircleSetupProps {
   onBack: () => void;
 }
 
-interface TimeContext {
-  work_hours_per_week: number;
-  sleep_hours_per_night: number;
-  commute_hours_per_week: number;
-  available_hours_per_week: number;
-}
 
 interface CircleAllocation {
   circle_name: string;
@@ -96,12 +90,6 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentSection, setCurrentSection] = useState<'circles' | 'work'>('circles');
 
-  const [timeContext, setTimeContext] = useState<TimeContext>({
-    work_hours_per_week: 40,
-    sleep_hours_per_night: 8,
-    commute_hours_per_week: 5,
-    available_hours_per_week: 0
-  });
 
   const [circleAllocations, setCircleAllocations] = useState<Record<string, CircleAllocation>>({});
   const [workHappiness, setWorkHappiness] = useState<WorkHappiness>({
@@ -115,16 +103,6 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     remote_desired: 8
   });
 
-  // Calculate available hours
-  useEffect(() => {
-    const workHours = timeContext.work_hours_per_week;
-    const sleepHours = timeContext.sleep_hours_per_night * 7;
-    const commuteHours = timeContext.commute_hours_per_week;
-    const totalWeekHours = 168; // 7 days * 24 hours
-    
-    const available = totalWeekHours - workHours - sleepHours - commuteHours;
-    setTimeContext(prev => ({ ...prev, available_hours_per_week: available }));
-  }, [timeContext.work_hours_per_week, timeContext.sleep_hours_per_night, timeContext.commute_hours_per_week]);
 
   // Calculate remaining hours for real-time updates
   const allocatedHours = useMemo(() => {
@@ -177,10 +155,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     setIsSubmitting(true);
     
     try {
-      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('create-circle-framework-working', {
+      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('create-six-circle-framework', {
         body: {
           user_email: user.email,
-          timeContext,
           circleAllocations: completeCircleAllocations,
           workHappiness
         }
@@ -190,7 +167,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
       toast({
         title: "🎯 Life Management System Created!",
-        description: "Your 5 Circle Framework™ is ready. Time to set some goals!",
+        description: "Your 6 Circle Framework™ is ready. Time to set some goals!",
         duration: 5000
       });
 
@@ -217,46 +194,33 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       <div className="max-w-6xl mx-auto px-6 pt-8 pb-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            5 Circle Framework™ Setup
+            6 Circle Framework™ Setup
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Build your foundation for success. This proven system helps high-achieving professionals 
-            balance life complexity and achieve sustainable peak performance.
+            Build your foundation for success. This comprehensive system helps high-achieving professionals 
+            balance all aspects of life including work, sleep, relationships, health, growth, and purpose.
           </p>
         </div>
 
         {/* Progress Tracker */}
         <div className="flex justify-center mb-12">
-          <div className="flex items-center space-x-4">
-            <div className={`flex items-center ${currentSection === 'time' ? 'text-blue-600' : 'text-green-600'}`}>
+          <div className="flex items-center space-x-8">
+            <div className={`flex items-center ${currentSection === 'circles' ? 'text-blue-600' : 'text-green-600'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentSection === 'time' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-green-100'
+                currentSection === 'circles' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-green-100'
               }`}>
-                {currentSection === 'time' ? '1' : <CheckCircle className="w-5 h-5" />}
+                {currentSection === 'circles' ? '1' : <CheckCircle className="w-5 h-5" />}
               </div>
-              <span className="ml-2 font-medium">Time Reality</span>
+              <span className="ml-2 font-medium">6 Life Circles</span>
             </div>
-            <div className="w-16 h-px bg-gray-300"></div>
-            <div className={`flex items-center ${
-              currentSection === 'circles' ? 'text-blue-600' : 
-              currentSection === 'work' ? 'text-green-600' : 'text-gray-400'
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentSection === 'circles' ? 'bg-blue-100 border-2 border-blue-600' : 
-                currentSection === 'work' ? 'bg-green-100' : 'bg-gray-100'
-              }`}>
-                {currentSection === 'work' ? <CheckCircle className="w-5 h-5" /> : '2'}
-              </div>
-              <span className="ml-2 font-medium">Life Circles</span>
-            </div>
-            <div className="w-16 h-px bg-gray-300"></div>
+            <div className="w-24 h-px bg-gray-300"></div>
             <div className={`flex items-center ${currentSection === 'work' ? 'text-blue-600' : 'text-gray-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                 currentSection === 'work' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-gray-100'
               }`}>
-                3
+                2
               </div>
-              <span className="ml-2 font-medium">Work Happiness</span>
+              <span className="ml-2 font-medium">Work Happiness Assessment</span>
             </div>
           </div>
         </div>
@@ -265,105 +229,16 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
           {/* Main Content */}
           <div className="lg:col-span-3">
             
-            {/* Time Reality Section */}
-            {currentSection === 'time' && (
-              <Card className="shadow-lg border-0">
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <Clock className="w-7 h-7" />
-                    Weekly Time Reality Check
-                  </CardTitle>
-                  <p className="text-blue-100">Let's understand your current time allocation</p>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold text-gray-700">Work Hours per Week</Label>
-                      <Slider
-                        value={[timeContext.work_hours_per_week]}
-                        onValueChange={([value]) => setTimeContext(prev => ({ ...prev, work_hours_per_week: value }))}
-                        max={100}
-                        min={0}
-                        step={5}
-                        className="mt-4"
-                      />
-                      <div className="text-center">
-                        <span className="text-2xl font-bold text-blue-600">{timeContext.work_hours_per_week}</span>
-                        <span className="text-gray-500 ml-1">hours</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold text-gray-700">Sleep Hours per Night</Label>
-                      <Slider
-                        value={[timeContext.sleep_hours_per_night]}
-                        onValueChange={([value]) => setTimeContext(prev => ({ ...prev, sleep_hours_per_night: value }))}
-                        max={10}
-                        min={6}
-                        step={0.5}
-                        className="mt-4"
-                      />
-                      <div className="text-center">
-                        <span className="text-2xl font-bold text-green-600">{timeContext.sleep_hours_per_night}</span>
-                        <span className="text-gray-500 ml-1">hours</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <Label className="text-lg font-semibold text-gray-700">Commute Hours per Week</Label>
-                      <Slider
-                        value={[timeContext.commute_hours_per_week]}
-                        onValueChange={([value]) => setTimeContext(prev => ({ ...prev, commute_hours_per_week: value }))}
-                        max={20}
-                        min={0}
-                        step={1}
-                        className="mt-4"
-                      />
-                      <div className="text-center">
-                        <span className="text-2xl font-bold text-orange-600">{timeContext.commute_hours_per_week}</span>
-                        <span className="text-gray-500 ml-1">hours</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 pt-8 border-t">
-                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl border border-purple-200">
-                      <div className="text-center">
-                        <div className="text-4xl font-bold text-purple-600 mb-2">
-                          {timeContext.available_hours_per_week}
-                        </div>
-                        <div className="text-lg text-purple-800 font-medium">
-                          Hours Available for Your 5 Life Circles
-                        </div>
-                        <div className="text-sm text-purple-600 mt-2">
-                          Work: {timeContext.work_hours_per_week}h | Sleep: {timeContext.sleep_hours_per_night * 7}h | Commute: {timeContext.commute_hours_per_week}h
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end mt-8">
-                    <Button 
-                      onClick={() => setCurrentSection('work')}
-                      className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
-                    >
-                      Continue to Business Happiness
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Circles Section */}
+            {/* 6 Circles Section */}
             {currentSection === 'circles' && (
               <div className="space-y-6">
                 <Card className="shadow-lg border-0">
                   <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
                     <CardTitle className="flex items-center gap-3 text-2xl">
                       <TrendingUp className="w-7 h-7" />
-                      Your 5 Life Circles
+                      Your 6 Life Circles
                     </CardTitle>
-                    <p className="text-purple-100">Allocate your {timeContext.available_hours_per_week} available hours across these key life areas</p>
+                    <p className="text-purple-100">Allocate your weekly hours across these essential life areas. Focus on importance and ideal time investment.</p>
                   </CardHeader>
                 </Card>
 
@@ -424,7 +299,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               <Slider
                                 value={[data.ideal_hours_per_week || 0]}
                                 onValueChange={([value]) => updateCircleAllocation(circle.name, { ideal_hours_per_week: value })}
-                                max={Math.min(100, timeContext.available_hours_per_week)}
+                                max={100}
                                 min={0}
                                 step={circle.name === 'Spiritual' ? 0.5 : 1}
                                 className="mt-2"
@@ -561,9 +436,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                 <CardContent className="space-y-4">
                   <div className="text-center p-4 bg-white/10 rounded-lg">
                     <div className="text-3xl font-bold text-blue-300">
-                      {timeContext.available_hours_per_week}
+                      168
                     </div>
-                    <div className="text-sm text-blue-200">Total Available</div>
+                    <div className="text-sm text-blue-200">Total Weekly Hours</div>
                   </div>
 
                   {currentSection === 'circles' && (
@@ -595,17 +470,8 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   )}
 
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-blue-200">Work:</span>
-                      <span className="text-white">{timeContext.work_hours_per_week}h</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-blue-200">Sleep:</span>
-                      <span className="text-white">{timeContext.sleep_hours_per_night * 7}h</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-blue-200">Commute:</span>
-                      <span className="text-white">{timeContext.commute_hours_per_week}h</span>
+                    <div className="text-center text-blue-200">
+                      Allocate your 168 weekly hours across all 6 life circles
                     </div>
                   </div>
                 </CardContent>
