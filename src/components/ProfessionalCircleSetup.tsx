@@ -265,48 +265,48 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                             <Label className="text-sm font-medium text-gray-700">
                               Importance Level (1-10)
                             </Label>
+                            <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
+                              {data.importance_level || 5}/10
+                            </div>
                             <Slider
                               value={[data.importance_level || 5]}
                               onValueChange={([value]) => updateCircleAllocation(element.name, { importance_level: value })}
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-2"
+                              className="mt-1"
                             />
-                            <div className="text-center text-sm text-gray-600 mt-1">
-                              {data.importance_level || 5}/10
-                            </div>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <Label className="text-sm font-medium text-gray-700">Current Hours/Week</Label>
+                              <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
+                                {data.current_hours_per_week || 0}h
+                              </div>
                               <Slider
                                 value={[data.current_hours_per_week || 0]}
                                 onValueChange={([value]) => updateCircleAllocation(element.name, { current_hours_per_week: value })}
                                 max={100}
                                 min={0}
                                 step={element.name === 'Spiritual' ? 0.5 : 1}
-                                className="mt-2"
+                                className="mt-1"
                               />
-                              <div className="text-center text-sm font-medium text-gray-700 mt-1">
-                                {data.current_hours_per_week || 0}h
-                              </div>
                             </div>
 
                             <div>
                               <Label className="text-sm font-medium text-gray-700">Ideal Hours/Week</Label>
+                              <div className="text-center text-sm font-medium text-blue-600 mt-1 mb-2">
+                                {data.ideal_hours_per_week || 0}h
+                              </div>
                               <Slider
                                 value={[data.ideal_hours_per_week || 0]}
                                 onValueChange={([value]) => updateCircleAllocation(element.name, { ideal_hours_per_week: value })}
                                 max={100}
                                 min={0}
                                 step={element.name === 'Spiritual' ? 0.5 : 1}
-                                className="mt-2"
+                                className="mt-1"
                               />
-                              <div className="text-center text-sm font-medium text-blue-600 mt-1">
-                                {data.ideal_hours_per_week || 0}h
-                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -363,32 +363,32 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                         <div className="space-y-4">
                           <div>
                             <Label className="text-sm font-medium text-gray-700">Current Level</Label>
+                            <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
+                              {workHappiness[`${metric.key}_current`]}/10
+                            </div>
                             <Slider
                               value={[workHappiness[`${metric.key}_current`]]}
                               onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, [`${metric.key}_current`]: value }))}
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-2"
+                              className="mt-1"
                             />
-                            <div className="text-center text-sm text-gray-600 mt-1">
-                              {workHappiness[`${metric.key}_current`]}/10
-                            </div>
                           </div>
 
                           <div>
                             <Label className="text-sm font-medium text-gray-700">Desired Level</Label>
+                            <div className="text-center text-sm font-medium text-blue-600 mt-1 mb-2">
+                              {workHappiness[`${metric.key}_desired`]}/10
+                            </div>
                             <Slider
                               value={[workHappiness[`${metric.key}_desired`]]}
                               onValueChange={([value]) => setWorkHappiness(prev => ({ ...prev, [`${metric.key}_desired`]: value }))}
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-2"
+                              className="mt-1"
                             />
-                            <div className="text-center text-sm text-blue-600 mt-1">
-                              {workHappiness[`${metric.key}_desired`]}/10
-                            </div>
                           </div>
                         </div>
                       </div>
