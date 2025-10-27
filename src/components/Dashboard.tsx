@@ -178,7 +178,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                           return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
                         })() : "First goal is free. Upgrade to create more."
                       ) : (
-                        "Complete your 5 Circle Framework™ to start creating goals"
+                        "Complete your 6 Elements of Life™ to start creating goals"
                       )}
                     </p>
                   </div>
@@ -219,7 +219,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     className="w-full flex items-center gap-2"
                   >
                     <Settings className="w-4 h-4" />
-                    Edit 5 Circle Framework™
+                    Edit 6 Elements of Life™
                   </Button>
                 </div>
               )}

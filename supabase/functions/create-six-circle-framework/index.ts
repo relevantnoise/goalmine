@@ -13,7 +13,7 @@ serve(async (req) => {
   try {
     const { user_email, circleAllocations, workHappiness } = await req.json()
 
-    console.log('🎯 Creating 6 Circle Framework for:', user_email)
+    console.log('🎯 Creating 6 Elements of Life for:', user_email)
 
     // Get database connection info from environment
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
@@ -26,14 +26,14 @@ serve(async (req) => {
       'Prefer': 'return=representation'
     }
 
-    // 1. Create framework record without timeContext (6 Circle Framework)
-    console.log('📝 Step 1: Creating 6 Circle Framework record...')
+    // 1. Create framework record without timeContext (6 Elements of Life)
+    console.log('📝 Step 1: Creating 6 Elements of Life record...')
     const frameworkResponse = await fetch(supabaseUrl + 'user_circle_frameworks', {
       method: 'POST',
       headers,
       body: JSON.stringify({
         user_email,
-        // No timeContext fields needed for 6 Circle Framework
+        // No timeContext fields needed for 6 Elements of Life
         work_hours_per_week: null,
         sleep_hours_per_night: null,
         commute_hours_per_week: null,
@@ -50,10 +50,10 @@ serve(async (req) => {
     const frameworks = await frameworkResponse.json()
     const framework = frameworks[0]
     
-    console.log('✅ 6 Circle Framework created:', framework.id)
+    console.log('✅ 6 Elements of Life created:', framework.id)
 
-    // 2. Create circle allocations for all 6 circles
-    console.log('📝 Step 2: Creating 6 circle allocations...')
+    // 2. Create element allocations for all 6 elements
+    console.log('📝 Step 2: Creating 6 element allocations...')
     const circleInserts = Object.values(circleAllocations).map(allocation => ({
       framework_id: framework.id,
       circle_name: allocation.circle_name,
@@ -74,7 +74,7 @@ serve(async (req) => {
       throw new Error(`Circle allocations failed: ${errorText}`)
     }
 
-    console.log('✅ 6 Circle allocations created:', circleInserts.length)
+    console.log('✅ 6 Element allocations created:', circleInserts.length)
 
     // 3. Create work happiness metrics
     console.log('📝 Step 3: Creating work happiness metrics...')
@@ -101,13 +101,13 @@ serve(async (req) => {
     }
 
     console.log('✅ Work happiness metrics created')
-    console.log('🎯 6 CIRCLE FRAMEWORK CREATION COMPLETE!')
+    console.log('🎯 6 ELEMENTS OF LIFE CREATION COMPLETE!')
 
     return new Response(
       JSON.stringify({
         success: true,
         framework_id: framework.id,
-        message: '6 Circle Framework™ created successfully!',
+        message: '6 Elements of Life™ created successfully!',
         circles_count: circleInserts.length
       }),
       {
@@ -117,13 +117,13 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('💥 6 CIRCLE FRAMEWORK ERROR:', error)
+    console.error('💥 6 ELEMENTS OF LIFE ERROR:', error)
     console.error('💥 Error details:', error.message)
     
     return new Response(
       JSON.stringify({
         error: error.message,
-        details: '6 Circle Framework creation failed',
+        details: '6 Elements of Life creation failed',
         timestamp: new Date().toISOString()
       }),
       {

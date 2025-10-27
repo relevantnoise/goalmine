@@ -33,7 +33,7 @@ interface WorkHappiness {
   remote_desired: number;
 }
 
-const circles = [
+const elements = [
   {
     name: 'Work',
     icon: Briefcase,
@@ -141,14 +141,14 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       return;
     }
 
-    // Ensure all circles have data
+    // Ensure all elements have data
     const completeCircleAllocations = {};
-    circles.forEach(circle => {
-      completeCircleAllocations[circle.name] = {
-        circle_name: circle.name,
-        importance_level: circleAllocations[circle.name]?.importance_level || 5,
-        current_hours_per_week: circleAllocations[circle.name]?.current_hours_per_week || 0,
-        ideal_hours_per_week: circleAllocations[circle.name]?.ideal_hours_per_week || 0
+    elements.forEach(element => {
+      completeCircleAllocations[element.name] = {
+        circle_name: element.name,
+        importance_level: circleAllocations[element.name]?.importance_level || 5,
+        current_hours_per_week: circleAllocations[element.name]?.current_hours_per_week || 0,
+        ideal_hours_per_week: circleAllocations[element.name]?.ideal_hours_per_week || 0
       };
     });
 
@@ -167,7 +167,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
       toast({
         title: "🎯 Life Management System Created!",
-        description: "Your 6 Circle Framework™ is ready. Time to set some goals!",
+        description: "Your 6 Elements of Life™ is ready. Time to set some goals!",
         duration: 5000
       });
 
@@ -194,11 +194,11 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       <div className="max-w-6xl mx-auto px-6 pt-8 pb-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            6 Circle Framework™ Setup
+            The 6 Elements of Life™ Setup
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Build your foundation for success. This comprehensive system helps high-achieving professionals 
-            balance all aspects of life including work, sleep, relationships, health, growth, and purpose.
+            balance all essential life elements including work, sleep, relationships, health, growth, and purpose.
           </p>
         </div>
 
@@ -211,7 +211,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
               }`}>
                 {currentSection === 'circles' ? '1' : <CheckCircle className="w-5 h-5" />}
               </div>
-              <span className="ml-2 font-medium">6 Life Circles</span>
+              <span className="ml-2 font-medium">6 Life Elements</span>
             </div>
             <div className="w-24 h-px bg-gray-300"></div>
             <div className={`flex items-center ${currentSection === 'work' ? 'text-blue-600' : 'text-gray-400'}`}>
@@ -236,27 +236,27 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
                     <CardTitle className="flex items-center gap-3 text-2xl">
                       <TrendingUp className="w-7 h-7" />
-                      Your 6 Life Circles
+                      Your 6 Life Elements
                     </CardTitle>
-                    <p className="text-purple-100">Allocate your weekly hours across these essential life areas. Focus on importance and ideal time investment.</p>
+                    <p className="text-purple-100">Allocate your weekly hours across these essential life elements. Focus on importance and ideal time investment.</p>
                   </CardHeader>
                 </Card>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {circles.map((circle) => {
-                    const IconComponent = circle.icon;
-                    const data = circleAllocations[circle.name] || {};
+                  {elements.map((element) => {
+                    const IconComponent = element.icon;
+                    const data = circleAllocations[element.name] || {};
                     
                     return (
-                      <Card key={circle.name} className={`border-2 ${circle.bgColor} hover:shadow-lg transition-shadow`}>
+                      <Card key={element.name} className={`border-2 ${element.bgColor} hover:shadow-lg transition-shadow`}>
                         <CardHeader className="pb-4">
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-white rounded-lg shadow-sm">
-                              <IconComponent className={`w-6 h-6 ${circle.color}`} />
+                              <IconComponent className={`w-6 h-6 ${element.color}`} />
                             </div>
                             <div>
-                              <CardTitle className="text-lg">{circle.name}</CardTitle>
-                              <p className="text-sm text-gray-600">{circle.description}</p>
+                              <CardTitle className="text-lg">{element.name}</CardTitle>
+                              <p className="text-sm text-gray-600">{element.description}</p>
                             </div>
                           </div>
                         </CardHeader>
@@ -267,7 +267,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                             </Label>
                             <Slider
                               value={[data.importance_level || 5]}
-                              onValueChange={([value]) => updateCircleAllocation(circle.name, { importance_level: value })}
+                              onValueChange={([value]) => updateCircleAllocation(element.name, { importance_level: value })}
                               max={10}
                               min={1}
                               step={1}
@@ -283,10 +283,10 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               <Label className="text-sm font-medium text-gray-700">Current Hours/Week</Label>
                               <Slider
                                 value={[data.current_hours_per_week || 0]}
-                                onValueChange={([value]) => updateCircleAllocation(circle.name, { current_hours_per_week: value })}
+                                onValueChange={([value]) => updateCircleAllocation(element.name, { current_hours_per_week: value })}
                                 max={100}
                                 min={0}
-                                step={circle.name === 'Spiritual' ? 0.5 : 1}
+                                step={element.name === 'Spiritual' ? 0.5 : 1}
                                 className="mt-2"
                               />
                               <div className="text-center text-sm font-medium text-gray-700 mt-1">
@@ -298,10 +298,10 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               <Label className="text-sm font-medium text-gray-700">Ideal Hours/Week</Label>
                               <Slider
                                 value={[data.ideal_hours_per_week || 0]}
-                                onValueChange={([value]) => updateCircleAllocation(circle.name, { ideal_hours_per_week: value })}
+                                onValueChange={([value]) => updateCircleAllocation(element.name, { ideal_hours_per_week: value })}
                                 max={100}
                                 min={0}
-                                step={circle.name === 'Spiritual' ? 0.5 : 1}
+                                step={element.name === 'Spiritual' ? 0.5 : 1}
                                 className="mt-2"
                               />
                               <div className="text-center text-sm font-medium text-blue-600 mt-1">
@@ -471,7 +471,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
                   <div className="space-y-2 text-sm">
                     <div className="text-center text-blue-200 leading-relaxed">
-                      Allocate your 168 weekly hours across all 6 essential life circles for optimal balance
+                      Allocate your 168 weekly hours across all 6 essential life elements for optimal balance
                     </div>
                   </div>
                 </CardContent>
