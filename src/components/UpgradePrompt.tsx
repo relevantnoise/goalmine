@@ -32,10 +32,10 @@ export const UpgradePrompt = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Crown className="w-4 h-4 text-primary" />
-            <h4 className="font-semibold text-foreground text-base">5 Circle Framework™ Available!</h4>
+            <h4 className="font-semibold text-foreground text-base">Ready to Level Up?</h4>
           </div>
           <p className="text-xs text-muted-foreground mb-3">
-            Revolutionary life management system + Personal Plan options
+            Upgrade for more goals and premium features
           </p>
           <Button onClick={() => navigate('/upgrade')} size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
             <Crown className="w-3 h-3 mr-1" />
