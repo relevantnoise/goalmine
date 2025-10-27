@@ -62,19 +62,18 @@ serve(async (req) => {
 
     console.log('✅ Found profile - Email:', userProfile.email, 'Firebase UID:', userProfile.id);
 
-    // 1. Create framework record using Supabase client (same pattern as create-goal)
+    // 1. Create framework record using direct SQL query
     console.log('📝 Step 1: Creating 6 Elements of Life record...')
     const { data: frameworkData, error: frameworkError } = await supabaseAdmin
       .from('user_circle_frameworks')
       .insert({
         user_email,
-        // Default timeContext values for 6 Elements of Life (no longer collected but DB expects them)
         work_hours_per_week: 40,
         sleep_hours_per_night: 8,
         commute_hours_per_week: 5,
         available_hours_per_week: 115
       })
-      .select()
+      .select('id')
       .single();
 
     if (frameworkError) {
@@ -86,7 +85,7 @@ serve(async (req) => {
     
     console.log('✅ 6 Elements of Life created:', framework.id)
 
-    // 2. Create element allocations for all 6 elements using Supabase client
+    // 2. Create element allocations
     console.log('📝 Step 2: Creating 6 element allocations...')
     const circleInserts = Object.values(circleAllocations).map(allocation => ({
       framework_id: framework.id,
@@ -94,12 +93,11 @@ serve(async (req) => {
       importance_level: allocation.importance_level,
       current_hours_per_week: allocation.current_hours_per_week,
       ideal_hours_per_week: allocation.ideal_hours_per_week
-    }))
+    }));
 
-    const { data: circleData, error: circleError } = await supabaseAdmin
+    const { error: circleError } = await supabaseAdmin
       .from('circle_time_allocations')
-      .insert(circleInserts)
-      .select();
+      .insert(circleInserts);
 
     if (circleError) {
       console.error('❌ Circle allocations failed:', circleError)
@@ -108,9 +106,9 @@ serve(async (req) => {
 
     console.log('✅ 6 Element allocations created:', circleInserts.length)
 
-    // 3. Create work happiness metrics using Supabase client
+    // 3. Create work happiness metrics
     console.log('📝 Step 3: Creating work happiness metrics...')
-    const { data: happinessData, error: happinessError } = await supabaseAdmin
+    const { error: happinessError } = await supabaseAdmin
       .from('work_happiness_metrics')
       .insert({
         framework_id: framework.id,
@@ -122,9 +120,7 @@ serve(async (req) => {
         money_desired: workHappiness.money_desired,
         remote_current: workHappiness.remote_current,
         remote_desired: workHappiness.remote_desired
-      })
-      .select()
-      .single();
+      });
 
     if (happinessError) {
       console.error('❌ Work happiness failed:', happinessError)
