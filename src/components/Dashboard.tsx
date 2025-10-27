@@ -122,7 +122,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     ) : (
                       <>
                         <Plus className="w-4 h-4 mr-2" />
-                        Create Your First Goal
+                        Get Started
                       </>
                     )}
                   </Button>
