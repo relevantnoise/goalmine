@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Heart, Users, Briefcase, BookOpen, Activity, Clock, CheckCircle, TrendingUp } from "lucide-react";
+import { Heart, Users, Briefcase, BookOpen, Activity, Clock, CheckCircle, TrendingUp, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
@@ -41,12 +41,20 @@ interface WorkHappiness {
 
 const circles = [
   {
-    name: 'Spiritual',
-    icon: Heart,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50 border-purple-200',
-    description: 'Inner purpose, values, meaning, meditation, prayer',
-    placeholder: 'Meditation, prayer, values reflection'
+    name: 'Work',
+    icon: Briefcase,
+    color: 'text-green-600',
+    bgColor: 'bg-green-50 border-green-200',
+    description: 'Career, professional development (including commute time)',
+    placeholder: 'Core work, meetings, professional growth, commuting'
+  },
+  {
+    name: 'Sleep',
+    icon: Moon,
+    color: 'text-indigo-600',
+    bgColor: 'bg-indigo-50 border-indigo-200',
+    description: 'Rest, recovery, sleep optimization',
+    placeholder: 'Nightly sleep, naps, wind-down routines'
   },
   {
     name: 'Friends & Family',
@@ -57,12 +65,12 @@ const circles = [
     placeholder: 'Family dinners, friend meetups, relationship time'
   },
   {
-    name: 'Work',
-    icon: Briefcase,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50 border-green-200',
-    description: 'Career, professional development, income',
-    placeholder: 'Core work, meetings, professional growth'
+    name: 'Health & Fitness',
+    icon: Activity,
+    color: 'text-red-600',
+    bgColor: 'bg-red-50 border-red-200',
+    description: 'Physical health, exercise, nutrition, energy',
+    placeholder: 'Exercise, meal prep, health appointments'
   },
   {
     name: 'Personal Development',
@@ -73,12 +81,12 @@ const circles = [
     placeholder: 'Reading, courses, skill development'
   },
   {
-    name: 'Health & Fitness',
-    icon: Activity,
-    color: 'text-red-600',
-    bgColor: 'bg-red-50 border-red-200',
-    description: 'Physical health, exercise, nutrition, energy',
-    placeholder: 'Exercise, meal prep, health appointments'
+    name: 'Spiritual',
+    icon: Heart,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50 border-purple-200',
+    description: 'Inner purpose, values, meaning, meditation, prayer',
+    placeholder: 'Meditation, prayer, values reflection'
   }
 ];
 
@@ -86,7 +94,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
   const { user } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentSection, setCurrentSection] = useState<'time' | 'circles' | 'work'>('time');
+  const [currentSection, setCurrentSection] = useState<'circles' | 'work'>('circles');
 
   const [timeContext, setTimeContext] = useState<TimeContext>({
     work_hours_per_week: 40,
@@ -119,20 +127,17 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
   }, [timeContext.work_hours_per_week, timeContext.sleep_hours_per_night, timeContext.commute_hours_per_week]);
 
   // Calculate remaining hours for real-time updates
-  const remainingHours = useMemo(() => {
-    const totalIdealHours = Object.values(circleAllocations).reduce(
-      (sum, allocation) => sum + (allocation.ideal_hours_per_week || 0), 
-      0
-    );
-    return Math.max(0, timeContext.available_hours_per_week - totalIdealHours);
-  }, [circleAllocations, timeContext.available_hours_per_week]);
-
   const allocatedHours = useMemo(() => {
     return Object.values(circleAllocations).reduce(
       (sum, allocation) => sum + (allocation.ideal_hours_per_week || 0), 
       0
     );
   }, [circleAllocations]);
+
+  const remainingHours = useMemo(() => {
+    const totalWeekHours = 168; // 7 days * 24 hours
+    return Math.max(0, totalWeekHours - allocatedHours);
+  }, [allocatedHours]);
 
   const updateCircleAllocation = (circleName: string, updates: Partial<CircleAllocation>) => {
     setCircleAllocations(prev => ({
@@ -339,10 +344,10 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
                   <div className="flex justify-end mt-8">
                     <Button 
-                      onClick={() => setCurrentSection('circles')}
+                      onClick={() => setCurrentSection('work')}
                       className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
                     >
-                      Continue to Life Circles
+                      Continue to Business Happiness
                     </Button>
                   </div>
                 </CardContent>
@@ -438,10 +443,10 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                 <div className="flex justify-between mt-8">
                   <Button 
                     variant="outline" 
-                    onClick={() => setCurrentSection('time')}
+                    onClick={onBack}
                     className="px-6 py-2"
                   >
-                    ← Back to Time Setup
+                    ← Back to Dashboard
                   </Button>
                   <Button 
                     onClick={() => setCurrentSection('work')}
