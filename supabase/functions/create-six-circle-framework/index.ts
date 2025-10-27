@@ -33,11 +33,11 @@ serve(async (req) => {
       headers,
       body: JSON.stringify({
         user_email,
-        // No timeContext fields needed for 6 Elements of Life
-        work_hours_per_week: null,
-        sleep_hours_per_night: null,
-        commute_hours_per_week: null,
-        available_hours_per_week: null
+        // Default timeContext values for 6 Elements of Life (no longer collected but DB expects them)
+        work_hours_per_week: 40,
+        sleep_hours_per_night: 8,
+        commute_hours_per_week: 5,
+        available_hours_per_week: 115
       })
     })
 
