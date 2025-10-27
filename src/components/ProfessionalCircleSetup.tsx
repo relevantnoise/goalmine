@@ -155,15 +155,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     setIsSubmitting(true);
     
     try {
-      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('create-simple-circle-framework-bulletproof', {
+      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('save-framework-to-profile', {
         body: {
           user_email: user.email,
-          timeContext: {
-            work_hours_per_week: 40,
-            sleep_hours_per_night: 8,
-            commute_hours_per_week: 5,
-            available_hours_per_week: 115
-          },
           circleAllocations: completeCircleAllocations,
           workHappiness
         }
