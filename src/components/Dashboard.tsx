@@ -162,7 +162,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">
-                      {hasFramework ? "Add More Goals" : "Set Up Your Framework"}
+                      {hasFramework ? "Add More Goals" : "Get Started"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       {hasFramework ? (
