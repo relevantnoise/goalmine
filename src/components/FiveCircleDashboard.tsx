@@ -11,7 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { GoalCard } from "./GoalCard";
 import { SimpleGoalForm } from "./SimpleGoalForm";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const circleIcons = {
   'Spiritual': Heart,
@@ -58,6 +58,8 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
   const { subscription } = useSubscription();
   const [circleStats, setCircleStats] = useState<CircleStats[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [workHappiness, setWorkHappiness] = useState<any>(null);
+  const [showWorkDetail, setShowWorkDetail] = useState(false);
   const [showGoalCreator, setShowGoalCreator] = useState(false);
   const [selectedCircle, setSelectedCircle] = useState<string>('');
 
@@ -72,43 +74,31 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
     
     try {
       setLoadingStats(true);
-      // First get the user's Firebase UID from their profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', user.email)
-        .single();
       
-      if (profileError || !profile) {
-        console.error('Error getting user profile:', profileError);
-        throw new Error('User profile not found');
-      }
-      
-      const { data, error } = await supabase
-        .from('circle_frameworks')
-        .select(`
-          *,
-          circle_profiles (*)
-        `)
-        .eq('user_id', profile.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      // Use edge function instead of direct database query (same pattern as goals)
+      const { data, error } = await supabase.functions.invoke('fetch-circle-framework', {
+        body: { user_id: user.email }
+      });
 
       if (error) throw error;
 
-      if (data?.circle_profiles) {
-        const stats = data.circle_profiles.map((profile: any) => {
-          const circleGoals = goals.filter(goal => goal.circle_type === profile.circle_name);
+      if (data?.success && data?.hasFramework && data?.allocations) {
+        const stats = data.allocations.map((allocation: any) => {
+          const circleGoals = goals.filter(goal => goal.circle_type === allocation.circle_name);
           return {
-            name: profile.circle_name,
-            hoursAllocated: profile.weekly_hours_allocated,
+            name: allocation.circle_name,
+            hoursAllocated: allocation.ideal_hours_per_week,
             goalsCount: circleGoals.length,
-            activeStreaks: circleGoals.filter(goal => goal.current_streak > 0).length,
-            totalCheckIns: circleGoals.reduce((sum, goal) => sum + (goal.total_checkins || 0), 0)
+            activeStreaks: circleGoals.filter(goal => (goal as any).current_streak > 0).length,
+            totalCheckIns: circleGoals.reduce((sum, goal) => sum + ((goal as any).total_checkins || 0), 0)
           };
         });
         setCircleStats(stats);
+        
+        // Capture work happiness data
+        if (data.workHappiness) {
+          setWorkHappiness(data.workHappiness);
+        }
       }
     } catch (error) {
       console.error('Error fetching circle stats:', error);
@@ -142,12 +132,43 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
 
   const getOverallProgress = () => {
     if (goals.length === 0) return 0;
-    const activeGoals = goals.filter(goal => goal.current_streak > 0).length;
+    const activeGoals = goals.filter(goal => (goal as any).current_streak > 0).length;
     return (activeGoals / goals.length) * 100;
   };
 
   const getTotalWeeklyHours = () => {
     return circleStats.reduce((sum, circle) => sum + circle.hoursAllocated, 0);
+  };
+
+  const getWorkHappinessScore = () => {
+    if (!workHappiness) return null;
+    const { impact_current, fun_current, money_current, remote_current } = workHappiness;
+    return ((impact_current + fun_current + money_current + remote_current) / 4).toFixed(1);
+  };
+
+  const getWorkHappinessInsights = () => {
+    if (!workHappiness) return [];
+    const { 
+      impact_current, impact_desired,
+      fun_current, fun_desired,
+      money_current, money_desired,
+      remote_current, remote_desired 
+    } = workHappiness;
+    
+    const metrics = [
+      { name: 'Impact', current: impact_current, desired: impact_desired, label: 'Meaningful work' },
+      { name: 'Enjoyment', current: fun_current, desired: fun_desired, label: 'Work satisfaction' },
+      { name: 'Income', current: money_current, desired: money_desired, label: 'Compensation' },
+      { name: 'Remote', current: remote_current, desired: remote_desired, label: 'Location flexibility' }
+    ];
+    
+    return metrics.map(metric => ({
+      ...metric,
+      gap: metric.desired - metric.current,
+      percentage: (metric.current / 10) * 100,
+      status: metric.current >= metric.desired ? 'optimal' : 
+              metric.current >= metric.desired - 2 ? 'approaching' : 'needs-attention'
+    }));
   };
 
   const getMaxGoals = () => {
@@ -215,11 +236,11 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
                   <div className="text-sm text-muted-foreground">Total Goals</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{goals.filter(g => g.current_streak > 0).length}</div>
+                  <div className="text-2xl font-bold">{goals.filter(g => (g as any).current_streak > 0).length}</div>
                   <div className="text-sm text-muted-foreground">Active Streaks</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{goals.reduce((sum, g) => sum + (g.total_checkins || 0), 0)}</div>
+                  <div className="text-2xl font-bold">{goals.reduce((sum, g) => sum + ((g as any).total_checkins || 0), 0)}</div>
                   <div className="text-sm text-muted-foreground">Total Check-ins</div>
                 </div>
               </div>
@@ -233,11 +254,17 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
             const CircleIcon = circleIcons[circle.name as keyof typeof circleIcons];
             const circleGoals = getCircleGoals(circle.name);
             const circleProgress = circleGoals.length > 0 
-              ? (circleGoals.filter(g => g.current_streak > 0).length / circleGoals.length) * 100 
+              ? (circleGoals.filter(g => (g as any).current_streak > 0).length / circleGoals.length) * 100 
               : 0;
 
             return (
-              <Card key={circle.name} className={`${circleColors[circle.name as keyof typeof circleColors]}`}>
+              <Card 
+                key={circle.name} 
+                className={`${circleColors[circle.name as keyof typeof circleColors]} ${
+                  circle.name === 'Work' ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''
+                }`}
+                onClick={circle.name === 'Work' ? () => setShowWorkDetail(true) : undefined}
+              >
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -245,8 +272,20 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
                         <CircleIcon className="w-6 h-6" />
                       </div>
                       <div>
-                        <CardTitle className="text-xl">{circle.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{circle.hoursAllocated} hours/week allocated</p>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                          {circle.name}
+                          {circle.name === 'Work' && workHappiness && (
+                            <Badge variant="secondary" className="text-xs">
+                              Happiness: {getWorkHappinessScore()}/10
+                            </Badge>
+                          )}
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          {circle.hoursAllocated} hours/week allocated
+                          {circle.name === 'Work' && workHappiness && (
+                            <span className="ml-2 text-blue-600">• Click for business metrics</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -292,7 +331,7 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
                               <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                   <Target className="w-3 h-3" />
-                                  {goal.current_streak} day streak
+                                  {(goal as any).current_streak} day streak
                                 </span>
                                 {goal.target_date && (
                                   <span className="flex items-center gap-1">
@@ -303,9 +342,9 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              {goal.current_streak > 0 && (
+                              {(goal as any).current_streak > 0 && (
                                 <Badge variant="secondary" className="text-xs">
-                                  🔥 {goal.current_streak}
+                                  🔥 {(goal as any).current_streak}
                                 </Badge>
                               )}
                             </div>
@@ -387,6 +426,180 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
           </CardContent>
         </Card>
       </div>
+
+      {/* Work Performance Dashboard Modal */}
+      <Dialog open={showWorkDetail} onOpenChange={setShowWorkDetail}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-green-600" />
+              </div>
+              Work Performance Dashboard
+            </DialogTitle>
+          </DialogHeader>
+          
+          {workHappiness && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+              {/* Left Column - Time Allocation & Goals */}
+              <div className="space-y-6">
+                <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-green-800">Time Allocation & Goals</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Weekly Hours Allocated</span>
+                        <span className="text-2xl font-bold text-green-600">
+                          {circleStats.find(c => c.name === 'Work')?.hoursAllocated || 40}h
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Active Goals</span>
+                        <span className="text-xl font-semibold">
+                          {circleStats.find(c => c.name === 'Work')?.goalsCount || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Active Streaks</span>
+                        <span className="text-xl font-semibold">
+                          🔥 {circleStats.find(c => c.name === 'Work')?.activeStreaks || 0}
+                        </span>
+                      </div>
+                      <div className="pt-2 border-t">
+                        <div className="text-sm text-muted-foreground mb-2">Recent Activity</div>
+                        <div className="text-sm">
+                          Last check-in: {goals.filter(g => g.circle_type === 'Work').length > 0 ? '1 day ago' : 'No goals yet'}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Work Goals */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Work Goals</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {getCircleGoals('Work').length > 0 ? (
+                        getCircleGoals('Work').map((goal) => (
+                          <div key={goal.id} className="p-3 bg-gray-50 rounded-lg">
+                            <div className="font-medium">{goal.title}</div>
+                            <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                              <Target className="w-3 h-3" />
+                              {(goal as any).current_streak} day streak
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center text-muted-foreground py-4">
+                          No work goals yet. Create one to start tracking!
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Column - Business Happiness Metrics */}
+              <div className="space-y-6">
+                <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-blue-800 flex items-center gap-2">
+                      Business Happiness Assessment
+                      <Badge variant="secondary" className="text-sm">
+                        Score: {getWorkHappinessScore()}/10
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      {getWorkHappinessInsights().map((metric) => (
+                        <div key={metric.name} className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <div className="font-medium flex items-center gap-2">
+                                {metric.name}
+                                {metric.status === 'optimal' && (
+                                  <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                                    Optimal
+                                  </Badge>
+                                )}
+                                {metric.status === 'needs-attention' && (
+                                  <Badge variant="destructive" className="text-xs">
+                                    Needs Attention
+                                  </Badge>
+                                )}
+                                {metric.status === 'approaching' && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    Approaching Target
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="text-sm text-muted-foreground">{metric.label}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold text-lg">{metric.current}/10</div>
+                              <div className="text-xs text-muted-foreground">Target: {metric.desired}</div>
+                            </div>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full transition-all ${
+                                metric.status === 'optimal' ? 'bg-green-500' :
+                                metric.status === 'approaching' ? 'bg-yellow-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${metric.percentage}%` }}
+                            />
+                          </div>
+                          {metric.gap > 0 && (
+                            <div className="text-xs text-muted-foreground">
+                              {metric.gap} point{metric.gap !== 1 ? 's' : ''} to reach target
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Professional Insights */}
+                <Card className="border-purple-200">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-purple-800">Professional Insights</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {getWorkHappinessInsights().filter(m => m.status === 'needs-attention').length > 0 ? (
+                        <>
+                          <div className="text-sm font-medium text-red-700">Areas for Improvement:</div>
+                          {getWorkHappinessInsights()
+                            .filter(m => m.status === 'needs-attention')
+                            .map(metric => (
+                              <div key={metric.name} className="text-sm text-red-600">
+                                • <strong>{metric.name}</strong>: {metric.gap} points below target
+                              </div>
+                            ))}
+                        </>
+                      ) : (
+                        <div className="text-sm text-green-700">
+                          🎉 <strong>Excellent work satisfaction!</strong> All metrics are at or near your targets.
+                        </div>
+                      )}
+                      <div className="pt-3 border-t text-xs text-muted-foreground">
+                        Based on Dan Lynn's 10-year business happiness formula
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Goal Creator Dialog */}
       <Dialog open={showGoalCreator} onOpenChange={setShowGoalCreator}>

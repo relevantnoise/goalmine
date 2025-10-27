@@ -21,61 +21,88 @@ serve(async (req) => {
 
     console.log('🎯 Creating simple circle framework for:', user_email)
 
-    // 1. Create the main framework record
-    const { data: framework, error: frameworkError } = await supabaseClient
-      .from('user_circle_frameworks')
-      .insert({
-        user_email,
-        work_hours_per_week: timeContext.work_hours_per_week,
-        sleep_hours_per_night: timeContext.sleep_hours_per_night,
-        commute_hours_per_week: timeContext.commute_hours_per_week,
-        available_hours_per_week: timeContext.available_hours_per_week
+    // 1. Create the main framework record using raw SQL to bypass schema cache
+    const { data: frameworkResult, error: frameworkError } = await supabaseClient
+      .rpc('exec_sql', {
+        sql: `
+          INSERT INTO user_circle_frameworks (
+            user_email, 
+            work_hours_per_week, 
+            sleep_hours_per_night, 
+            commute_hours_per_week, 
+            available_hours_per_week
+          ) VALUES (
+            '${user_email}', 
+            ${timeContext.work_hours_per_week}, 
+            ${timeContext.sleep_hours_per_night}, 
+            ${timeContext.commute_hours_per_week}, 
+            ${timeContext.available_hours_per_week}
+          ) RETURNING id;
+        `
       })
-      .select()
-      .single()
 
     if (frameworkError) {
       console.error('❌ Framework creation error:', frameworkError)
       throw frameworkError
     }
 
+    const framework = { id: frameworkResult[0]?.id }
+
     console.log('✅ Framework created:', framework.id)
 
-    // 2. Create circle allocations
-    const circleData = Object.values(circleAllocations).map(allocation => ({
-      framework_id: framework.id,
-      circle_name: allocation.circle_name,
-      importance_level: allocation.importance_level,
-      current_hours_per_week: allocation.current_hours_per_week,
-      ideal_hours_per_week: allocation.ideal_hours_per_week
-    }))
+    // 2. Create circle allocations using raw SQL
+    const circleInserts = Object.values(circleAllocations).map(allocation => 
+      `('${framework.id}', '${allocation.circle_name}', ${allocation.importance_level}, ${allocation.current_hours_per_week}, ${allocation.ideal_hours_per_week})`
+    ).join(', ')
 
-    if (circleData.length > 0) {
+    if (circleInserts) {
       const { error: circleError } = await supabaseClient
-        .from('circle_time_allocations')
-        .insert(circleData)
+        .rpc('exec_sql', {
+          sql: `
+            INSERT INTO circle_time_allocations (
+              framework_id, 
+              circle_name, 
+              importance_level, 
+              current_hours_per_week, 
+              ideal_hours_per_week
+            ) VALUES ${circleInserts};
+          `
+        })
 
       if (circleError) {
         console.error('❌ Circle allocation error:', circleError)
         throw circleError
       }
 
-      console.log('✅ Circle allocations created:', circleData.length)
+      console.log('✅ Circle allocations created:', Object.keys(circleAllocations).length)
     }
 
-    // 3. Create work happiness metrics
+    // 3. Create work happiness metrics using raw SQL
     const { error: happinessError } = await supabaseClient
-      .from('work_happiness_metrics')
-      .insert({
-        framework_id: framework.id,
-        impact_current: workHappiness.impact_current,
-        impact_desired: workHappiness.impact_desired,
-        fun_current: workHappiness.fun_current,
-        fun_desired: workHappiness.fun_desired,
-        money_current: workHappiness.money_current,
-        money_desired: workHappiness.money_desired,
-        remote_current: workHappiness.remote_current,
-        remote_desired: workHappiness.remote_desired
+      .rpc('exec_sql', {
+        sql: `
+          INSERT INTO work_happiness_metrics (
+            framework_id,
+            impact_current,
+            impact_desired,
+            fun_current,
+            fun_desired,
+            money_current,
+            money_desired,
+            remote_current,
+            remote_desired
+          ) VALUES (
+            '${framework.id}',
+            ${workHappiness.impact_current},
+            ${workHappiness.impact_desired},
+            ${workHappiness.fun_current},
+            ${workHappiness.fun_desired},
+            ${workHappiness.money_current},
+            ${workHappiness.money_desired},
+            ${workHappiness.remote_current},
+            ${workHappiness.remote_desired}
+          );
+        `
       })
 
     if (happinessError) {

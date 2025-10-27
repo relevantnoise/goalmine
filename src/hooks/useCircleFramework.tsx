@@ -58,28 +58,29 @@ export const useCircleFramework = () => {
     }
 
     try {
-      console.log('🔍 Checking for existing circle framework for:', user.email);
+      console.log('🔍 Fetching circle framework via edge function for:', user.email);
       
-      const { data, error } = await supabase
-        .from('user_circle_frameworks')
-        .select('*')
-        .eq('user_email', user.email)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // Use edge function instead of direct database query (SAME AS GOALS)
+      const { data, error } = await supabase.functions.invoke('fetch-circle-framework', {
+        body: { user_id: user.email }
+      });
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('❌ Error fetching framework:', error);
+      if (error) {
+        console.error('❌ Error fetching framework via function:', error);
         throw error;
       }
 
-      if (data) {
-        console.log('✅ Found existing framework:', data.id);
-        setFramework(data);
+      if (data?.success && data?.hasFramework) {
+        console.log('✅ Found existing framework via edge function:', data.framework.id);
+        setFramework(data.framework);
         setHasFramework(true);
         
-        // Fetch additional data for full framework
-        await fetchFullFrameworkData(data);
+        // Set full data directly from edge function response
+        setFullData({
+          framework: data.framework,
+          allocations: data.allocations || [],
+          workHappiness: data.workHappiness || null
+        });
       } else {
         console.log('📝 No framework found - user needs onboarding');
         setFramework(null);
@@ -90,48 +91,13 @@ export const useCircleFramework = () => {
       console.error('❌ Framework fetch error:', error);
       setFramework(null);
       setHasFramework(false);
+      setFullData(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchFullFrameworkData = async (frameworkData: CircleFramework) => {
-    try {
-      // Fetch circle allocations
-      const { data: allocations, error: allocError } = await supabase
-        .from('circle_time_allocations')
-        .select('*')
-        .eq('framework_id', frameworkData.id);
-
-      if (allocError) {
-        console.error('❌ Error fetching allocations:', allocError);
-        throw allocError;
-      }
-
-      // Fetch work happiness metrics
-      const { data: workHappiness, error: happinessError } = await supabase
-        .from('work_happiness_metrics')
-        .select('*')
-        .eq('framework_id', frameworkData.id)
-        .maybeSingle();
-
-      if (happinessError && happinessError.code !== 'PGRST116') {
-        console.error('❌ Error fetching work happiness:', happinessError);
-        throw happinessError;
-      }
-
-      setFullData({
-        framework: frameworkData,
-        allocations: allocations || [],
-        workHappiness: workHappiness || null
-      });
-
-      console.log('✅ Full framework data loaded');
-    } catch (error) {
-      console.error('❌ Error fetching full framework data:', error);
-      setFullData(null);
-    }
-  };
+  // Note: fetchFullFrameworkData is no longer needed since edge function returns everything
 
   useEffect(() => {
     fetchFramework();

@@ -172,7 +172,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     setIsSubmitting(true);
     
     try {
-      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('create-simple-circle-framework', {
+      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('create-circle-framework-working', {
         body: {
           user_email: user.email,
           timeContext,
