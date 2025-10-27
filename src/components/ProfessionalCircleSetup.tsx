@@ -39,7 +39,7 @@ const circles = [
     icon: Briefcase,
     color: 'text-green-600',
     bgColor: 'bg-green-50 border-green-200',
-    description: 'Career, professional development (including commute time)',
+    description: 'Career, job(s) (including commute time)',
     placeholder: 'Core work, meetings, professional growth, commuting'
   },
   {
@@ -470,8 +470,8 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   )}
 
                   <div className="space-y-2 text-sm">
-                    <div className="text-center text-blue-200">
-                      Allocate your 168 weekly hours across all 6 life circles
+                    <div className="text-center text-blue-200 leading-relaxed">
+                      Allocate your 168 weekly hours across all 6 essential life circles for optimal balance
                     </div>
                   </div>
                 </CardContent>
