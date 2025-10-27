@@ -254,7 +254,7 @@ const Index = () => {
 
   const handleEmailSubmit = (email: string) => {
     setUserEmail(email);
-    // Universal 5 Circle onboarding for all users
+    // Universal 6 Elements of Life onboarding for all users
     setCurrentView('five-circle-onboarding');
   };
 
@@ -284,7 +284,7 @@ const Index = () => {
 
 
   const handleFiveCircleComplete = () => {
-    console.log('✅ Step 1 Complete: 5 Circle Framework setup → Step 2: Goal creation');
+    console.log('✅ Step 1 Complete: 6 Elements of Life setup → Step 2: Goal creation');
     hasInitialized.current = true;
     
     // Refresh framework data to ensure hasFramework is updated
@@ -296,7 +296,7 @@ const Index = () => {
     // Show success message
     setAlertData({
       title: "🎯 Step 1 Complete!",
-      message: "Your 5 Circle Framework™ is ready! Now let's create your first goal.",
+      message: "Your 6 Elements of Life™ is ready! Now let's create your first goal.",
       type: 'achievement'
     });
     setShowAlert(true);
@@ -310,7 +310,7 @@ const Index = () => {
     // Show completion message
     setAlertData({
       title: "🎉 Goals Created Successfully!",
-      message: `${goals.length} goal${goals.length !== 1 ? 's' : ''} created! Your 5 Circle journey begins now.`,
+      message: `${goals.length} goal${goals.length !== 1 ? 's' : ''} created! Your 6 Elements journey begins now.`,
       type: 'achievement'
     });
     setShowAlert(true);
@@ -534,7 +534,7 @@ const Index = () => {
         onGetStarted={async () => {
           if (user) {
             // Skip all database checks and go to universal 5 Circle onboarding
-            console.log('User authenticated, going to 5 Circle onboarding');
+            console.log('User authenticated, going to 6 Elements onboarding');
             setUserEmail(user.email || '');
             setCurrentView('five-circle-onboarding');
           } else {
@@ -580,7 +580,7 @@ const Index = () => {
                 await generateMotivationForGoals();
               } else {
                 // No goals, start 5 Circle onboarding
-                console.log('No goals found, starting 5 Circle onboarding');
+                console.log('No goals found, starting 6 Elements onboarding');
                 setUserEmail(user.email || '');
                 setCurrentView('five-circle-onboarding');
               }
@@ -604,7 +604,7 @@ const Index = () => {
     // If user is authenticated, skip email collection
     if (user) {
       setUserEmail(user.email || '');
-      // Universal 5 Circle onboarding for all users
+      // Universal 6 Elements of Life onboarding for all users
       setCurrentView('five-circle-onboarding');
       return null;
     }
@@ -635,8 +635,8 @@ const Index = () => {
       <ProfessionalCircleSetup 
         onComplete={handleFiveCircleComplete}
         onBack={() => {
-          console.log('🔙 Going back from 5 Circle onboarding');
-          setCurrentView('landing');
+          console.log('🔙 Going back from 6 Elements setup to dashboard');
+          setCurrentView('dashboard');
         }}
       />
     );
