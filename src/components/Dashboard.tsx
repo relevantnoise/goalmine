@@ -111,7 +111,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   </div>
                   <h3 className="font-semibold text-lg mb-2">No Active Goals</h3>
                   <p className="text-muted-foreground mb-4">
-                    You don't have any active goals right now. Create your first goal to get started!
+                    You don't have any active goals right now. Click the button below to start your GoalMine.ai journey.
                   </p>
                   <Button onClick={handleCreateGoal} className="mt-2" disabled={isCheckingLimits}>
                     {isCheckingLimits ? (
