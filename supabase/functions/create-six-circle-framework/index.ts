@@ -1,4 +1,5 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,27 +12,61 @@ serve(async (req) => {
   }
 
   try {
+    console.log('[6-ELEMENTS] Function started, method:', req.method);
+    
+    // Check environment variables
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
+    console.log('[6-ELEMENTS] Environment check:', {
+      hasUrl: !!supabaseUrl,
+      hasServiceKey: !!serviceRoleKey,
+      urlPrefix: supabaseUrl?.substring(0, 20) + '...'
+    });
+    
+    if (!supabaseUrl || !serviceRoleKey) {
+      throw new Error('Missing environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+    }
+    
+    // Use service role key to bypass RLS
+    const supabaseAdmin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      { auth: { persistSession: false } }
+    );
+
+    console.log('[6-ELEMENTS] Supabase client created');
+
     const { user_email, circleAllocations, workHappiness } = await req.json()
 
     console.log('🎯 Creating 6 Elements of Life for:', user_email)
 
-    // Get database connection info from environment
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') + '/rest/v1/'
+    // HYBRID: Look up profile by email to get Firebase UID (same as create-goal)
+    console.log('🔍 Looking up profile by email to get Firebase UID:', user_email);
+    const { data: userProfileResults, error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('id, email')
+      .eq('email', user_email);
     
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${serviceKey}`,
-      'apikey': serviceKey,
-      'Prefer': 'return=representation'
+    const userProfile = userProfileResults && userProfileResults.length > 0 ? userProfileResults[0] : null;
+
+    if (profileError) {
+      console.error('❌ Error looking up user profile:', profileError);
+      throw new Error('Failed to find user profile');
     }
 
-    // 1. Create framework record without timeContext (6 Elements of Life)
+    if (!userProfile) {
+      console.error('❌ No profile found for email:', user_email);
+      throw new Error('User profile not found. Please sign in again to sync your profile.');
+    }
+
+    console.log('✅ Found profile - Email:', userProfile.email, 'Firebase UID:', userProfile.id);
+
+    // 1. Create framework record using Supabase client (same pattern as create-goal)
     console.log('📝 Step 1: Creating 6 Elements of Life record...')
-    const frameworkResponse = await fetch(supabaseUrl + 'user_circle_frameworks', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
+    const { data: frameworkData, error: frameworkError } = await supabaseAdmin
+      .from('user_circle_frameworks')
+      .insert({
         user_email,
         // Default timeContext values for 6 Elements of Life (no longer collected but DB expects them)
         work_hours_per_week: 40,
@@ -39,20 +74,19 @@ serve(async (req) => {
         commute_hours_per_week: 5,
         available_hours_per_week: 115
       })
-    })
+      .select()
+      .single();
 
-    if (!frameworkResponse.ok) {
-      const errorText = await frameworkResponse.text()
-      console.error('❌ Framework creation failed:', errorText)
-      throw new Error(`Framework creation failed: ${errorText}`)
+    if (frameworkError) {
+      console.error('❌ Framework creation failed:', frameworkError)
+      throw new Error(`Framework creation failed: ${frameworkError.message}`)
     }
 
-    const frameworks = await frameworkResponse.json()
-    const framework = frameworks[0]
+    const framework = frameworkData;
     
     console.log('✅ 6 Elements of Life created:', framework.id)
 
-    // 2. Create element allocations for all 6 elements
+    // 2. Create element allocations for all 6 elements using Supabase client
     console.log('📝 Step 2: Creating 6 element allocations...')
     const circleInserts = Object.values(circleAllocations).map(allocation => ({
       framework_id: framework.id,
@@ -62,26 +96,23 @@ serve(async (req) => {
       ideal_hours_per_week: allocation.ideal_hours_per_week
     }))
 
-    const circleResponse = await fetch(supabaseUrl + 'circle_time_allocations', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(circleInserts)
-    })
+    const { data: circleData, error: circleError } = await supabaseAdmin
+      .from('circle_time_allocations')
+      .insert(circleInserts)
+      .select();
 
-    if (!circleResponse.ok) {
-      const errorText = await circleResponse.text()
-      console.error('❌ Circle allocations failed:', errorText)
-      throw new Error(`Circle allocations failed: ${errorText}`)
+    if (circleError) {
+      console.error('❌ Circle allocations failed:', circleError)
+      throw new Error(`Circle allocations failed: ${circleError.message}`)
     }
 
     console.log('✅ 6 Element allocations created:', circleInserts.length)
 
-    // 3. Create work happiness metrics
+    // 3. Create work happiness metrics using Supabase client
     console.log('📝 Step 3: Creating work happiness metrics...')
-    const happinessResponse = await fetch(supabaseUrl + 'work_happiness_metrics', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
+    const { data: happinessData, error: happinessError } = await supabaseAdmin
+      .from('work_happiness_metrics')
+      .insert({
         framework_id: framework.id,
         impact_current: workHappiness.impact_current,
         impact_desired: workHappiness.impact_desired,
@@ -92,12 +123,12 @@ serve(async (req) => {
         remote_current: workHappiness.remote_current,
         remote_desired: workHappiness.remote_desired
       })
-    })
+      .select()
+      .single();
 
-    if (!happinessResponse.ok) {
-      const errorText = await happinessResponse.text()
-      console.error('❌ Work happiness failed:', errorText)
-      throw new Error(`Work happiness creation failed: ${errorText}`)
+    if (happinessError) {
+      console.error('❌ Work happiness failed:', happinessError)
+      throw new Error(`Work happiness creation failed: ${happinessError.message}`)
     }
 
     console.log('✅ Work happiness metrics created')
