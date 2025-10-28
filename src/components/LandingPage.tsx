@@ -143,7 +143,7 @@ export const LandingPage = ({
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>No systematic approach to life complexity</span>
+                    <span>No systematic approach to life's complexities</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
@@ -194,7 +194,7 @@ export const LandingPage = ({
               <p className="text-lg text-muted-foreground leading-relaxed">
                 "I developed the original framework 30 years ago while juggling a demanding strategy role at AT&T, 
                 MBA studies at Rutgers, marriage, and two kids under 3. Traditional time management failed me. 
-                I needed a <strong>systematic approach to life complexity</strong> that worked for ambitious professionals 
+                I needed a <strong>systematic approach to life's complexities</strong> that worked for ambitious professionals 
                 who refuse to choose between success and fulfillment. Now evolved into The 6 Elements of Life™."
               </p>
             </div>
