@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, ArrowRight, Heart, Users, Briefcase, BookOpen, Activity, Clock, Save, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, Users, Briefcase, BookOpen, Activity, Clock, Save, X, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
@@ -43,22 +43,28 @@ interface WorkHappiness {
 
 const circles = [
   {
-    name: 'Spiritual',
-    icon: Heart,
-    color: 'text-purple-600',
-    description: 'Inner purpose, values, meaning, meditation, prayer'
+    name: 'Work',
+    icon: Briefcase,
+    color: 'text-green-600',
+    description: 'Career, job(s) (including commute time)'
+  },
+  {
+    name: 'Sleep',
+    icon: Moon,
+    color: 'text-indigo-600',
+    description: 'Rest, recovery, sleep optimization'
   },
   {
     name: 'Friends & Family',
     icon: Users,
-    color: 'text-green-600',
+    color: 'text-blue-600',
     description: 'Relationships, social connections, quality time'
   },
   {
-    name: 'Work',
-    icon: Briefcase,
-    color: 'text-blue-600',
-    description: 'Career, professional development, income'
+    name: 'Health & Fitness',
+    icon: Activity,
+    color: 'text-red-600',
+    description: 'Physical wellbeing, exercise, nutrition'
   },
   {
     name: 'Personal Development',
@@ -67,10 +73,10 @@ const circles = [
     description: 'Learning, growth, skills, education'
   },
   {
-    name: 'Health & Fitness',
-    icon: Activity,
-    color: 'text-red-600',
-    description: 'Physical wellbeing, exercise, nutrition'
+    name: 'Spiritual',
+    icon: Heart,
+    color: 'text-purple-600',
+    description: 'Inner purpose, values, meaning, meditation, prayer'
   }
 ];
 
@@ -236,7 +242,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
       
       toast({
         title: "✅ Framework Updated!",
-        description: "Your 5 Circle Framework™ has been updated successfully.",
+        description: "Your 6 Elements of Life™ Framework has been updated successfully.",
         duration: 5000
       });
 
@@ -272,7 +278,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
     );
   }
 
-  const maxSteps = 6; // Same as onboarding: time + 5 circles
+  const maxSteps = 7; // Same as onboarding: time + 6 elements
 
   const nextStep = () => {
     if (step < maxSteps) {
@@ -362,7 +368,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
               {timeContext.available_hours_per_week} hours
             </div>
             <div className="text-sm text-muted-foreground">
-              Available per week for your 5 circles
+              Available per week for your 6 elements
             </div>
           </div>
         </div>
@@ -380,7 +386,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <IconComponent className={`w-6 h-6 ${circle.color}`} />
-            Edit {circle.name} Circle
+            Edit {circle.name} Element
           </CardTitle>
           <p className="text-muted-foreground">{circle.description}</p>
         </CardHeader>
@@ -586,9 +592,9 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
       <div className="container mx-auto px-6 py-8">
         {/* Progress Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Edit Your 5 Circle Framework™</h1>
+          <h1 className="text-3xl font-bold mb-2">Edit Your 6 Elements of Life™ Framework</h1>
           <p className="text-muted-foreground mb-4">
-            Update your time allocation and circle priorities as your life evolves
+            Update your time allocation and element priorities as your life evolves
           </p>
           <div className="flex items-center justify-center gap-2 mb-6">
             {Array.from({ length: maxSteps }, (_, i) => (
