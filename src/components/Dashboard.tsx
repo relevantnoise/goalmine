@@ -8,7 +8,8 @@ import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCircleCheckin } from "@/hooks/useCircleCheckin";
 import { GoalCard } from "./GoalCard";
-import { FrameworkCard } from "./FrameworkCard";
+import { FrameworkOverview } from "./FrameworkOverview";
+import { FrameworkInsights } from "./FrameworkInsights";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { ProfessionalCoachPrompt } from "./ProfessionalCoachPrompt";
@@ -55,13 +56,8 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
     }
   };
 
-  // Separate framework goals from regular goals
-  const frameworkGoals = goals.filter(goal => 
-    goal.title?.includes('6 Elements of Life™ Framework Complete')
-  );
-  const regularGoals = goals.filter(goal => 
-    !goal.title?.includes('6 Elements of Life™ Framework Complete')
-  );
+  // All goals are now regular goals - framework is separate
+  const regularGoals = goals;
   
   const totalStreak = Math.round(regularGoals.reduce((sum, goal) => sum + goal.streak_count, 0) / regularGoals.length) || 0;
 
@@ -114,13 +110,11 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           {/* Goals Section - Left 3 columns */}
           <div className="lg:col-span-3">
             <div className="grid gap-6">
-              {/* Framework Card */}
-              {frameworkGoals.length > 0 && (
-                <FrameworkCard 
-                  framework={frameworkGoals[0]}
-                  onViewFramework={onViewFramework || (() => {})}
+              {/* Framework Overview - Show for all users with framework */}
+              {hasFramework && (
+                <FrameworkOverview 
                   onEditFramework={onEditFramework || (() => {})}
-                  onCircleCheckin={onCircleCheckin}
+                  onWeeklyCheckin={onCircleCheckin}
                 />
               )}
 
@@ -199,7 +193,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                           return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
                         })() : "First goal is free. Upgrade to create more."
                       ) : (
-                        "Complete your 6 Elements of Life™ to start creating goals"
+                        "Complete your 6 Pillars of Life™ to start creating goals"
                       )}
                     </p>
                   </div>
@@ -229,10 +223,10 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                       <Clock className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold mb-1">Weekly Circle Check-in</h3>
+                      <h3 className="font-semibold mb-1">Weekly Pillar Check-in</h3>
                       <p className="text-sm text-muted-foreground">
                         {checkinStatus.weeksSinceLastCheckin === 0 
-                          ? "How did you balance your 5 circles this week?" 
+                          ? "How did you strengthen your 6 pillars this week?" 
                           : `It's been ${checkinStatus.weeksSinceLastCheckin} week${checkinStatus.weeksSinceLastCheckin !== 1 ? 's' : ''} since your last check-in`
                         }
                       </p>
@@ -290,6 +284,30 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     })}
                   </div>
                 </div>
+              )}
+
+              {/* Framework Insights */}
+              {hasFramework && (
+                <FrameworkInsights 
+                  frameworkData={{
+                    elements: [
+                      { name: 'Work', current: 8, desired: 10, gap: 2 },
+                      { name: 'Sleep', current: 3, desired: 9, gap: 6 },
+                      { name: 'Friends & Family', current: 6, desired: 9, gap: 3 },
+                      { name: 'Health & Fitness', current: 5, desired: 9, gap: 4 },
+                      { name: 'Personal Development', current: 4, desired: 9, gap: 5 },
+                      { name: 'Spiritual', current: 7, desired: 9, gap: 2 }
+                    ]
+                  }}
+                  onCreateGoal={(element) => {
+                    // Future: Pre-populate goal creation with element context
+                    handleCreateGoal();
+                  }}
+                  onGetGuidance={() => {
+                    // Future: Open AI guidance modal
+                    console.log('🧠 Opening AI guidance from insights');
+                  }}
+                />
               )}
 
               {/* Nudge Me Card */}

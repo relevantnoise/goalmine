@@ -12,9 +12,15 @@ serve(async (req) => {
   }
 
   try {
-    const { circleName, personalDefinition, hoursPerWeek, currentChallenges, specificGoal } = await req.json()
+    const { prompt, assessment, priority_element, circleName, personalDefinition, hoursPerWeek, currentChallenges, specificGoal } = await req.json()
 
-    console.log('🎯 Generating goal suggestions for:', { circleName, hoursPerWeek })
+    // Handle both new 6 Elements guidance and legacy 5 Circle suggestions
+    if (prompt && assessment && priority_element) {
+      console.log('🧠 Generating 6 Elements AI guidance for:', priority_element)
+      return await handleFrameworkGuidance(prompt, assessment, priority_element)
+    }
+
+    console.log('🎯 Generating 5 Circle goal suggestions for:', { circleName, hoursPerWeek })
 
     // Construct a sophisticated prompt for goal suggestions
     const prompt = `As an expert life coach specializing in the 5 Circle Framework™, generate 3 personalized goal suggestions for someone's ${circleName} circle.
@@ -149,6 +155,112 @@ Example format:
     })
   }
 })
+
+async function handleFrameworkGuidance(prompt: string, assessment: string, priority_element: string) {
+  try {
+    console.log('🧠 Generating AI guidance with prompt for:', priority_element)
+
+    // Call OpenAI API
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Dan Lynn's strategic life advisor and expert in the 6 Elements of Life™ Framework. You provide intelligent, research-backed guidance that challenges unrealistic goals while inspiring achievable growth. You are encouraging but realistic, citing actual research when possible.`
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 800,
+        temperature: 0.7,
+      }),
+    })
+
+    if (!openaiResponse.ok) {
+      const errorData = await openaiResponse.text()
+      console.error('❌ OpenAI API error:', errorData)
+      throw new Error(`OpenAI API error: ${openaiResponse.status}`)
+    }
+
+    const completion = await openaiResponse.json()
+    const aiContent = completion.choices[0]?.message?.content
+
+    if (!aiContent) {
+      throw new Error('No content generated from AI')
+    }
+
+    console.log('✅ AI guidance generated successfully')
+
+    // Try to parse as JSON, fallback to structured response
+    let structuredResponse
+    try {
+      structuredResponse = JSON.parse(aiContent)
+    } catch (parseError) {
+      console.log('📝 AI returned non-JSON, creating structured response')
+      
+      // Extract content using simple parsing
+      const lines = aiContent.split('\n').filter(line => line.trim())
+      
+      structuredResponse = {
+        analysis: lines.find(line => line.toLowerCase().includes('insight') || line.toLowerCase().includes('opportunity'))?.replace(/^\d+\.\s*/, '') || 
+                 `Your ${priority_element} element represents your biggest opportunity for improvement.`,
+        goalSuggestions: [
+          `Improve ${priority_element} consistency with daily habits`,
+          `Create a structured ${priority_element} optimization plan`, 
+          `Track ${priority_element} progress with weekly reviews`
+        ],
+        priorityReason: lines.find(line => line.toLowerCase().includes('why') || line.toLowerCase().includes('focus'))?.replace(/^\d+\.\s*/, '') ||
+                      `Focusing on ${priority_element} will create positive effects across other life elements.`,
+        researchInsights: lines.find(line => line.toLowerCase().includes('research') || line.toLowerCase().includes('studies'))?.replace(/^\d+\.\s*/, '') ||
+                         `Research shows that ${priority_element.toLowerCase()} directly impacts overall life satisfaction.`,
+        redFlags: lines.find(line => line.toLowerCase().includes('concern') || line.toLowerCase().includes('unrealistic')) || null
+      }
+    }
+
+    return new Response(JSON.stringify({ 
+      success: true,
+      suggestions: structuredResponse,
+      raw_content: aiContent,
+      priority_element
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    })
+
+  } catch (error) {
+    console.error('🚨 Error generating framework guidance:', error)
+    
+    // Graceful fallback
+    const fallbackResponse = {
+      analysis: "Your framework assessment reveals significant opportunities for growth.",
+      goalSuggestions: [
+        "Create a structured improvement plan",
+        "Establish consistent daily habits",
+        "Track progress with regular check-ins"
+      ],
+      priorityReason: "Starting with your biggest gap will create positive momentum across all life areas.",
+      researchInsights: "Research consistently shows that focused improvement in one area creates positive spillover effects."
+    }
+
+    return new Response(JSON.stringify({ 
+      success: true,
+      suggestions: fallbackResponse,
+      fallback: true,
+      error: error.message 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    })
+  }
+}
 
 function getFallbackSuggestions(circleName: string, hoursPerWeek: number) {
   const fallbacks: Record<string, any[]> = {

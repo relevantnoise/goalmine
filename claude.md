@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-GoalMine.ai is a goal tracking and motivational platform built with React, TypeScript, and Supabase. The application helps users create goals, track daily progress through streaks, and receive AI-enhanced motivational messages via email and on-demand nudges.
+GoalMine.ai is a **comprehensive life architecture platform** built with React, TypeScript, and Supabase. The application combines Dan Lynn's proprietary **6 Pillars of Life™ Framework** with intelligent goal tracking, featuring AI-powered insights, weekly pillar assessments, and research-backed guidance for optimal life design.
 
 ## ⚠️ CRITICAL CODEBASE WARNING (October 2025)
 
@@ -49,9 +49,9 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 
 ## Complete User Flow
 
-### New User Registration & Onboarding (UPDATED - 5 Circle Framework)
+### New User Registration & Onboarding (UPDATED - 6 Pillars Framework)
 1. Landing page → registration (Google/email)
-2. Email verification → 5 Circle Framework onboarding
+2. Email verification → 6 Pillars of Life™ Framework onboarding
 3. 30-day free trial automatically activated
 
 ### Goal Creation Process (SIMPLIFIED - Current Implementation)
@@ -64,14 +64,14 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 **REMOVED**: Time selection step (users previously selected morning/afternoon/evening)
 **CURRENT**: All users receive emails at 6 AM Eastern regardless of preferences
 
-### Dashboard Experience (5 Circle Framework PRIMARY)
-- Circle-organized goal management with time allocation tracking
-- Goals grouped by life circles with progress visualization
-- Circle-specific goal creation with proper assignment
-- Daily check-ins with 3 AM EST reset
-- Universal nudge system (real-time AI)
-- Goal detail pages with motivation content
-- Subscription management with goal limits
+### Dashboard Experience (6 Pillars Framework PRIMARY)
+- **6 Pillars Framework Dashboard** - Visual life architecture with gap analysis
+- **Smart Insights System** - AI-powered pattern recognition and recommendations
+- **Weekly Pillar Check-ins** - Structured progress tracking and trend analysis
+- **AI Goal Guidance** - Research-backed coaching from assessment to action
+- **Clean Goals System** - Separate from framework (no filtering complexity)
+- **Universal nudge system** - Real-time AI motivation
+- **Goal detail pages** - Smart AI content with fallback systems
 
 ### Daily Motivation System (SIMPLIFIED - October 2025)
 - **CURRENT EMAIL SYSTEM**: Universal 6 AM Eastern delivery for ALL users (no time selection)
@@ -87,7 +87,112 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 - **Strategic Advisor Plan**: 5 goals, 5 daily nudges + 5 Circle Framework™ + 2-hour monthly 1-on-1 coaching, $950/month
 - **Feature Gates**: UI dynamically adapts based on subscription status
 
-## 🔥 5 CIRCLE FRAMEWORK™ INTEGRATION (October 25, 2025)
+## 🏛️ 6 PILLARS OF LIFE™ FRAMEWORK ARCHITECTURE (October 28, 2025)
+
+### MAJOR ARCHITECTURAL BREAKTHROUGH (October 28, 2025)
+**Status**: ✅ COMPLETE - Clean architecture implemented with 80/20 MVP approach  
+**Transformation**: From simple goal tracking to comprehensive life architecture platform  
+**Timeline**: 5-day implementation delivering maximum impact with minimum complexity  
+
+### Revolutionary Life Architecture System
+Dan Lynn's **6 Pillars of Life™ Framework** (evolved from 30-year "5 Circles" legacy) now forms the core platform architecture:
+
+**The 6 Pillars:**
+- **Work**: Career, professional development, income
+- **Sleep**: Rest, recovery, energy management (NEW 6th pillar)
+- **Friends & Family**: Relationships, social connections  
+- **Health & Fitness**: Physical wellbeing, energy, vitality
+- **Personal Development**: Learning, growth, skills
+- **Spiritual**: Inner purpose, values, meaning
+
+### Clean Database Architecture (October 28, 2025)
+**BREAKTHROUGH**: Complete separation of framework and goals systems
+
+```sql
+-- NEW: 6 Pillars Framework Tables (Separate Architecture)
+user_frameworks          -- Core framework instances
+framework_elements       -- Individual pillar assessments (current/desired/personal_definition)  
+work_happiness          -- Business Happiness Formula (Impact/Fun/Money/Remote)
+weekly_checkins         -- Weekly pillar progress tracking
+ai_insights            -- AI-generated insights and recommendations
+
+-- EXISTING: Goals System (Clean & Simplified)
+goals                   -- Pure goal tracking (no framework pollution)
+motivation_history      -- AI content for goals
+```
+
+### 80/20 MVP Implementation (5-Day Sprint)
+**Day 1**: Database architecture and tables  
+**Day 2**: FrameworkOverview component replacing goal card  
+**Day 3**: WeeklyCheckin system for engagement  
+**Day 3.5**: AI Goal Guidance bridging assessment to action  
+**Day 4**: Smart Insights with connection intelligence  
+**Day 5**: Framework filtering removal and UI polish  
+
+### Key Components Built (October 28, 2025)
+
+#### FrameworkOverview.tsx
+- Visual dashboard showing all 6 pillars with progress bars
+- Gap analysis with current vs desired visualization  
+- Smart Architecture Insights highlighting biggest opportunities
+- Weekly check-in triggers and AI guidance access
+- Progress trends modal for historical analysis
+
+#### WeeklyCheckin.tsx  
+- Modal interface with 1-10 sliders for each pillar
+- Real-time overall satisfaction calculation
+- Optional notes for weekly insights
+- Integration with save-weekly-checkin edge function
+- Encouraging feedback: "Your life architecture is strengthening!"
+
+#### AIGoalGuidance.tsx
+- **The Bridge Component** - Assessment to action transformation
+- Research-backed reality checks for unrealistic targets
+- Context-aware AI prompts analyzing all pillar gaps
+- Intelligent red flag detection (Sleep <6, unrealistic expectations)
+- 3 specific goal suggestions with priority reasoning
+- Fallback systems ensuring guidance always available
+
+#### FrameworkInsights.tsx (Smart Analysis Engine)
+- **Priority Intelligence**: Identifies weakest pillars for maximum impact
+- **Connection Analysis**: Sleep affects everything, Work-Life balance alerts
+- **Foundation Intelligence**: Health as base supporting all pillars
+- **Strength Recognition**: Leveraging high-performing pillars
+- **Color-coded urgency**: Critical/High/Medium/Low priority insights
+
+#### GapTrends.tsx
+- Weekly progress tracking with trend indicators
+- Visual gap analysis sorted by improvement potential
+- Trend icons (↗️/↘️/➡️) showing pillar movement
+- Smart tips: "Strengthen weakest pillars first for maximum impact"
+
+### Smart AI Integration (October 28, 2025)
+**Enhanced AI Prompts**: Context-aware analysis of entire pillar framework  
+**Research-Backed Guidance**: "Studies show adults need 7-9 hours nightly..."  
+**Reality Checks**: Challenges unrealistic/unhealthy targets with evidence  
+**Connection Intelligence**: Explains how pillars affect each other  
+**Fallback Systems**: Graceful degradation ensuring guidance always works  
+
+### User Experience Transformation
+**Before**: Goal tracking app with confusing framework filtering  
+**After**: Life architecture consulting platform with intelligent guidance  
+
+**New User Journey:**
+1. Framework assessment reveals pillar gaps
+2. AI provides research-backed analysis and recommendations  
+3. Users understand WHY certain goals should be priorities
+4. Weekly check-ins create engagement and track progress
+5. Smart insights show ongoing platform intelligence
+6. Clean goal creation separate from framework complexity
+
+### Business Impact (October 28, 2025)
+- **Platform Positioning**: Life architecture consultant vs. goal tracker
+- **Premium Justification**: Sophisticated AI analysis and framework expertise  
+- **Engagement Stickiness**: Weekly check-ins create habitual usage
+- **Differentiation**: No competitor offers this depth of life design intelligence
+- **Scalability**: Clean architecture supports advanced features
+
+## 🔥 LEGACY: 5 CIRCLE FRAMEWORK™ INTEGRATION (October 25, 2025)
 
 ### DEPLOYMENT PLAN (October 25, 2025)
 **Current Status**: Framework integrated, waiting for trial expiration test
