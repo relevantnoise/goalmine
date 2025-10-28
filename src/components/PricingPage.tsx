@@ -388,10 +388,10 @@ export const PricingPage = ({
               <div>
                 <h4 className="font-semibold text-blue-900 mb-2">Born from Real-World Success</h4>
                 <p className="text-blue-800 text-sm">
-                  "30 years ago, as a rising professional juggling a demanding strategy job at AT&T, pursuing my MBA at Rutgers, 
-                  with a wife and two kids under 3, I was overwhelmed. I developed this framework out of necessity - and it worked. 
-                  Since then, I've helped hundreds of ambitious professionals use this system to reduce stress, increase happiness, 
-                  and systematically achieve their complex life goals." - Dan Lynn, Creator
+                  "Our proven framework has been impacting lives for over 30 years. I first developed this system as a rising professional 
+                  juggling a demanding strategy job at AT&T, pursuing my MBA at Rutgers, with a wife and two kids under 3. I was overwhelmed 
+                  and created this framework out of necessity - and it worked. Since then, I've helped hundreds of ambitious professionals 
+                  use this system to reduce stress, increase happiness, and systematically achieve their complex life goals." - Dan Lynn, Creator
                 </p>
               </div>
             </div>
