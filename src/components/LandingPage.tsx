@@ -89,7 +89,7 @@ export const LandingPage = ({
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>30 years in development.</strong> Proven with hundreds of professionals. 
+              <strong>Our proven framework has been impacting lives for over 30 years.</strong> Proven with hundreds of professionals. 
               Now powered by AI for personalized life complexity management.
             </p>
             
