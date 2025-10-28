@@ -46,12 +46,12 @@ export const LandingPage = ({
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
               <span className="text-primary">Master Life's Complexities</span><br />
-              with The 6 Elements of Life™
+              with The 6 Pillars of Life™
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
               Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing the complexity of modern life. 
-              Our proprietary 6 Elements of Life™ transforms scattered goals into integrated life management.
+              Our proprietary 6 Pillars of Life™ transforms scattered goals into integrated life management.
             </p>
 
             {/* 5 Circle Visual */}
