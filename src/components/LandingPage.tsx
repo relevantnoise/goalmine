@@ -228,8 +228,8 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">Integrated Tracking</h5>
                   <p className="text-muted-foreground text-sm">
-                    Circle-based dashboard shows progress across all life areas, 
-                    with AI-powered motivation that understands your complete picture.
+                    Personalized dashboard shows progress across all elements, 
+                    with daily AI-powered motivation for each goal.
                   </p>
                 </div>
               </div>
