@@ -117,7 +117,7 @@ export const UpgradePage = () => {
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
             You've reached the free limit. Upgrade to Personal Plan for traditional multi-goal tracking, 
-            or discover our revolutionary <strong>5 Circle Life Management™</strong> system - a proven framework for managing complex life priorities.
+            or discover our revolutionary <strong>6 Elements of Life™</strong> system - a proven framework for managing complex life priorities.
           </p>
         </div>
 
@@ -131,7 +131,7 @@ export const UpgradePage = () => {
               <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
               <p className="text-sm text-muted-foreground mb-3">Everything you need to achieve your goals</p>
               <div className="text-2xl font-bold text-premium">
-                $4.99
+                $24.99
                 <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
@@ -218,9 +218,9 @@ export const UpgradePage = () => {
             <CardHeader className="pt-12 text-center">
               <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
               <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
-                GET ALL 5 CIRCLES
+                GET ALL 6 ELEMENTS
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Advanced features for complete life management across all circles. Maximize your 5 Circle Framework experience.</p>
+              <p className="text-sm text-muted-foreground mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-blue-600 hover:text-blue-700 text-sm underline mb-3 cursor-pointer"
@@ -244,8 +244,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 5 Goals Across All Circles</span>
-                    <p className="text-xs text-muted-foreground">Complete life coverage with multiple goals per circle</p>
+                    <span className="font-semibold">Up to 10 Goals Across All Elements</span>
+                    <p className="text-xs text-muted-foreground">Complete life coverage with multiple goals per element</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -265,8 +265,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 5 Goals + 5 Nudges</span>
-                    <p className="text-xs text-muted-foreground">One goal per circle + daily motivation</p>
+                    <span className="font-semibold">Up to 10 Goals + 10 Nudges</span>
+                    <p className="text-xs text-muted-foreground">Multiple goals per element + daily motivation</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -278,10 +278,10 @@ export const UpgradePage = () => {
                 </li>
               </ul>
 
-              {subscription.subscribed && subscription.subscription_tier === "Pro Plan" ? (
+              {subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan") ? (
                 <div className="bg-success-light/20 text-success border border-success/20 rounded-lg p-4 text-center">
                   <Target className="w-6 h-6 mx-auto mb-2" />
-                  <p className="font-semibold">You're a Pro Plan member!</p>
+                  <p className="font-semibold">You're a Professional Plan member!</p>
                   <p className="text-sm opacity-90">Enjoy your enhanced features</p>
                 </div>
               ) : (

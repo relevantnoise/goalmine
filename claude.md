@@ -4,6 +4,16 @@
 
 GoalMine.ai is a goal tracking and motivational platform built with React, TypeScript, and Supabase. The application helps users create goals, track daily progress through streaks, and receive AI-enhanced motivational messages via email and on-demand nudges.
 
+## ⚠️ CRITICAL CODEBASE WARNING (October 2025)
+
+**OUTDATED CODE EXISTS**: Some components in this codebase contain OLD CODE that does not match production:
+- `OnboardingForm.tsx` - Contains outdated 5-step process with time selection (SHOULD BE 4 steps)
+- Email time selection logic - REMOVED months ago, all users get 6 AM emails
+- **WARNING**: Do not modify or rely on code that references email time selection
+- **VERIFY**: Always check if components match current simplified user flow before making changes
+
+**PRODUCTION REALITY**: 4-step goal creation (Title → Details → Date → Tone) + Universal 6 AM emails
+
 ## ✅ DEVELOPMENT WORKFLOW (Updated October 3, 2025)
 
 ### **🔒 SAFETY IMPROVEMENTS (October 3, 2025)**
@@ -44,11 +54,15 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 2. Email verification → 5 Circle Framework onboarding
 3. 30-day free trial automatically activated
 
-### Goal Creation Process (5 Circle Framework)
-1. Universal 5 Circle interview (15-20 minutes)
-2. AI-guided goal workshop with circle-specific suggestions
-3. Goals created with circle assignment and context
-4. Success notification & redirect to 5 Circle Dashboard
+### Goal Creation Process (SIMPLIFIED - Current Implementation)
+**IMPORTANT**: The goal creation process was simplified months ago and now uses a 4-step flow:
+1. **Goal Title** - Clear, specific goal description
+2. **Additional Details** - Context and motivation details (crucial for AI personalization)  
+3. **Target Date** - When user wants to achieve the goal
+4. **Motivation Tone** - Coaching style (drill sergeant, encouraging, teammate, mentor)
+
+**REMOVED**: Time selection step (users previously selected morning/afternoon/evening)
+**CURRENT**: All users receive emails at 6 AM Eastern regardless of preferences
 
 ### Dashboard Experience (5 Circle Framework PRIMARY)
 - Circle-organized goal management with time allocation tracking
@@ -59,11 +73,12 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 - Goal detail pages with motivation content
 - Subscription management with goal limits
 
-### Daily Motivation System
-- Goal detail pages: Smart AI content (real-time/cached)
-- Daily emails: 6 AM Eastern via external cron
-- Content: Messages, micro-plans, mini-challenges
-- Tone consistency with user preferences
+### Daily Motivation System (SIMPLIFIED - October 2025)
+- **CURRENT EMAIL SYSTEM**: Universal 6 AM Eastern delivery for ALL users (no time selection)
+- **Email Content**: AI-generated with goal-specific messages, micro-plans, mini-challenges
+- **Tone**: Consistent with individual user preferences (drill sergeant, encouraging, teammate, mentor)
+- **Goal Detail Pages**: Smart AI content (real-time/cached for on-demand viewing)
+- **Key Change**: Users NO LONGER select email times - everyone gets the same consolidated email at 6 AM
 
 ### Subscription Tiers (Updated October 25, 2025)
 - **Free Users**: 1 goal, 1 daily nudge, 30-day trial
@@ -330,13 +345,14 @@ interface MotivationContent {
 
 ## Email System
 
-### Daily Emails
-- 1 email per goal (not consolidated)
-- 6 AM Eastern via external cron
-- AI-generated content + progress tracking
-- HTML templates with check-in links
-- Resend service with custom domain
-- Status: ✅ FULLY AUTOMATED (Oct 5, 2025 fix)
+### Daily Emails (SIMPLIFIED SYSTEM - Current)
+- **UNIVERSAL DELIVERY**: 6 AM Eastern for ALL users (no user time selection)
+- **EMAIL CONTENT**: AI-generated goal-specific content + progress tracking  
+- **FORMAT**: HTML templates with check-in links
+- **SERVICE**: Resend with custom domain (noreply@notifications.goalmine.ai)
+- **DELIVERY METHOD**: External cron via Vercel (not Supabase cron)
+- **KEY CHANGE**: Removed individual email time preferences - unified 6 AM delivery
+- **Status**: ✅ FULLY AUTOMATED (Oct 5, 2025 fix)
 
 ### Email Link Flow
 - Check-in links with user/goal/timestamp parameters
@@ -412,6 +428,8 @@ interface MotivationContent {
 ## Troubleshooting
 
 ### Common Issues
+- **OUTDATED CODE USAGE**: If goal creation fails, verify you're not using old OnboardingForm.tsx with 5-step process
+- **Time Selection Bugs**: Email time selection was REMOVED - do not implement time selection features
 - Auth Loops: Check Firebase session in useAuth.tsx
 - Streak Logic: Verify 3 AM EST reset timezone calculations
 - Email Delivery: Confirm Resend integration

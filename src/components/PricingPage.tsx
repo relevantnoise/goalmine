@@ -120,7 +120,7 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your First Goal</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transform your goals into achievements with personalized daily motivation. 
-            Try free for 30 days, then continue for just $4.99/month. Professional plans and one-on-one strategic coaching are also available.
+            Try free for 30 days, then continue for just $24.99/month. Professional plans and one-on-one strategic coaching are also available.
           </p>
         </div>
 
@@ -189,7 +189,7 @@ export const PricingPage = ({
                 <p className="text-muted-foreground text-sm">The perfect option after your free trial. Cancel anytime.</p>
               </div>
               <div className="text-2xl font-bold">
-                $4.99
+                $24.99
                 <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
@@ -234,7 +234,7 @@ export const PricingPage = ({
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
                 <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  GET ALL 5 CIRCLES
+                  GET ALL 6 ELEMENTS
                 </div>
                 <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
                 <button 
@@ -257,7 +257,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 5 goals across all circles</span>
+                  <span>Up to 10 goals across all elements</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -277,10 +277,10 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 5 active goals + 5 daily nudges</span>
+                  <span>Up to 10 active goals + 10 daily nudges</span>
                 </li>
               </ul>
-              {subscription.subscribed && subscription.subscription_tier === "Pro Plan" ? 
+              {subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan") ? 
                 <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
                 </Badge> : 
@@ -317,7 +317,7 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span>Everything in Pro Plan plus...</span>
+                  <span>Everything in Professional Plan plus...</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
@@ -336,7 +336,7 @@ export const PricingPage = ({
                   <span>Executive-level strategic guidance</span>
                 </li>
               </ul>
-              {subscription.subscribed && subscription.subscription_tier === "Professional Coach" ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
+              {subscription.subscribed && (subscription.subscription_tier === "Strategic Advisor Plan" || subscription.subscription_tier === "Professional Coach") ? <Badge variant="secondary" className="w-full justify-center py-3 bg-success text-success-foreground">
                   Current Plan
                 </Badge> : <Button onClick={handleProfessionalSubscribe} className="w-full bg-green-600 hover:bg-green-700" size="lg" disabled={strategicLoading}>
                   <Users className="w-4 h-4 mr-2" />

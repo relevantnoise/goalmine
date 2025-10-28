@@ -15,7 +15,7 @@ export const UpgradePrompt = ({
   const upgradeContent = {
     title: "Ready for Advanced Goal Management?",
     subtitle: "6 Elements of Life™ system or Personal Plan available",
-    pricing: "From $4.99/month",
+    pricing: "From $24.99/month",
     buttonText: "View Plans",
     features: [{
       text: "Up to 3 traditional goals OR 6 Elements of Life™"

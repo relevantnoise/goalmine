@@ -35,17 +35,17 @@ export const CrawlerLandingPage = () => {
       {
         "@type": "Offer", 
         "name": "Personal Plan",
-        "price": "4.99",
+        "price": "24.99",
         "priceCurrency": "USD",
-        "description": "Up to 3 active goals with AI coaching",
+        "description": "Up to 3 active goals with 6 Elements framework",
         "validFrom": "2024-01-01"
       },
       {
         "@type": "Offer",
-        "name": "Pro Plan", 
+        "name": "Professional Plan", 
         "price": "199.99",
         "priceCurrency": "USD",
-        "description": "Up to 5 goals plus monthly group Q&A",
+        "description": "Up to 10 goals with advanced 6 Elements analytics",
         "validFrom": "2024-01-01"
       },
       {
@@ -53,7 +53,7 @@ export const CrawlerLandingPage = () => {
         "name": "Strategic Advisor Plan",
         "price": "950",
         "priceCurrency": "USD", 
-        "description": "Everything in Pro Plan plus quarterly 1-on-1 coaching",
+        "description": "Everything in Professional Plan plus quarterly 1-on-1 coaching",
         "validFrom": "2024-01-01"
       }
     ],

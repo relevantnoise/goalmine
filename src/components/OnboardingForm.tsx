@@ -15,6 +15,11 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
+// ⚠️ WARNING: THIS COMPONENT CONTAINS OUTDATED CODE (October 2025)
+// The 5-step process with time selection (Step 5) was REMOVED months ago
+// Production uses simplified 4-step process with universal 6 AM emails
+// DO NOT USE this component for new implementations - it does not match production
+
 interface OnboardingFormProps {
   onComplete: (goalId?: string) => void;
   onBack: () => void;

@@ -61,7 +61,7 @@ export const useSubscription = () => {
   };
 
   const createCheckout = async () => {
-    console.log('🔴 createCheckout called - Personal Plan (THIS SHOULD NOT HAPPEN FOR STRATEGIC ADVISOR)');
+    console.log('🔴 createCheckout called - Personal Plan $24.99/month (THIS SHOULD NOT HAPPEN FOR STRATEGIC ADVISOR)');
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
@@ -70,7 +70,7 @@ export const useSubscription = () => {
 
     setLoading(true);
     try {
-      console.log('🔴 About to invoke create-checkout with NO tier (Personal Plan)');
+      console.log('🔴 About to invoke create-checkout with NO tier (Personal Plan $24.99)');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           email: userEmail,
@@ -122,7 +122,7 @@ export const useSubscription = () => {
   };
 
   const createProPlanCheckout = async () => {
-    console.log('🎯 createProPlanCheckout called - Pro Plan ($199.99)');
+    console.log('🎯 createProPlanCheckout called - Professional Plan ($199.99)');
     const userEmail = user?.email;
     if (!userEmail || !user.id) {
       toast.error('Please sign in to subscribe');
@@ -136,7 +136,7 @@ export const useSubscription = () => {
         body: {
           email: userEmail,
           userId: user.id,
-          tier: 'pro_plan', // This should trigger $199.99/month Pro Plan
+          tier: 'pro_plan', // This should trigger $199.99/month Professional Plan
         },
       });
       console.log('🎯 create-checkout response:', { data, error });

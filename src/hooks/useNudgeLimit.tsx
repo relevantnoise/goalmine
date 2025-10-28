@@ -62,14 +62,15 @@ export const useNudgeLimit = () => {
     const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
     
-    // Determine max nudges based on subscription tier
+    // Determine max nudges based on subscription tier (matches goal limits)
     const getNudgeLimit = (subscription) => {
       if (!subscription.subscribed) return 1; // Free users
       
       const tier = subscription.subscription_tier;
-      if (tier === 'Pro Plan') return 5;
-      if (tier === 'Strategic Advisor Plan') return 5;
-      if (tier === 'Professional Coach') return 5; // Legacy tier
+      if (tier === 'Professional Plan') return 10; // Updated to match goal limit
+      if (tier === 'Pro Plan') return 10; // Legacy name support
+      if (tier === 'Strategic Advisor Plan') return 10; // Updated to match goal limit
+      if (tier === 'Professional Coach') return 10; // Legacy tier
       return 3; // Personal Plan (default for subscribed users)
     };
     
@@ -126,14 +127,15 @@ export const useNudgeLimit = () => {
     const storedDate = localStorage.getItem('lastNudgeDate');
     const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
-    // Determine max nudges based on subscription tier
+    // Determine max nudges based on subscription tier (matches goal limits)
     const getNudgeLimit = (subscription) => {
       if (!subscription.subscribed) return 1; // Free users
       
       const tier = subscription.subscription_tier;
-      if (tier === 'Pro Plan') return 5;
-      if (tier === 'Strategic Advisor Plan') return 5;
-      if (tier === 'Professional Coach') return 5; // Legacy tier
+      if (tier === 'Professional Plan') return 10; // Updated to match goal limit
+      if (tier === 'Pro Plan') return 10; // Legacy name support
+      if (tier === 'Strategic Advisor Plan') return 10; // Updated to match goal limit
+      if (tier === 'Professional Coach') return 10; // Legacy tier
       return 3; // Personal Plan (default for subscribed users)
     };
     
@@ -147,10 +149,10 @@ export const useNudgeLimit = () => {
         
         const tier = subscription.subscription_tier;
         if (tier === 'Personal Plan') {
-          return `You've reached your limit of ${maxNudges} nudges per day, but you can upgrade to Pro Plan to get up to 5 nudges daily!`;
+          return `You've reached your limit of ${maxNudges} nudges per day, but you can upgrade to Professional Plan to get up to 10 nudges daily!`;
         }
         
-        // Pro Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
+        // Professional Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
         return `You've reached your daily nudge limit of ${maxNudges}.`;
       };
       

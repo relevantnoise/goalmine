@@ -156,9 +156,10 @@ serve(async (req) => {
       if (!subscriber?.subscribed) return 1; // Free users
       
       const tier = subscriber.subscription_tier;
-      if (tier === 'Pro Plan') return 5;
-      if (tier === 'Strategic Advisor Plan') return 5;
-      if (tier === 'Professional Coach') return 5; // Legacy tier
+      if (tier === 'Professional Plan') return 10; // Updated from 5 to 10
+      if (tier === 'Pro Plan') return 10; // Legacy name support
+      if (tier === 'Strategic Advisor Plan') return 10; // Same as Professional
+      if (tier === 'Professional Coach') return 10; // Legacy tier
       return 3; // Personal Plan (default for subscribed users)
     };
     
@@ -169,17 +170,17 @@ serve(async (req) => {
     if (currentGoalCount >= maxGoals) {
       const getErrorMessage = (subscriber, currentCount) => {
         if (!subscriber?.subscribed) {
-          return `Free users can have a maximum of 1 goal. Upgrade to Personal Plan to create up to 3 goals.`;
+          return `Free users can have a maximum of 1 goal. Upgrade to Personal Plan ($24.99/month) to create up to 3 goals.`;
         }
         
         const tier = subscriber.subscription_tier || 'Personal Plan';
         
         if (tier === 'Personal Plan') {
-          return `Personal Plan users can have a maximum of 3 goals. Upgrade to Pro Plan to create up to 5 goals.`;
+          return `Personal Plan users can have a maximum of 3 goals. Upgrade to Professional Plan ($199.99/month) to create up to 10 goals.`;
         }
         
-        // Pro Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
-        const maxForTier = tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 5 : 3;
+        // Professional Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
+        const maxForTier = tier === 'Professional Plan' || tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 10 : 3;
         return `${tier} users can have a maximum of ${maxForTier} goals. You currently have ${currentCount} goals.`;
       };
       

@@ -332,12 +332,13 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     (() => {
                       const tier = subscription.subscription_tier || 'Personal Plan';
                       const maxGoals = (() => {
-                        if (tier === 'Pro Plan') return 5;
-                        if (tier === 'Strategic Advisor Plan') return 5;
-                        if (tier === 'Professional Coach') return 5; // Legacy tier
+                        if (tier === 'Professional Plan') return 10;
+                        if (tier === 'Pro Plan') return 10; // Legacy name support
+                        if (tier === 'Strategic Advisor Plan') return 10;
+                        if (tier === 'Professional Coach') return 10; // Legacy tier
                         return 3; // Personal Plan
                       })();
-                      const maxNudges = maxGoals === 5 ? 5 : 3;
+                      const maxNudges = maxGoals === 10 ? 10 : 3;
                       
                       return (
                         <>

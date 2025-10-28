@@ -22,14 +22,14 @@ serve(async (req) => {
     
     const planName = (() => {
       if (isStrategicAdvisory) return 'Strategic Advisor Plan';
-      if (isProPlan) return 'Pro Plan';
+      if (isProPlan) return 'Professional Plan';
       return 'Personal Plan';
     })();
     
     const finalPriceId = priceId || (() => {
       if (isStrategicAdvisory) return "price_1SCPJLCElVmMOup293vWqNTQ"; // Strategic Advisor Plan $950/month
-      if (isProPlan) return "price_1SHE5DCElVmMOup2zX8H4qnJ"; // Pro Plan $199.99/month
-      return "price_1RwNO0CElVmMOup2B7WPCzlH"; // Personal Plan $4.99/month
+      if (isProPlan) return "price_1SHE5DCElVmMOup2zX8H4qnJ"; // Professional Plan $199.99/month
+      return "price_1SNEM2CElVmMOup25aJLD43T"; // Personal Plan $24.99/month
     })();
     
     console.log(`🔍 DEBUG: tier=${tier}, isStrategicAdvisory=${isStrategicAdvisory}, isProPlan=${isProPlan}, planName=${planName}, finalPriceId=${finalPriceId}`);
