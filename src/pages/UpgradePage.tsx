@@ -329,7 +329,7 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Strategic Business Advisory</span>
+                    <span className="font-semibold">2-hour, 1-on-1 quarterly advisory sessions</span>
                     <p className="text-xs text-muted-foreground">Direct strategic sessions with Dan Lynn</p>
                   </div>
                 </li>
