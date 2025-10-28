@@ -1,4 +1,5 @@
 # 🎯 GOALMINE.AI - CURRENT STATE (October 28, 2025)
+**LATEST UPDATE**: New Pricing Strategy & 10-Goal Professional Plan Deployed
 
 **⚠️ CRITICAL: READ THIS FIRST BEFORE ANY DEVELOPMENT WORK**
 
@@ -107,20 +108,22 @@ Dan Lynn's proven 10-year methodology with 4 dimensions:
 - **1 daily nudge** 
 - **All 6 Elements Framework** features included
 
-### **Personal Plan** - $4.99/month
+### **Personal Plan** - $24.99/month ⬆️ (UPDATED OCT 28, 2025)
 - **3 goals** maximum
 - **3 daily nudges**
-- **All features** unlocked
+- **6 Elements Framework** included
+- **Enhanced value** reflecting professional life management platform
 
-### **Pro Plan** - $199.99/month  
-- **5 goals** maximum
-- **5 daily nudges**
-- **6 Elements Framework** + **1-hour monthly group Q&A with Dan Lynn**
+### **Professional Plan** - $199.99/month ⬆️ (UPDATED OCT 28, 2025)
+- **10 goals** maximum (increased from 5)
+- **10 daily nudges** (increased from 5)  
+- **Advanced 6 Elements analytics**
+- **No group Q&A** (removed for scalability)
 
 ### **Strategic Advisor Plan** - $950/month
-- **5 goals** maximum  
-- **5 daily nudges**
-- **6 Elements Framework** + **2-hour monthly 1-on-1 coaching with Dan Lynn**
+- **10 goals** maximum (increased from 5)
+- **10 daily nudges** (increased from 5)
+- **Everything in Professional Plan** + **quarterly 1-on-1 coaching with Dan Lynn**
 
 ---
 

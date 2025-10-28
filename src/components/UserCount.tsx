@@ -16,7 +16,7 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
     const daysSinceLaunch = Math.floor((today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24));
     
     // Base count + realistic daily growth with some variance
-    const baseUsers = 115;
+    const baseUsers = 50;
     
     // Only add growth if we have positive days since launch
     let totalGrowth = 0;
