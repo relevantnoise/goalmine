@@ -37,7 +37,7 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
     return (
       <div className={`flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium ${className}`}>
         <Users className="w-4 h-4" />
-        <span>Join {userCount.toLocaleString()}+ goal achievers</span>
+        <span>Join {userCount.toLocaleString()}+ life architects</span>
       </div>
     );
   }
