@@ -52,7 +52,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-xl text-foreground">
-                  6 Elements of Life™ Framework Complete
+                  6 Pillars of Life™ Framework Complete
                 </h3>
                 {/* Weekly Streak Info */}
                 <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
             className="flex-1 bg-primary hover:bg-primary-hover text-white font-medium shadow-sm"
           >
             <Eye className="w-4 h-4 mr-2" />
-            View Your 6 Elements Framework
+            View Your 6 Pillars Framework
           </Button>
           
           {/* Weekly Check-in Button */}

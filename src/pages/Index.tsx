@@ -254,7 +254,7 @@ const Index = () => {
 
   const handleEmailSubmit = (email: string) => {
     setUserEmail(email);
-    // Universal 6 Elements of Life onboarding for all users
+    // Universal 6 Pillars of Life onboarding for all users
     setCurrentView('five-circle-onboarding');
   };
 
@@ -287,7 +287,7 @@ const Index = () => {
 
 
   const handleFiveCircleComplete = () => {
-    console.log('✅ Step 1 Complete: 6 Elements of Life setup → Step 2: Goal creation');
+    console.log('✅ Step 1 Complete: 6 Pillars of Life setup → Step 2: Goal creation');
     hasInitialized.current = true;
     
     // Refresh framework data to ensure hasFramework is updated
@@ -302,7 +302,7 @@ const Index = () => {
     // Show success message
     setAlertData({
       title: "🎯 Step 1 Complete!",
-      message: "Your 6 Elements of Life™ is ready! Now let's create your first goal.",
+      message: "Your 6 Pillars of Life™ is ready! Now let's create your first goal.",
       type: 'achievement'
     });
     setShowAlert(true);
@@ -319,7 +319,7 @@ const Index = () => {
     // Show completion message
     setAlertData({
       title: "🎉 Goals Created Successfully!",
-      message: `${goals.length} goal${goals.length !== 1 ? 's' : ''} created! Your 6 Elements journey begins now.`,
+      message: `${goals.length} goal${goals.length !== 1 ? 's' : ''} created! Your 6 Pillars journey begins now.`,
       type: 'achievement'
     });
     setShowAlert(true);
@@ -432,9 +432,9 @@ const Index = () => {
       body: { userId, email: user.email }
     });
     
-    // Filter out 6 Elements framework goals from count (same logic as backend)
+    // Filter out 6 Pillars framework goals from count (same logic as backend)
     const filterFrameworkGoals = (goalList) => {
-      return goalList.filter(goal => !goal.title?.includes('6 Elements of Life™ Framework'));
+      return goalList.filter(goal => !goal.title?.includes('6 Pillars of Life™ Framework'));
     };
     
     const freshGoalCount = goalsData?.success 
@@ -550,7 +550,7 @@ const Index = () => {
         onGetStarted={async () => {
           if (user) {
             // Skip all database checks and go to universal 5 Circle onboarding
-            console.log('User authenticated, going to 6 Elements onboarding');
+            console.log('User authenticated, going to 6 Pillars onboarding');
             setUserEmail(user.email || '');
             setCurrentView('five-circle-onboarding');
           } else {
@@ -596,7 +596,7 @@ const Index = () => {
                 await generateMotivationForGoals();
               } else {
                 // No goals, start 5 Circle onboarding
-                console.log('No goals found, starting 6 Elements onboarding');
+                console.log('No goals found, starting 6 Pillars onboarding');
                 setUserEmail(user.email || '');
                 setCurrentView('five-circle-onboarding');
               }
@@ -620,7 +620,7 @@ const Index = () => {
     // If user is authenticated, skip email collection
     if (user) {
       setUserEmail(user.email || '');
-      // Universal 6 Elements of Life onboarding for all users
+      // Universal 6 Pillars of Life onboarding for all users
       setCurrentView('five-circle-onboarding');
       return null;
     }
@@ -651,7 +651,7 @@ const Index = () => {
       <ProfessionalCircleSetup 
         onComplete={handleFiveCircleComplete}
         onBack={() => {
-          console.log('🔙 Going back from 6 Elements setup to dashboard');
+          console.log('🔙 Going back from 6 Pillars setup to dashboard');
           setCurrentView('dashboard');
         }}
       />

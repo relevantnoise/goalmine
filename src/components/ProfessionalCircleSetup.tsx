@@ -178,7 +178,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
       toast({
         title: "🎯 Life Management System Created!",
-        description: "Your 6 Elements of Life™ is ready. Time to set some goals!",
+        description: "Your 6 Pillars of Life™ is ready. Time to set some goals!",
         duration: 5000
       });
 
@@ -205,7 +205,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       <div className="max-w-6xl mx-auto px-6 pt-8 pb-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            The 6 Elements of Life™ Setup
+            The 6 Pillars of Life™ Setup
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Build your foundation for success. This comprehensive system helps high-achieving professionals 

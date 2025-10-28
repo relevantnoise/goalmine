@@ -14,11 +14,11 @@ export const UpgradePrompt = ({
   // EDIT THIS CONTENT AS NEEDED
   const upgradeContent = {
     title: "Ready for Advanced Goal Management?",
-    subtitle: "6 Elements of Life™ system or Personal Plan available",
+    subtitle: "6 Pillars of Life™ system or Personal Plan available",
     pricing: "From $24.99/month",
     buttonText: "View Plans",
     features: [{
-      text: "Up to 3 traditional goals OR 6 Elements of Life™"
+      text: "Up to 3 traditional goals OR 6 Pillars of Life™"
     }, {
       text: "Systematic life complexity management"
     }, {

@@ -114,11 +114,11 @@ export const LandingPage = ({
               </>}
           </div>
           
-          <p className="text-sm text-muted-foreground">30-day free trial • Everyone experiences The 6 Elements of Life™ • Upgrade for more goals across all elements</p>
+          <p className="text-sm text-muted-foreground">30-day free trial • Everyone experiences The 6 Pillars of Life™ • Upgrade for more goals across all pillars</p>
         </div>
       </div>
 
-      {/* 6 Elements of Life Deep Dive */}
+      {/* 6 Pillars of Life Deep Dive */}
       <div className="bg-gradient-to-br from-blue-50 to-purple-50 py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
@@ -195,19 +195,19 @@ export const LandingPage = ({
                 "I developed the original framework 30 years ago while juggling a demanding strategy role at AT&T, 
                 MBA studies at Rutgers, marriage, and two kids under 3. Traditional time management failed me. 
                 I needed a <strong>systematic approach to life's complexities</strong> that worked for ambitious professionals 
-                who refuse to choose between success and fulfillment. Now evolved into The 6 Elements of Life™."
+                who refuse to choose between success and fulfillment. Now evolved into The 6 Pillars of Life™."
               </p>
             </div>
 
             {/* How It Works */}
             <div className="text-center mb-12">
-              <h4 className="text-3xl font-bold mb-8">How The 6 Elements of Life™ Works</h4>
+              <h4 className="text-3xl font-bold mb-8">How The 6 Pillars of Life™ Works</h4>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-purple-600 font-bold text-xl">1</span>
                   </div>
-                  <h5 className="text-lg font-semibold mb-3">6 Elements of Life Framework</h5>
+                  <h5 className="text-lg font-semibold mb-3">6 Pillars of Life Framework</h5>
                   <p className="text-muted-foreground text-sm">
                     3-5 minute gap assessement helps capture opportunities for maximizing results and happiness.
                   </p>

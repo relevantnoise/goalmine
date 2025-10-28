@@ -130,7 +130,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create Your Goal</CardTitle>
-          <p className="text-muted-foreground">Set your goal, assign it to one of the 6 Elements of Life, and get personalized daily motivation</p>
+          <p className="text-muted-foreground">Set your goal, assign it to one of the 6 Pillars of Life, and get personalized daily motivation</p>
         </CardHeader>
         
         <CardContent>
@@ -191,7 +191,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
             {/* Step 4: Circle Assignment */}
             <div>
               <Label className="text-base font-medium mb-3 block">
-                4. Which of the 6 Elements of Life is this goal associated with?
+                4. Which of the 6 Pillars of Life is this goal associated with?
               </Label>
               <Select value={selectedCircle} onValueChange={setSelectedCircle}>
                 <SelectTrigger className="w-full">

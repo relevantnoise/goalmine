@@ -117,7 +117,7 @@ export const UpgradePage = () => {
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
             You've reached the free limit. Upgrade to Personal Plan for traditional multi-goal tracking, 
-            or discover our revolutionary <strong>6 Elements of Life™</strong> system - a proven framework for managing complex life priorities.
+            or discover our revolutionary <strong>6 Pillars of Life™</strong> system - a proven framework for managing complex life priorities.
           </p>
         </div>
 

@@ -242,7 +242,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
       
       toast({
         title: "✅ Framework Updated!",
-        description: "Your 6 Elements of Life™ Framework has been updated successfully.",
+        description: "Your 6 Pillars of Life™ Framework has been updated successfully.",
         duration: 5000
       });
 
@@ -592,7 +592,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
       <div className="container mx-auto px-6 py-8">
         {/* Progress Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Edit Your 6 Elements of Life™ Framework</h1>
+          <h1 className="text-3xl font-bold mb-2">Edit Your 6 Pillars of Life™ Framework</h1>
           <p className="text-muted-foreground mb-4">
             Update your time allocation and element priorities as your life evolves
           </p>

@@ -37,7 +37,7 @@ export const CrawlerLandingPage = () => {
         "name": "Personal Plan",
         "price": "24.99",
         "priceCurrency": "USD",
-        "description": "Up to 3 active goals with 6 Elements framework",
+        "description": "Up to 3 active goals with 6 Pillars framework",
         "validFrom": "2024-01-01"
       },
       {
@@ -45,7 +45,7 @@ export const CrawlerLandingPage = () => {
         "name": "Professional Plan", 
         "price": "199.99",
         "priceCurrency": "USD",
-        "description": "Up to 10 goals with advanced 6 Elements analytics",
+        "description": "Up to 10 goals with advanced 6 Pillars analytics",
         "validFrom": "2024-01-01"
       },
       {
