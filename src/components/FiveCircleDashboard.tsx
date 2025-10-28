@@ -76,18 +76,19 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
       setLoadingStats(true);
       
       // Use edge function instead of direct database query (same pattern as goals)
-      const { data, error } = await supabase.functions.invoke('fetch-circle-framework', {
-        body: { user_id: user.email }
+      const { data, error } = await supabase.functions.invoke('fetch-six-elements-framework', {
+        body: { userEmail: user.email }
       });
 
       if (error) throw error;
 
-      if (data?.success && data?.hasFramework && data?.allocations) {
-        const stats = data.allocations.map((allocation: any) => {
-          const circleGoals = goals.filter(goal => goal.circle_type === allocation.circle_name);
+      if (data?.success && data?.hasFramework && data?.data?.elementsData) {
+        // Convert elements data to stats format
+        const stats = Object.entries(data.data.elementsData).map(([elementName, element]: [string, any]) => {
+          const circleGoals = goals.filter(goal => goal.circle_type === elementName);
           return {
-            name: allocation.circle_name,
-            hoursAllocated: allocation.ideal_hours_per_week,
+            name: elementName,
+            hoursAllocated: element.ideal_hours_per_week,
             goalsCount: circleGoals.length,
             activeStreaks: circleGoals.filter(goal => (goal as any).current_streak > 0).length,
             totalCheckIns: circleGoals.reduce((sum, goal) => sum + ((goal as any).total_checkins || 0), 0)
@@ -96,8 +97,8 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
         setCircleStats(stats);
         
         // Capture work happiness data
-        if (data.workHappiness) {
-          setWorkHappiness(data.workHappiness);
+        if (data.data.workHappinessData) {
+          setWorkHappiness(data.data.workHappinessData);
         }
       }
     } catch (error) {

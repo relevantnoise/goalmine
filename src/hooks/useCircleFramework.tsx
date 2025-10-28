@@ -61,8 +61,8 @@ export const useCircleFramework = () => {
       console.log('🔍 Fetching circle framework via edge function for:', user.email);
       
       // Use edge function instead of direct database query (SAME AS GOALS)
-      const { data, error } = await supabase.functions.invoke('fetch-circle-framework', {
-        body: { user_id: user.email }
+      const { data, error } = await supabase.functions.invoke('fetch-six-elements-framework', {
+        body: { userEmail: user.email }
       });
 
       if (error) {
@@ -71,15 +71,50 @@ export const useCircleFramework = () => {
       }
 
       if (data?.success && data?.hasFramework) {
-        console.log('✅ Found existing framework via edge function:', data.framework.id);
-        setFramework(data.framework);
+        console.log('✅ Found existing framework via edge function:', data.data.frameworkId);
+        
+        // Convert six elements data to framework format
+        const frameworkData = {
+          id: data.data.frameworkId,
+          user_email: data.data.userEmail,
+          work_hours_per_week: data.data.elementsData?.Work?.ideal_hours_per_week || 40,
+          sleep_hours_per_night: (data.data.elementsData?.Sleep?.ideal_hours_per_week || 56) / 7,
+          commute_hours_per_week: 0,
+          available_hours_per_week: 168,
+          created_at: data.data.createdAt
+        };
+        
+        setFramework(frameworkData);
         setHasFramework(true);
         
-        // Set full data directly from edge function response
+        // Convert elements data to allocations format
+        const allocations = Object.entries(data.data.elementsData || {}).map(([name, element]: [string, any]) => ({
+          id: element.id,
+          framework_id: data.data.frameworkId,
+          circle_name: name,
+          importance_level: element.importance_level,
+          current_hours_per_week: element.current_hours_per_week,
+          ideal_hours_per_week: element.ideal_hours_per_week
+        }));
+        
+        // Convert work happiness data
+        const workHappiness = data.data.workHappinessData ? {
+          id: data.data.workHappinessData.id,
+          framework_id: data.data.frameworkId,
+          impact_current: data.data.workHappinessData.impact_current,
+          impact_desired: data.data.workHappinessData.impact_desired,
+          fun_current: data.data.workHappinessData.enjoyment_current,
+          fun_desired: data.data.workHappinessData.enjoyment_desired,
+          money_current: data.data.workHappinessData.income_current,
+          money_desired: data.data.workHappinessData.income_desired,
+          remote_current: data.data.workHappinessData.remote_current,
+          remote_desired: data.data.workHappinessData.remote_desired
+        } : null;
+        
         setFullData({
-          framework: data.framework,
-          allocations: data.allocations || [],
-          workHappiness: data.workHappiness || null
+          framework: frameworkData,
+          allocations,
+          workHappiness
         });
       } else {
         console.log('📝 No framework found - user needs onboarding');
