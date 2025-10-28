@@ -31,15 +31,26 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
     }
   };
   return (
-    <Card className="border border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
-      <CardContent className="p-6">
-        {/* Header - No "Goal" label */}
+    <Card className="border-2 border-purple-300 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 shadow-lg ring-1 ring-purple-200/50 relative overflow-hidden">
+      {/* Decorative elements for visual distinction */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-bl-full"></div>
+      
+      <CardContent className="p-6 relative z-10">
+        {/* Header - Framework Indicator */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="text-2xl">🎯</div>
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center border border-purple-200 shadow-sm">
+              <div className="text-2xl">🎯</div>
+            </div>
             <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge variant="secondary" className="bg-purple-100 text-purple-800 border-purple-200 font-semibold text-xs">
+                  LIFE FRAMEWORK
+                </Badge>
+              </div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-lg text-gray-900">
+                <h3 className="font-bold text-xl text-gray-900">
                   6 Elements of Life™ Framework Complete
                 </h3>
                 {/* Weekly Streak Info */}
@@ -50,7 +61,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-700 mt-1 font-medium">
                 Your personalized life management system is now configured with 6 elements and business happiness metrics.
               </p>
             </div>
@@ -69,10 +80,10 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 mb-4">
           <Button 
             onClick={onViewFramework}
-            className="flex-1 bg-purple-600 hover:bg-purple-700"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold shadow-md"
           >
             <Eye className="w-4 h-4 mr-2" />
             View Your 6 Elements Framework
@@ -83,7 +94,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
             <Button 
               onClick={handleWeeklyCheckin}
               disabled={isCheckingIn}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-md"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               {isCheckingIn ? 'Checking In...' : 'Check In This Week'}
@@ -92,23 +103,25 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
         </div>
 
         {/* Framework Details */}
-        <div className="mt-4 pt-4 border-t border-purple-200">
-          <div className="flex items-center justify-between text-sm">
+        <div className="bg-white/50 rounded-lg p-4 border border-purple-100">
+          <div className="flex items-center justify-between text-sm mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-purple-600 font-medium">🎯 Target:</span>
-              <span className="text-gray-600">{framework.target_date || 'Ongoing'}</span>
+              <span className="text-purple-700 font-semibold">🎯 Target:</span>
+              <span className="text-gray-700 font-medium">{framework.target_date || 'Ongoing'}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+              <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-800 border-purple-200 font-semibold">
                 Wise Mentor Style
               </Badge>
             </div>
           </div>
-          <div className="mt-2 text-sm text-gray-600">
-            ✉️ You'll receive your daily wake-up call
-          </div>
-          <div className="text-sm text-gray-500">
-            🗓️ Weekly check-ins help maintain life balance
+          <div className="space-y-1">
+            <div className="text-sm text-gray-700 font-medium">
+              ✉️ You'll receive your daily wake-up call
+            </div>
+            <div className="text-sm text-gray-600">
+              🗓️ Weekly check-ins help maintain life balance
+            </div>
           </div>
         </div>
       </CardContent>
