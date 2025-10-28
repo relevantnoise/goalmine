@@ -233,13 +233,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
-                <button 
-                  onClick={() => setIsDanBioOpen(true)}
-                  className="text-blue-600 hover:text-blue-700 text-sm underline cursor-pointer"
-                >
-                  Learn about the creator
-                </button>
+                <p className="text-muted-foreground text-sm mb-2">The ideal plan for the busy professional managing a complex life.</p>
               </div>
               <div className="text-2xl font-bold">
                 $199.99

@@ -217,13 +217,7 @@ export const UpgradePage = () => {
             </div>
             <CardHeader className="pt-12 text-center">
               <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
-              <button 
-                onClick={() => setIsDanBioOpen(true)}
-                className="text-blue-600 hover:text-blue-700 text-sm underline mb-3 cursor-pointer"
-              >
-                Learn about the creator
-              </button>
+              <p className="text-sm text-muted-foreground mb-2">The ideal plan for the busy professional managing a complex life.</p>
               <div className="text-2xl font-bold text-blue-600">
                 $199.99
                 <span className="text-sm font-normal text-muted-foreground">/month</span>
