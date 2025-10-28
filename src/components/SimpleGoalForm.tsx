@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Target, Heart, Users, BookOpen, Activity, Briefcase } from "lucide-react";
+import { Target, Heart, Users, BookOpen, Activity, Briefcase, Moon } from "lucide-react";
 import { useGoals } from "@/hooks/useGoals";
 
 const toneOptions = [
@@ -41,11 +41,18 @@ const toneOptions = [
 
 const circleOptions = [
   {
-    value: 'Spiritual',
-    label: 'Spiritual',
-    icon: Heart,
-    description: 'Inner purpose, values, meaning, meditation, prayer',
-    color: 'text-purple-600'
+    value: 'Work',
+    label: 'Work',
+    icon: Briefcase,
+    description: 'Career, job(s) (including commute time)',
+    color: 'text-green-600'
+  },
+  {
+    value: 'Sleep',
+    label: 'Sleep',
+    icon: Moon,
+    description: 'Rest, recovery, sleep optimization',
+    color: 'text-indigo-600'
   },
   {
     value: 'Friends & Family',
@@ -55,11 +62,11 @@ const circleOptions = [
     color: 'text-blue-600'
   },
   {
-    value: 'Work',
-    label: 'Work',
-    icon: Briefcase,
-    description: 'Career, professional development, income',
-    color: 'text-green-600'
+    value: 'Health & Fitness',
+    label: 'Health & Fitness',
+    icon: Activity,
+    description: 'Physical health, exercise, nutrition, energy',
+    color: 'text-red-600'
   },
   {
     value: 'Personal Development',
@@ -69,11 +76,11 @@ const circleOptions = [
     color: 'text-orange-600'
   },
   {
-    value: 'Health & Fitness',
-    label: 'Health & Fitness',
-    icon: Activity,
-    description: 'Physical health, exercise, nutrition, energy',
-    color: 'text-red-600'
+    value: 'Spiritual',
+    label: 'Spiritual',
+    icon: Heart,
+    description: 'Inner purpose, values, meaning, meditation, prayer',
+    color: 'text-purple-600'
   }
 ];
 
