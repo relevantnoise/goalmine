@@ -92,18 +92,20 @@ serve(async (req) => {
     console.log('🔍 HYBRID: Checking existing goals using both email and Firebase UID approaches');
     
     const [goalsByEmail, goalsByUID] = await Promise.all([
-      // Check goals with email as user_id (OLD architecture)
+      // Check goals with email as user_id (OLD architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
-        .select('id')
+        .select('id, title')
         .eq('user_id', user_id)
-        .eq('is_active', true),
-      // Check goals with Firebase UID as user_id (NEW architecture)  
+        .eq('is_active', true)
+        .not('title', 'like', '%6 Elements of Life™ Framework Complete%'),
+      // Check goals with Firebase UID as user_id (NEW architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
-        .select('id')
+        .select('id, title')
         .eq('user_id', actualUserId)
         .eq('is_active', true)
+        .not('title', 'like', '%6 Elements of Life™ Framework Complete%')
     ]);
 
     if (goalsByEmail.error) {
@@ -116,12 +118,16 @@ serve(async (req) => {
       throw new Error('Failed to check existing goals');
     }
 
-    // Combine and deduplicate goals
+    // Combine and deduplicate goals (framework goals already excluded)
     const emailGoalIds = new Set(goalsByEmail.data?.map(g => g.id) || []);
     const uidGoalIds = new Set(goalsByUID.data?.map(g => g.id) || []);
     const allGoalIds = new Set([...emailGoalIds, ...uidGoalIds]);
     const currentGoalCount = allGoalIds.size;
-    console.log('📊 Total goal count for user:', currentGoalCount);
+    console.log('📊 Total regular goal count for user (excluding framework):', currentGoalCount);
+    console.log('📊 Goals found:', [
+      ...(goalsByEmail.data || []).map(g => g.title),
+      ...(goalsByUID.data || []).map(g => g.title)
+    ]);
 
     // Check subscription status using email (subscribers table uses email as user_id)
     const { data: subscriberResults, error: subError } = await supabaseAdmin
