@@ -90,7 +90,7 @@ export const LandingPage = ({
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
               <strong>Our proven framework has been impacting lives for over 30 years.</strong> Proven with hundreds of professionals. 
-              Now powered by AI for personalized life complexity management.
+              Now powered by AI for personalized life's complexities management.
             </p>
             
             <div className="flex justify-center mb-12">
@@ -162,7 +162,7 @@ export const LandingPage = ({
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Systematic approach to life complexity</span>
+                    <span>Systematic approach to life's complexities</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
