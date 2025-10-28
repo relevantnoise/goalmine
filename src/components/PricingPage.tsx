@@ -149,7 +149,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>1 goal from any circle</span>
+                  <span>1 goal from any element</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
@@ -201,7 +201,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Up to 3 goals across any circles</span>
+                  <span>Up to 3 goals across any elements</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />

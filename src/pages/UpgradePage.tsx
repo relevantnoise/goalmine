@@ -140,8 +140,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 3 Goals Across Any Circles</span>
-                    <p className="text-xs text-muted-foreground">Create goals in multiple life circles simultaneously</p>
+                    <span className="font-semibold">Up to 3 Goals Across Any Elements</span>
+                    <p className="text-xs text-muted-foreground">Create goals in multiple life elements simultaneously</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -251,8 +251,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Enhanced Circle Dashboard</span>
-                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and circle integration</p>
+                    <span className="font-semibold">Enhanced Elements Dashboard</span>
+                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and element integration</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
