@@ -432,7 +432,14 @@ const Index = () => {
       body: { userId, email: user.email }
     });
     
-    const freshGoalCount = goalsData?.success ? goalsData.goals.length : goals.length;
+    // Filter out 6 Elements framework goals from count (same logic as backend)
+    const filterFrameworkGoals = (goalList) => {
+      return goalList.filter(goal => !goal.title?.includes('6 Elements of Life™ Framework'));
+    };
+    
+    const freshGoalCount = goalsData?.success 
+      ? filterFrameworkGoals(goalsData.goals).length 
+      : filterFrameworkGoals(goals).length;
     const isSubscribed = subData?.subscribed || false;
     
     // Determine max goals based on subscription tier (matches create-goal function logic)
