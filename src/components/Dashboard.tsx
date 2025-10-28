@@ -105,7 +105,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           
           <div className="flex items-center gap-2 bg-success-light px-3 py-2 rounded-lg">
             <Flame className="w-5 h-5 text-success" />
-            <span className="font-semibold text-success">{totalStreak} day avg streak</span>
+            <span className="font-semibold text-success">{totalStreak} avg daily streak for your goals</span>
           </div>
         </div>
 
