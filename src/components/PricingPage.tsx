@@ -233,9 +233,6 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-                <div className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  GET ALL 6 ELEMENTS
-                </div>
                 <p className="text-muted-foreground text-sm mb-2">Advanced features for complete life management across all elements. Maximize your 6 Elements of Life experience.</p>
                 <button 
                   onClick={() => setIsDanBioOpen(true)}
