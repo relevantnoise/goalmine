@@ -11,7 +11,7 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
 
   useEffect(() => {
     // Calculate current user count based on days since launch
-    const launchDate = new Date('2025-09-29'); // Set to today for testing (115 base)
+    const launchDate = new Date('2025-10-28'); // 6 Pillars platform launch date
     const today = new Date();
     const daysSinceLaunch = Math.floor((today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24));
     
