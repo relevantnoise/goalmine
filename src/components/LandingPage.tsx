@@ -218,8 +218,8 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">Intelligent Goal Mapping</h5>
                   <p className="text-muted-foreground text-sm">
-                    AI analyzes your responses and suggests personalized goals for each circle, 
-                    considering time constraints and life complexity.
+                    AI analyzes your responses and suggests personalized goals for each core element, 
+                    considering time constraints and life's complexities.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
