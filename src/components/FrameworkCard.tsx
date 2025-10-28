@@ -18,6 +18,13 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
   const { weeklyStreak, refreshWeeklyStreak } = useWeeklyStreak();
   const [isCheckingIn, setIsCheckingIn] = useState(false);
 
+  // Debug logging for check-in button
+  console.log('🔍 FrameworkCard debug:', {
+    onCircleCheckin: !!onCircleCheckin,
+    checkinStatus,
+    needsCheckin: checkinStatus.needsCheckin
+  });
+
   const handleWeeklyCheckin = async () => {
     if (!onCircleCheckin) return;
     
@@ -31,26 +38,20 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
     }
   };
   return (
-    <Card className="border-2 border-purple-300 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 shadow-lg ring-1 ring-purple-200/50 relative overflow-hidden">
-      {/* Decorative elements for visual distinction */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"></div>
-      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-purple-200/30 to-transparent rounded-bl-full"></div>
+    <Card className="border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 shadow-sm relative overflow-hidden">
+      {/* Subtle top accent */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary-hover"></div>
       
-      <CardContent className="p-6 relative z-10">
+      <CardContent className="p-6 relative">
         {/* Header - Framework Indicator */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center border border-purple-200 shadow-sm">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center border border-primary/20 shadow-sm">
               <div className="text-2xl">🎯</div>
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="secondary" className="bg-purple-100 text-purple-800 border-purple-200 font-semibold text-xs">
-                  LIFE FRAMEWORK
-                </Badge>
-              </div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-bold text-xl text-gray-900">
+                <h3 className="font-bold text-xl text-foreground">
                   6 Elements of Life™ Framework Complete
                 </h3>
                 {/* Weekly Streak Info */}
@@ -61,7 +62,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 mt-1 font-medium">
+              <p className="text-sm text-muted-foreground mt-1">
                 Your personalized life management system is now configured with 6 elements and business happiness metrics.
               </p>
             </div>
@@ -69,10 +70,10 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
           
           {/* Edit button */}
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={onEditFramework}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
             <Settings className="w-4 h-4" />
             Edit
@@ -83,18 +84,18 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
         <div className="flex gap-3 mb-4">
           <Button 
             onClick={onViewFramework}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold shadow-md"
+            className="flex-1 bg-primary hover:bg-primary-hover text-white font-medium shadow-sm"
           >
             <Eye className="w-4 h-4 mr-2" />
             View Your 6 Elements Framework
           </Button>
           
           {/* Weekly Check-in Button */}
-          {onCircleCheckin && checkinStatus.needsCheckin && (
+          {onCircleCheckin && (
             <Button 
               onClick={handleWeeklyCheckin}
               disabled={isCheckingIn}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-md"
+              className="bg-primary hover:bg-primary-hover text-white font-medium shadow-sm"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               {isCheckingIn ? 'Checking In...' : 'Check In This Week'}
@@ -103,28 +104,23 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
         </div>
 
         {/* Framework Details */}
-        <div className="bg-white/50 rounded-lg p-4 border border-purple-100">
+        <div className="bg-muted/30 rounded-lg p-4 border border-border">
           <div className="flex items-center justify-between text-sm mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-purple-700 font-semibold">📅 Established:</span>
-              <span className="text-gray-700 font-medium">
+              <span className="text-foreground font-medium">📅 Established:</span>
+              <span className="text-muted-foreground">
                 {framework.created_at 
                   ? new Date(framework.created_at).toLocaleDateString()
                   : new Date().toLocaleDateString()
                 }
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-800 border-purple-200 font-semibold">
-                Life Framework™
-              </Badge>
-            </div>
           </div>
           <div className="space-y-1">
-            <div className="text-sm text-gray-700 font-medium">
+            <div className="text-sm text-foreground font-medium">
               ⚖️ Balanced approach to Work • Sleep • Family • Health • Growth • Spirit
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               🗓️ Weekly reflection keeps all life elements in harmony
             </div>
           </div>
