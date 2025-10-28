@@ -97,13 +97,13 @@ serve(async (req) => {
         .from('goals')
         .select('id, title, is_active')
         .eq('user_id', user_id)
-        .not('title', 'like', '%6 Elements of Life™ Framework Complete%'),
+        .not('title', 'like', '%6 Elements of Life™ Framework%'),
       // Check goals with Firebase UID as user_id (NEW architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
         .select('id, title, is_active')
         .eq('user_id', actualUserId)
-        .not('title', 'like', '%6 Elements of Life™ Framework Complete%')
+        .not('title', 'like', '%6 Elements of Life™ Framework%')
     ]);
 
     if (goalsByEmail.error) {
