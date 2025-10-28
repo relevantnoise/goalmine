@@ -365,7 +365,7 @@ export const GoalCard = ({
           
           {/* Helpful info - subtle */}
           <div className="text-xs text-muted-foreground mt-2 space-y-1">
-            <p>📧 You'll receive your daily wake-up call</p>
+            <p>📧 You'll receive your daily wake-up email</p>
             {!hasCheckedInToday && (
               <p>🕒 Check-ins reset daily at 3 AM EST</p>
             )}

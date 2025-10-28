@@ -100,7 +100,7 @@ export const CrawlerLandingPage = () => {
           "name": "How do daily emails and nudges work?",
           "acceptedAnswer": {
             "@type": "Answer", 
-            "text": "You receive one powerful daily wake-up call each morning at 7 AM with fresh AI-generated motivation. Additionally, you can request instant 'nudges' throughout the day when you need extra motivation or guidance."
+            "text": "You receive one powerful daily wake-up email each morning at 7 AM with fresh AI-generated motivation. Additionally, you can request instant 'nudges' throughout the day when you need extra motivation or guidance."
           }
         },
         {
@@ -219,7 +219,7 @@ export const CrawlerLandingPage = () => {
               </div>
               <h3 className="text-lg font-semibold mb-3">Smart Email Reminders</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Receive a powerful daily wake-up call at 7 AM with AI-generated motivation 
+                Receive a powerful daily wake-up email at 7 AM with AI-generated motivation 
                 that energizes your entire day and drives you to your dashboard.
               </p>
             </div>
@@ -583,7 +583,7 @@ export const CrawlerLandingPage = () => {
             <div className="bg-card rounded-xl p-6 border border-border">
               <h3 className="font-semibold mb-2">How do daily emails and nudges work?</h3>
               <p className="text-muted-foreground">
-                You receive one powerful daily wake-up call each morning at 7 AM with fresh AI-generated motivation. 
+                You receive one powerful daily wake-up email each morning at 7 AM with fresh AI-generated motivation. 
                 Additionally, you can request instant "nudges" throughout the day when you need extra motivation or guidance.
               </p>
             </div>

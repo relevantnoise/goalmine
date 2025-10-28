@@ -22,7 +22,7 @@ GoalMine.ai is a comprehensive goal achievement platform that combines AI-powere
 - **Personalized AI Coaching**: Adapts to user personality and progress patterns
 - **Multi-Goal Management**: Users can work on 1-5 concurrent goals based on plan
 - **Smart Content Generation**: Context-aware motivation based on goal type and progress
-- **Email Integration**: Automated daily wake-up calls with AI-generated motivation
+- **Email Integration**: Automated daily wake-up emails with AI-generated motivation
 - **Streak Psychology**: Gamified progress tracking for sustained engagement
 - **Tone Adaptation**: AI matches user's preferred motivation style
 

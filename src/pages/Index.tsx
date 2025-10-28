@@ -269,7 +269,7 @@ const Index = () => {
       // Show premium success modal
       setAlertData({
         title: "🎯 Goal Created!",
-        message: "Your goal is ready! You'll receive your powerful daily wake-up call starting tomorrow.",
+        message: "Your goal is ready! You'll receive your powerful daily wake-up email starting tomorrow.",
         type: 'achievement'
       });
       setShowAlert(true);
