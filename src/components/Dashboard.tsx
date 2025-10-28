@@ -83,7 +83,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Your Personal Goal Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Your Custom Dashboard</h1>
             <div className="flex items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
