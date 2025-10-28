@@ -141,25 +141,36 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       return;
     }
 
-    // Ensure all elements have data
-    const completeCircleAllocations = {};
+    // Ensure all elements have data and convert to new format
+    const elementsData = {};
     elements.forEach(element => {
-      completeCircleAllocations[element.name] = {
-        circle_name: element.name,
+      elementsData[element.name] = {
         importance_level: circleAllocations[element.name]?.importance_level || 5,
         current_hours_per_week: circleAllocations[element.name]?.current_hours_per_week || 0,
         ideal_hours_per_week: circleAllocations[element.name]?.ideal_hours_per_week || 0
       };
     });
 
+    // Convert work happiness data to match new function
+    const workHappinessData = {
+      impact_current: workHappiness.impact_current,
+      impact_desired: workHappiness.impact_desired,
+      enjoyment_current: workHappiness.fun_current,
+      enjoyment_desired: workHappiness.fun_desired,
+      income_current: workHappiness.money_current,
+      income_desired: workHappiness.money_desired,
+      remote_current: workHappiness.remote_current,
+      remote_desired: workHappiness.remote_desired
+    };
+
     setIsSubmitting(true);
     
     try {
-      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('save-framework-to-profile', {
+      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('save-six-elements-data', {
         body: {
-          user_email: user.email,
-          circleAllocations: completeCircleAllocations,
-          workHappiness
+          userEmail: user.email,
+          elementsData,
+          workHappinessData
         }
       });
 
