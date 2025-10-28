@@ -278,6 +278,9 @@ const Index = () => {
     // ✅ Switch to dashboard - goals should already be visible
     setCurrentView('dashboard');
     
+    // Scroll to top for clean dashboard experience
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     // ✅ No need for fetchGoals - already updated optimistically in createGoal
     // ✅ No need for complex background operations
   };
@@ -293,6 +296,9 @@ const Index = () => {
     // Move directly to Step 2: Goal creation (not framework report)
     setCurrentView('onboarding');
     
+    // Scroll to top for clean goal creation experience
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     // Show success message
     setAlertData({
       title: "🎯 Step 1 Complete!",
@@ -306,6 +312,9 @@ const Index = () => {
     console.log('✅ Goal workshop complete, created', goals.length, 'goals');
     hasInitialized.current = true;
     setCurrentView('dashboard');
+    
+    // Scroll to top for clean dashboard experience
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Show completion message
     setAlertData({
