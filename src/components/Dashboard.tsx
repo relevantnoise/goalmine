@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Zap, Plus, Crown, Calendar, Flame, Heart, Users, Briefcase, BookOpen, Activity, Settings, Clock } from "lucide-react";
+import { Target, Zap, Plus, Crown, Calendar, Flame, Heart, Users, Briefcase, BookOpen, Activity, Settings, Clock, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCircleCheckin } from "@/hooks/useCircleCheckin";
 import { GoalCard } from "./GoalCard";
+import { FrameworkCard } from "./FrameworkCard";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { ProfessionalCoachPrompt } from "./ProfessionalCoachPrompt";
@@ -19,10 +20,11 @@ interface DashboardProps {
   onLogoClick: () => void;
   hasFramework?: boolean;
   onEditFramework?: () => void;
+  onViewFramework?: () => void;
   onCircleCheckin?: () => void;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onCircleCheckin }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
@@ -53,7 +55,15 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
     }
   };
 
-  const totalStreak = Math.round(goals.reduce((sum, goal) => sum + goal.streak_count, 0) / goals.length) || 0;
+  // Separate framework goals from regular goals
+  const frameworkGoals = goals.filter(goal => 
+    goal.title?.includes('6 Elements of Life™ Framework Complete')
+  );
+  const regularGoals = goals.filter(goal => 
+    !goal.title?.includes('6 Elements of Life™ Framework Complete')
+  );
+  
+  const totalStreak = Math.round(regularGoals.reduce((sum, goal) => sum + goal.streak_count, 0) / regularGoals.length) || 0;
 
   if (loading || !user) {
     return (
@@ -80,7 +90,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                 <span className="font-medium">{format(new Date(), 'EEEE, MMMM d, yyyy')}</span>
               </div>
               <span>•</span>
-              <span>{goals.length} {goals.length === 1 ? 'Goal' : 'Goals'} Active</span>
+              <span>{regularGoals.length} {regularGoals.length === 1 ? 'Goal' : 'Goals'} Active</span>
               {subscription.subscribed && (
                 <>
                   <span>•</span>
@@ -104,7 +114,17 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           {/* Goals Section - Left 3 columns */}
           <div className="lg:col-span-3">
             <div className="grid gap-6">
-              {goals.length === 0 ? (
+              {/* Framework Card */}
+              {frameworkGoals.length > 0 && (
+                <FrameworkCard 
+                  framework={frameworkGoals[0]}
+                  onViewFramework={onViewFramework || (() => {})}
+                  onEditFramework={onEditFramework || (() => {})}
+                />
+              )}
+
+              {/* Regular Goals */}
+              {regularGoals.length === 0 ? (
                 <div className="bg-card border rounded-lg p-8 text-center">
                   <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                     <Target className="w-8 h-8 text-muted-foreground" />
@@ -128,7 +148,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   </Button>
                 </div>
               ) : (
-                goals.map(goal => {
+                regularGoals.map(goal => {
                   // Phase 4: Calculate status and permissions for each goal
                   const status = getGoalStatus(goal, user, subscription.subscribed);
                   const permissions = getGoalPermissions(goal, user, subscription.subscribed);
@@ -174,7 +194,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                             if (tier === 'Professional Coach') return 5; // Legacy tier
                             return 3; // Personal Plan
                           })();
-                          const remaining = maxGoals - goals.length;
+                          const remaining = maxGoals - regularGoals.length;
                           return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
                         })() : "First goal is free. Upgrade to create more."
                       ) : (
@@ -199,30 +219,6 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                 </Button>
               </div>
 
-              {/* Edit Framework Card */}
-              {hasFramework && onEditFramework && (
-                <div className="bg-card border rounded-lg p-6">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Settings className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold mb-1">Edit Your Framework</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Update your time allocation and circle priorities as life changes
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={onEditFramework} 
-                    variant="outline" 
-                    className="w-full flex items-center gap-2"
-                  >
-                    <Settings className="w-4 h-4" />
-                    Edit 6 Elements of Life™
-                  </Button>
-                </div>
-              )}
 
               {/* Circle Check-in Card */}
               {hasFramework && checkinStatus.needsCheckin && onCircleCheckin && (
@@ -257,7 +253,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
               )}
 
               {/* Circle Summary Card */}
-              {goals.some(goal => goal.circle_type) && (
+              {regularGoals.some(goal => goal.circle_type) && (
                 <div className="bg-card border rounded-lg p-6">
                   <div className="flex items-start gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -270,13 +266,14 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   </div>
                   <div className="space-y-2">
                     {[
-                      { name: 'Spiritual', icon: Heart, color: 'text-purple-600' },
-                      { name: 'Friends & Family', icon: Users, color: 'text-blue-600' },
                       { name: 'Work', icon: Briefcase, color: 'text-green-600' },
+                      { name: 'Sleep', icon: Moon, color: 'text-indigo-600' },
+                      { name: 'Friends & Family', icon: Users, color: 'text-blue-600' },
+                      { name: 'Health & Fitness', icon: Activity, color: 'text-red-600' },
                       { name: 'Personal Development', icon: BookOpen, color: 'text-orange-600' },
-                      { name: 'Health & Fitness', icon: Activity, color: 'text-red-600' }
+                      { name: 'Spiritual', icon: Heart, color: 'text-purple-600' }
                     ].map(circle => {
-                      const circleGoals = goals.filter(goal => goal.circle_type === circle.name);
+                      const circleGoals = regularGoals.filter(goal => goal.circle_type === circle.name);
                       const CircleIcon = circle.icon;
                       return circleGoals.length > 0 ? (
                         <div key={circle.name} className="flex items-center justify-between text-sm">
@@ -347,7 +344,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                             <Crown className="w-4 h-4 text-premium" />
                             <span className="font-medium">{tier} Member</span>
                           </div>
-                          <div className="text-muted-foreground">• Up to {maxGoals} goals ({goals.length}/{maxGoals} used)</div>
+                          <div className="text-muted-foreground">• Up to {maxGoals} goals ({regularGoals.length}/{maxGoals} used)</div>
                           <div className="text-muted-foreground">• Up to {maxNudges} daily nudges</div>
                           <div className="text-muted-foreground">• Priority email delivery</div>
                           {(tier === 'Pro Plan' || tier === 'Strategic Advisor Plan') && (
@@ -359,7 +356,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   ) : (
                     <>
                       <div className="text-muted-foreground">Free User</div>
-                      <div className="text-muted-foreground">• 1 goal ({goals.length}/1 used)</div>
+                      <div className="text-muted-foreground">• 1 goal ({regularGoals.length}/1 used)</div>
                       <div className="text-muted-foreground">• 1 daily nudge</div>
                     </>
                   )}
