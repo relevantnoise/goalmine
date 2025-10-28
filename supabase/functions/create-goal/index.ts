@@ -95,16 +95,14 @@ serve(async (req) => {
       // Check goals with email as user_id (OLD architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
-        .select('id, title')
+        .select('id, title, is_active')
         .eq('user_id', user_id)
-        .eq('is_active', true)
         .not('title', 'like', '%6 Elements of Life™ Framework Complete%'),
       // Check goals with Firebase UID as user_id (NEW architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
-        .select('id, title')
+        .select('id, title, is_active')
         .eq('user_id', actualUserId)
-        .eq('is_active', true)
         .not('title', 'like', '%6 Elements of Life™ Framework Complete%')
     ]);
 
@@ -118,11 +116,19 @@ serve(async (req) => {
       throw new Error('Failed to check existing goals');
     }
 
-    // Combine and deduplicate goals (framework goals already excluded)
+    // Debug: Show ALL goals found before filtering
+    console.log('🔍 DEBUG - Raw goals by email:', goalsByEmail.data);
+    console.log('🔍 DEBUG - Raw goals by UID:', goalsByUID.data);
+    
+    // Combine and deduplicate goals (framework goals excluded by NOT LIKE filter)
     const emailGoalIds = new Set(goalsByEmail.data?.map(g => g.id) || []);
     const uidGoalIds = new Set(goalsByUID.data?.map(g => g.id) || []);
     const allGoalIds = new Set([...emailGoalIds, ...uidGoalIds]);
     const currentGoalCount = allGoalIds.size;
+    
+    console.log('📊 DEBUG - Email goal IDs:', Array.from(emailGoalIds));
+    console.log('📊 DEBUG - UID goal IDs:', Array.from(uidGoalIds));
+    console.log('📊 DEBUG - Combined goal IDs:', Array.from(allGoalIds));
     console.log('📊 Total regular goal count for user (excluding framework):', currentGoalCount);
     console.log('📊 Goals found:', [
       ...(goalsByEmail.data || []).map(g => g.title),
