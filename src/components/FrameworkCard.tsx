@@ -1,15 +1,35 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Eye } from "lucide-react";
+import { Settings, Eye, Flame, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { useCircleCheckin } from "@/hooks/useCircleCheckin";
+import { useWeeklyStreak } from "@/hooks/useWeeklyStreak";
 
 interface FrameworkCardProps {
   framework: any; // The goal object that represents the framework
   onViewFramework: () => void;
   onEditFramework: () => void;
+  onCircleCheckin?: () => void;
 }
 
-export const FrameworkCard = ({ framework, onViewFramework, onEditFramework }: FrameworkCardProps) => {
+export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onCircleCheckin }: FrameworkCardProps) => {
+  const { checkinStatus } = useCircleCheckin();
+  const { weeklyStreak, refreshWeeklyStreak } = useWeeklyStreak();
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
+
+  const handleWeeklyCheckin = async () => {
+    if (!onCircleCheckin) return;
+    
+    setIsCheckingIn(true);
+    try {
+      await onCircleCheckin();
+      // Refresh the weekly streak after successful check-in
+      refreshWeeklyStreak();
+    } finally {
+      setIsCheckingIn(false);
+    }
+  };
   return (
     <Card className="border border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
       <CardContent className="p-6">
@@ -18,9 +38,18 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework }: F
           <div className="flex items-center gap-3">
             <div className="text-2xl">🎯</div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg text-gray-900">
-                6 Elements of Life™ Framework Complete
-              </h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-lg text-gray-900">
+                  6 Elements of Life™ Framework Complete
+                </h3>
+                {/* Weekly Streak Info */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Flame className="w-4 h-4 text-success" />
+                    <span className="text-sm font-medium text-gray-700">{weeklyStreak} week streak</span>
+                  </div>
+                </div>
+              </div>
               <p className="text-sm text-gray-600 mt-1">
                 Your personalized life management system is now configured with 6 elements and business happiness metrics.
               </p>
@@ -48,6 +77,18 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework }: F
             <Eye className="w-4 h-4 mr-2" />
             View Your 6 Elements Framework
           </Button>
+          
+          {/* Weekly Check-in Button */}
+          {onCircleCheckin && checkinStatus.needsCheckin && (
+            <Button 
+              onClick={handleWeeklyCheckin}
+              disabled={isCheckingIn}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              {isCheckingIn ? 'Checking In...' : 'Check In This Week'}
+            </Button>
+          )}
         </div>
 
         {/* Framework Details */}
@@ -67,7 +108,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework }: F
             ✉️ You'll receive your daily wake-up call
           </div>
           <div className="text-sm text-gray-500">
-            🕒 Check-ins reset daily at 3 AM EST
+            🗓️ Weekly check-ins help maintain life balance
           </div>
         </div>
       </CardContent>

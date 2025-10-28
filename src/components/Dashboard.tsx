@@ -120,6 +120,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   framework={frameworkGoals[0]}
                   onViewFramework={onViewFramework || (() => {})}
                   onEditFramework={onEditFramework || (() => {})}
+                  onCircleCheckin={onCircleCheckin}
                 />
               )}
 
