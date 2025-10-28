@@ -188,6 +188,9 @@ serve(async (req) => {
       target_date: target_date ? target_date.split('T')[0] : null, // Ensure date format
       tone,
       time_of_day,
+      circle_type: circle_type || null, // Include circle_type for 6 Elements support
+      weekly_commitment_hours: weekly_commitment_hours || null,
+      circle_interview_data: circle_interview_data || null,
       is_active: true
     };
     
