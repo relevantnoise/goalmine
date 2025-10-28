@@ -207,10 +207,9 @@ export const LandingPage = ({
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-purple-600 font-bold text-xl">1</span>
                   </div>
-                  <h5 className="text-lg font-semibold mb-3">AI-Powered Interview</h5>
+                  <h5 className="text-lg font-semibold mb-3">6 Elements of Life Framework</h5>
                   <p className="text-muted-foreground text-sm">
-                    15-20 minute assessment captures your personal definitions of each life circle, 
-                    current challenges, and time allocation preferences.
+                    3-5 minute gap assessement helps capture opportunities for maximizing results and happiness.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
