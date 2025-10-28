@@ -106,21 +106,26 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
         <div className="bg-white/50 rounded-lg p-4 border border-purple-100">
           <div className="flex items-center justify-between text-sm mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-purple-700 font-semibold">🎯 Target:</span>
-              <span className="text-gray-700 font-medium">{framework.target_date || 'Ongoing'}</span>
+              <span className="text-purple-700 font-semibold">📅 Established:</span>
+              <span className="text-gray-700 font-medium">
+                {framework.created_at 
+                  ? new Date(framework.created_at).toLocaleDateString()
+                  : new Date().toLocaleDateString()
+                }
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-800 border-purple-200 font-semibold">
-                Wise Mentor Style
+                Life Framework™
               </Badge>
             </div>
           </div>
           <div className="space-y-1">
             <div className="text-sm text-gray-700 font-medium">
-              ✉️ You'll receive your daily wake-up call
+              ⚖️ Balanced approach to Work • Sleep • Family • Health • Growth • Spirit
             </div>
             <div className="text-sm text-gray-600">
-              🗓️ Weekly check-ins help maintain life balance
+              🗓️ Weekly reflection keeps all life elements in harmony
             </div>
           </div>
         </div>
