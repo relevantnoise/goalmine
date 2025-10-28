@@ -218,7 +218,7 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">Intelligent Goal Mapping</h5>
                   <p className="text-muted-foreground text-sm">
-                    AI analyzes your responses and suggests personalized goals for each core element, 
+                    AI analyzes your responses and suggests personalized goals for each core pillar, 
                     considering time constraints and life's complexities.
                   </p>
                 </div>
@@ -228,7 +228,7 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">Integrated Tracking</h5>
                   <p className="text-muted-foreground text-sm">
-                    Personalized dashboard shows progress across all elements, 
+                    Personalized dashboard shows progress across all pillars, 
                     with daily AI-powered motivation for each goal.
                   </p>
                 </div>

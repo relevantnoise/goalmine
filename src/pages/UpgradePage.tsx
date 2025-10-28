@@ -141,7 +141,7 @@ export const UpgradePage = () => {
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Up to 3 Goals Across Any Elements</span>
-                    <p className="text-xs text-muted-foreground">Create goals in multiple life elements simultaneously</p>
+                    <p className="text-xs text-muted-foreground">Create goals in multiple life pillars simultaneously</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">

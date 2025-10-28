@@ -109,7 +109,7 @@ Format as JSON:
             `Create a ${biggestGap.name} optimization plan`,
             `Track ${biggestGap.name} progress daily`
           ],
-          priorityReason: `Focusing on ${biggestGap.name} first will create positive ripple effects across other life elements.`,
+          priorityReason: `Focusing on ${biggestGap.name} first will create positive ripple effects across other life pillars.`,
           researchInsights: `Research shows that ${biggestGap.name.toLowerCase()} directly correlates with overall wellbeing and life satisfaction.`
         };
       }
@@ -128,7 +128,7 @@ Format as JSON:
           `Establish daily ${biggestGap.name} habits`,
           `Track ${biggestGap.name} progress weekly`
         ],
-        priorityReason: `Improving ${biggestGap.name} will have positive effects on your other life elements.`,
+        priorityReason: `Improving ${biggestGap.name} will have positive effects on your other life pillars.`,
         researchInsights: `Studies consistently show that ${biggestGap.name.toLowerCase()} is foundational to overall life satisfaction.`
       });
     } finally {

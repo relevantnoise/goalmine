@@ -141,7 +141,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       return;
     }
 
-    // Ensure all elements have data and convert to new format
+    // Ensure all pillars have data and convert to new format
     const elementsData = {};
     elements.forEach(element => {
       elementsData[element.name] = {
@@ -209,7 +209,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Build your foundation for success. This comprehensive system helps high-achieving professionals 
-            balance all essential life elements including work, sleep, relationships, health, growth, and purpose.
+            balance all essential life pillars including work, sleep, relationships, health, growth, and purpose.
           </p>
         </div>
 
@@ -222,7 +222,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
               }`}>
                 {currentSection === 'circles' ? '1' : <CheckCircle className="w-5 h-5" />}
               </div>
-              <span className="ml-2 font-medium">6 Life Elements</span>
+              <span className="ml-2 font-medium">6 Life Pillars</span>
             </div>
             <div className="w-24 h-px bg-gray-300"></div>
             <div className={`flex items-center ${currentSection === 'work' ? 'text-blue-600' : 'text-gray-400'}`}>
@@ -247,9 +247,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                     <CardTitle className="flex items-center gap-3 text-2xl">
                       <TrendingUp className="w-7 h-7" />
-                      Your 6 Life Elements
+                      Your 6 Life Pillars
                     </CardTitle>
-                    <p className="text-blue-100">Allocate your weekly hours across these essential life elements. Focus on importance and ideal time investment.</p>
+                    <p className="text-blue-100">Allocate your weekly hours across these essential life pillars. Focus on importance and ideal time investment.</p>
                   </CardHeader>
                 </Card>
 
@@ -519,7 +519,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   <div className="space-y-2 text-sm">
                     <div className="text-center text-blue-200 leading-relaxed">
                       {currentSection === 'circles' ? (
-                        "Allocate your 168 weekly hours across all 6 essential life elements for optimal balance"
+                        "Allocate your 168 weekly hours across all 6 essential life pillars for optimal balance"
                       ) : (
                         "Dan Lynn's proven 10-year formula for measuring and optimizing work satisfaction"
                       )}

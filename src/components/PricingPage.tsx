@@ -248,7 +248,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 10 goals across all elements</span>
+                  <span>Up to 10 goals across all pillars</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />

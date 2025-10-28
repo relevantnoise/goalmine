@@ -121,7 +121,7 @@ export const FrameworkCard = ({ framework, onViewFramework, onEditFramework, onC
               ⚖️ Balanced approach to Work • Sleep • Family • Health • Growth • Spirit
             </div>
             <div className="text-sm text-muted-foreground">
-              🗓️ Weekly reflection keeps all life elements in harmony
+              🗓️ Weekly reflection keeps all life pillars in harmony
             </div>
           </div>
         </div>
