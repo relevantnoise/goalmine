@@ -166,7 +166,7 @@ export const LandingPage = ({
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Personalized circle definitions based on your values</span>
+                    <span>Life gap analysis drive targeted goals to fill them</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
