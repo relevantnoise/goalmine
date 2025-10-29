@@ -432,9 +432,13 @@ const Index = () => {
       body: { userId, email: user.email }
     });
     
-    // Filter out 6 Pillars framework goals from count (same logic as backend)
+    // Filter out framework goals from count - handle both old and new terminology
     const filterFrameworkGoals = (goalList) => {
-      return goalList.filter(goal => !goal.title?.includes('6 Pillars of Life™ Framework'));
+      return goalList.filter(goal => 
+        !goal.title?.includes('6 Pillars of Life™ Framework') &&
+        !goal.title?.includes('6 Elements of Life™ Framework') &&
+        !goal.title?.includes('Framework Complete')
+      );
     };
     
     const freshGoalCount = goalsData?.success 

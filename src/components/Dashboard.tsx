@@ -60,8 +60,12 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
   };
 
   // Filter out framework goals from regular goals display - 6 Pillars MVP separation
-  // Use same logic as Index.tsx for consistency
-  const regularGoals = goals.filter(goal => !goal.title?.includes('6 Pillars of Life™ Framework'));
+  // Handle both old "Elements" and new "Pillars" terminology
+  const regularGoals = goals.filter(goal => 
+    !goal.title?.includes('6 Pillars of Life™ Framework') &&
+    !goal.title?.includes('6 Elements of Life™ Framework') &&
+    !goal.title?.includes('Framework Complete')
+  );
   
   const totalStreak = Math.round(regularGoals.reduce((sum, goal) => sum + goal.streak_count, 0) / regularGoals.length) || 0;
 
