@@ -170,7 +170,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                       )}
                     </Button>
                     <p className="text-sm text-muted-foreground mt-3">
-                      Takes 15-20 minutes • Free 30-day trial included
+                      Takes less than 5 minutes
                     </p>
                   </div>
                 </div>
