@@ -110,6 +110,72 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           {/* Goals Section - Left 3 columns */}
           <div className="lg:col-span-3">
             <div className="grid gap-6">
+              {/* New User Welcome Section - Show when no framework */}
+              {!hasFramework && (
+                <div className="bg-gradient-to-br from-primary/5 to-blue-50 border-2 border-primary/20 rounded-xl p-8">
+                  <div className="text-center mb-8">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Target className="w-10 h-10 text-primary" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to GoalMine.ai!</h2>
+                    <p className="text-muted-foreground text-lg">
+                      Transform your life complexity into actionable goals with our proven 3-step process
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-6 mb-8">
+                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-blue-600 font-bold text-lg">1</span>
+                      </div>
+                      <h3 className="font-semibold mb-2">6 Pillars Assessment</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Define your personal framework across Work, Health, Relationships, Personal Development, Spiritual, and Sleep
+                      </p>
+                    </div>
+
+                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-green-600 font-bold text-lg">2</span>
+                      </div>
+                      <h3 className="font-semibold mb-2">Work Happiness Framework</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Optimize your professional life by defining current vs. desired states across key metrics
+                      </p>
+                    </div>
+
+                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
+                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-purple-600 font-bold text-lg">3</span>
+                      </div>
+                      <h3 className="font-semibold mb-2">AI Goal Creation</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Get personalized goal suggestions based on your framework and start tracking your progress
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-center">
+                    <Button onClick={handleCreateGoal} size="lg" className="px-8 py-3 text-lg" disabled={isCheckingLimits}>
+                      {isCheckingLimits ? (
+                        <>
+                          <div className="animate-spin w-5 h-5 border-2 border-current border-t-transparent rounded-full mr-2" />
+                          Starting Your Journey...
+                        </>
+                      ) : (
+                        <>
+                          <Target className="w-5 h-5 mr-2" />
+                          Start Your 6 Pillars Journey
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-sm text-muted-foreground mt-3">
+                      Takes 15-20 minutes • Free 30-day trial included
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Framework Overview - Show for all users with framework */}
               {hasFramework && (
                 <FrameworkOverview 
@@ -119,14 +185,14 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
               )}
 
               {/* Regular Goals */}
-              {regularGoals.length === 0 ? (
+              {regularGoals.length === 0 && hasFramework ? (
                 <div className="bg-card border rounded-lg p-8 text-center">
                   <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                     <Target className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">No Active Goals</h3>
+                  <h3 className="font-semibold text-lg mb-2">Ready to Create Your First Goal</h3>
                   <p className="text-muted-foreground mb-4">
-                    You don't have any active goals right now. Click the button below to create your first goal.
+                    Your 6 Pillars framework is complete! Now let's create your first goal based on your personalized insights.
                   </p>
                   <Button onClick={handleCreateGoal} className="mt-2" disabled={isCheckingLimits}>
                     {isCheckingLimits ? (
@@ -137,12 +203,12 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     ) : (
                       <>
                         <Plus className="w-4 h-4 mr-2" />
-                        Create a Goal
+                        Create Your First Goal
                       </>
                     )}
                   </Button>
                 </div>
-              ) : (
+              ) : regularGoals.length > 0 ? (
                 regularGoals.map(goal => {
                   // Phase 4: Calculate status and permissions for each goal
                   const status = getGoalStatus(goal, user, subscription.subscribed);
@@ -162,7 +228,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     />
                   );
                 })
-              )}
+              ) : null}
             </div>
           </div>
 
