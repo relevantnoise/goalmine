@@ -43,12 +43,12 @@ export const useSubscription = () => {
     } catch (error) {
       console.error('Error checking subscription:', error);
       
-      // TEMPORARY: For testing 5 Circle Framework with danlynn@gmail.com
+      // TEMPORARY: For testing 6 Pillars Framework with danlynn@gmail.com
       if (userEmail === 'danlynn@gmail.com') {
-        console.log('🧪 TESTING MODE: Using Pro Plan for danlynn@gmail.com');
+        console.log('🧪 TESTING MODE: Using Professional Plan for danlynn@gmail.com');
         setSubscription({ 
           subscribed: true, 
-          subscription_tier: 'Pro Plan',
+          subscription_tier: 'Professional Plan',
           subscription_end: '2025-12-31T23:59:59.000Z'
         });
         return;
