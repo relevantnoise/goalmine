@@ -60,64 +60,25 @@ export const useCircleFramework = () => {
     try {
       console.log('🔍 Fetching circle framework via edge function for:', user.email);
       
-      // Use edge function instead of direct database query (SAME AS GOALS)
-      const { data, error } = await supabase.functions.invoke('fetch-six-elements-framework', {
-        body: { userEmail: user.email }
-      });
+      // Check for 6 Pillars framework in new tables
+      const { data: frameworkData, error } = await supabase
+        .from('user_frameworks')
+        .select('*')
+        .eq('user_id', user.email)
+        .maybeSingle();
 
       if (error) {
-        console.error('❌ Error fetching framework via function:', error);
+        console.error('❌ Error fetching framework:', error);
         throw error;
       }
 
-      if (data?.success && data?.hasFramework) {
-        console.log('✅ Found existing framework via edge function:', data.data.frameworkId);
-        
-        // Convert six elements data to framework format
-        const frameworkData = {
-          id: data.data.frameworkId,
-          user_email: data.data.userEmail,
-          work_hours_per_week: data.data.elementsData?.Work?.ideal_hours_per_week || 40,
-          sleep_hours_per_night: (data.data.elementsData?.Sleep?.ideal_hours_per_week || 56) / 7,
-          commute_hours_per_week: 0,
-          available_hours_per_week: 168,
-          created_at: data.data.createdAt
-        };
-        
+      if (frameworkData) {
+        console.log('✅ Found existing 6 Pillars framework:', frameworkData.id);
         setFramework(frameworkData);
         setHasFramework(true);
-        
-        // Convert elements data to allocations format
-        const allocations = Object.entries(data.data.elementsData || {}).map(([name, element]: [string, any]) => ({
-          id: element.id,
-          framework_id: data.data.frameworkId,
-          circle_name: name,
-          importance_level: element.importance_level,
-          current_hours_per_week: element.current_hours_per_week,
-          ideal_hours_per_week: element.ideal_hours_per_week
-        }));
-        
-        // Convert work happiness data
-        const workHappiness = data.data.workHappinessData ? {
-          id: data.data.workHappinessData.id,
-          framework_id: data.data.frameworkId,
-          impact_current: data.data.workHappinessData.impact_current,
-          impact_desired: data.data.workHappinessData.impact_desired,
-          fun_current: data.data.workHappinessData.enjoyment_current,
-          fun_desired: data.data.workHappinessData.enjoyment_desired,
-          money_current: data.data.workHappinessData.income_current,
-          money_desired: data.data.workHappinessData.income_desired,
-          remote_current: data.data.workHappinessData.remote_current,
-          remote_desired: data.data.workHappinessData.remote_desired
-        } : null;
-        
-        setFullData({
-          framework: frameworkData,
-          allocations,
-          workHappiness
-        });
+        setFullData({ framework: frameworkData, allocations: [], workHappiness: null });
       } else {
-        console.log('📝 No framework found - user needs onboarding');
+        console.log('📝 No 6 Pillars framework found - user needs onboarding');
         setFramework(null);
         setHasFramework(false);
         setFullData(null);
