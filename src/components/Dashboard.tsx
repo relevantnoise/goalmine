@@ -30,6 +30,9 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
   const { checkinStatus, loading: checkinLoading } = useCircleCheckin();
+
+  // DEBUG: Log subscription data to see what we're getting
+  console.log('🔍 Dashboard subscription data:', subscription);
   const [isNudging, setIsNudging] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
 
