@@ -166,8 +166,8 @@ export const WeeklyCircleCheckin = ({ onComplete, onSkip }: WeeklyCircleCheckinP
       console.log('✅ Circle check-in saved successfully');
       
       toast({
-        title: "✅ Circle Check-in Complete!",
-        description: "Your weekly circle balance has been recorded. Keep up the great work!",
+        title: "✅ Pillar Check-in Complete!",
+        description: "Your weekly pillar balance has been recorded. Keep up the great work!",
         duration: 5000
       });
 
@@ -176,7 +176,7 @@ export const WeeklyCircleCheckin = ({ onComplete, onSkip }: WeeklyCircleCheckinP
       console.error('Error saving circle check-in:', error);
       toast({
         title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save your circle check-in. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save your pillar check-in. Please try again.",
         duration: 8000
       });
     } finally {
@@ -194,10 +194,10 @@ export const WeeklyCircleCheckin = ({ onComplete, onSkip }: WeeklyCircleCheckinP
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-3 text-2xl">
             <Calendar className="w-7 h-7 text-blue-600" />
-            Weekly Circle Check-in
+            Weekly Pillar Check-in
           </CardTitle>
           <p className="text-muted-foreground mt-2">
-            How did you balance your 5 circles this week? Move the sliders to show actual hours spent.
+            How did you balance your 6 Pillars of Life™ this week? Move the sliders to show actual hours spent.
           </p>
           <div className="text-sm text-muted-foreground">
             Week of {new Date(currentWeek).toLocaleDateString()}

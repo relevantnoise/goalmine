@@ -327,8 +327,8 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                       <Target className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold mb-1">Your Circles</h3>
-                      <p className="text-sm text-muted-foreground">Goals organized by life areas</p>
+                      <h3 className="font-semibold mb-1">Your Pillars</h3>
+                      <p className="text-sm text-muted-foreground">Goals organized by the 6 Pillars of Life™</p>
                     </div>
                   </div>
                   <div className="space-y-2">
