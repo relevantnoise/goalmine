@@ -92,7 +92,9 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   <span>•</span>
                   <div className="flex items-center gap-1">
                     <Crown className="w-4 h-4 text-premium" />
-                    <span className="text-premium font-medium">Personal Plan</span>
+                    <span className="text-premium font-medium">
+                      {subscription.subscription_tier || 'Personal Plan'}
+                    </span>
                   </div>
                 </>
               )}
