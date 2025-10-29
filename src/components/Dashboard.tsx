@@ -10,6 +10,7 @@ import { useCircleCheckin } from "@/hooks/useCircleCheckin";
 import { GoalCard } from "./GoalCard";
 import { FrameworkOverview } from "./FrameworkOverview";
 import { FrameworkInsights } from "./FrameworkInsights";
+import { AIGoalGuidance } from "./AIGoalGuidance";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { ProfessionalCoachPrompt } from "./ProfessionalCoachPrompt";
@@ -66,6 +67,13 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
     !goal.title?.includes('6 Elements of Life™ Framework') &&
     !goal.title?.includes('Framework Complete')
   );
+
+  // Better framework detection - check if framework goals exist OR hasFramework prop
+  const frameworkExists = hasFramework || goals.some(goal => 
+    goal.title?.includes('6 Pillars of Life™ Framework') ||
+    goal.title?.includes('6 Elements of Life™ Framework') ||
+    goal.title?.includes('Framework Complete')
+  );
   
   const totalStreak = Math.round(regularGoals.reduce((sum, goal) => sum + goal.streak_count, 0) / regularGoals.length) || 0;
 
@@ -121,7 +129,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           <div className="lg:col-span-3">
             <div className="grid gap-6">
               {/* New User Welcome Section - Show when no framework */}
-              {!hasFramework && (
+              {!frameworkExists && (
                 <div className="bg-gradient-to-br from-primary/5 to-blue-50 border-2 border-primary/20 rounded-xl p-8">
                   <div className="text-center mb-8">
                     <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -187,15 +195,32 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
               )}
 
               {/* Framework Overview - Show for all users with framework */}
-              {hasFramework && (
+              {frameworkExists && (
                 <FrameworkOverview 
                   onEditFramework={onEditFramework || (() => {})}
                   onWeeklyCheckin={onCircleCheckin}
                 />
               )}
 
+              {/* AI Goal Guidance - Show personalized insights after assessment */}
+              {frameworkExists && (
+                <AIGoalGuidance 
+                  frameworkData={{
+                    elements: [
+                      { name: 'Work', current: 8, desired: 10, gap: 2 },
+                      { name: 'Sleep', current: 3, desired: 9, gap: 6 },
+                      { name: 'Friends & Family', current: 6, desired: 9, gap: 3 },
+                      { name: 'Health & Fitness', current: 5, desired: 9, gap: 4 },
+                      { name: 'Personal Development', current: 4, desired: 9, gap: 5 },
+                      { name: 'Spiritual', current: 7, desired: 9, gap: 2 }
+                    ]
+                  }}
+                  onClose={() => {}}
+                />
+              )}
+
               {/* Regular Goals */}
-              {regularGoals.length === 0 && hasFramework ? (
+              {regularGoals.length === 0 && frameworkExists ? (
                 <div className="bg-card border rounded-lg p-8 text-center">
                   <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                     <Target className="w-8 h-8 text-muted-foreground" />
@@ -253,10 +278,10 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">
-                      {hasFramework ? "Add More Goals" : "Get Started"}
+                      {frameworkExists ? "Add More Goals" : "Get Started"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {hasFramework ? (
+                      {frameworkExists ? (
                         subscription.subscribed ? (() => {
                           const tier = subscription.subscription_tier || 'Personal Plan';
                           const maxGoals = (() => {
@@ -283,7 +308,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                   ) : (
                     <>
                       <Plus className="w-4 h-4 mr-2" />
-                      {hasFramework ? "Create A Goal" : "Get Started"}
+                      {frameworkExists ? "Create A Goal" : "Get Started"}
                       {!subscription.subscribed && <Crown className="w-4 h-4 ml-2" />}
                     </>
                   )}
@@ -292,7 +317,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
 
 
               {/* Circle Check-in Card */}
-              {hasFramework && checkinStatus.needsCheckin && onCircleCheckin && (
+              {frameworkExists && checkinStatus.needsCheckin && onCircleCheckin && (
                 <div className="bg-card border rounded-lg p-6 border-l-4 border-l-blue-500">
                   <div className="flex items-start gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -363,7 +388,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
               )}
 
               {/* Framework Insights */}
-              {hasFramework && (
+              {frameworkExists && (
                 <FrameworkInsights 
                   frameworkData={{
                     elements: [
