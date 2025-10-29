@@ -32,6 +32,19 @@ serve(async (req) => {
     if (!email || !userId) throw new Error("Email and userId are required");
     logStep("User data received", { userId, email });
 
+    // TESTING MODE: Override for danlynn@gmail.com to be Professional Plan
+    if (email === 'danlynn@gmail.com') {
+      logStep("TESTING MODE: Using Professional Plan override for danlynn@gmail.com");
+      return new Response(JSON.stringify({
+        subscribed: true,
+        subscription_tier: 'Professional Plan',
+        subscription_end: '2025-12-31T23:59:59.000Z'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     // First, check database for existing subscription
     const { data: existingSub, error: dbError } = await supabaseClient
       .from('subscribers')
@@ -87,7 +100,7 @@ serve(async (req) => {
       limit: 1,
     });
     const hasActiveSub = subscriptions.data.length > 0;
-    let subscriptionTier = null;
+    let subscriptionTier: string | null = null;
     let subscriptionEnd = null;
 
     if (hasActiveSub) {
@@ -98,14 +111,18 @@ serve(async (req) => {
       const priceId = subscription.items.data[0].price.id;
       const price = await stripe.prices.retrieve(priceId);
       const amount = price.unit_amount || 0;
-      if (amount <= 999) {
-        subscriptionTier = "Personal Plan";
-      } else if (amount <= 10000) {
-        subscriptionTier = "Personal Plan";
+      
+      // Updated price mapping for new tier structure
+      if (amount <= 499) {
+        subscriptionTier = "Personal Plan"; // $4.99 or less
+      } else if (amount <= 2999) {
+        subscriptionTier = "Personal Plan"; // Up to $29.99 (includes $24.99 Personal Plan)
+      } else if (amount <= 25000) {
+        subscriptionTier = "Professional Plan"; // $199.99/month and similar mid-tier plans
       } else if (amount >= 50000) {
-        subscriptionTier = "Professional Coach";
+        subscriptionTier = "Strategic Advisor Plan"; // $950/month and above
       } else {
-        subscriptionTier = "Personal Plan";
+        subscriptionTier = "Personal Plan"; // Default fallback
       }
       logStep("Determined subscription tier", { priceId, amount, subscriptionTier });
     } else {

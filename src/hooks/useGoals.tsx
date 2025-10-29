@@ -610,7 +610,7 @@ export const useGoals = () => {
 
       if (error) {
         console.error('❌ LLM generation error:', error);
-        toast.error('Failed to generate motivation content');
+        // Don't show error toast - this is not critical for goal creation success
         return null;
       }
 
@@ -624,7 +624,7 @@ export const useGoals = () => {
       };
     } catch (error) {
       console.error('❌ Error generating goal motivation:', error);
-      toast.error('Failed to generate motivation content');
+      // Don't show error toast - this is not critical for goal creation success
       return null;
     }
   };
