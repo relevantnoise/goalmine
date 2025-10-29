@@ -287,22 +287,22 @@ const Index = () => {
 
 
   const handleFiveCircleComplete = () => {
-    console.log('✅ Step 1 Complete: 6 Pillars of Life setup → Step 2: Goal creation');
+    console.log('✅ Assessment Complete: 6 Pillars of Life setup → Dashboard with AI Analysis');
     hasInitialized.current = true;
     
     // Refresh framework data to ensure hasFramework is updated
     refetchFramework();
     
-    // Move directly to Step 2: Goal creation (not framework report)
-    setCurrentView('onboarding');
+    // Go to dashboard to show assessment results and AI guidance (per FRAMEWORK_MVP_SPEC.md)
+    setCurrentView('dashboard');
     
-    // Scroll to top for clean goal creation experience
+    // Scroll to top for clean dashboard experience
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Show success message
     setAlertData({
-      title: "🎯 Step 1 Complete!",
-      message: "Your 6 Pillars of Life™ is ready! Now let's create your first goal.",
+      title: "🎯 Assessment Complete!",
+      message: "Your 6 Pillars of Life™ analysis is ready! Review your personalized insights and goal suggestions below.",
       type: 'achievement'
     });
     setShowAlert(true);
