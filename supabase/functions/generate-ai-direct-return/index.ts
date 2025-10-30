@@ -149,17 +149,52 @@ Return as JSON array with exactly 3 insights.`;
 
     console.log('[AI-DIRECT-RETURN] Generated insights:', insights.length);
 
-    // Format insights for frontend with proper structure
-    const formattedInsights = insights.map((insight: any, index: number) => ({
-      id: `insight-${Date.now()}-${index}`,
+    // Store insights in database for persistence
+    const insightsToStore = insights.map((insight: any, index: number) => ({
       framework_id: framework.id,
       user_email: userEmail,
       insight_type: insight.insight_type || 'gap_analysis',
       title: insight.title || 'Insight Title',
-      content: insight.content || 'Insight content',
-      priority: index + 1,
-      is_read: false,
-      created_at: new Date().toISOString()
+      description: insight.content || 'Insight content',
+      priority: index === 0 ? 'High' : index === 1 ? 'Medium' : 'Low',
+      is_read: false
+    }));
+
+    // Clear existing insights for this framework and insert new ones (assessment data changed)
+    const { error: deleteError } = await supabase
+      .from('ai_insights')
+      .delete()
+      .eq('framework_id', framework.id);
+
+    if (deleteError) {
+      console.warn('[AI-DIRECT-RETURN] Warning: Could not clear old insights:', deleteError);
+    } else {
+      console.log('[AI-DIRECT-RETURN] Cleared existing insights for framework regeneration');
+    }
+
+    const { data: storedInsights, error: insertError } = await supabase
+      .from('ai_insights')
+      .insert(insightsToStore)
+      .select();
+
+    if (insertError) {
+      console.error('[AI-DIRECT-RETURN] Failed to store insights:', insertError);
+      // Continue with formatted insights even if storage fails
+    } else {
+      console.log('[AI-DIRECT-RETURN] Successfully stored', storedInsights?.length, 'insights');
+    }
+
+    // Format insights for frontend response
+    const formattedInsights = (storedInsights || insightsToStore).map((insight: any, index: number) => ({
+      id: insight.id || `insight-${Date.now()}-${index}`,
+      framework_id: framework.id,
+      user_email: userEmail,
+      insight_type: insight.insight_type || 'gap_analysis',
+      title: insight.title || 'Insight Title',
+      description: insight.description || insight.content || 'Insight content',
+      priority: insight.priority || (index === 0 ? 'High' : index === 1 ? 'Medium' : 'Low'),
+      is_read: insight.is_read || false,
+      created_at: insight.created_at || new Date().toISOString()
     }));
 
     console.log('[AI-DIRECT-RETURN] Success! Generated', formattedInsights.length, 'insights');

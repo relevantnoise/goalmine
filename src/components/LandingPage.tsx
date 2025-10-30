@@ -54,19 +54,13 @@ export const LandingPage = ({
               GoalMine.ai's proprietary <strong>6 Pillars of Life™ Framework</strong> + <strong>Business Happiness Formula</strong> transform scattered goals into integrated life management.
             </p>
 
-            {/* 6 Pillars Visual - Ordered: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual */}
+            {/* 6 Pillars Visual - Ordered: Work, Friends & Family, Health & Fitness, Spiritual, Personal Development, Sleep */}
             <div className="flex justify-center items-start mb-8 flex-wrap gap-6">
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
                   <Briefcase className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-sm font-medium text-green-800 text-center h-8 flex items-center justify-center">Work</div>
-              </div>
-              <div className="text-center w-24">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
-                  <Moon className="w-8 h-8 text-white" />
-                </div>
-                <div className="text-sm font-medium text-indigo-800 text-center h-8 flex items-center justify-center">Sleep</div>
               </div>
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
@@ -81,16 +75,22 @@ export const LandingPage = ({
                 <div className="text-sm font-medium text-red-800 text-center h-8 flex items-center justify-center">Health &<br />Fitness</div>
               </div>
               <div className="text-center w-24">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Heart className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-sm font-medium text-purple-800 text-center h-8 flex items-center justify-center">Spiritual</div>
+              </div>
+              <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
                   <BookOpen className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-sm font-medium text-orange-800 text-center h-8 flex items-center justify-center">Personal<br />Development</div>
               </div>
               <div className="text-center w-24">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
-                  <Heart className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Moon className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-sm font-medium text-purple-800 text-center h-8 flex items-center justify-center">Spiritual</div>
+                <div className="text-sm font-medium text-indigo-800 text-center h-8 flex items-center justify-center">Sleep</div>
               </div>
             </div>
 

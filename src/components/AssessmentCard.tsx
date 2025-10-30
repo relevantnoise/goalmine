@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Settings, Calendar, Brain, TrendingUp, CheckCircle, ArrowRight, Edit, Loader2 } from "lucide-react";
+import { Target, Settings, Calendar, Brain, TrendingUp, CheckCircle, ArrowRight, Edit, Loader2, RotateCcw } from "lucide-react";
 import { WeeklyCheckin } from "./WeeklyCheckin";
 import { AIGoalGuidance } from "./AIGoalGuidance";
 import { GapTrends } from "./GapTrends";
@@ -54,17 +54,69 @@ export const AssessmentCard = ({
   console.log('[AssessmentCard] hasFramework:', hasFramework);
   console.log('[AssessmentCard] assessmentState:', assessmentState);
   
-  // Reset framework data function - simplified for retaking assessment
+  // Reset framework data function - opens edit modal for making changes
   const resetFrameworkData = async () => {
     try {
-      // For production, we would call a proper reset function
-      // For now, simple page reload clears cached state
-      window.location.reload();
+      console.log('[RESET] Opening edit modal for assessment changes...');
+      setShowEditModal(true);
+      toast({
+        title: "Edit Your Assessment", 
+        description: "You can now modify your 6 Pillars ratings and work happiness settings.",
+      });
     } catch (err) {
       console.error('[RESET] Error:', err);
       toast({
-        title: "Reset Failed", 
+        title: "Error Opening Editor", 
         description: "Please try again",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  // Start fresh assessment function - completely clears framework data
+  const startFreshAssessment = async () => {
+    if (!user?.email) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      console.log('[START-FRESH] Clearing all framework data...');
+      
+      const { data, error } = await supabase.functions.invoke('reset-framework-data', {
+        body: { 
+          userEmail: user.email
+        }
+      });
+
+      if (error) {
+        console.error('[START-FRESH] Error:', error);
+        toast({
+          title: "Reset Failed",
+          description: "Could not clear framework data. Please try again.",
+          variant: "destructive"
+        });
+      } else if (data?.success) {
+        console.log('[START-FRESH] Framework cleared successfully');
+        refetch(); // Refresh to show initial state
+        setAiInsights([]); // Clear insights
+        toast({
+          title: "Assessment Reset!",
+          description: "Your framework data has been cleared. You can now take a fresh assessment.",
+        });
+        
+        // Trigger the assessment flow
+        onTakeAssessment();
+      }
+    } catch (err) {
+      console.error('[START-FRESH] Error:', err);
+      toast({
+        title: "Reset Error",
+        description: "An error occurred while resetting. Please try again.",
         variant: "destructive"
       });
     }
@@ -78,45 +130,63 @@ export const AssessmentCard = ({
   const [aiInsights, setAiInsights] = useState<any[]>([]);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
-  // Auto-trigger AI insights generation when assessment is completed (real-time approach)
+  // Load existing AI insights from database or generate new ones if needed
   useEffect(() => {
-    const generateAIInsightsRealTime = async () => {
+    const loadOrGenerateAIInsights = async () => {
       if (currentState === 'completed' && 
           aiInsights.length === 0 && 
           !isGeneratingAI &&
           user?.email) {
         
-        console.log('[AssessmentCard] Auto-triggering real-time AI insights generation...');
+        console.log('[AssessmentCard] Loading existing AI insights from database...');
         setIsGeneratingAI(true);
         
         try {
-          // Use the real-time generation function that worked in our tests
-          const { data, error } = await supabase.functions.invoke('generate-ai-direct-return', {
+          // First, try to fetch existing insights from database
+          const { data: fetchData, error: fetchError } = await supabase.functions.invoke('fetch-ai-insights', {
             body: { 
               userEmail: user.email
             }
           });
 
-          if (error) {
-            console.error('[AssessmentCard] AI generation error:', error);
+          if (fetchError) {
+            console.error('[AssessmentCard] Error fetching insights:', fetchError);
+          } else if (fetchData?.success && fetchData.hasInsights && fetchData.insights?.length > 0) {
+            console.log('[AssessmentCard] Found existing insights in database:', fetchData.insights);
+            setAiInsights(fetchData.insights);
+            setIsGeneratingAI(false);
+            return; // Use existing insights, no need to regenerate
+          }
+
+          // No existing insights found, generate new ones
+          console.log('[AssessmentCard] No existing insights found, generating new ones...');
+          
+          const { data: generateData, error: generateError } = await supabase.functions.invoke('generate-ai-direct-return', {
+            body: { 
+              userEmail: user.email
+            }
+          });
+
+          if (generateError) {
+            console.error('[AssessmentCard] AI generation error:', generateError);
             toast({
               title: "AI Analysis Issue",
               description: "We're working on generating your insights. Please refresh in a moment.",
               variant: "destructive"
             });
-          } else if (data?.success && data.insights) {
-            console.log('[AssessmentCard] AI insights generated successfully:', data.insights);
-            setAiInsights(data.insights);
+          } else if (generateData?.success && generateData.insights) {
+            console.log('[AssessmentCard] AI insights generated and stored successfully:', generateData.insights);
+            setAiInsights(generateData.insights);
             toast({
               title: "AI Analysis Complete!",
-              description: `Generated ${data.insights.length} personalized insights for your framework.`,
+              description: `Generated ${generateData.insights.length} personalized insights for your framework.`,
             });
           }
         } catch (err) {
-          console.error('[AssessmentCard] AI generation error:', err);
+          console.error('[AssessmentCard] Error loading/generating insights:', err);
           toast({
-            title: "AI Generation Error",
-            description: "Unable to generate insights. Please try again.",
+            title: "AI Analysis Error",
+            description: "Unable to load insights. Please try again.",
             variant: "destructive"
           });
         } finally {
@@ -125,7 +195,7 @@ export const AssessmentCard = ({
       }
     };
 
-    generateAIInsightsRealTime();
+    loadOrGenerateAIInsights();
   }, [currentState, aiInsights.length, isGeneratingAI, user?.email]);
 
 
@@ -297,10 +367,16 @@ export const AssessmentCard = ({
               <div className="flex gap-3">
                 <Button variant="outline" onClick={resetFrameworkData} className="flex-1">
                   <Edit className="w-4 h-4 mr-2" />
-                  Reset & Retake Assessment
+                  Edit Assessment
                 </Button>
                 <Button variant="outline" onClick={() => setShowFrameworkInfo(true)} className="flex-1">
                   Learn More About Framework
+                </Button>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={startFreshAssessment} className="flex-1 text-orange-600 border-orange-200 hover:bg-orange-50">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Start Fresh Assessment
                 </Button>
               </div>
             </div>
@@ -536,7 +612,12 @@ export const AssessmentCard = ({
             frameworkData={frameworkData}
             onUpdate={() => {
               refetch(); // Refresh framework data
+              setAiInsights([]); // Clear old insights to trigger regeneration
               setShowEditModal(false);
+              toast({
+                title: "Assessment Updated!",
+                description: "Your framework has been updated. New AI insights will be generated.",
+              });
             }}
           />
         )}

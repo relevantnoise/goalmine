@@ -17,7 +17,11 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const userEmail = "danlynn@gmail.com";
+    const { userEmail } = await req.json();
+    
+    if (!userEmail) {
+      throw new Error('Missing required field: userEmail');
+    }
     
     console.log('[RESET] Cleaning framework data for:', userEmail);
 
@@ -46,9 +50,9 @@ const handler = async (req: Request): Promise<Response> => {
     for (const framework of frameworks || []) {
       console.log('[RESET] Deleting data for framework:', framework.id);
       
-      // Delete pillar assessments
+      // Delete framework elements
       await supabase
-        .from('pillar_assessments')
+        .from('framework_elements')
         .delete()
         .eq('framework_id', framework.id);
       
