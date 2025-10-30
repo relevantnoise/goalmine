@@ -6,13 +6,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { CalendarCheck, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { saveWeeklyCheckin, getWeekEndingDate } from "@/api/frameworkApi";
 
 interface WeeklyCheckinProps {
   onClose: () => void;
+  onSuccess?: () => void; // Callback to refresh framework data
 }
 
-export const WeeklyCheckin = ({ onClose }: WeeklyCheckinProps) => {
+export const WeeklyCheckin = ({ onClose, onSuccess }: WeeklyCheckinProps) => {
   const { user } = useAuth();
   const [scores, setScores] = useState({
     Work: [7],
@@ -33,7 +34,7 @@ export const WeeklyCheckin = ({ onClose }: WeeklyCheckinProps) => {
   };
 
   const handleSubmit = async () => {
-    if (!user) {
+    if (!user?.id) {
       toast.error("You must be logged in to submit a check-in");
       return;
     }
@@ -42,8 +43,8 @@ export const WeeklyCheckin = ({ onClose }: WeeklyCheckinProps) => {
     
     try {
       const checkinData = {
-        user_id: user.email, // Use email as user_id (hybrid system)
-        week_ending: new Date().toISOString().split('T')[0],
+        user_id: user.id, // Use profile ID (Firebase UID) - hybrid system handles both email/UID
+        week_ending: getWeekEndingDate(), // Use helper function for proper week ending
         element_scores: Object.fromEntries(
           Object.entries(scores).map(([key, value]) => [key, value[0]])
         ),
@@ -55,22 +56,21 @@ export const WeeklyCheckin = ({ onClose }: WeeklyCheckinProps) => {
 
       console.log('📊 Submitting weekly check-in:', checkinData);
 
-      const { data, error } = await supabase.functions.invoke('save-weekly-checkin', {
-        body: checkinData
-      });
+      await saveWeeklyCheckin(checkinData);
 
-      if (error) {
-        console.error('❌ Check-in submission error:', error);
-        throw error;
-      }
-
-      console.log('✅ Check-in submitted successfully:', data);
+      console.log('✅ Check-in submitted successfully');
       toast.success("Pillar assessment complete! Your life architecture is strengthening! 🏛️");
+      
+      // Trigger framework data refresh
+      if (onSuccess) {
+        onSuccess();
+      }
+      
       onClose();
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Check-in error:', error);
-      toast.error("Failed to submit check-in. Please try again.");
+      toast.error(error.message || "Failed to submit check-in. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

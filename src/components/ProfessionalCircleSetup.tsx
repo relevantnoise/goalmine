@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -90,6 +90,15 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentSection, setCurrentSection] = useState<'circles' | 'work'>('circles');
 
+  // Scroll to top when component loads AND when section changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // Also scroll to top whenever the current section changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentSection]);
 
   const [circleAllocations, setCircleAllocations] = useState<Record<string, CircleAllocation>>({});
   const [workHappiness, setWorkHappiness] = useState<WorkHappiness>({
@@ -114,7 +123,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
   const remainingHours = useMemo(() => {
     const totalWeekHours = 168; // 7 days * 24 hours
-    return Math.max(0, totalWeekHours - allocatedHours);
+    return totalWeekHours - allocatedHours;
   }, [allocatedHours]);
 
   const updateCircleAllocation = (circleName: string, updates: Partial<CircleAllocation>) => {
@@ -166,7 +175,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     setIsSubmitting(true);
     
     try {
-      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('save-six-elements-data', {
+      const { data: frameworkData, error: frameworkError } = await supabase.functions.invoke('save-six-elements-framework', {
         body: {
           userEmail: user.email,
           elementsData,
@@ -176,19 +185,55 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
       if (frameworkError) throw frameworkError;
 
+      console.log('✅ Framework saved successfully, now generating AI insights...');
+      console.log('🔍 Framework data received:', frameworkData);
+      console.log('🔍 Framework ID to use:', frameworkData.frameworkId);
+
+      // Automatically generate AI insights after framework creation
+      try {
+        const { data: aiData, error: aiError } = await supabase.functions.invoke('generate-ai-insights', {
+          body: {
+            userEmail: user.email,
+            frameworkId: frameworkData.frameworkId
+          }
+        });
+
+        console.log('🔍 AI generation raw response:', { data: aiData, error: aiError });
+
+        if (aiError) {
+          console.error('❌ Error generating AI insights:', aiError);
+          console.error('❌ AI error details:', JSON.stringify(aiError, null, 2));
+          
+          // Check for specific authorization errors
+          if (aiError.message?.includes('401') || aiError.message?.includes('authorization')) {
+            console.error('🔒 Authorization error - user session may be invalid');
+            console.error('🔍 Current user session:', user);
+            console.error('🔍 Supabase session:', await supabase.auth.getSession());
+          }
+        } else {
+          console.log('🧠 AI insights generated successfully:', aiData);
+        }
+      } catch (functionCallError) {
+        console.error('💥 Function call failed entirely:', functionCallError);
+        console.error('🔍 Function call error details:', JSON.stringify(functionCallError, null, 2));
+      }
+
       toast({
-        title: "🎯 Life Management System Created!",
-        description: "Your 6 Pillars of Life™ is ready. Time to set some goals!",
+        title: "🎯 Life Architecture Complete!",
+        description: "Your 6 Pillars assessment and AI analysis are ready!",
         duration: 5000
       });
 
       onComplete();
     } catch (error) {
       console.error('❌ Error saving framework:', error);
+      console.error('❌ Elements data being sent:', elementsData);
+      console.error('❌ Work happiness data being sent:', workHappinessData);
+      
       toast({
-        title: "Setup Failed",
-        description: error instanceof Error ? error.message : "Failed to save your framework. Please try again.",
-        duration: 8000
+        title: "❌ Setup Failed - Debug Info",
+        description: `Error: ${error instanceof Error ? error.message : 'Unknown error'}\nElements: ${Object.keys(elementsData).length} items\nWork Data: ${Object.keys(workHappinessData).length} items`,
+        duration: 12000
       });
     } finally {
       setIsSubmitting(false);
@@ -203,35 +248,76 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
       
       {/* Hero Section */}
       <div className="max-w-6xl mx-auto px-6 pt-8 pb-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            The 6 Pillars of Life™ Setup
-          </h1>
+        {/* Assessment Overview Header */}
+        <div className="text-center mb-8">
+          <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">
+              Complete Assessment: Two Powerful Tools
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              You're about to complete a comprehensive <strong>2-step assessment</strong> that combines GoalMine.ai's proven and proprietary frameworks. 
+              Both tools work together to help set strategic goals that help optimize your life and career to reduce stress and increase satisfaction.
+            </p>
+          </div>
+          
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            {currentSection === 'circles' ? 'The 6 Pillars of Life™ Setup' : 'Business Happiness Formula™ Assessment'}
+          </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Build your foundation for success. This comprehensive system helps high-achieving professionals 
-            balance all essential life pillars including work, sleep, relationships, health, growth, and purpose.
+            {currentSection === 'circles' 
+              ? 'Build your foundation for success. This comprehensive system helps high-achieving professionals balance all essential life pillars including work, sleep, relationships, health, growth, and purpose.'
+              : 'Optimize your professional satisfaction across the four key drivers of work happiness: impact, fun, compensation, and flexibility.'
+            }
           </p>
         </div>
 
-        {/* Progress Tracker */}
+        {/* Enhanced Progress Tracker */}
         <div className="flex justify-center mb-12">
-          <div className="flex items-center space-x-8">
-            <div className={`flex items-center ${currentSection === 'circles' ? 'text-blue-600' : 'text-green-600'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentSection === 'circles' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-green-100'
-              }`}>
-                {currentSection === 'circles' ? '1' : <CheckCircle className="w-5 h-5" />}
-              </div>
-              <span className="ml-2 font-medium">6 Life Pillars</span>
+          <div className="bg-white rounded-xl border shadow-lg p-6 max-w-2xl">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Assessment Progress</h3>
+              <p className="text-sm text-gray-600">Complete both steps to unlock your personalized insights</p>
             </div>
-            <div className="w-24 h-px bg-gray-300"></div>
-            <div className={`flex items-center ${currentSection === 'work' ? 'text-blue-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentSection === 'work' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-gray-100'
-              }`}>
-                2
+            
+            <div className="flex items-center justify-between">
+              <div className={`flex items-center ${currentSection === 'circles' ? 'text-blue-600' : 'text-blue-600'}`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  currentSection === 'circles' ? 'bg-blue-100 border-2 border-blue-600' : 'bg-blue-100'
+                }`}>
+                  {currentSection === 'circles' ? '1' : <CheckCircle className="w-7 h-7 text-blue-600" />}
+                </div>
+                <div className="ml-4">
+                  <div className="font-bold text-lg">Step 1 of 2</div>
+                  <div className="font-medium text-blue-600">6 Life Pillars</div>
+                  <div className="text-xs text-gray-500">Rate importance & time (~3 min)</div>
+                </div>
               </div>
-              <span className="ml-2 font-medium">Work Happiness Assessment</span>
+              
+              <div className="flex-1 mx-6 relative">
+                <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className={`h-full bg-gradient-to-r from-blue-600 to-green-600 rounded-full transition-all duration-500 ${
+                    currentSection === 'work' ? 'w-full' : 'w-0'
+                  }`}></div>
+                </div>
+                <div className="text-center mt-2">
+                  <span className="text-xs font-medium text-gray-500">
+                    {currentSection === 'work' ? 'Step 1 Complete!' : 'In Progress...'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className={`flex items-center ${currentSection === 'work' ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  currentSection === 'work' ? 'bg-green-100 border-2 border-green-600' : 'bg-gray-100'
+                }`}>
+                  2
+                </div>
+                <div className="ml-4">
+                  <div className="font-bold text-lg">Step 2 of 2</div>
+                  <div className={`font-medium ${currentSection === 'work' ? 'text-green-600' : 'text-gray-400'}`}>Work Happiness</div>
+                  <div className="text-xs text-gray-500">Professional satisfaction (~2 min)</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -240,7 +326,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
           {/* Main Content */}
           <div className="lg:col-span-3">
             
-            {/* 6 Circles Section */}
+            {/* 6 Pillars Section */}
             {currentSection === 'circles' && (
               <div className="space-y-6">
                 <Card className="shadow-lg border-0">
@@ -285,7 +371,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-1"
+                              className="mt-1 [&_[data-radix-slider-range]]:bg-blue-600 [&_[data-radix-slider-thumb]]:border-blue-600"
                             />
                           </div>
 
@@ -301,13 +387,13 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                                 max={100}
                                 min={0}
                                 step={element.name === 'Spiritual' ? 0.5 : 1}
-                                className="mt-1"
+                                className="mt-1 [&_[data-radix-slider-range]]:bg-blue-600 [&_[data-radix-slider-thumb]]:border-blue-600"
                               />
                             </div>
 
                             <div>
                               <Label className="text-sm font-medium text-gray-700">Ideal Hours/Week</Label>
-                              <div className="text-center text-sm font-medium text-blue-600 mt-1 mb-2">
+                              <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
                                 {data.ideal_hours_per_week || 0}h
                               </div>
                               <Slider
@@ -316,7 +402,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                                 max={100}
                                 min={0}
                                 step={element.name === 'Spiritual' ? 0.5 : 1}
-                                className="mt-1"
+                                className="mt-1 [&_[data-radix-slider-range]]:bg-blue-600 [&_[data-radix-slider-thumb]]:border-blue-600"
                               />
                             </div>
                           </div>
@@ -335,11 +421,14 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                     ← Back to Dashboard
                   </Button>
                   <Button 
-                    onClick={() => setCurrentSection('work')}
+                    onClick={() => {
+                      setCurrentSection('work');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     disabled={allocatedHours === 0}
                     className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
                   >
-                    Continue to Work Assessment
+                    Continue to Step 2: Work Happiness Assessment →
                   </Button>
                 </div>
               </div>
@@ -348,22 +437,22 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
             {/* Work Happiness Section */}
             {currentSection === 'work' && (
               <Card className="shadow-lg border-0">
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
                   <CardTitle className="flex items-center gap-3 text-2xl">
                     <Briefcase className="w-7 h-7" />
-                    Business Happiness Assessment
+                    Work Happiness Assessment
                   </CardTitle>
-                  <p className="text-blue-100">
+                  <p className="text-green-100">
                     This proven formula was developed over 10 years of coaching high-achieving professionals
                   </p>
                 </CardHeader>
                 <CardContent className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {[
-                      { key: 'impact', label: 'Level of Impact', description: 'Meaningful work that matters' },
-                      { key: 'fun', label: 'Level of Enjoyment', description: 'Work satisfaction and engagement' },
+                      { key: 'impact', label: 'Level of Impact', description: 'Your personal impact' },
+                      { key: 'fun', label: 'Level of Enjoyment', description: 'Work satisfaction and fun' },
                       { key: 'money', label: 'Satisfaction with Income', description: 'Financial compensation alignment' },
-                      { key: 'remote', label: 'Work from Anywhere Ability', description: 'Location flexibility and freedom' }
+                      { key: 'remote', label: 'Flexibility', description: 'Location and/or schedule flexibility' }
                     ].map(metric => (
                       <div key={metric.key} className="space-y-6">
                         <div>
@@ -383,13 +472,13 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-1"
+                              className="mt-1 [&_[data-radix-slider-range]]:!bg-green-600 [&_[data-radix-slider-thumb]]:!border-green-600 [&_[data-radix-slider-thumb]]:!bg-green-600"
                             />
                           </div>
 
                           <div>
                             <Label className="text-sm font-medium text-gray-700">Desired Level</Label>
-                            <div className="text-center text-sm font-medium text-blue-600 mt-1 mb-2">
+                            <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
                               {workHappiness[`${metric.key}_desired`]}/10
                             </div>
                             <Slider
@@ -398,7 +487,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                               max={10}
                               min={1}
                               step={1}
-                              className="mt-1"
+                              className="mt-1 [&_[data-radix-slider-range]]:!bg-green-600 [&_[data-radix-slider-thumb]]:!border-green-600 [&_[data-radix-slider-thumb]]:!bg-green-600"
                             />
                           </div>
                         </div>
@@ -409,15 +498,18 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                   <div className="flex justify-between mt-12">
                     <Button 
                       variant="outline" 
-                      onClick={() => setCurrentSection('circles')}
+                      onClick={() => {
+                        setCurrentSection('circles');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                       className="px-6 py-2"
                     >
-                      ← Back to Circles
+                      ← Back to Pillars
                     </Button>
                     <Button 
                       onClick={handleSubmit}
                       disabled={isSubmitting}
-                      className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
+                      className="px-8 py-3 text-lg bg-green-600 hover:bg-green-700"
                     >
                       {isSubmitting ? (
                         <>
@@ -425,7 +517,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                           Creating Your Framework...
                         </>
                       ) : (
-                        'Complete Setup & Start Goal Setting'
+                        'Complete Assessment & Get AI Insights 🎯'
                       )}
                     </Button>
                   </div>
@@ -499,11 +591,13 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
 
                       <div className="text-center p-4 bg-white/10 rounded-lg">
                         <div className={`text-2xl font-bold ${
-                          remainingHours > 0 ? 'text-yellow-300' : 'text-red-300'
+                          remainingHours < 0 ? 'text-red-300' : remainingHours === 0 ? 'text-yellow-300' : 'text-green-300'
                         }`}>
                           {remainingHours}
                         </div>
-                        <div className="text-sm text-yellow-200">Remaining</div>
+                        <div className="text-sm text-yellow-200">
+                          {remainingHours < 0 ? 'Over-allocated' : 'Remaining'}
+                        </div>
                       </div>
 
                       {remainingHours < 0 && (
@@ -521,7 +615,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
                       {currentSection === 'circles' ? (
                         "Allocate your 168 weekly hours across all 6 essential life pillars for optimal balance"
                       ) : (
-                        "Dan Lynn's proven 10-year formula for measuring and optimizing work satisfaction"
+                        "GoalMine.ai's proven formula for measuring and optimizing work happiness"
                       )}
                     </div>
                   </div>

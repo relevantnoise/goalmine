@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manual AI Generation Test</title>
+</head>
+<body>
+    <h1>Generate AI Insights for Dan</h1>
+    <button onclick="debugSchema()">1. Debug Table Schema</button>
+    <button onclick="fixTable()">2. Fix AI Insights Table Schema</button>
+    <button onclick="generateAI()">3. Generate AI Insights (Client)</button>
+    <button onclick="generateAISQL()">4. Generate AI Insights (Raw SQL)</button>
+    <button onclick="generateAISimple()">5. Generate AI Insights (Bypass Database)</button>
+    <button onclick="generateAIWorking()">6. Generate AI Insights (Save to Database)</button>
+    <button onclick="generateAIFinal()">7. Generate AI Final (Bulk Insert)</button>
+    <button onclick="debugDanData()">8. Debug Dan's Actual Data</button>
+    <button onclick="dropRecreateTable()">9. Drop & Recreate AI Insights Table</button>
+    <button onclick="generateAIDirectReturn()">10. Generate AI Insights (Direct Return)</button>
+    <div id="result"></div>
+
+    <script>
+        async function generateAI() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating AI insights...';
+            
+            try {
+                // Try with a likely framework ID - let's use a UUID format
+                // Get the anon key from the frontend
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-direct', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Error:</h2>' + error.message;
+            }
+        }
+
+        async function fixTable() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Fixing AI insights table schema...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/fix-ai-insights-table', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Table Fix Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Table Fix Error:</h2>' + error.message;
+            }
+        }
+
+        async function debugSchema() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Debugging table schema...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/debug-table-schema', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Schema Debug Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Schema Debug Error:</h2>' + error.message;
+            }
+        }
+
+        async function generateAISQL() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating AI insights using raw SQL...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-sql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>SQL AI Generation Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>SQL AI Generation Error:</h2>' + error.message;
+            }
+        }
+
+        async function generateAISimple() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating AI insights bypassing database (using hardcoded data)...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Simple AI Generation Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Simple AI Generation Error:</h2>' + error.message;
+            }
+        }
+
+        async function generateAIWorking() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating and saving AI insights to database...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-working', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Working AI Generation Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Working AI Generation Error:</h2>' + error.message;
+            }
+        }
+
+        async function generateAIFinal() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating AI insights with bulk insert...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-final', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Final AI Generation Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Final AI Generation Error:</h2>' + error.message;
+            }
+        }
+
+        async function debugDanData() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Testing fetch-framework-data function directly...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/fetch-framework-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({ userEmail: 'danlynn@gmail.com' })
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Fetch Framework Data Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Fetch Framework Error:</h2>' + error.message;
+            }
+        }
+
+        async function dropRecreateTable() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Dropping and recreating ai_insights table...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/drop-and-recreate-ai-insights', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Drop & Recreate Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Drop & Recreate Error:</h2>' + error.message;
+            }
+        }
+
+        async function generateAIDirectReturn() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Generating AI insights and returning directly (no database save)...';
+            
+            try {
+                const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0';
+                
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.functions.supabase.co/generate-ai-direct-return', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${anonKey}`,
+                        'apikey': anonKey
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                result.innerHTML = '<h2>Direct Return AI Generation Result:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+            } catch (error) {
+                result.innerHTML = '<h2>Direct Return AI Generation Error:</h2>' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

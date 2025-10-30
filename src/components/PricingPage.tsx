@@ -117,10 +117,10 @@ export const PricingPage = ({
           <div className="flex justify-center mb-3">
             <UserCount variant="subtle" />
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-4">Start Your First Goal</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transform your goals into achievements with personalized daily motivation. 
-            Try free for 30 days, then continue for just $24.99/month. Professional plans and one-on-one strategic coaching are also available.
+            Try free for 30 days, then continue starting at just $24.99/month. Professional plans and one-on-one strategic coaching are also available.
           </p>
         </div>
 
@@ -252,11 +252,11 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span><strong>Enhanced Circle Dashboard</strong> - Advanced tracking & analytics</span>
+                  <span><strong>Enhanced Pillar Dashboard</strong> - Advanced tracking & analytics</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Circle integration optimization & conflict detection</span>
+                  <span>Pillar integration optimization & conflict detection</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />

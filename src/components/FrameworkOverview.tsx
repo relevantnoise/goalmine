@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Settings, Calendar, Brain, TrendingUp } from "lucide-react";
+import { Target, Settings, Calendar, Brain, TrendingUp, Loader2 } from "lucide-react";
 import { WeeklyCheckin } from "./WeeklyCheckin";
 import { AIGoalGuidance } from "./AIGoalGuidance";
 import { GapTrends } from "./GapTrends";
+import { useFramework } from "@/hooks/useFramework";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FrameworkOverviewProps {
   onEditFramework: () => void;
@@ -16,19 +18,59 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
   const [showCheckin, setShowCheckin] = useState(false);
   const [showGuidance, setShowGuidance] = useState(false);
   const [showTrends, setShowTrends] = useState(false);
-  // Temporary mock data - will be replaced with real data from new tables
-  const mockFrameworkData = {
-    elements: [
-      { name: 'Work', current: 8, desired: 10, gap: 2 },
-      { name: 'Sleep', current: 3, desired: 9, gap: 6 },
-      { name: 'Friends & Family', current: 6, desired: 9, gap: 3 },
-      { name: 'Health & Fitness', current: 5, desired: 9, gap: 4 },
-      { name: 'Personal Development', current: 4, desired: 9, gap: 5 },
-      { name: 'Spiritual', current: 7, desired: 9, gap: 2 }
-    ]
+  
+  const { frameworkData, loading, error, hasFramework } = useFramework();
+  
+  const debugData = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('debug-framework-data');
+      console.log('[DEBUG] Raw response:', data, error);
+      alert('Check console for debug data');
+    } catch (err) {
+      console.error('[DEBUG] Error:', err);
+    }
   };
+  
+  // Show loading state while fetching data
+  if (loading) {
+    return (
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="flex items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <span className="text-muted-foreground">Loading your framework...</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-  const biggestGap = mockFrameworkData.elements.reduce((max, element) => 
+  // Show error state or no framework message
+  if (!hasFramework || !frameworkData) {
+    return (
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+        <CardContent className="p-6">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Target className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Complete Your 6 Pillars Assessment</h3>
+            <p className="text-muted-foreground mb-4">
+              Get started with your personalized life architecture framework
+            </p>
+            <Button onClick={debugData} variant="outline">
+              🐛 Debug Data
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const elements = frameworkData.elements;
+  const biggestGap = elements.reduce((max, element) => 
     element.gap > max.gap ? element : max
   );
 
@@ -54,7 +96,7 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
 
         {/* Pillars Progress */}
         <div className="space-y-3 mb-6">
-          {mockFrameworkData.elements.map((pillar, index) => (
+          {elements.map((pillar, index) => (
             <div key={pillar.name} className="flex items-center gap-4">
               <div className="w-24 text-sm font-medium text-right">
                 {pillar.name}:
@@ -114,7 +156,7 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
         {/* AI Goal Guidance Modal */}
         {showGuidance && (
           <AIGoalGuidance 
-            frameworkData={mockFrameworkData}
+            frameworkData={{ elements }}
             onClose={() => setShowGuidance(false)} 
           />
         )}
@@ -130,7 +172,7 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
                     ✕
                   </Button>
                 </div>
-                <GapTrends frameworkData={mockFrameworkData} />
+                <GapTrends frameworkData={{ elements }} />
               </div>
             </div>
           </div>

@@ -7,9 +7,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useGoals, getGoalStatus, getGoalPermissions } from "@/hooks/useGoals";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCircleCheckin } from "@/hooks/useCircleCheckin";
+import { useFramework } from "@/hooks/useFramework";
 import { GoalCard } from "./GoalCard";
-import { FrameworkOverview } from "./FrameworkOverview";
-import { FrameworkInsights } from "./FrameworkInsights";
+import { AssessmentCard } from "./AssessmentCard";
 import { AIGoalGuidance } from "./AIGoalGuidance";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
@@ -24,13 +24,16 @@ interface DashboardProps {
   onEditFramework?: () => void;
   onViewFramework?: () => void;
   onCircleCheckin?: () => void;
+  onTakeAssessment?: () => void;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin, onTakeAssessment }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
   const { checkinStatus, loading: checkinLoading } = useCircleCheckin();
+  const { hasFramework: frameworkDataExists, assessmentState: dashboardAssessmentState, loading: frameworkLoading } = useFramework();
+  console.log('🔍 Dashboard useFramework:', { frameworkDataExists, dashboardAssessmentState, frameworkLoading });
 
   // DEBUG: Log subscription data to see what we're getting
   console.log('🔍 Dashboard subscription data:', subscription);
@@ -68,12 +71,15 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
     !goal.title?.includes('Framework Complete')
   );
 
-  // Better framework detection - check if framework goals exist OR hasFramework prop
-  const frameworkExists = hasFramework || goals.some(goal => 
+  // Use consistent framework detection with AssessmentCard
+  const frameworkExists = frameworkDataExists || hasFramework || goals.some(goal => 
     goal.title?.includes('6 Pillars of Life™ Framework') ||
     goal.title?.includes('6 Elements of Life™ Framework') ||
     goal.title?.includes('Framework Complete')
   );
+  
+  // DEBUG: Log framework detection
+  console.log('🔍 Framework detection:', { frameworkDataExists, hasFramework, frameworkExists });
   
   const totalStreak = Math.round(regularGoals.reduce((sum, goal) => sum + goal.streak_count, 0) / regularGoals.length) || 0;
 
@@ -128,96 +134,15 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           {/* Goals Section - Left 3 columns */}
           <div className="lg:col-span-3">
             <div className="grid gap-6">
-              {/* New User Welcome Section - Show when no framework */}
-              {!frameworkExists && (
-                <div className="bg-gradient-to-br from-primary/5 to-blue-50 border-2 border-primary/20 rounded-xl p-8">
-                  <div className="text-center mb-8">
-                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Target className="w-10 h-10 text-primary" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-foreground mb-2">Welcome to GoalMine.ai!</h2>
-                    <p className="text-muted-foreground text-lg">
-                      Transform your life complexity into actionable goals with our proven 3-step process
-                    </p>
-                  </div>
 
-                  <div className="grid md:grid-cols-3 gap-6 mb-8">
-                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-blue-600 font-bold text-lg">1</span>
-                      </div>
-                      <h3 className="font-semibold mb-2">6 Pillars Assessment</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Define your personal framework across Work, Health, Relationships, Personal Development, Spiritual, and Sleep
-                      </p>
-                    </div>
+              {/* Assessment Card - Always show, handles all framework states */}
+              <AssessmentCard 
+                onTakeAssessment={onTakeAssessment || onStartOver}
+                onCreateGoals={handleCreateGoal}
+                onEditFramework={onEditFramework || (() => {})}
+                onWeeklyCheckin={onCircleCheckin}
+              />
 
-                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-green-600 font-bold text-lg">2</span>
-                      </div>
-                      <h3 className="font-semibold mb-2">Work Happiness Framework</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Optimize your professional life by defining current vs. desired states across key metrics
-                      </p>
-                    </div>
-
-                    <div className="text-center p-4 bg-white/50 rounded-lg border border-primary/10">
-                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-purple-600 font-bold text-lg">3</span>
-                      </div>
-                      <h3 className="font-semibold mb-2">AI Goal Creation</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Get personalized goal suggestions based on your framework and start tracking your progress
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="text-center">
-                    <Button onClick={handleCreateGoal} size="lg" className="px-8 py-3 text-lg" disabled={isCheckingLimits}>
-                      {isCheckingLimits ? (
-                        <>
-                          <div className="animate-spin w-5 h-5 border-2 border-current border-t-transparent rounded-full mr-2" />
-                          Starting Your Journey...
-                        </>
-                      ) : (
-                        <>
-                          <Target className="w-5 h-5 mr-2" />
-                          Start Your 6 Pillars Journey
-                        </>
-                      )}
-                    </Button>
-                    <p className="text-sm text-muted-foreground mt-3">
-                      Takes less than 5 minutes
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Framework Overview - Show for all users with framework */}
-              {frameworkExists && (
-                <FrameworkOverview 
-                  onEditFramework={onEditFramework || (() => {})}
-                  onWeeklyCheckin={onCircleCheckin}
-                />
-              )}
-
-              {/* AI Goal Guidance - Show personalized insights after assessment */}
-              {frameworkExists && (
-                <AIGoalGuidance 
-                  frameworkData={{
-                    elements: [
-                      { name: 'Work', current: 8, desired: 10, gap: 2 },
-                      { name: 'Sleep', current: 3, desired: 9, gap: 6 },
-                      { name: 'Friends & Family', current: 6, desired: 9, gap: 3 },
-                      { name: 'Health & Fitness', current: 5, desired: 9, gap: 4 },
-                      { name: 'Personal Development', current: 4, desired: 9, gap: 5 },
-                      { name: 'Spiritual', current: 7, desired: 9, gap: 2 }
-                    ]
-                  }}
-                  onClose={() => {}}
-                />
-              )}
 
               {/* Regular Goals */}
               {regularGoals.length === 0 && frameworkExists ? (
@@ -285,13 +210,14 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                         subscription.subscribed ? (() => {
                           const tier = subscription.subscription_tier || 'Personal Plan';
                           const maxGoals = (() => {
+                            if (tier === 'Professional Plan') return 5; // Fixed tier name
                             if (tier === 'Pro Plan') return 5;
                             if (tier === 'Strategic Advisor Plan') return 5;
                             if (tier === 'Professional Coach') return 5; // Legacy tier
                             return 3; // Personal Plan
                           })();
                           const remaining = maxGoals - regularGoals.length;
-                          return remaining > 0 ? `Create up to ${remaining} more goals` : `You're using all ${maxGoals} goals`;
+                          return remaining > 0 ? `Create more goals` : `You're using all ${maxGoals} goals`;
                         })() : "First goal is free. Upgrade to create more."
                       ) : (
                         "Complete your 6 Pillars of Life™ to start creating goals"
@@ -387,29 +313,6 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                 </div>
               )}
 
-              {/* Framework Insights */}
-              {frameworkExists && (
-                <FrameworkInsights 
-                  frameworkData={{
-                    elements: [
-                      { name: 'Work', current: 8, desired: 10, gap: 2 },
-                      { name: 'Sleep', current: 3, desired: 9, gap: 6 },
-                      { name: 'Friends & Family', current: 6, desired: 9, gap: 3 },
-                      { name: 'Health & Fitness', current: 5, desired: 9, gap: 4 },
-                      { name: 'Personal Development', current: 4, desired: 9, gap: 5 },
-                      { name: 'Spiritual', current: 7, desired: 9, gap: 2 }
-                    ]
-                  }}
-                  onCreateGoal={(element) => {
-                    // Future: Pre-populate goal creation with element context
-                    handleCreateGoal();
-                  }}
-                  onGetGuidance={() => {
-                    // Future: Open AI guidance modal
-                    console.log('🧠 Opening AI guidance from insights');
-                  }}
-                />
-              )}
 
               {/* Nudge Me Card */}
               <div className="bg-card border rounded-lg p-6">

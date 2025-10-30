@@ -57,7 +57,7 @@ const circles = [
     name: 'Work',
     icon: Briefcase,
     color: 'text-green-600',
-    description: 'Career, professional development, income'
+    description: 'Career, job(s) (including commute time)'
   },
   {
     name: 'Personal Development',
@@ -356,17 +356,17 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
             <div style={{ 
               fontSize: '20px', 
               fontWeight: 'bold', 
-              color: '#1d4ed8',
+              color: getRemainingHours < 0 ? '#dc2626' : '#1d4ed8',
               marginBottom: '8px'
             }}>
-              ⏱️ {getRemainingHours || 0} hours remaining
+              ⏱️ {getRemainingHours ?? 0} hours {getRemainingHours < 0 ? 'over-allocated' : 'remaining'}
             </div>
             <div style={{ 
               fontSize: '14px', 
-              color: '#1e40af',
+              color: getRemainingHours < 0 ? '#dc2626' : '#1e40af',
               fontWeight: '500'
             }}>
-              Available for ideal allocation across all circles
+              {getRemainingHours < 0 ? 'You need to reduce some circle hours' : 'Available for ideal allocation across all circles'}
             </div>
             <div style={{ 
               fontSize: '12px', 
@@ -374,7 +374,7 @@ export const SimpleCircleOnboarding = ({ onComplete, onBack }: SimpleCircleOnboa
               marginTop: '4px'
             }}>
               Total Available: {timeContext.available_hours_per_week || 0} | 
-              Already Allocated: {(timeContext.available_hours_per_week || 0) - (getRemainingHours || 0)}
+              Already Allocated: {(timeContext.available_hours_per_week || 0) - (getRemainingHours ?? 0)}
             </div>
           </div>
         </div>

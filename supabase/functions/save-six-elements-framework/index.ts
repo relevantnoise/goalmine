@@ -28,76 +28,113 @@ serve(async (req) => {
     }
 
     console.log('📊 Processing framework for user:', userEmail)
+    console.log('📋 Elements Data received:', JSON.stringify(elementsData, null, 2))
+    console.log('💼 Work Happiness Data received:', JSON.stringify(workHappinessData, null, 2))
+    
+    // CRITICAL: Check if we have the expected data structure
+    if (!elementsData || Object.keys(elementsData).length === 0) {
+      throw new Error('Elements data is empty or missing')
+    }
+    
+    if (!workHappinessData || Object.keys(workHappinessData).length === 0) {
+      throw new Error('Work happiness data is empty or missing')
+    }
 
-    // Store framework data as JSON in a flexible way
-    // This leverages the existing table structure that we know works
-    const frameworkJson = JSON.stringify({
-      completed_at: new Date().toISOString(),
-      elements: elementsData,
-      work_happiness: workHappinessData,
-      version: '1.0'
-    })
-
-    // First, check if user profile exists
-    let { data: existingProfile, error: fetchError } = await supabaseClient
+    // Get the user ID from profiles table - use the 'id' column which contains Firebase UID
+    const { data: profile, error: profileError } = await supabaseClient
       .from('profiles')
-      .select('*')
+      .select('id')
       .eq('email', userEmail)
       .single()
 
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('Error fetching profile:', fetchError)
-      throw new Error('Failed to fetch user profile')
+    if (profileError || !profile?.id) {
+      throw new Error(`User profile not found for ${userEmail}`)
     }
 
-    let profileResult
+    const userId = profile.id;
+    console.log('🆔 Using Firebase UID as user_id:', userId);
 
-    // First create the framework summary goal
-    console.log('📋 Creating framework summary goal...')
-    const { data: frameworkGoal, error: goalError } = await supabaseClient
-      .from('goals')
+    // Save to proper framework tables - NOT goals table
+    console.log('📋 Creating framework instance in user_frameworks...')
+    
+    // Create framework instance
+    const { data: framework, error: frameworkError } = await supabaseClient
+      .from('user_frameworks')
       .insert({
-        user_id: userEmail,
-        title: "🎯 6 Elements of Life™ Framework Complete",
-        description: `Your personalized life management system: ${Object.keys(elementsData).length} elements configured with business happiness assessment`,
-        tone: "wise_mentor",
-        target_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        time_of_day: "07:00",
+        user_id: userId,
+        user_email: userEmail,
+        onboarding_completed: true,
         is_active: true
       })
       .select()
       .single()
 
-    if (goalError) {
-      console.error('Error creating framework goal:', goalError)
-      throw new Error(`Failed to create framework goal: ${goalError.message}`)
+    if (frameworkError) {
+      console.error('Error creating framework:', frameworkError)
+      throw new Error(`Failed to create framework: ${frameworkError.message}`)
     }
 
-    console.log('✅ Framework summary goal created:', frameworkGoal.id)
-
-    // Now store the detailed framework data in motivation_history using the real goal ID
-    console.log('📝 Storing framework data in motivation_history...')
+    console.log('✅ Framework instance created:', framework.id)
     
-    const { data: motivationRecord, error: motivationError } = await supabaseClient
-      .from('motivation_history')
-      .insert({
-        goal_id: frameworkGoal.id, // Use the real goal ID
-        user_id: userEmail, // This will work since it was changed to TEXT
-        message: "6 Elements of Life™ Framework Completed",
-        micro_plan: frameworkJson, // Store the full framework data here as JSON
-        challenge: "Framework assessment completed successfully",
-        tone: 'wise_mentor'
-      })
-      .select()
-      .single()
-
-    if (motivationError) {
-      console.error('Error storing framework data:', motivationError)
-      throw new Error(`Failed to store framework data: ${motivationError.message}`)
+    if (!framework.id) {
+      throw new Error('Framework creation failed - no ID returned')
     }
 
-    console.log('✅ Framework data stored successfully:', motivationRecord.id)
-    profileResult = motivationRecord
+    // Save individual pillars with correct field names
+    console.log('📝 Saving pillar assessments...')
+    const pillarInserts = Object.entries(elementsData).map(([pillarName, data]: [string, any]) => ({
+      framework_id: framework.id,
+      pillar_name: pillarName,
+      importance_level: data.importance_level || 5,
+      current_hours_per_week: data.current_hours_per_week || 0,
+      ideal_hours_per_week: data.ideal_hours_per_week || 0
+    }));
+
+    console.log('🎯 Pillar inserts prepared:', JSON.stringify(pillarInserts, null, 2))
+
+    const { data: insertedElements, error: elementsError } = await supabaseClient
+      .from('pillar_assessments')
+      .insert(pillarInserts)
+      .select();
+
+    if (elementsError) {
+      console.error('❌ Error saving elements:', elementsError)
+      throw new Error(`Failed to save elements: ${elementsError.message}`)
+    }
+
+    console.log('✅ Elements saved successfully:', insertedElements?.length || 0, 'elements')
+
+    // Save work happiness data with correct field names
+    console.log('💼 Saving work happiness data...')
+    const workHappinessInsert = {
+      framework_id: framework.id,
+      user_email: userEmail,
+      impact_current: workHappinessData.impact_current,
+      impact_desired: workHappinessData.impact_desired,
+      enjoyment_current: workHappinessData.enjoyment_current,
+      enjoyment_desired: workHappinessData.enjoyment_desired,
+      income_current: workHappinessData.income_current,
+      income_desired: workHappinessData.income_desired,
+      remote_current: workHappinessData.remote_current,
+      remote_desired: workHappinessData.remote_desired
+    };
+
+    console.log('💰 Work happiness insert prepared:', JSON.stringify(workHappinessInsert, null, 2))
+
+    const { data: insertedWorkHappiness, error: workError } = await supabaseClient
+      .from('work_happiness')
+      .insert(workHappinessInsert)
+      .select();
+
+    if (workError) {
+      console.error('❌ Error saving work happiness:', workError)
+      throw new Error(`Failed to save work happiness: ${workError.message}`)
+    }
+
+    console.log('✅ Work happiness saved successfully:', insertedWorkHappiness?.length || 0, 'records')
+
+    console.log('✅ Framework assessment saved to proper tables')
+    const profileResult = framework
 
     return new Response(
       JSON.stringify({
@@ -106,9 +143,9 @@ serve(async (req) => {
         data: {
           userEmail,
           frameworkCompleted: true,
-          profileId: profileResult?.id,
-          frameworkGoalId: frameworkGoal?.id,
-          storageMethod: 'profiles_table_json'
+          frameworkId: profileResult?.id,
+          elementsCount: Object.keys(elementsData).length,
+          storageMethod: 'proper_framework_tables'
         }
       }),
       {

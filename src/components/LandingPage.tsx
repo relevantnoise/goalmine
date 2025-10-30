@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Heart, Target, Zap, LogIn, LogOut, Users, Briefcase, BookOpen, Activity, RotateCcw } from "lucide-react";
+import { ArrowRight, Heart, Target, Zap, LogIn, LogOut, Users, Briefcase, BookOpen, Activity, RotateCcw, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -46,21 +46,27 @@ export const LandingPage = ({
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
               <span className="text-primary">Master Life's Complexities</span><br />
-              with The 6 Pillars of Life™
+              with Two Proven Tools
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing the complexity of modern life. 
-              Our proprietary 6 Pillars of Life™ transforms scattered goals into integrated life management.
+              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life complexity. 
+              GoalMine.ai's proprietary <strong>6 Pillars of Life™ Framework</strong> + <strong>Business Happiness Formula</strong> transform scattered goals into integrated life management.
             </p>
 
-            {/* 5 Circle Visual */}
-            <div className="flex justify-center items-start mb-8 flex-wrap gap-8">
+            {/* 6 Pillars Visual - Ordered: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual */}
+            <div className="flex justify-center items-start mb-8 flex-wrap gap-6">
               <div className="text-center w-24">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
-                  <Heart className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Briefcase className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-sm font-medium text-purple-800 text-center h-8 flex items-center justify-center">Spiritual</div>
+                <div className="text-sm font-medium text-green-800 text-center h-8 flex items-center justify-center">Work</div>
+              </div>
+              <div className="text-center w-24">
+                <div className="w-20 h-20 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Moon className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-sm font-medium text-indigo-800 text-center h-8 flex items-center justify-center">Sleep</div>
               </div>
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
@@ -69,10 +75,10 @@ export const LandingPage = ({
                 <div className="text-sm font-medium text-blue-800 text-center h-8 flex items-center justify-center">Friends &<br />Family</div>
               </div>
               <div className="text-center w-24">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
-                  <Briefcase className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Activity className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-sm font-medium text-green-800 text-center h-8 flex items-center justify-center">Work</div>
+                <div className="text-sm font-medium text-red-800 text-center h-8 flex items-center justify-center">Health &<br />Fitness</div>
               </div>
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
@@ -81,16 +87,17 @@ export const LandingPage = ({
                 <div className="text-sm font-medium text-orange-800 text-center h-8 flex items-center justify-center">Personal<br />Development</div>
               </div>
               <div className="text-center w-24">
-                <div className="w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
-                  <Activity className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
+                  <Heart className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-sm font-medium text-red-800 text-center h-8 flex items-center justify-center">Health &<br />Fitness</div>
+                <div className="text-sm font-medium text-purple-800 text-center h-8 flex items-center justify-center">Spiritual</div>
               </div>
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Our proven framework has been impacting lives for over 30 years.</strong> Proven with hundreds of professionals. 
-              Now powered by AI for personalized life's complexities management.
+              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals.</strong> 
+              The 6 Pillars Framework manages life complexity, while the Business Happiness Formula optimizes professional satisfaction. 
+              Now powered by advanced AI for personalized guidance.
             </p>
             
             <div className="flex justify-center mb-12">
@@ -99,8 +106,8 @@ export const LandingPage = ({
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
-            {user ? <Button onClick={handleContinueToDashboard} size="lg" className="bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-64">
-                Continue to Dashboard
+            {user ? <Button onClick={handleContinueToDashboard} size="lg" className="bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-72">
+                Continue to Your Dashboard
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button> : <>
                 <Button onClick={() => navigate('/auth')} size="lg" className="bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-48">
@@ -114,7 +121,7 @@ export const LandingPage = ({
               </>}
           </div>
           
-          <p className="text-sm text-muted-foreground">30-day free trial • Everyone experiences The 6 Pillars of Life™ • Upgrade for more goals across all pillars</p>
+          <p className="text-sm text-muted-foreground">30-day free trial • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
         </div>
       </div>
 
@@ -180,56 +187,56 @@ export const LandingPage = ({
               </div>
             </div>
 
-            {/* Creator Story */}
+            {/* Framework Origins */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border mb-16">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">DL</span>
+                  <span className="text-white font-bold text-xl">GM</span>
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold">Created by Dan Lynn</h4>
-                  <p className="text-muted-foreground">MBA, Rutgers • Former AT&T Strategy • Serial Entrepreneur</p>
+                  <h4 className="text-xl font-bold">Proven Frameworks, Enterprise Platform</h4>
+                  <p className="text-muted-foreground">GoalMine.ai's proprietary frameworks are built on methodologies refined over 30 years with hundreds of professionals, originally developed by successful serial entrepreneur Dan Lynn</p>
                 </div>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                "I developed the original framework 30 years ago while juggling a demanding strategy role at AT&T, 
-                MBA studies at Rutgers, marriage, and two kids under 3. Traditional time management failed me. 
-                I needed a <strong>systematic approach to life's complexities</strong> that worked for ambitious professionals 
-                who refuse to choose between success and fulfillment. Now evolved into The 6 Pillars of Life™."
+                Our frameworks originated from real-world challenges faced by ambitious professionals juggling complex lives—
+                demanding careers, family relationships, personal growth, and professional satisfaction. 
+                Traditional goal-setting tools failed to address the <strong>systematic complexity management</strong> that high-achievers need. 
+                GoalMine.ai has evolved these proven methodologies into an AI-powered platform that scales personalized life architecture for thousands of users.
               </p>
             </div>
 
             {/* How It Works */}
             <div className="text-center mb-12">
-              <h4 className="text-3xl font-bold mb-8">How The 6 Pillars of Life™ Works</h4>
+              <h4 className="text-3xl font-bold mb-8">How GoalMine.ai's Platform Works</h4>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-purple-600 font-bold text-xl">1</span>
                   </div>
-                  <h5 className="text-lg font-semibold mb-3">6 Pillars of Life Framework</h5>
+                  <h5 className="text-lg font-semibold mb-3">AI-Powered Assessment</h5>
                   <p className="text-muted-foreground text-sm">
-                    3-5 minute gap assessement helps capture opportunities for maximizing results and happiness.
+                    Our intelligent system captures life complexity gaps and professional happiness factors through proprietary frameworks, delivering insights in under 5 minutes.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-blue-600 font-bold text-xl">2</span>
                   </div>
-                  <h5 className="text-lg font-semibold mb-3">Intelligent Goal Mapping</h5>
+                  <h5 className="text-lg font-semibold mb-3">Intelligent Goal Architecture</h5>
                   <p className="text-muted-foreground text-sm">
-                    AI analyzes your responses and suggests personalized goals for each core pillar, 
-                    considering time constraints and life's complexities.
+                    Advanced AI analyzes your assessment and automatically suggests personalized goals across life domains, 
+                    optimizing for time constraints and goal interconnections.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 font-bold text-xl">3</span>
                   </div>
-                  <h5 className="text-lg font-semibold mb-3">Integrated Tracking</h5>
+                  <h5 className="text-lg font-semibold mb-3">Integrated Success Tracking</h5>
                   <p className="text-muted-foreground text-sm">
-                    Personalized dashboard shows progress across all pillars, 
-                    with daily AI-powered motivation for each goal.
+                    Enterprise-grade dashboard provides real-time progress analytics across all life domains, 
+                    with daily AI coaching tailored to your personal success patterns.
                   </p>
                 </div>
               </div>
@@ -247,7 +254,7 @@ export const LandingPage = ({
                 <Target className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-lg font-semibold mb-3 text-card-foreground">
-                Personalized Coaching
+                Personalized AI-Powered Coaching
               </h3>
               <p className="text-muted-foreground leading-relaxed">
                 Choose your motivation style: Drill Sergeant, Kind & Encouraging, Teammate, or Wise Mentor. Your AI coach adapts to what works for you.
@@ -261,7 +268,7 @@ export const LandingPage = ({
               <h3 className="text-lg font-semibold mb-3 text-card-foreground">
                 Daily Micro-Plans
               </h3>
-              <p className="text-muted-foreground leading-relaxed">Get up to 3 actionable steps every day. Each takes under 5 minutes to complete, making progress feel effortless and achievable.</p>
+              <p className="text-muted-foreground leading-relaxed">Get actionable steps each day move you closer towards achieving your goals.</p>
             </div>
 
             <div className="bg-card rounded-2xl p-8 border border-border shadow-sm">

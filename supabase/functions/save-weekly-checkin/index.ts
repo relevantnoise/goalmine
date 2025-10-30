@@ -74,12 +74,21 @@ Deno.serve(async (req) => {
       throw checkinError
     }
 
+    // Get current checkin count and increment
+    const { data: currentFramework } = await supabaseAdmin
+      .from('user_frameworks')
+      .select('total_checkins')
+      .eq('id', framework.id)
+      .single()
+
+    const currentCount = currentFramework?.total_checkins || 0
+
     // Update framework last check-in date and count
     const { error: updateError } = await supabaseAdmin
       .from('user_frameworks')
       .update({
         last_checkin_date: week_ending,
-        total_checkins: supabaseAdmin.rpc('increment', { x: 1 }),
+        total_checkins: currentCount + 1,
         last_updated: new Date().toISOString()
       })
       .eq('id', framework.id)

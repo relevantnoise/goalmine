@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { SimpleEditGoalDialog } from "./SimpleEditGoalDialog";
 import { useShare } from "@/hooks/useShare";
 
-// Circle badge colors
-const circleColors = {
+// Pillar badge colors
+const pillarColors = {
   'Spiritual': 'bg-purple-100 text-purple-800 border-purple-200',
   'Friends & Family': 'bg-blue-100 text-blue-800 border-blue-200',
   'Work': 'bg-green-100 text-green-800 border-green-200',
@@ -182,9 +182,9 @@ export const GoalCard = ({
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold mb-1">Goal</h3>
                 
-                {/* Circle Badge */}
+                {/* Pillar Badge */}
                 {goal.circle_type && (
-                  <Badge variant="secondary" className={`text-xs font-medium ${circleColors[goal.circle_type as keyof typeof circleColors] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
+                  <Badge variant="secondary" className={`text-xs font-medium ${pillarColors[goal.circle_type as keyof typeof pillarColors] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
                     {goal.circle_type}
                   </Badge>
                 )}

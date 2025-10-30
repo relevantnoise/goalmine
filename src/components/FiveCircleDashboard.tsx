@@ -587,11 +587,11 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
                         </>
                       ) : (
                         <div className="text-sm text-green-700">
-                          🎉 <strong>Excellent work satisfaction!</strong> All metrics are at or near your targets.
+                          🎉 <strong>Excellent work happiness!</strong> All metrics are at or near your targets.
                         </div>
                       )}
                       <div className="pt-3 border-t text-xs text-muted-foreground">
-                        Based on Dan Lynn's 10-year business happiness formula
+                        Based on GoalMine.ai's proven business happiness formula
                       </div>
                     </div>
                   </CardContent>
