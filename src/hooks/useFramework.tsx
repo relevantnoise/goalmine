@@ -162,12 +162,40 @@ export const useFramework = (): UseFrameworkReturn => {
       }
 
       if (insights && insights.length > 0) {
-        // AI insights exist - framework is complete
-        console.log('✅ [useFramework NEW] Found AI insights, setting state to "insights"');
-        setFrameworkData({ aiInsights: insights });
-        setHasFramework(true);
-        setAssessmentState('insights');
-        console.log('🆕 [useFramework NEW] Framework complete with AI insights');
+        // AI insights exist - framework is complete, but we need full framework data too
+        console.log('✅ [useFramework NEW] Found AI insights, fetching full framework data...');
+        
+        try {
+          const { data: frameworkCheck } = await supabase.functions.invoke('fetch-framework-data', {
+            body: { userEmail: user.email }
+          });
+          
+          const fullFrameworkData = frameworkCheck?.data;
+          
+          if (fullFrameworkData) {
+            // Combine AI insights with framework data
+            setFrameworkData({ 
+              ...fullFrameworkData,
+              aiInsights: insights 
+            });
+            setHasFramework(true);
+            setAssessmentState('insights');
+            console.log('✅ [useFramework NEW] Framework complete with AI insights and full data');
+          } else {
+            // Fallback to just insights if framework data fetch fails
+            setFrameworkData({ aiInsights: insights });
+            setHasFramework(true);
+            setAssessmentState('insights');
+            console.log('⚠️ [useFramework NEW] Using insights only, framework data fetch failed');
+          }
+        } catch (fetchError) {
+          console.error('🔍 [useFramework] Framework data fetch failed:', fetchError);
+          // Fallback to just insights
+          setFrameworkData({ aiInsights: insights });
+          setHasFramework(true);
+          setAssessmentState('insights');
+          console.log('⚠️ [useFramework NEW] Using insights only due to fetch error');
+        }
       } else {
         // No AI insights found - check if assessment framework exists
         console.log('⚠️ [useFramework NEW] No AI insights found, checking for completed assessment...');

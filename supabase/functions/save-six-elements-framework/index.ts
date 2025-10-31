@@ -133,6 +133,26 @@ serve(async (req) => {
 
     console.log('✅ Work happiness saved successfully:', insertedWorkHappiness?.length || 0, 'records')
 
+    // 🧠 ENTERPRISE AI STRATEGIC INTELLIGENCE: Generate AI insights after assessment completion
+    console.log('🧠 Triggering Enterprise AI Strategic Intelligence generation...')
+    try {
+      const { data: aiResult, error: aiError } = await supabaseClient.functions.invoke('generate-ai-insights', {
+        body: {
+          userEmail: userEmail,
+          frameworkId: framework.id
+        }
+      });
+      
+      if (aiError) {
+        console.error('⚠️ AI insights generation failed (non-critical):', aiError);
+      } else {
+        console.log('✅ Enterprise AI Strategic Intelligence generated successfully!');
+        console.log('🔍 AI Insights Result:', aiResult);
+      }
+    } catch (aiGenerationError) {
+      console.error('⚠️ AI insights generation error (non-critical):', aiGenerationError);
+    }
+
     console.log('✅ Framework assessment saved to proper tables')
     const profileResult = framework
 

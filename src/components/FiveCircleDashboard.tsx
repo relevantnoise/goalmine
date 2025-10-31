@@ -209,7 +209,7 @@ export const FiveCircleDashboard = ({ onNudgeMe, onStartOver, onLogoClick }: Fiv
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold">5 Circle Framework™ Dashboard</h1>
-              <p className="text-muted-foreground">Managing life complexity through systematic circle integration</p>
+              <p className="text-muted-foreground">Managing life's complexities through systematic circle integration</p>
               <div className="mt-2">
                 <Badge variant="secondary" className="text-xs">
                   {subscription.subscribed ? subscription.subscription_tier : 'Free Trial'} - 

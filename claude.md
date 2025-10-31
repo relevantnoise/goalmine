@@ -1,5 +1,20 @@
 # GoalMine.ai - Cursor Project Documentation
 
+## 🗄️ **CRITICAL: ACTUAL DATABASE SCHEMA** 
+**⚠️ READ THIS FIRST: Many sessions get confused about table names. Here are the ACTUAL tables:**
+
+**✅ CONFIRMED PRODUCTION TABLES (October 31, 2025):**
+- `pillar_assessments` - 6 Pillars assessment data (NOT "framework_elements")
+- `work_happiness` - Business Happiness Formula data
+- `ai_insights` - ChatGPT-generated AI insights  
+- `user_frameworks` - Framework instances
+- `weekly_checkins` - Weekly progress tracking
+- `goals` - Goal tracking system
+- `profiles` - User profiles
+- `subscribers` - Stripe subscription data
+
+**❌ TABLES THAT DON'T EXIST:** `framework_elements`, `six_elements_*`, `element_allocations`
+
 ## 🚨 LATEST UPDATES (October 29, 2025 - Azure Outage Protection)
 
 ### **CRITICAL SESSION PROGRESS**
@@ -158,16 +173,23 @@ Dan Lynn's **6 Pillars of Life™ Framework** (evolved from 30-year "5 Circles" 
 **BREAKTHROUGH**: Complete separation of framework and goals systems + Database optimization
 
 ```sql
--- NEW: 6 Pillars Framework Tables (PRODUCTION OPTIMIZED)
+-- ✅ ACTUAL DATABASE SCHEMA (CONFIRMED PRODUCTION TABLES)
+-- 6 Pillars Framework Tables:
 user_frameworks          -- Core framework instances (+ user_email for investigation)
-framework_elements       -- Individual pillar assessments (current/desired/personal_definition)  
-work_happiness          -- Business Happiness Formula (Impact/Fun/Money/Flexibility)
+pillar_assessments       -- ⭐ 6 Pillars assessment data (Work, Sleep, Friends & Family, etc.)
+work_happiness          -- ⭐ Business Happiness Formula (Impact/Fun/Money/Flexibility)
 weekly_checkins         -- Weekly pillar progress tracking
-ai_insights            -- AI-generated insights and recommendations
+ai_insights            -- ⭐ ChatGPT-generated AI insights and recommendations
 
--- EXISTING: Goals System (Clean & Simplified)
+-- Goals System:
 goals                   -- Pure goal tracking (no framework pollution)
 motivation_history      -- AI content for goals
+
+-- Supporting Tables:
+profiles               -- User profiles and authentication
+subscribers            -- Stripe subscription data
+daily_nudges          -- Daily motivation nudges
+email_deliveries      -- Email delivery tracking
 ```
 
 **✅ October 29 Database Cleanup:**
@@ -281,7 +303,7 @@ motivation_history      -- AI content for goals
 4. **User Count**: 3 users (Dan Lynn + family) - safe for fresh start approach
 
 ### Revolutionary Life Management System
-Transform GoalMine.ai from simple goal tracking into comprehensive life complexity management using Dan Lynn's proprietary 30-year framework.
+Transform GoalMine.ai from simple goal tracking into comprehensive life's complexities management using Dan Lynn's proprietary 30-year framework.
 
 ### Complete 5 Circle User Journey (UNIVERSAL - October 25, 2025)
 1. **Universal Onboarding** → ALL users route to 5 Circle Framework™ (no choice component)

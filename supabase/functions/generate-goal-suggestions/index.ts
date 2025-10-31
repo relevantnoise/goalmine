@@ -71,7 +71,7 @@ Example format:
         messages: [
           {
             role: 'system',
-            content: 'You are an expert life coach specializing in the proprietary 5 Circle Framework™ for life complexity management. You help ambitious professionals create meaningful, achievable goals.'
+            content: 'You are an expert life coach specializing in the proprietary 5 Circle Framework™ for life's complexities management. You help ambitious professionals create meaningful, achievable goals.'
           },
           {
             role: 'user',

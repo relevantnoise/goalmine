@@ -83,25 +83,25 @@ const workHappinessFields = [
     key: 'impact' as const,
     icon: Target,
     label: 'Impact',
-    description: 'Meaningful work that makes a difference'
+    description: 'Your personal impact and meaningful contribution to important outcomes'
   },
   {
     key: 'fun' as const,
     icon: Zap,
     label: 'Fun/Enjoyment',
-    description: 'Work that energizes and excites you'
+    description: 'Work satisfaction, engagement, and genuine enjoyment of your role'
   },
   {
     key: 'money' as const,
     icon: DollarSign,
     label: 'Financial Reward',
-    description: 'Compensation that meets your needs'
+    description: 'Compensation and financial recognition that meets your lifestyle needs'
   },
   {
     key: 'remote' as const,
     icon: Home,
-    label: 'Location Flexibility',
-    description: 'Work-from-home and location options'
+    label: 'Location/Schedule Flexibility',
+    description: 'Flexibility in where and when you work - the foundation of work-life balance'
   }
 ];
 
@@ -195,7 +195,16 @@ export const EditFrameworkModal = ({
     setSaving(true);
 
     try {
-      const elementsArray = Object.values(pillarData);
+      // Transform pillar data to match the expected format for the API
+      const elementsArray = Object.values(pillarData).map(pillar => ({
+        name: pillar.name,
+        current: pillar.current,
+        desired: pillar.desired,
+        importance: pillar.priority, // Map priority to importance
+        currentHours: pillar.current,
+        idealHours: pillar.desired,
+        priority: pillar.priority
+      }));
       
       await updateFrameworkData(
         user.email,
@@ -338,9 +347,12 @@ export const EditFrameworkModal = ({
   const renderWorkHappinessStep = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold mb-2">Work Happiness Assessment</h3>
+        <h3 className="text-lg font-semibold mb-2">Business Happiness Formula™</h3>
         <p className="text-sm text-muted-foreground">
-          Rate your current and desired levels for each aspect of work happiness
+          The 4 key factors for work satisfaction - developed over 30 years of research
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          This optimizes your Work pillar by measuring what truly drives professional happiness
         </p>
       </div>
 
@@ -433,14 +445,16 @@ export const EditFrameworkModal = ({
             onClick={() => setCurrentStep('pillars')}
             className="flex-1"
           >
-            6 Pillars Assessment
+            <Target className="w-4 h-4 mr-2" />
+            6 Pillars of Life™
           </Button>
           <Button
             variant={currentStep === 'work' ? 'default' : 'outline'}
             onClick={() => setCurrentStep('work')}
             className="flex-1"
           >
-            Work Happiness
+            <DollarSign className="w-4 h-4 mr-2" />
+            Business Happiness Formula™
           </Button>
         </div>
 

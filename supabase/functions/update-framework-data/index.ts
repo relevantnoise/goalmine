@@ -60,17 +60,15 @@ const handler = async (req: Request): Promise<Response> => {
       
       for (const element of elements) {
         const { error: elementError } = await supabase
-          .from('framework_elements')
+          .from('pillar_assessments')
           .update({
-            current_state: element.current,
-            desired_state: element.desired,
-            personal_definition: element.definition,
-            weekly_hours: element.weeklyHours,
-            priority_level: element.priority,
+            importance_level: element.importance || element.priority || 5,
+            current_hours_per_week: element.currentHours || element.current || 0,
+            ideal_hours_per_week: element.idealHours || element.desired || 0,
             updated_at: new Date().toISOString()
           })
           .eq('framework_id', frameworkId)
-          .eq('element_name', element.name);
+          .eq('pillar_name', element.name);
 
         if (elementError) {
           throw new Error(`Failed to update element "${element.name}": ${elementError.message}`);
@@ -121,6 +119,29 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('[UPDATE-FRAMEWORK] Framework update completed successfully');
+
+    // 🧠 ENTERPRISE AI STRATEGIC INTELLIGENCE: Regenerate AI insights after assessment edits
+    console.log('🧠 Regenerating Enterprise AI Strategic Intelligence after assessment edits...');
+    try {
+      const { data: aiResult, error: aiError } = await supabase.functions.invoke('generate-ai-insights', {
+        body: {
+          userEmail: userEmail,
+          frameworkId: frameworkId
+        }
+      });
+      
+      if (aiError) {
+        console.error('⚠️ AI insights regeneration failed (non-critical):', aiError);
+        updates.push('⚠️ AI insights regeneration failed');
+      } else {
+        console.log('✅ Enterprise AI Strategic Intelligence regenerated successfully!');
+        console.log('🔍 Updated AI Insights Result:', aiResult);
+        updates.push('✅ AI insights regenerated with latest assessment data');
+      }
+    } catch (aiGenerationError) {
+      console.error('⚠️ AI insights regeneration error (non-critical):', aiGenerationError);
+      updates.push('⚠️ AI insights regeneration encountered an error');
+    }
 
     return new Response(JSON.stringify({
       success: true,

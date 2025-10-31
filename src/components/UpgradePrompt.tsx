@@ -20,7 +20,7 @@ export const UpgradePrompt = ({
     features: [{
       text: "Up to 3 traditional goals OR 6 Pillars of Life™"
     }, {
-      text: "Systematic life complexity management"
+      text: "Systematic life's complexities management"
     }, {
       text: "AI-powered integration & optimization"
     }, {

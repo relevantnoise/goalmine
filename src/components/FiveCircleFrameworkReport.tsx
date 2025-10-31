@@ -137,7 +137,7 @@ export const FiveCircleFrameworkReport = ({ analysis, onContinue }: FiveCircleFr
             Ready to Create Your Goals?
           </h3>
           <p className="text-gray-600 mb-6">
-            Now that we understand your life complexity, let's create specific, actionable goals for each circle.
+            Now that we understand your life's complexities, let's create specific, actionable goals for each circle.
           </p>
           <Button 
             onClick={onContinue}

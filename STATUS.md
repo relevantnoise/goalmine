@@ -1,5 +1,20 @@
 # GoalMine.ai - Complete Status Overview
 
+## 🗄️ **CRITICAL: ACTUAL DATABASE SCHEMA** 
+**⚠️ FUTURE SESSIONS: Stop looking for tables that don't exist!**
+
+**✅ CONFIRMED PRODUCTION TABLES (October 31, 2025):**
+- `pillar_assessments` ⭐ - 6 Pillars assessment data (NOT "framework_elements")
+- `work_happiness` ⭐ - Business Happiness Formula data  
+- `ai_insights` ⭐ - ChatGPT-generated AI insights
+- `user_frameworks` - Framework instances
+- `weekly_checkins` - Weekly progress tracking
+- `goals` - Goal tracking system
+
+**❌ TABLES THAT DON'T EXIST:** `framework_elements`, `six_elements_*`, `element_allocations`
+
+---
+
 **Last Updated**: October 30, 2025 (🧠 **ENTERPRISE AI STRATEGIC INTELLIGENCE BREAKTHROUGH**)
 **Status**: ✅ PRODUCTION READY - **ENTERPRISE-GRADE LIFE OPTIMIZATION PLATFORM** 
 **Confidence Level**: Very High - Enterprise AI strategic intelligence with team-based expert analysis

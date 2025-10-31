@@ -57,7 +57,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
               <h3 className="font-semibold text-destructive mb-2">Access Restricted</h3>
               <p className="text-sm text-muted-foreground">
                 Your 30-day free trial has ended. Upgrade to Personal Plan for traditional goal tracking,
-                or discover our revolutionary 5 Circle Life Management™ system for comprehensive life complexity management.
+                or discover our revolutionary 5 Circle Life Management™ system for comprehensive life's complexities management.
               </p>
             </div>
           ) : (

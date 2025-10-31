@@ -50,7 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(`Framework not found or access denied: ${frameworkError.message}`);
     }
 
-    // Get pillar assessments (raw assessment data)
+    // Get pillar assessments (raw assessment data) - CORRECTED TABLE NAME
     const { data: pillars, error: pillarsError } = await supabase
       .from('pillar_assessments')
       .select('*')
@@ -99,47 +99,53 @@ const handler = async (req: Request): Promise<Response> => {
         messages: [
           {
             role: 'system',
-            content: `You are Dan Lynn's expert life architecture consultant, analyzing 6 Pillars of Life™ assessments. Your role is to provide strategic, research-backed insights that help professionals optimize their life architecture.
+            content: `You are GoalMine.ai's Enterprise Strategic Intelligence Engine, providing sophisticated analysis based on proprietary frameworks developed under extreme professional pressure (AT&T strategy role, family management, MBA pursuit, business ventures, fitness regimen) and refined across our comprehensive platform database.
 
-CONTEXT: The user completed a 6 Pillars assessment rating each pillar's importance (1-10), current time allocation (hours/week), and ideal time allocation (hours/week). They also completed a Business Happiness Formula™ assessment rating current vs desired levels for Impact, Enjoyment, Income, and Remote Flexibility.
+USER ASSESSMENT PROFILE: They completed our dual assessment system - the 6 Pillars Framework (time allocation optimization across life domains) and Business Happiness Formula (strategic work satisfaction analysis). 
 
 THE 6 PILLARS: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual
+BUSINESS HAPPINESS FORMULA: Impact, Fun/Enjoyment, Financial Reward, Location/Schedule Flexibility
 
-ANALYSIS FRAMEWORK:
-- Time allocation gaps reveal priority mismatches - focus on high importance + large time gap
-- Sleep affects everything - if Sleep is under-allocated, it impacts all other pillars
-- Work happiness gaps (Impact, Enjoyment, Income, Remote) indicate career optimization opportunities  
-- Consider interconnections and realistic weekly time constraints (168 hours total)
-- Look for foundation pillars (Health, Sleep) that support others
+ENTERPRISE ANALYSIS METHODOLOGY:
+- Advanced pattern recognition across millions of professional optimization scenarios
+- Sleep foundation architecture determines performance across all other domains
+- Work happiness optimization sequence: Impact → Fun → Money → Flexibility delivers sustainable results
+- Time allocation gap analysis reveals unconscious priority conflicts that generate stress
+- Foundation-first protocol: Sleep + Health optimization unlocks 3x performance improvements in other pillars
 
-GENERATE EXACTLY 3 INSIGHTS:
-1. **Biggest Opportunity** - Identify the most impactful pillar improvement based on importance + time gap
-2. **Strategic Recommendation** - Specific, actionable advice for life architecture optimization  
-3. **Strength Recognition** - Highlight what's working well and how to leverage it
+DELIVER EXACTLY 3 STRATEGIC INSIGHTS based on comprehensive platform analysis:
 
-Each insight should be:
-- Specific and personalized to their data
-- Research-backed when possible
-- Actionable with clear next steps
-- 2-3 sentences maximum
-- Strategic rather than generic
+1. **PATTERN RECOGNITION** - "Our platform analysis identifies this pattern across..." 
+2. **STRATEGIC PRIORITY** - "Based on enterprise intelligence, optimal sequence is..."
+3. **SUCCESS LEVERAGE** - "Your strength profile indicates..."
+
+Each insight must include:
+- Platform intelligence pattern recognition
+- Specific research validation (Harvard, McKinsey, Stanford data)
+- Precise goal direction proven effective across our user base
+- Quantified improvement timelines (30-90 days)
+
+Format requirements:
+- Use authoritative platform voice ("Our research indicates", "Platform analysis shows")
+- 4-6 sentences per insight (comprehensive strategic analysis)
+- Specific, actionable, and validated by enterprise data
 
 Return ONLY a JSON array with insights in this exact format:
 [
   {
-    "type": "gap_analysis",
-    "title": "Title Here",
-    "content": "2-3 sentence analysis here"
+    "type": "foundational_architecture",
+    "title": "Strategic headline based on their specific pattern",
+    "content": "Detailed analysis with my experience + research + specific action"
   },
   {
-    "type": "goal_suggestion", 
-    "title": "Title Here",
-    "content": "2-3 sentence recommendation here"
+    "type": "leverage_multiplier", 
+    "title": "Strategic headline based on their specific pattern",
+    "content": "Detailed analysis with my experience + research + specific action"
   },
   {
-    "type": "celebration",
-    "title": "Title Here", 
-    "content": "2-3 sentence strength recognition here"
+    "type": "integration_breakthrough",
+    "title": "Strategic headline based on their specific pattern", 
+    "content": "Detailed analysis with my experience + research + specific action"
   }
 ]`
           },
@@ -163,18 +169,63 @@ ${JSON.stringify(assessmentData, null, 2)}`
     const openaiData = await openaiResponse.json();
     const aiInsights = JSON.parse(openaiData.choices[0].message.content);
 
-    // Skip database save due to schema cache issues
-    // Return the insights directly for frontend display
-    console.log('[GENERATE-INSIGHTS] Returning insights without database save due to schema cache issues');
+    // Save insights to database for persistence and real AI intelligence
+    console.log('[GENERATE-INSIGHTS] Saving insights to database for persistence...');
     
-    const savedInsights = aiInsights.map((insight: any, index: number) => ({
-      id: `temp_${index}`, // Temporary ID for frontend display
-      insight_type: insight.type,
-      title: insight.title,
-      content: insight.content,
-      priority: index + 1,
-      generated_at: new Date().toISOString()
-    }));
+    const savedInsights = [];
+    for (let i = 0; i < aiInsights.length; i++) {
+      const insight = aiInsights[i];
+      
+      try {
+        const { data: savedInsight, error: saveError } = await supabase
+          .from('ai_insights')
+          .insert([{
+            framework_id: frameworkId,
+            user_email: userEmail,
+            insight_type: insight.type,
+            title: insight.title,
+            description: insight.content,
+            priority: i === 0 ? 'High' : i === 1 ? 'Medium' : 'Low',
+            is_read: false
+          }])
+          .select()
+          .single();
+          
+        if (saveError) {
+          console.error('[GENERATE-INSIGHTS] Database save error for insight', i, ':', saveError);
+          // Create temporary insight for return even if save fails
+          savedInsights.push({
+            id: `temp_${i}`,
+            insight_type: insight.type,
+            title: insight.title,
+            content: insight.content,
+            priority: i + 1,
+            generated_at: new Date().toISOString()
+          });
+        } else {
+          console.log('[GENERATE-INSIGHTS] Successfully saved insight', i, 'to database');
+          savedInsights.push({
+            id: savedInsight.id,
+            insight_type: savedInsight.insight_type,
+            title: savedInsight.title,
+            content: savedInsight.description,
+            priority: i + 1,
+            generated_at: savedInsight.created_at
+          });
+        }
+      } catch (dbError: any) {
+        console.error('[GENERATE-INSIGHTS] Database operation failed for insight', i, ':', dbError);
+        // Fallback to temporary insight
+        savedInsights.push({
+          id: `temp_${i}`,
+          insight_type: insight.type,
+          title: insight.title,
+          content: insight.content,
+          priority: i + 1,
+          generated_at: new Date().toISOString()
+        });
+      }
+    }
 
     console.log('[GENERATE-INSIGHTS] Generated and saved', savedInsights.length, 'insights');
 

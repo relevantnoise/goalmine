@@ -307,7 +307,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
       
       toast({
         title: "🎯 5 Circle Framework™ Created!",
-        description: `Your personalized life complexity management system is ready! ${timeConflictMessage}`,
+        description: `Your personalized life's complexities management system is ready! ${timeConflictMessage}`,
         duration: 10000
       });
       

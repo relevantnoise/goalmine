@@ -114,7 +114,7 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
 
           {/* Call to Action */}
           <div className="text-center pt-4 border-t">
-            <p className="text-gray-600 mb-4">Ready to transform your life complexity into strategic clarity?</p>
+            <p className="text-gray-600 mb-4">Ready to transform your life's complexities into strategic clarity?</p>
             <Button onClick={onClose} className="bg-primary hover:bg-primary-hover">
               <Target className="w-4 h-4 mr-2" />
               Start Your Assessment

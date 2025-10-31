@@ -50,7 +50,7 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life complexity. 
+              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
               GoalMine.ai's proprietary <strong>6 Pillars of Life™ Framework</strong> + <strong>Business Happiness Formula</strong> transform scattered goals into integrated life management.
             </p>
 
@@ -96,7 +96,7 @@ export const LandingPage = ({
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
               <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals.</strong> 
-              The 6 Pillars Framework manages life complexity, while the Business Happiness Formula optimizes professional satisfaction. 
+              The 6 Pillars Framework manages life's complexities, while the Business Happiness Formula optimizes professional satisfaction. 
               Now powered by advanced AI for personalized guidance.
             </p>
             
@@ -216,7 +216,7 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">AI-Powered Assessment</h5>
                   <p className="text-muted-foreground text-sm">
-                    Our intelligent system captures life complexity gaps and professional happiness factors through proprietary frameworks, delivering insights in under 5 minutes.
+                    Our intelligent system captures life's complexity gaps and professional happiness factors through proprietary frameworks, delivering insights in under 5 minutes.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
@@ -247,8 +247,19 @@ export const LandingPage = ({
 
       <div className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto">
+          {/* Platform Features Introduction */}
+          <div className="text-center mb-16">
+            <h3 className="text-3xl md:text-4xl font-bold mb-6">
+              AI-Powered Platform Features
+            </h3>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Beyond our proven frameworks, GoalMine.ai delivers enterprise-grade AI technology 
+              that adapts to your unique success patterns and keeps you consistently moving forward.
+            </p>
+          </div>
+
           {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mt-20">
+          <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-card rounded-2xl p-8 border border-border shadow-sm">
               <div className="w-12 h-12 bg-primary-light rounded-xl flex items-center justify-center mb-4">
                 <Target className="w-6 h-6 text-primary" />

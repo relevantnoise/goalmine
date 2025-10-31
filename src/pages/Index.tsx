@@ -5,7 +5,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { useGoals } from "@/hooks/useGoals";
 import { useNudgeLimit } from "@/hooks/useNudgeLimit";
-import { useCircleFramework } from "@/hooks/useCircleFramework";
+import { useFramework } from "@/hooks/useFramework";
 import { supabase } from "@/integrations/supabase/client";
 // Ensure Firebase bundled version is loaded
 import "@/lib/firebase";
@@ -43,7 +43,7 @@ const Index = () => {
   const { trialStatus, loading: trialLoading } = useTrialStatus();
   const { goals, loading: goalsLoading, fetchGoals, generateMotivationForGoals, generateGoalSpecificNudge, generateGeneralNudge } = useGoals();
   const { nudgeStatus, useNudge, loading: nudgeLoading } = useNudgeLimit();
-  const { framework, hasFramework, loading: frameworkLoading, refetchFramework } = useCircleFramework();
+  const { frameworkData, hasFramework, assessmentState, loading: frameworkLoading, refetch: refetchFramework } = useFramework();
   const navigate = useNavigate();
   const location = useLocation();
   // No need for custom supabase client with native auth

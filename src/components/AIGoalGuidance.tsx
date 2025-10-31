@@ -28,7 +28,27 @@ export const AIGoalGuidance = ({ frameworkData, onClose }: AIGoalGuidanceProps) 
   } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const biggestGap = frameworkData.elements.reduce((max, element) => 
+  // Validate elements data and find biggest gap safely
+  const elements = frameworkData?.elements || [];
+  
+  // Handle case where no framework data is available
+  if (elements.length === 0) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <CardContent className="p-6 text-center">
+            <h2 className="text-xl font-bold mb-4">No Assessment Data Available</h2>
+            <p className="text-muted-foreground mb-4">
+              Please complete your 6 Pillars assessment first to view your personalized analysis.
+            </p>
+            <Button onClick={onClose}>Close</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  const biggestGap = elements.reduce((max, element) => 
     element.gap > max.gap ? element : max
   );
 
@@ -37,12 +57,12 @@ export const AIGoalGuidance = ({ frameworkData, onClose }: AIGoalGuidanceProps) 
     
     try {
       // Create detailed assessment summary for AI
-      const assessmentSummary = frameworkData.elements.map(el => 
+      const assessmentSummary = elements.map(el => 
         `${el.name}: Current ${el.current}/10, Desired ${el.desired}/10, Gap: -${el.gap}`
       ).join('\n');
 
       // Detect concerning patterns
-      const concerningPatterns = frameworkData.elements.filter(el => {
+      const concerningPatterns = elements.filter(el => {
         // Flag unrealistic or unhealthy targets
         if (el.name === 'Sleep' && el.desired < 6) return true;
         if (el.name === 'Work' && el.desired > 9 && el.current < 5) return true;

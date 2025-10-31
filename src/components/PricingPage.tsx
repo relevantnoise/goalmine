@@ -398,7 +398,7 @@ export const PricingPage = ({
             </div>
             <h3 className="text-xl font-semibold mb-2">Systematic Complexity Management</h3>
             <p className="text-muted-foreground">
-              Break down overwhelming life complexity into manageable, integrated components.
+              Break down overwhelming life's complexities into manageable, integrated components.
             </p>
           </div>
           <div className="text-center">

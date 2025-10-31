@@ -27,12 +27,13 @@
 
 ### New Database Architecture (OCTOBER 29 - OPTIMIZED)
 ```sql
+-- ✅ ACTUAL DATABASE SCHEMA (CONFIRMED PRODUCTION TABLES)
 -- 6 Pillars Framework (PRODUCTION READY)
 user_frameworks          -- Core framework instances (with user_email for easy lookup)
-framework_elements       -- Pillar assessments (current/desired/definition)
-work_happiness          -- Business Happiness Formula  
+pillar_assessments       -- ⭐ ACTUAL TABLE: 6 Pillars assessment data (Work, Sleep, Friends & Family, etc.)
+work_happiness          -- ⭐ ACTUAL TABLE: Business Happiness Formula data
 weekly_checkins         -- Progress tracking and trends
-ai_insights            -- Smart recommendations
+ai_insights            -- ⭐ ACTUAL TABLE: ChatGPT-generated AI insights
 
 -- Goals System (CLEANED)
 goals                   -- Pure goal tracking (no framework pollution)
