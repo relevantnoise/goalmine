@@ -119,8 +119,8 @@ export const PricingPage = ({
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your goals into achievements with personalized daily motivation. 
-            Try free for 30 days, then continue starting at just $24.99/month. Professional plans and one-on-one strategic coaching are also available.
+            Master life's complexities with our proven systematic approach. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
+            with AI-powered insights. Try free for 30 days, then continue starting at just $24.99/month.
           </p>
         </div>
 
@@ -145,11 +145,11 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>6 Pillars of Life™ experience</span>
+                  <span>6 Pillars of Life Framework™ + Business Happiness Formula™</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>1 goal from any element</span>
+                  <span>1 goal from any pillar</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
@@ -201,7 +201,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Up to 3 goals across any elements</span>
+                  <span>Up to 3 goals across any pillars</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
@@ -340,7 +340,7 @@ export const PricingPage = ({
         {/* 6 Pillars of Life Showcase */}
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 mb-12">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The 6 Pillars of Life™</h2>
+            <h2 className="text-3xl font-bold mb-4">The 6 Pillars of Life Framework™</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               A revolutionary approach to managing life's complexity, developed over 30 years and proven with hundreds of ambitious professionals
             </p>
