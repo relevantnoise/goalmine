@@ -403,9 +403,13 @@ const Index = () => {
   };
 
   const handleEditFramework = () => {
+    console.log('🚨🚨🚨 EDIT ASSESSMENT CLICKED - STARTING DEBUG TRACE 🚨🚨🚨');
     console.log('🔧 Edit Framework - using original beautiful assessment interface');
+    console.log('🔧 About to set currentView to five-circle-onboarding');
+    console.log('🔧 Current framework state:', { hasFramework, frameworkLoading, assessmentState });
     hasInitialized.current = true;
     setCurrentView('five-circle-onboarding');
+    console.log('🔧 CurrentView set complete - should trigger re-render');
   };
 
   const handleCircleCheckin = () => {
