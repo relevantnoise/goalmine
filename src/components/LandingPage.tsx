@@ -50,8 +50,8 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> transform scattered goals into integrated life management.
+              You're succeeding at work but struggling everywhere else. Marriage, family, health, faith, personal dreams - it all feels impossible. 
+              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> help high-achievers turn overwhelm into intentional living.
             </p>
 
             {/* 6 Pillars Visual - Ordered: Work, Friends & Family, Health & Fitness, Spiritual, Personal Development, Sleep */}
@@ -95,9 +95,9 @@ export const LandingPage = ({
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals.</strong> 
-              The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes professional satisfaction. 
-              Now powered by advanced AI for personalized guidance.
+              <strong>Proven frameworks refined over 30 years with hundreds of professionals.</strong> 
+              The 6 Pillars Framework™ helps you see where your time really goes, while the Business Happiness Formula™ optimizes work satisfaction. 
+              Now powered by AI that understands your constraints, not just your ambitions.
             </p>
             
             <div className="flex justify-center mb-12">
@@ -131,57 +131,57 @@ export const LandingPage = ({
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-3xl md:text-4xl font-bold mb-6">
-                Why Most Goal Systems Fail Ambitious Professionals
+                When Life Gets Complex Fast
               </h3>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                You're juggling career advancement, family relationships, personal growth, health, and spiritual fulfillment. 
-                Traditional goal apps treat these as separate items. <strong>Life doesn't work that way.</strong>
+                You're crushing it at work, but everything else feels impossible. Marriage, young family, career growth, health goals, spiritual life, personal dreams. 
+                Traditional goal apps don't understand your time reality. <strong>You need a system that gets it.</strong>
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12 mb-16">
               {/* The Problem */}
               <div className="bg-white rounded-2xl p-8 shadow-lg border">
-                <h4 className="text-2xl font-bold mb-4 text-red-600">The Problem: Fragmented Approach</h4>
+                <h4 className="text-2xl font-bold mb-4 text-red-600">The Problem: Overwhelm is Real</h4>
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Goals compete for time and energy</span>
+                    <span>You're crushing it at work but everything else is suffering</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>No systematic approach to life's complexities</span>
+                    <span>Want to work out, eat better, grow spiritually - but when?</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Success in one area creates imbalance in others</span>
+                    <span>Personal dreams (side hustle, reading, podcasts) feel impossible</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Burnout from unsustainable ambitious pursuits</span>
+                    <span>Traditional goal apps don't understand your time reality</span>
                   </li>
                 </ul>
               </div>
 
               {/* The Solution */}
               <div className="bg-white rounded-2xl p-8 shadow-lg border border-blue-200">
-                <h4 className="text-2xl font-bold mb-4 text-blue-600">The Solution: Integrated Life Management</h4>
+                <h4 className="text-2xl font-bold mb-4 text-blue-600">The Solution: Finally, A System That Gets It</h4>
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Systematic approach to life's complexities</span>
+                    <span>6 Pillars Framework™ - see exactly where your time really goes</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Life gap analysis drive targeted goals to fill them</span>
+                    <span>Business Happiness Formula™ - optimize work satisfaction, not just advancement</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Time allocation awareness and conflict detection</span>
+                    <span>Smart priority guidance - what to focus on when you can't do everything</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>AI-powered integration and optimization</span>
+                    <span>Turn overwhelm into intentional living without giving up your dreams</span>
                   </li>
                 </ul>
               </div>
