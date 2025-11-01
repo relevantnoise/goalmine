@@ -1,19 +1,84 @@
 # GoalMine.ai - Cursor Project Documentation
 
-## 🗄️ **CRITICAL: ACTUAL DATABASE SCHEMA** 
-**⚠️ READ THIS FIRST: Many sessions get confused about table names. Here are the ACTUAL tables:**
+## 🚨 **STOP! READ THIS FIRST - CRITICAL DATABASE SCHEMA**
+**⚠️ EVERY CHAT SESSION GETS THIS WRONG! Here's the current reality:**
 
-**✅ CONFIRMED PRODUCTION TABLES (October 31, 2025):**
-- `pillar_assessments` - 6 Pillars assessment data (NOT "framework_elements")
-- `work_happiness` - Business Happiness Formula data
-- `ai_insights` - ChatGPT-generated AI insights  
-- `user_frameworks` - Framework instances
-- `weekly_checkins` - Weekly progress tracking
-- `goals` - Goal tracking system
-- `profiles` - User profiles
-- `subscribers` - Stripe subscription data
+### **✅ CURRENT PRODUCTION TABLES & FIELDS (November 2025):**
 
-**❌ TABLES THAT DON'T EXIST:** `framework_elements`, `six_elements_*`, `element_allocations`
+#### **Framework Assessment Tables:**
+```sql
+-- 6 Pillars assessment data
+pillar_assessments {
+  id: uuid,
+  framework_id: uuid,
+  user_email: string,
+  pillar_name: string,           -- "Work", "Sleep", "Friends & Family", etc.
+  current_hours_per_week: number,
+  ideal_hours_per_week: number,
+  importance_level: number       -- 1-10 scale
+}
+
+-- Business Happiness Formula data  
+work_happiness {
+  id: uuid,
+  framework_id: uuid,
+  user_email: string,
+  impact_current: number,        -- NOT "impactCurrent"
+  impact_desired: number,        -- NOT "impactDesired"  
+  enjoyment_current: number,     -- NOT "funCurrent"
+  enjoyment_desired: number,     -- NOT "funDesired"
+  income_current: number,        -- NOT "moneyCurrent"
+  income_desired: number,        -- NOT "moneyDesired"
+  remote_current: number,        -- NOT "remoteCurrent"
+  remote_desired: number         -- NOT "remoteDesired"
+}
+
+-- Framework instances
+user_frameworks {
+  id: uuid,
+  user_id: string,              -- Firebase UID
+  user_email: string,
+  is_active: boolean,
+  created_at: timestamp,
+  last_updated: timestamp,
+  onboarding_completed: boolean,
+  last_checkin_date: timestamp,
+  total_checkins: number
+}
+
+-- AI insights
+ai_insights {
+  id: uuid,
+  framework_id: uuid,
+  user_email: string,
+  insight_type: string,
+  title: string,
+  description: string,          -- NOT "content"
+  priority: string,
+  is_read: boolean
+}
+```
+
+### **❌ LEGACY TERMS TO NEVER USE:**
+- ~~`framework_elements`~~ → Use `pillar_assessments`
+- ~~`six_elements_*`~~ → Use `pillar_assessments` 
+- ~~`element_allocations`~~ → Use `pillar_assessments`
+- ~~`circle_*`~~ → Use `pillar_assessments` (5 Circle → 6 Pillars evolution)
+- ~~`elements`~~ → Use `pillars` or `pillar_assessments`
+- ~~`.current`~~ → Use `.current_hours_per_week`
+- ~~`.desired`~~ → Use `.ideal_hours_per_week`
+- ~~`.importance`~~ → Use `.importance_level`
+- ~~`impactCurrent`~~ → Use `impact_current`
+- ~~`funCurrent`~~ → Use `enjoyment_current`
+- ~~`moneyCurrent`~~ → Use `income_current`
+- ~~`remoteCurrent`~~ → Use `remote_current`
+
+### **🔄 NAMING EVOLUTION HISTORY:**
+1. **5 Circles Framework** (Legacy) → `circle_*` tables (DELETED)
+2. **5 Elements Framework** (Legacy) → `six_elements_*` tables (DELETED)  
+3. **6 Pillars Framework** (Current) → `pillar_assessments` table (ACTIVE)
+
+**⚠️ Code may still reference "circles" or "elements" in comments/filenames but DATABASE uses "pillars"**
 
 ## 🚨 LATEST UPDATES (October 29, 2025 - Azure Outage Protection)
 
@@ -169,28 +234,29 @@ Dan Lynn's **6 Pillars of Life™ Framework** (evolved from 30-year "5 Circles" 
 - **Personal Development**: Learning, growth, skills
 - **Spiritual**: Inner purpose, values, meaning
 
-### Clean Database Architecture (October 28-29, 2025)
-**BREAKTHROUGH**: Complete separation of framework and goals systems + Database optimization
+### **CURRENT DATABASE ARCHITECTURE (November 2025)**
+**✅ CONFIRMED PRODUCTION SCHEMA - USE THESE EXACT NAMES:**
 
 ```sql
--- ✅ ACTUAL DATABASE SCHEMA (CONFIRMED PRODUCTION TABLES)
--- 6 Pillars Framework Tables:
-user_frameworks          -- Core framework instances (+ user_email for investigation)
-pillar_assessments       -- ⭐ 6 Pillars assessment data (Work, Sleep, Friends & Family, etc.)
-work_happiness          -- ⭐ Business Happiness Formula (Impact/Fun/Money/Flexibility)
-weekly_checkins         -- Weekly pillar progress tracking
-ai_insights            -- ⭐ ChatGPT-generated AI insights and recommendations
+-- 6 Pillars Framework Tables (CURRENT):
+user_frameworks          -- Core framework instances
+pillar_assessments       -- 6 Pillars data: pillar_name, current_hours_per_week, ideal_hours_per_week, importance_level
+work_happiness          -- Business Formula: impact_current, enjoyment_current, income_current, remote_current (+ _desired versions)
+weekly_checkins         -- Weekly progress tracking
+ai_insights            -- AI insights: title, description, insight_type, priority
 
 -- Goals System:
-goals                   -- Pure goal tracking (no framework pollution)
+goals                   -- Goal tracking (separate from framework)
 motivation_history      -- AI content for goals
 
 -- Supporting Tables:
-profiles               -- User profiles and authentication
+profiles               -- User authentication (Firebase UID + email)
 subscribers            -- Stripe subscription data
 daily_nudges          -- Daily motivation nudges
 email_deliveries      -- Email delivery tracking
 ```
+
+**🚨 CRITICAL: Always use snake_case field names (current_hours_per_week NOT currentHours)**
 
 **✅ October 29 Database Cleanup:**
 - Removed inconsistent table names (six_elements_*, element_allocations)
