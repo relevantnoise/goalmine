@@ -440,7 +440,10 @@ export const AssessmentCard = ({
             {/* Action Buttons */}
             <div className="space-y-3">
               <div className="flex gap-3">
-                <Button variant="outline" onClick={resetFrameworkData} className="flex-1">
+                <Button variant="outline" onClick={() => {
+                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
+                  onEditFramework();
+                }} className="flex-1">
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Assessment
                 </Button>
