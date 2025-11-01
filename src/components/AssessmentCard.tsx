@@ -650,8 +650,6 @@ export const AssessmentCard = ({
                 </div>
               )}
 
-            </div>
-
             <div className="space-y-3">
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => {
@@ -672,6 +670,13 @@ export const AssessmentCard = ({
                   {!(subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) && (
                     <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
                   )}
+                </Button>
+                <Button variant="outline" onClick={() => {
+                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
+                  onEditFramework();
+                }}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Assessment
                 </Button>
               </div>
             </div>
