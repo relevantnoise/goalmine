@@ -146,19 +146,19 @@ export const LandingPage = ({
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Goals compete for time and energy</span>
+                    <span>Competing priorities can be overwhelming</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>No systematic approach to life's complexities</span>
+                    <span>Success in one area creates stress in others</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Success in one area creates imbalance in others</span>
+                    <span>No systematic way to analyze the challenge</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Burnout from unsustainable ambitious pursuits</span>
+                    <span>No process to convert that analysis into actionable goals</span>
                   </li>
                 </ul>
               </div>
