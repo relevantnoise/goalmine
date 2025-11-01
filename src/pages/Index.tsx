@@ -684,25 +684,28 @@ const Index = () => {
     }
     
     // Prepare existing data for editing if framework exists
+    // NOTE: frameworkData.elements comes from fetch-framework-data which transforms pillar_assessments 
+    // from snake_case (current_hours_per_week) to camelCase (current) for frontend
     const existingData = hasFramework && frameworkData ? {
       elements: frameworkData.elements?.map(element => {
-        console.log('🔧 [Edit Assessment Debug] Processing element:', element);
+        console.log('🔧 [Edit Assessment Debug] Processing pillar element:', element);
         return {
-          name: element.name,
-          current: element.current,
-          desired: element.desired,
-          importance: element.importance
+          name: element.name,                    // pillar_name from pillar_assessments table
+          current: element.current,              // current_hours_per_week (transformed by fetch-framework-data)
+          desired: element.desired,              // ideal_hours_per_week (transformed by fetch-framework-data)  
+          importance: element.importance         // importance_level (transformed by fetch-framework-data)
         };
       }),
       workHappiness: frameworkData.workHappiness ? {
-        impactCurrent: frameworkData.workHappiness.impactCurrent,
-        impactDesired: frameworkData.workHappiness.impactDesired,
-        funCurrent: frameworkData.workHappiness.funCurrent,
-        funDesired: frameworkData.workHappiness.funDesired,
-        moneyCurrent: frameworkData.workHappiness.moneyCurrent,
-        moneyDesired: frameworkData.workHappiness.moneyDesired,
-        remoteCurrent: frameworkData.workHappiness.remoteCurrent,
-        remoteDesired: frameworkData.workHappiness.remoteDesired
+        // NOTE: fetch-framework-data transforms work_happiness table snake_case to camelCase
+        impactCurrent: frameworkData.workHappiness.impactCurrent,    // impact_current from work_happiness table
+        impactDesired: frameworkData.workHappiness.impactDesired,    // impact_desired from work_happiness table
+        funCurrent: frameworkData.workHappiness.funCurrent,          // enjoyment_current from work_happiness table  
+        funDesired: frameworkData.workHappiness.funDesired,          // enjoyment_desired from work_happiness table
+        moneyCurrent: frameworkData.workHappiness.moneyCurrent,      // income_current from work_happiness table
+        moneyDesired: frameworkData.workHappiness.moneyDesired,      // income_desired from work_happiness table
+        remoteCurrent: frameworkData.workHappiness.remoteCurrent,    // remote_current from work_happiness table
+        remoteDesired: frameworkData.workHappiness.remoteDesired     // remote_desired from work_happiness table
       } : undefined
     } : undefined;
     
