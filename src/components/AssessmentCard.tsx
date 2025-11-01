@@ -647,16 +647,6 @@ export const AssessmentCard = ({
                 </div>
               )}
 
-              {/* Action Ready Section */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                  <h4 className="text-xl font-bold text-green-800">Ready to Transform Your Life Architecture</h4>
-                </div>
-                <p className="text-green-700 font-medium mb-4">
-                  Your assessment reveals clear opportunities for growth. Use these insights to create strategic goals that will systematically improve your life satisfaction and performance.
-                </p>
-              </div>
             </div>
 
             <div className="space-y-3">
