@@ -652,6 +652,26 @@ const Index = () => {
 
 
   if (currentView === 'five-circle-onboarding') {
+    // Prepare existing data for editing if framework exists
+    const existingData = hasFramework && frameworkData ? {
+      elements: frameworkData.elements?.map(element => ({
+        name: element.name,
+        current: element.current,
+        desired: element.desired,
+        importance: element.importance
+      })),
+      workHappiness: frameworkData.workHappiness ? {
+        impactCurrent: frameworkData.workHappiness.impactCurrent,
+        impactDesired: frameworkData.workHappiness.impactDesired,
+        funCurrent: frameworkData.workHappiness.funCurrent,
+        funDesired: frameworkData.workHappiness.funDesired,
+        moneyCurrent: frameworkData.workHappiness.moneyCurrent,
+        moneyDesired: frameworkData.workHappiness.moneyDesired,
+        remoteCurrent: frameworkData.workHappiness.remoteCurrent,
+        remoteDesired: frameworkData.workHappiness.remoteDesired
+      } : undefined
+    } : undefined;
+
     return (
       <ProfessionalCircleSetup 
         onComplete={handleFiveCircleComplete}
@@ -659,6 +679,7 @@ const Index = () => {
           console.log('🔙 Going back from 6 Pillars setup to dashboard');
           setCurrentView('dashboard');
         }}
+        existingData={existingData}
       />
     );
   }

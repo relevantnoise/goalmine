@@ -12,6 +12,24 @@ import { supabase } from "@/integrations/supabase/client";
 interface ProfessionalCircleSetupProps {
   onComplete: () => void;
   onBack: () => void;
+  existingData?: {
+    elements?: Array<{
+      name: string;
+      current: number;
+      desired: number;
+      importance?: number;
+    }>;
+    workHappiness?: {
+      impactCurrent: number;
+      impactDesired: number;
+      funCurrent: number;
+      funDesired: number;
+      moneyCurrent: number;
+      moneyDesired: number;
+      remoteCurrent: number;
+      remoteDesired: number;
+    };
+  };
 }
 
 
@@ -84,7 +102,7 @@ const elements = [
   }
 ];
 
-export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCircleSetupProps) => {
+export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: ProfessionalCircleSetupProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -111,6 +129,44 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack }: ProfessionalCirc
     remote_current: 5,
     remote_desired: 8
   });
+
+  // Initialize with existing data when editing
+  useEffect(() => {
+    if (existingData) {
+      console.log('🔄 Initializing Edit Assessment with existing data:', existingData);
+      
+      // Initialize circle allocations from existing pillar data
+      if (existingData.elements) {
+        const initialAllocations: Record<string, CircleAllocation> = {};
+        existingData.elements.forEach(element => {
+          initialAllocations[element.name] = {
+            circle_name: element.name,
+            importance_level: element.importance || 5,
+            current_hours_per_week: element.current || 0,
+            ideal_hours_per_week: element.desired || 0
+          };
+        });
+        setCircleAllocations(initialAllocations);
+        console.log('✅ Initialized circle allocations:', initialAllocations);
+      }
+
+      // Initialize work happiness from existing data
+      if (existingData.workHappiness) {
+        const wh = existingData.workHappiness;
+        setWorkHappiness({
+          impact_current: wh.impactCurrent || 5,
+          impact_desired: wh.impactDesired || 8,
+          fun_current: wh.funCurrent || 5,
+          fun_desired: wh.funDesired || 8,
+          money_current: wh.moneyCurrent || 5,
+          money_desired: wh.moneyDesired || 8,
+          remote_current: wh.remoteCurrent || 5,
+          remote_desired: wh.remoteDesired || 8
+        });
+        console.log('✅ Initialized work happiness:', wh);
+      }
+    }
+  }, [existingData]);
 
 
   // Calculate remaining hours for real-time updates
