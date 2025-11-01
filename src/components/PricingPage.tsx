@@ -120,7 +120,7 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Master life's complexities with our proven systematic approach. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
-            with AI-powered insights. Try free for 30 days, then continue starting at just $24.99/month.
+            with AI-powered insights. Try free for 30 days, then continue starting as low as $24.99/month.
           </p>
         </div>
 
