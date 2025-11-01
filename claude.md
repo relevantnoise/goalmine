@@ -3,20 +3,24 @@
 ## 🚨 **STOP! READ THIS FIRST - CRITICAL DATABASE SCHEMA**
 **⚠️ EVERY CHAT SESSION GETS THIS WRONG! Here's the current reality:**
 
-### **✅ CURRENT PRODUCTION TABLES & FIELDS (November 2025):**
+### **✅ CONFIRMED PRODUCTION TABLES (November 2025 - VERIFIED FROM SUPABASE):**
 
-#### **Framework Assessment Tables:**
 ```sql
--- 6 Pillars assessment data
-pillar_assessments {
-  id: uuid,
-  framework_id: uuid,
-  user_email: string,
-  pillar_name: string,           -- "Work", "Sleep", "Friends & Family", etc.
-  current_hours_per_week: number,
-  ideal_hours_per_week: number,
-  importance_level: number       -- 1-10 scale
-}
+-- ✅ ALL TABLES CONFIRMED IN PRODUCTION SUPABASE:
+ai_insights              -- AI insights
+daily_nudges            -- Daily motivation nudges  
+email_deliveries        -- Email delivery tracking
+goals                   -- Goal tracking system
+motivation_history      -- AI content for goals
+pillar_assessments      -- ✅ 6 Pillars assessment data (CONFIRMED EXISTS)
+profiles               -- User profiles and authentication
+subscribers            -- Stripe subscription data
+user_frameworks        -- Framework instances
+weekly_checkins        -- Weekly progress tracking
+work_happiness         -- ✅ Business Happiness Formula data
+```
+
+#### **Existing Tables Details:**
 
 -- Business Happiness Formula data  
 work_happiness {
