@@ -190,7 +190,7 @@ export const LandingPage = ({
             {/* Framework Origins */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border mb-16">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-lg border border-gray-100">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center border-2 border-gray-200">
                   <span className="font-bold text-2xl">
                     <span className="text-blue-500">G</span><span className="text-foreground">M</span>
                   </span>
