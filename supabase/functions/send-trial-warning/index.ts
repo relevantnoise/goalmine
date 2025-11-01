@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
               <h1 style="color: #6c47ff; font-size: 32px; margin-bottom: 10px;">🎯 GoalMine.ai</h1>
-              <p style="color: #666; font-size: 16px;">Your goal achievement companion</p>
+              <p style="color: #666; font-size: 16px;">Master life's complexities with proven systematic frameworks</p>
             </div>
             
             <div style="background: ${daysRemaining <= 1 ? '#fee2e2' : '#fef3c7'}; border: 2px solid ${daysRemaining <= 1 ? '#dc2626' : '#f59e0b'}; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
@@ -135,40 +135,40 @@ const handler = async (req: Request): Promise<Response> => {
               </h2>
               <p style="color: ${daysRemaining <= 1 ? '#7f1d1d' : '#92400e'}; font-size: 16px; margin-bottom: 15px;">
                 ${daysRemaining <= 1 
-                  ? 'Your free trial ends tomorrow! Don\'t lose access to your goals and progress.'
-                  : `Your 30-day free trial expires in ${daysRemaining} days. Upgrade now to keep your momentum going!`
+                  ? 'Your free trial ends tomorrow! Don\'t lose access to your 6 Pillars Framework™ experience and strategic insights.'
+                  : `Your 30-day free trial expires in ${daysRemaining} days. Continue your systematic approach to life management!`
                 }
               </p>
             </div>
 
             <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-              <h3 style="color: #333; font-size: 20px; margin-bottom: 15px;">✨ What You'll Keep With Premium</h3>
+              <h3 style="color: #333; font-size: 20px; margin-bottom: 15px;">✨ Continue Your Strategic Life Management</h3>
               <ul style="color: #555; font-size: 16px; line-height: 1.6; padding-left: 20px;">
-                <li>Up to 3 simultaneous goals</li>
-                <li>Daily AI-powered motivation emails</li>
-                <li>Unlimited progress tracking & streak building</li>
-                <li>All 4 motivation personality types</li>
-                <li>Priority email delivery</li>
-                <li>Cancel anytime</li>
+                <li><strong>Full 6 Pillars of Life Framework™</strong> - Systematic complexity management</li>
+                <li><strong>Business Happiness Formula™</strong> - Professional satisfaction optimization</li>
+                <li><strong>Up to 3 goals across pillars</strong> - Address multiple life domains</li>
+                <li><strong>AI-powered insights</strong> - Strategic guidance for your unique situation</li>
+                <li><strong>Daily personalized motivation</strong> - 4 coaching tones available</li>
+                <li><strong>Priority support</strong> - Get help when you need it</li>
               </ul>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
               <a href="https://goalmine.ai/?view=upgrade&utm_source=trial_warning&utm_campaign=${emailType}" 
                  style="background: #dc2626; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);">
-                🚀 Upgrade Now - Just $4.99/month
+                🚀 Continue Your Journey - Starting as low as $24.99/month
               </a>
             </div>
 
             <div style="background: #e0f2fe; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;">
               <p style="color: #0277bd; font-size: 14px; margin: 0;">
-                💡 <strong>30-day money-back guarantee</strong> • Cancel anytime • No long-term commitment
+                💡 <strong>30-year proven frameworks</strong> • Professional Plan available ($199.99) • Cancel anytime
               </p>
             </div>
 
             <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
               <p style="color: #999; font-size: 12px;">
-                GoalMine.ai - Your personal goal achievement companion<br>
+                GoalMine.ai - Transform scattered goals into integrated life management<br>
                 Trial expires: ${trialExpiresAt.toLocaleDateString('en-US', { 
                   weekday: 'long', 
                   year: 'numeric', 
