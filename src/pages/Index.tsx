@@ -244,6 +244,16 @@ const Index = () => {
       firebaseUser: !!firebaseUser,
       isAuthenticated
     });
+    
+    // Debug view rendering
+    console.log('🎯 About to render view:', currentView);
+    console.log('🎯 View conditions check:', {
+      isLanding: currentView === 'landing',
+      isPricing: currentView === 'pricing', 
+      isEmail: currentView === 'email',
+      isFiveCircleOnboarding: currentView === 'five-circle-onboarding',
+      isDashboard: currentView === 'dashboard'
+    });
   }, [user, firebaseUser, isAuthenticated, authLoading, searchParams, navigate, supabase, fetchGoals, generateMotivationForGoals, subscription]);
 
   // Remove the debug logging that might cause re-renders
@@ -510,7 +520,7 @@ const Index = () => {
   const forceDashboard = searchParams.get('force-dashboard') === 'true';
   const emailVerified = searchParams.get('email-verified') === 'true';
   const verified = searchParams.get('verified') === 'true';
-  const shouldShowLoading = (authLoading || (user && (goalsLoading || frameworkLoading) && !hasInitialized.current) || isRedirecting || emailVerified) && !forceDashboard;
+  const shouldShowLoading = (authLoading || (user && (goalsLoading || frameworkLoading) && !hasInitialized.current) || isRedirecting || emailVerified) && !forceDashboard && currentView !== 'five-circle-onboarding';
   
   // Remove debug logging in production
   // console.log('🔍 Loading state check:', {
