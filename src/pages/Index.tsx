@@ -652,14 +652,23 @@ const Index = () => {
 
 
   if (currentView === 'five-circle-onboarding') {
+    // Debug: Log the actual framework data structure
+    console.log('🔧 [Edit Assessment Debug] hasFramework:', hasFramework);
+    console.log('🔧 [Edit Assessment Debug] frameworkData:', frameworkData);
+    console.log('🔧 [Edit Assessment Debug] elements:', frameworkData?.elements);
+    console.log('🔧 [Edit Assessment Debug] workHappiness:', frameworkData?.workHappiness);
+    
     // Prepare existing data for editing if framework exists
     const existingData = hasFramework && frameworkData ? {
-      elements: frameworkData.elements?.map(element => ({
-        name: element.name,
-        current: element.current,
-        desired: element.desired,
-        importance: element.importance
-      })),
+      elements: frameworkData.elements?.map(element => {
+        console.log('🔧 [Edit Assessment Debug] Processing element:', element);
+        return {
+          name: element.name,
+          current: element.current,
+          desired: element.desired,
+          importance: element.importance
+        };
+      }),
       workHappiness: frameworkData.workHappiness ? {
         impactCurrent: frameworkData.workHappiness.impactCurrent,
         impactDesired: frameworkData.workHappiness.impactDesired,
@@ -671,6 +680,8 @@ const Index = () => {
         remoteDesired: frameworkData.workHappiness.remoteDesired
       } : undefined
     } : undefined;
+    
+    console.log('🔧 [Edit Assessment Debug] Prepared existingData:', existingData);
 
     return (
       <ProfessionalCircleSetup 

@@ -132,6 +132,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
 
   // Initialize with existing data when editing
   useEffect(() => {
+    console.log('🔄 ProfessionalCircleSetup useEffect called with existingData:', existingData);
     if (existingData) {
       console.log('🔄 Initializing Edit Assessment with existing data:', existingData);
       
