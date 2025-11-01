@@ -485,37 +485,76 @@ export const AssessmentCard = ({
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-sm mb-2 text-blue-800">🧠 AI Analysis of Your Assessment</h4>
-              <p className="text-sm text-blue-700 mb-3">
-                Based on your 6 Pillars assessment, <strong>{biggestGap.name}</strong> shows the largest gap between where you are and where you want to be. 
-                AI analysis suggests focusing here first often creates positive ripple effects across other life areas.
-              </p>
-              
+            {/* REDESIGNED: Assessment Analysis - Much Larger, Visual Display */}
+            <div className="space-y-6 mb-6">
+              {/* Biggest Gap Analysis - Hero Section */}
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-xl font-bold text-orange-800">Biggest Opportunity: {biggestGap.name}</h4>
+                    <p className="text-orange-600">Gap of {biggestGap.gap} points - your highest leverage area for improvement</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4 bg-white/50 rounded-lg p-4">
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-orange-800">{biggestGap.current}</p>
+                    <p className="text-sm text-orange-600 font-medium">Current</p>
+                  </div>
+                  <div className="text-center flex flex-col items-center justify-center">
+                    <ArrowRight className="w-8 h-8 text-orange-500 mb-1" />
+                    <p className="text-sm text-orange-600 font-medium">Gap: -{biggestGap.gap}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-3xl font-bold text-orange-800">{biggestGap.desired}</p>
+                    <p className="text-sm text-orange-600 font-medium">Desired</p>
+                  </div>
+                </div>
+                
+                <p className="text-orange-700 font-medium">
+                  🎯 <strong>Why start here:</strong> Improving {biggestGap.name} often creates positive ripple effects across all other life areas. This is where focused effort will yield the highest return on your time and energy.
+                </p>
+              </div>
+
+              {/* AI Insights - Expanded Cards */}
               {aiInsights.length > 0 && (
-                <div className="mb-3">
-                  <h4 className="font-semibold text-sm mb-2 text-blue-800">💡 Active Insights</h4>
-                  <div className="space-y-1">
-                    {aiInsights.slice(0, 2).map((insight, index) => (
-                      <p key={insight.id || index} className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                        {insight.title}
-                      </p>
+                <div className="space-y-4">
+                  <h4 className="text-xl font-bold flex items-center gap-3">
+                    <Brain className="w-6 h-6 text-blue-600" />
+                    AI Analysis & Strategic Recommendations
+                  </h4>
+                  
+                  <div className="grid gap-4">
+                    {aiInsights.slice(0, 3).map((insight, index) => (
+                      <div key={insight.id || index} className="bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 transition-colors">
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-lg font-bold text-blue-600">{index + 1}</span>
+                          </div>
+                          <div className="flex-1">
+                            <h5 className="text-lg font-bold text-gray-800 mb-3">{insight.title}</h5>
+                            <p className="text-gray-600 leading-relaxed">{insight.description || insight.content}</p>
+                          </div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
-              
-              <h4 className="font-semibold text-sm mb-2 text-blue-800">🎯 Ready for Goals</h4>
-              <p className="text-sm text-blue-700">
-                Based on your framework analysis, create strategic goals that align with your biggest opportunities.
-              </p>
-            </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-sm mb-1 text-green-800">✅ Ready to Take Action</h4>
-              <p className="text-sm text-green-700">
-                Based on your assessment, you're ready to create strategic goals that will transform your life architecture.
-              </p>
+              {/* Action Ready Section */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                  <h4 className="text-xl font-bold text-green-800">Ready to Transform Your Life Architecture</h4>
+                </div>
+                <p className="text-green-700 font-medium mb-4">
+                  Your assessment reveals clear opportunities for growth. Use these insights to create strategic goals that will systematically improve your life satisfaction and performance.
+                </p>
+              </div>
             </div>
 
             <div className="space-y-3">
