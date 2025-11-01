@@ -51,7 +51,7 @@ export const LandingPage = ({
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
               Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life™ Framework</strong> + <strong>Business Happiness Formula</strong> transform scattered goals into integrated life management.
+              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> transform scattered goals into integrated life management.
             </p>
 
             {/* 6 Pillars Visual - Ordered: Work, Friends & Family, Health & Fitness, Spiritual, Personal Development, Sleep */}
@@ -96,7 +96,7 @@ export const LandingPage = ({
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
               <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals.</strong> 
-              The 6 Pillars Framework manages life's complexities, while the Business Happiness Formula optimizes professional satisfaction. 
+              The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes professional satisfaction. 
               Now powered by advanced AI for personalized guidance.
             </p>
             

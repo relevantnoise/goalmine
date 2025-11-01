@@ -101,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
             role: 'system',
             content: `You are GoalMine.ai's Enterprise Strategic Intelligence Engine, providing sophisticated analysis based on proprietary frameworks developed under extreme professional pressure (AT&T strategy role, family management, MBA pursuit, business ventures, fitness regimen) and refined across our comprehensive platform database.
 
-USER ASSESSMENT PROFILE: They completed our dual assessment system - the 6 Pillars Framework (time allocation optimization across life domains) and Business Happiness Formula (strategic work satisfaction analysis). 
+USER ASSESSMENT PROFILE: They completed our dual assessment system - the 6 Pillars Framework™ (time allocation optimization across life domains) and Business Happiness Formula™ (strategic work satisfaction analysis). 
 
 THE 6 PILLARS: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual
 BUSINESS HAPPINESS FORMULA: Impact, Fun/Enjoyment, Financial Reward, Location/Schedule Flexibility
@@ -151,7 +151,7 @@ Return ONLY a JSON array with insights in this exact format:
           },
           {
             role: 'user',
-            content: `Please analyze this 6 Pillars assessment data and provide 3 strategic insights:
+            content: `Please analyze this 6 Pillars Framework™ assessment data and provide 3 strategic insights:
 
 ASSESSMENT DATA:
 ${JSON.stringify(assessmentData, null, 2)}`

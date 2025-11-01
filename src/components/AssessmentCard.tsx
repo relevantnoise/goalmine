@@ -279,7 +279,7 @@ export const AssessmentCard = ({
               <Target className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-bold">6 Pillars of Life™ + Business Happiness Formula</h3>
+              <h3 className="text-xl font-bold">6 Pillars of Life Framework™ + Business Happiness Formula™</h3>
               <p className="text-sm text-muted-foreground">GoalMine.ai's proprietary frameworks to transform life's complexities into strategic clarity</p>
             </div>
           </div>
@@ -341,7 +341,7 @@ export const AssessmentCard = ({
             <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-lg p-6 mb-4 border border-blue-200">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-6 h-6 text-blue-600" />
-                <h4 className="text-lg font-semibold text-blue-800">6 Pillars of Life™ Assessment</h4>
+                <h4 className="text-lg font-semibold text-blue-800">6 Pillars of Life Framework™ Assessment</h4>
               </div>
               {elements.length > 0 ? (
                 <div className="space-y-3">
