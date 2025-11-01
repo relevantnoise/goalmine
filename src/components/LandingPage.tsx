@@ -169,19 +169,19 @@ export const LandingPage = ({
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Systematic approach to life's complexities</span>
+                    <span>Proven, systematic approach to managing life's complexities</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Life gap analysis drive targeted goals to fill them</span>
+                    <span>AI-powered life priorities and business happiness analysis</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Time allocation awareness and conflict detection</span>
+                    <span>Personal analysis mapped to goal creation guidance</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>AI-powered integration and optimization</span>
+                    <span>Adjustable as life's priorities shift</span>
                   </li>
                 </ul>
               </div>
