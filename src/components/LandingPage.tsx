@@ -190,8 +190,10 @@ export const LandingPage = ({
             {/* Framework Origins */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border mb-16">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">GM</span>
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-lg border border-gray-100">
+                  <span className="font-bold text-2xl">
+                    <span className="text-blue-500">G</span><span className="text-foreground">M</span>
+                  </span>
                 </div>
                 <div>
                   <h4 className="text-xl font-bold">Proven Frameworks, Enterprise Platform</h4>
