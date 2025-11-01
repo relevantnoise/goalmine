@@ -117,7 +117,7 @@ export const UpgradePage = () => {
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
             You've reached the free limit. Upgrade to Personal Plan for traditional multi-goal tracking, 
-            or discover our revolutionary <strong>6 Pillars of Life™</strong> system - a proven framework for managing complex life priorities.
+            or discover our revolutionary <strong>6 Pillars of Life Framework™ + Business Happiness Formula™</strong> - proven frameworks for managing complex life priorities.
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 3 Goals Across Any Elements</span>
+                    <span className="font-semibold">Up to 3 Goals Across Any Pillars</span>
                     <p className="text-xs text-muted-foreground">Create goals in multiple life pillars simultaneously</p>
                   </div>
                 </li>
