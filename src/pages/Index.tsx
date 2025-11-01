@@ -528,7 +528,10 @@ const Index = () => {
   //   minLoadingComplete, forceDashboard, shouldShowLoading
   // });
   
+  console.log('🚨 RENDER DEBUG: shouldShowLoading =', shouldShowLoading, 'currentView =', currentView);
+  
   if (shouldShowLoading) {
+    console.log('🚨 RENDER DEBUG: Showing loading screen');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -538,6 +541,8 @@ const Index = () => {
       </div>
     );
   }
+  
+  console.log('🚨 RENDER DEBUG: Past loading screen, proceeding to view rendering');
 
   // Only render Index component content on root path - other routes should handle themselves
   if (location.pathname !== '/') {
