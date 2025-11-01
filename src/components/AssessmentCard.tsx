@@ -486,10 +486,10 @@ export const AssessmentCard = ({
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-sm mb-2 text-blue-800">🧠 Enterprise Strategic Analysis Complete</h4>
+              <h4 className="font-semibold text-sm mb-2 text-blue-800">🧠 AI Analysis of Your Assessment</h4>
               <p className="text-sm text-blue-700 mb-3">
-                Based on advanced pattern recognition across millions of optimization scenarios, <strong>{biggestGap.name}</strong> represents your highest-leverage opportunity. 
-                Our enterprise intelligence indicates this foundation-first approach delivers 3x better results than addressing surface-level goals.
+                Based on your 6 Pillars assessment, <strong>{biggestGap.name}</strong> shows the largest gap between where you are and where you want to be. 
+                AI analysis suggests focusing here first often creates positive ripple effects across other life areas.
               </p>
               
               {aiInsights.length > 0 && (
@@ -540,9 +540,8 @@ export const AssessmentCard = ({
                   )}
                 </Button>
                 <Button variant="outline" onClick={() => {
-                  console.log('[AssessmentCard] Edit Assessment clicked!');
-                  console.log('[AssessmentCard] Current frameworkData:', frameworkData);
-                  setShowEditModal(true);
+                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
+                  onEditFramework();
                 }}>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Assessment

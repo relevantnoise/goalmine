@@ -57,7 +57,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
               <h3 className="font-semibold text-destructive mb-2">Access Restricted</h3>
               <p className="text-sm text-muted-foreground">
                 Your 30-day free trial has ended. Upgrade to Personal Plan for traditional goal tracking,
-                or discover our revolutionary 5 Circle Life Management™ system for comprehensive life's complexities management.
+                or discover our revolutionary 6 Pillars of Life Framework™ + Business Happiness Formula™ for comprehensive life's complexities management.
               </p>
             </div>
           ) : (
@@ -82,7 +82,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-blue-600" />
-                5 Circle Framework™: Revolutionary life management system
+                6 Pillars Framework™: Revolutionary life management system
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />

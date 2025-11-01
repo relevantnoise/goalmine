@@ -61,50 +61,36 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('OpenAI API key not configured');
     }
 
-    const prompt = `You are GoalMine.ai's Enterprise Strategic Intelligence Engine - a sophisticated AI platform built on battle-tested frameworks originally developed during extreme professional pressure (AT&T strategy role, family with two toddlers, MBA, business ventures, 4x/week fitness regimen simultaneously). These frameworks have been refined through decades of research and scaled across our enterprise platform.
-
-STRATEGIC FOUNDATION: Your analysis leverages:
-- Proprietary frameworks validated across millions of professional optimization scenarios
-- Advanced pattern recognition from our comprehensive research database
-- Integration with Harvard Business Review, McKinsey Institute, and Stanford Graduate School research
-- Enterprise-grade analysis of executive success patterns across diverse industries and life stages
+    const prompt = `You are an AI coach analyzing this person's 6 Pillars of Life™ Framework assessment. Your job is to provide honest, helpful insights based on their actual data - no corporate jargon or exaggerated claims.
 
 USER'S ASSESSMENT DATA:
 ${JSON.stringify(assessmentData, null, 2)}
 
-STRATEGIC ANALYSIS METHODOLOGY:
+ANALYSIS APPROACH:
+Look at their assessment honestly and identify:
+1. What pillar has the biggest gap between current and desired state
+2. What patterns you notice in their ratings
+3. How different pillars might be connected (e.g., sleep affects work performance)
 
-**ENTERPRISE RESEARCH DATABASE:**
-- Harvard Business Review: Sleep below 6 hours reduces executive decision quality by 23% and emotional regulation by 31%
-- McKinsey Institute: High-achievers who master Work-Life integration score 43% higher on life satisfaction than those who don't
-- Stanford Research: Time allocation mismatches (high importance + low allocation) create 67% of professional stress
-- Internal Platform Data: Sleep optimization first increases productivity across ALL life domains by 40% on average
-
-**STRATEGIC PATTERN RECOGNITION:**
-- Early Career + Family Builders: Sleep and Work optimization drive 78% of life satisfaction improvements across our user base
-- Mid-Career Scaling: Relationship pillar neglect creates 5-year burnout patterns in 84% of tracked cases
-- Transition Phases: Spiritual/Purpose clarity must precede major goal setting (prevents 90% of strategic pivot regret)
-
-**VALIDATED SUCCESS FRAMEWORKS:**
-- Foundation First Protocol: Executives who optimize Sleep + Health see 3x better results in other pillars within 90 days
-- Work Happiness Sequence: Impact goals before Money goals = 67% higher long-term satisfaction scores
-- Integration Strategy: Cross-domain goals (fitness that boosts work energy) create exponential compound returns
-
-DELIVERABLE: Provide exactly 3 strategic insights based on advanced pattern analysis of this user's specific assessment data.
-
-Each insight must include:
-1. **PATTERN RECOGNITION**: "Our analysis identifies this pattern across [specific contexts]..."
-2. **RESEARCH VALIDATION**: Specific studies/data that validate the strategic approach
-3. **ENTERPRISE EXPERIENCE**: How our platform's validated frameworks address this challenge
-4. **STRATEGIC GOAL DIRECTION**: Specific, actionable goal types proven effective for this pattern
-5. **SUCCESS METRICS**: Quantified improvement expectations within 30-90 days
+PROVIDE EXACTLY 3 INSIGHTS:
+Each insight should be helpful, specific, and honest - like advice from a knowledgeable friend who cares about their success.
 
 Format each insight:
-- insight_type: "foundational_architecture", "leverage_multiplier", or "integration_breakthrough"
-- title: Strategic directive reflecting enterprise-grade analysis (12-25 words)
-- content: Comprehensive strategic analysis combining research + platform intelligence + specific goal direction (6-8 sentences)
+- insight_type: Choose from "gap_analysis", "pattern_recognition", or "connection_insight"  
+- title: A clear, friendly title that explains the insight (8-15 words)
+- content: 4-6 sentences explaining:
+  - What you notice in their data
+  - Why this matters for their life/goals
+  - Specific suggestions for what to focus on
+  - How this might help other areas too
 
-Use authoritative platform language: "Our research indicates", "Platform analysis shows", "We've identified across our user base". Position insights as enterprise-grade strategic intelligence from a sophisticated AI platform.
+Keep language conversational and supportive. Avoid buzzwords like "enterprise intelligence" or "advanced pattern recognition" - just be genuinely helpful.
+
+Examples of good language:
+- "Looking at your assessment..."
+- "This often helps with..."  
+- "You might find that..."
+- "Consider focusing on..."
 
 Return as JSON array with exactly 3 insights.`;
 
@@ -121,7 +107,7 @@ Return as JSON array with exactly 3 insights.`;
         messages: [
           {
             role: 'system',
-            content: 'You are GoalMine.ai\'s enterprise-grade strategic intelligence engine, representing our team of expert analysts and vast optimization database. Your responses must demonstrate the collective wisdom of our research team and the analytical depth of top-tier management consulting applied to life optimization. Use collaborative language ("We\'ve observed", "Our research shows", "We\'ve seen consistently") and focus on enabling better goal creation. Every insight should be profound, data-driven, and directly actionable for strategic goal development.'
+            content: 'You are a helpful AI coach analyzing life assessment data. Be honest, supportive, and practical. Focus on what the data actually shows and give specific, actionable advice. Avoid corporate jargon - write like a knowledgeable friend who wants to help them succeed. Your insights should help them understand their assessment results and guide them toward creating meaningful goals.'
           },
           {
             role: 'user',
@@ -153,22 +139,22 @@ Return as JSON array with exactly 3 insights.`;
       insights = JSON.parse(aiContent);
     } catch (parseError) {
       console.error('[AI-DIRECT-RETURN] Failed to parse AI response as JSON:', aiContent);
-      // Create enterprise-grade fallback insights based on platform intelligence
+      // Create helpful fallback insights when AI parsing fails
       insights = [
         {
-          insight_type: "foundational_architecture",
-          title: "Sleep Architecture Protocol: Enterprise-Validated Foundation for Executive Performance Optimization",
-          content: "Our platform analysis identifies this pattern across millions of high-achiever assessments - inadequate sleep foundation creates cascading performance degradation. Harvard Business Review research validates our framework: below 6 hours, executive decision-making drops 23% and emotional regulation plummets 31%. Our enterprise database shows sleep optimization creates the foundational architecture that enables all other performance goals. Platform intelligence recommends implementing a 30-day sleep optimization protocol: 7.5 hours minimum with structured wind-down routines starting at 10 PM. Internal data demonstrates this single architectural change increases productivity across ALL life domains by 40% within 60 days. We recommend prioritizing sleep architecture goals first - they represent the highest-leverage investment in your entire performance ecosystem."
+          insight_type: "gap_analysis",
+          title: "Your Biggest Opportunity for Positive Change",
+          content: "Looking at your assessment, it appears you have significant room for improvement in one or more life areas. The good news is that focusing on your biggest gap often creates positive changes elsewhere too. Consider starting with the pillar where you rated yourself lowest compared to where you want to be. Small, consistent improvements in your weakest area can build momentum and confidence for tackling other goals. You might find that strengthening one pillar naturally supports the others."
         },
         {
-          insight_type: "leverage_multiplier", 
-          title: "Work Satisfaction Sequence Protocol: Impact-First Strategy for Sustainable Professional Success",
-          content: "Our comprehensive platform analysis reveals a critical pattern: professionals who optimize for Impact before compensation achieve 67% higher long-term satisfaction scores. This approach, validated across our extensive user database, creates sustainable motivation patterns that drive exponential career growth. McKinsey Institute research confirms our framework - high-impact work generates compound returns in both fulfillment and financial outcomes. Based on your specific assessment pattern, our strategic intelligence recommends creating goals that amplify your professional impact first: pursuing high-visibility strategic initiatives, developing expertise that solves critical business challenges, or leading cross-functional innovation projects. Our platform data shows that when impact drives goal architecture, compensation and satisfaction optimize naturally within 6-12 months."
+          insight_type: "pattern_recognition", 
+          title: "Building on Your Strengths",
+          content: "Every assessment reveals both challenges and strengths. While it's important to address gaps, don't forget to leverage what's already working well in your life. Your stronger pillars can provide energy and confidence to tackle tougher areas. Consider how your successful habits or mindsets from high-performing areas might apply to struggling ones. This strength-based approach often feels more sustainable than trying to fix everything at once."
         },
         {
-          insight_type: "integration_breakthrough",
-          title: "Cross-Domain Integration Framework: Enterprise Strategy for Synergistic Goal Architecture",
-          content: "Our advanced pattern recognition identifies a breakthrough optimization opportunity - your assessment profile matches executives who benefit from cross-domain integration strategies. Traditional goal-setting treats life domains as competing priorities, but our platform intelligence reveals integration creates exponential compound returns. Stanford research validates our approach: cross-domain goals deliver 2-3x better results than isolated domain optimization. Our enterprise framework recommends redefining your goal architecture: instead of separate 'fitness' and 'work' goals, create 'energy optimization' goals that fuel both domains simultaneously. Examples include morning workout protocols that enhance afternoon decision-making capacity, or stress-management systems that boost both health and professional focus. This integration strategy, proven across our user base, transforms competing priorities into mutually reinforcing performance systems."
+          insight_type: "connection_insight",
+          title: "How Your Life Pillars Work Together",
+          content: "Your life pillars don't exist in isolation - they influence each other in important ways. For example, better sleep often improves work performance, and regular exercise can boost both physical health and mental clarity. As you create goals, think about how improving one area might naturally support others. This interconnected approach can multiply your efforts and create positive momentum across multiple life areas."
         }
       ];
     }

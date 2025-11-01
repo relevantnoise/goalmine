@@ -393,8 +393,9 @@ const Index = () => {
   };
 
   const handleEditFramework = () => {
-    console.log('🔧 Navigating to Edit Framework page');
-    navigate('/edit-framework');
+    console.log('🔧 Edit Framework - using original beautiful assessment interface');
+    hasInitialized.current = true;
+    setCurrentView('five-circle-onboarding');
   };
 
   const handleCircleCheckin = () => {
