@@ -12,6 +12,7 @@ import { FrameworkInfoModal } from "./FrameworkInfoModal";
 import { useFramework } from "@/hooks/useFramework";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 
 type AssessmentState = 'initial' | 'completed' | 'insights' | 'ongoing';
@@ -31,6 +32,7 @@ export const AssessmentCard = ({
 }: AssessmentCardProps) => {
   const { user } = useAuth();
   const { frameworkData, hasFramework, assessmentState, loading, error, refetch } = useFramework();
+  const { subscription } = useSubscription();
   const { toast } = useToast();
   const [showCheckin, setShowCheckin] = useState(false);
   const [showGuidance, setShowGuidance] = useState(false);
@@ -519,12 +521,23 @@ export const AssessmentCard = ({
             <div className="space-y-3">
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => {
-                  console.log('[AssessmentCard] See Full Analysis clicked!');
-                  console.log('[AssessmentCard] Current elements:', elements);
-                  setShowGuidance(true);
+                  if (subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) {
+                    console.log('[AssessmentCard] See Full Analysis clicked!');
+                    console.log('[AssessmentCard] Current elements:', elements);
+                    setShowGuidance(true);
+                  } else {
+                    toast({
+                      title: "Professional Plan Required",
+                      description: "Upgrade to Professional Plan to access the full AI analysis report.",
+                      variant: "destructive"
+                    });
+                  }
                 }} className="flex-1">
                   <Brain className="w-4 h-4 mr-2" />
                   See Full Analysis
+                  {!(subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) && (
+                    <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
+                  )}
                 </Button>
                 <Button variant="outline" onClick={() => {
                   console.log('[AssessmentCard] Edit Assessment clicked!');
