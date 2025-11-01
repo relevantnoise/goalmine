@@ -291,7 +291,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Strategic Advisor Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">2-hour quarterly 1-on-1 coaching sessions with Dan Lynn.</p>
+                <p className="text-muted-foreground text-sm mb-2">2-hour quarterly 1-on-1 coaching sessions with our founder, Dan Lynn.</p>
                 <button 
                   onClick={() => setIsDanBioOpen(true)}
                   className="text-green-600 hover:text-green-700 text-sm underline cursor-pointer"

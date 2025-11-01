@@ -305,7 +305,7 @@ export const UpgradePage = () => {
             </div>
             <CardHeader className="pt-12 text-center">
               <CardTitle className="text-lg mb-2">Strategic Advisor Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-2">2-hour quarterly 1-on-1 coaching sessions with Dan Lynn.</p>
+              <p className="text-sm text-muted-foreground mb-2">2-hour quarterly 1-on-1 coaching sessions with our founder, Dan Lynn.</p>
               <button 
                 onClick={() => setIsDanBioOpen(true)}
                 className="text-green-600 hover:text-green-700 text-sm underline mb-3 cursor-pointer"
