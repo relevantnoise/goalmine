@@ -485,39 +485,141 @@ export const AssessmentCard = ({
               </div>
             </div>
 
-            {/* REDESIGNED: Assessment Analysis - Much Larger, Visual Display */}
+            {/* COMPREHENSIVE: Assessment Analysis - Full Data Showcase */}
             <div className="space-y-6 mb-6">
-              {/* Biggest Gap Analysis - Hero Section */}
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-xl font-bold text-orange-800">Biggest Opportunity: {biggestGap.name}</h4>
-                    <p className="text-orange-600">Gap of {biggestGap.gap} points - your highest leverage area for improvement</p>
-                  </div>
-                </div>
+              {/* Top Opportunities Grid */}
+              <div className="grid gap-4">
+                <h4 className="text-xl font-bold flex items-center gap-3">
+                  🎯 Top Opportunities from Your Assessment
+                </h4>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4 bg-white/50 rounded-lg p-4">
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-orange-800">{biggestGap.current}</p>
-                    <p className="text-sm text-orange-600 font-medium">Current</p>
-                  </div>
-                  <div className="text-center flex flex-col items-center justify-center">
-                    <ArrowRight className="w-8 h-8 text-orange-500 mb-1" />
-                    <p className="text-sm text-orange-600 font-medium">Gap: -{biggestGap.gap}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-orange-800">{biggestGap.desired}</p>
-                    <p className="text-sm text-orange-600 font-medium">Desired</p>
-                  </div>
+                {/* Top 3 Pillar Gaps */}
+                <div className="grid md:grid-cols-3 gap-4">
+                  {elements.sort((a, b) => b.gap - a.gap).slice(0, 3).map((pillar, index) => (
+                    <div key={pillar.name} className={`border-2 rounded-xl p-4 ${
+                      index === 0 ? 'bg-gradient-to-br from-red-50 to-orange-50 border-red-200' :
+                      index === 1 ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200' :
+                      'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'
+                    }`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <h5 className="font-bold text-gray-800">{pillar.name}</h5>
+                        <span className={`text-xs px-2 py-1 rounded-full font-bold ${
+                          index === 0 ? 'bg-red-100 text-red-700' :
+                          index === 1 ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-blue-100 text-blue-700'
+                        }`}>
+                          #{index + 1}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-2xl font-bold text-gray-800">{pillar.current}</span>
+                        <ArrowRight className="w-5 h-5 text-gray-500" />
+                        <span className="text-2xl font-bold text-gray-800">{pillar.desired}</span>
+                      </div>
+                      
+                      <div className="text-center">
+                        <span className="text-sm font-bold text-red-600">Gap: -{pillar.gap} points</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                
-                <p className="text-orange-700 font-medium">
-                  🎯 <strong>Why start here:</strong> Improving {biggestGap.name} often creates positive ripple effects across all other life areas. This is where focused effort will yield the highest return on your time and energy.
-                </p>
               </div>
+
+              {/* Work Happiness Analysis */}
+              {frameworkData?.workHappiness && (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                  <h4 className="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+                    <Briefcase className="w-6 h-6" />
+                    Business Happiness Formula™ Analysis
+                  </h4>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {[
+                      { key: 'impact', label: 'Impact', current: frameworkData.workHappiness.impactCurrent, desired: frameworkData.workHappiness.impactDesired },
+                      { key: 'fun', label: 'Enjoyment', current: frameworkData.workHappiness.funCurrent, desired: frameworkData.workHappiness.funDesired },
+                      { key: 'money', label: 'Financial Reward', current: frameworkData.workHappiness.moneyCurrent, desired: frameworkData.workHappiness.moneyDesired },
+                      { key: 'remote', label: 'Flexibility', current: frameworkData.workHappiness.remoteCurrent, desired: frameworkData.workHappiness.remoteDesired }
+                    ].map((factor) => {
+                      const gap = factor.desired - factor.current;
+                      return (
+                        <div key={factor.key} className="bg-white/70 rounded-lg p-3">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-semibold text-blue-800">{factor.label}</span>
+                            <span className={`text-sm font-bold ${gap > 2 ? 'text-red-600' : gap > 1 ? 'text-yellow-600' : 'text-green-600'}`}>
+                              {gap > 0 ? `-${gap}` : '✓'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <span>{factor.current}</span>
+                            <ArrowRight className="w-3 h-3 text-gray-400" />
+                            <span>{factor.desired}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Formula Impact:</strong> {
+                        [frameworkData.workHappiness.impactCurrent, frameworkData.workHappiness.funCurrent, 
+                         frameworkData.workHappiness.moneyCurrent, frameworkData.workHappiness.remoteCurrent]
+                        .filter(val => val <= 4).length > 0 
+                        ? "⚠️ Low scores in any factor significantly reduce overall work satisfaction"
+                        : "✅ Solid foundation across all happiness factors"
+                      }
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Health & Balance Red Flags */}
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-6">
+                <h4 className="text-xl font-bold text-red-800 mb-4 flex items-center gap-2">
+                  ⚠️ Health & Balance Analysis
+                </h4>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  {(() => {
+                    const redFlags = [];
+                    const sleepPillar = elements.find(e => e.name === 'Sleep');
+                    const healthPillar = elements.find(e => e.name === 'Health & Fitness');
+                    const familyPillar = elements.find(e => e.name === 'Friends & Family');
+                    const workPillar = elements.find(e => e.name === 'Work');
+                    const spiritualPillar = elements.find(e => e.name === 'Spiritual');
+                    
+                    if (sleepPillar && sleepPillar.current < 7) {
+                      redFlags.push({ icon: '😴', text: `Sleep at ${sleepPillar.current}/10 - Research shows <7 hours affects decision-making and health` });
+                    }
+                    if (healthPillar && healthPillar.current < 5) {
+                      redFlags.push({ icon: '💪', text: `Health & Fitness at ${healthPillar.current}/10 - Low physical activity impacts energy and longevity` });
+                    }
+                    if (familyPillar && workPillar && Math.abs(familyPillar.current - workPillar.current) > 3) {
+                      redFlags.push({ icon: '⚖️', text: `Work-Life imbalance detected - ${Math.abs(familyPillar.current - workPillar.current)} point gap between work and relationships` });
+                    }
+                    if (spiritualPillar && spiritualPillar.current < 3) {
+                      redFlags.push({ icon: '🕯️', text: `Spiritual at ${spiritualPillar.current}/10 - Low purpose/meaning scores correlate with decreased life satisfaction` });
+                    }
+                    
+                    return redFlags.length > 0 ? redFlags.map((flag, i) => (
+                      <div key={i} className="bg-white/70 border border-red-200 rounded-lg p-3">
+                        <p className="text-sm text-red-700">
+                          <span className="text-lg mr-2">{flag.icon}</span>
+                          {flag.text}
+                        </p>
+                      </div>
+                    )) : (
+                      <div className="col-span-2 bg-green-100 border border-green-200 rounded-lg p-3">
+                        <p className="text-sm text-green-700">
+                          ✅ No major health or balance red flags detected in your assessment
+                        </p>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
 
               {/* AI Insights - Expanded Cards */}
               {aiInsights.length > 0 && (
