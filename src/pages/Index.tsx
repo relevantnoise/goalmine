@@ -652,11 +652,21 @@ const Index = () => {
 
 
   if (currentView === 'five-circle-onboarding') {
-    // Debug: Log the actual framework data structure
+    // Debug: Log everything about framework state
+    console.log('🔧 [Edit Assessment Debug] === FULL FRAMEWORK STATE ===');
     console.log('🔧 [Edit Assessment Debug] hasFramework:', hasFramework);
+    console.log('🔧 [Edit Assessment Debug] frameworkLoading:', frameworkLoading);
+    console.log('🔧 [Edit Assessment Debug] assessmentState:', assessmentState);
     console.log('🔧 [Edit Assessment Debug] frameworkData:', frameworkData);
     console.log('🔧 [Edit Assessment Debug] elements:', frameworkData?.elements);
     console.log('🔧 [Edit Assessment Debug] workHappiness:', frameworkData?.workHappiness);
+    console.log('🔧 [Edit Assessment Debug] ================================');
+    
+    // Wait for framework data to load before preparing existing data
+    if (frameworkLoading) {
+      console.log('🔧 [Edit Assessment Debug] Framework still loading, showing loading state');
+      return <div>Loading framework data...</div>;
+    }
     
     // Prepare existing data for editing if framework exists
     const existingData = hasFramework && frameworkData ? {
@@ -681,7 +691,7 @@ const Index = () => {
       } : undefined
     } : undefined;
     
-    console.log('🔧 [Edit Assessment Debug] Prepared existingData:', existingData);
+    console.log('🔧 [Edit Assessment Debug] Final existingData being passed:', existingData);
 
     return (
       <ProfessionalCircleSetup 
