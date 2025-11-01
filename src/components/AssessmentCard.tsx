@@ -673,13 +673,6 @@ export const AssessmentCard = ({
                     <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
                   )}
                 </Button>
-                <Button variant="outline" onClick={() => {
-                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
-                  onEditFramework();
-                }}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Assessment
-                </Button>
               </div>
             </div>
           </CardContent>

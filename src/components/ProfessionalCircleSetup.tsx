@@ -130,31 +130,32 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
     remote_desired: 8
   });
 
-  // Initialize with existing data when editing
+  // Initialize with existing data when editing - FORCE INITIALIZATION
   useEffect(() => {
     console.log('🔄 ProfessionalCircleSetup useEffect called with existingData:', existingData);
-    if (existingData) {
-      console.log('🔄 Initializing Edit Assessment with existing data:', existingData);
+    
+    if (existingData && existingData.elements && existingData.elements.length > 0) {
+      console.log('🔄 FOUND EXISTING DATA - Initializing Edit Assessment:', existingData);
       
-      // Initialize circle allocations from existing pillar data
-      if (existingData.elements) {
-        const initialAllocations: Record<string, CircleAllocation> = {};
-        existingData.elements.forEach(element => {
-          initialAllocations[element.name] = {
-            circle_name: element.name,
-            importance_level: element.importance || 5,
-            current_hours_per_week: element.current || 0,
-            ideal_hours_per_week: element.desired || 0
-          };
-        });
-        setCircleAllocations(initialAllocations);
-        console.log('✅ Initialized circle allocations:', initialAllocations);
-      }
+      // FORCE initialize circle allocations from existing pillar data
+      const initialAllocations: Record<string, CircleAllocation> = {};
+      existingData.elements.forEach(element => {
+        console.log('🔄 Processing existing element:', element);
+        initialAllocations[element.name] = {
+          circle_name: element.name,
+          importance_level: element.importance || 5,
+          current_hours_per_week: element.current || 0,
+          ideal_hours_per_week: element.desired || 0
+        };
+      });
+      
+      console.log('🔄 FORCE SETTING circle allocations:', initialAllocations);
+      setCircleAllocations(initialAllocations);
 
-      // Initialize work happiness from existing data
+      // FORCE initialize work happiness from existing data
       if (existingData.workHappiness) {
         const wh = existingData.workHappiness;
-        setWorkHappiness({
+        const workHappinessData = {
           impact_current: wh.impactCurrent || 5,
           impact_desired: wh.impactDesired || 8,
           fun_current: wh.funCurrent || 5,
@@ -163,9 +164,14 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
           money_desired: wh.moneyDesired || 8,
           remote_current: wh.remoteCurrent || 5,
           remote_desired: wh.remoteDesired || 8
-        });
-        console.log('✅ Initialized work happiness:', wh);
+        };
+        console.log('🔄 FORCE SETTING work happiness:', workHappinessData);
+        setWorkHappiness(workHappinessData);
       }
+      
+      console.log('✅ FORCED INITIALIZATION COMPLETE');
+    } else {
+      console.log('⚠️ NO EXISTING DATA FOUND - using default values');
     }
   }, [existingData]);
 
