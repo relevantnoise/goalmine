@@ -233,7 +233,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">The ideal plan for the busy professional managing a complex life.</p>
+                <p className="text-muted-foreground text-sm mb-2">Essential for managing complex lives across all 6 pillars - with 10 goals, you can truly address each life domain.</p>
               </div>
               <div className="text-2xl font-bold">
                 $199.99
@@ -248,27 +248,27 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 10 goals across all pillars</span>
+                  <span><strong>Up to 10 goals across all pillars</strong> - Manage complex life priorities effectively</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span><strong>Enhanced Pillar Dashboard</strong> - Advanced tracking & analytics</span>
+                  <span><strong>Up to 10 daily nudges</strong> - Stay motivated throughout your day</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Pillar integration optimization & conflict detection</span>
+                  <span>Full 6 Pillars Framework™ experience with comprehensive goal coverage</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Weekly optimization & synergy recommendations</span>
+                  <span>Business Happiness Formula™ optimization for professional satisfaction</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Stress reduction through systematic complexity breakdown</span>
+                  <span>AI-powered insights and strategic guidance across all life domains</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Up to 10 active goals + 10 daily nudges</span>
+                  <span>Priority support and feature access</span>
                 </li>
               </ul>
               {subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan") ? 
