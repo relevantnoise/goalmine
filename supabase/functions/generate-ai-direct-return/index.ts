@@ -341,73 +341,11 @@ RESOURCE GUIDELINES:
 
     console.log('[AI-DIRECT-RETURN] Success! Generated', formattedInsights.length, 'insights');
 
-    // Generate dashboard summary directly (inline to avoid JWT issues)
-    console.log('[AI-DIRECT-RETURN] Generating dashboard summary...');
-    try {
-      const summaryPrompt = `Create a concise 200-word dashboard summary from these AI insights:
-
-${formattedInsights.map(insight => `${insight.title}: ${insight.description}`).join('\n\n')}
-
-Extract the 3 most important points into a coherent summary that:
-1. Identifies the biggest opportunities 
-2. Explains key patterns or problems
-3. Provides clear next steps
-
-Keep it conversational and actionable. Focus on what matters most.`;
-
-      const summaryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a life coach creating dashboard summaries. Be concise, actionable, and focused on the most important insights.'
-            },
-            {
-              role: 'user',
-              content: summaryPrompt
-            }
-          ],
-          max_tokens: 300,
-          temperature: 0.7
-        })
-      });
-
-      if (summaryResponse.ok) {
-        const summaryResult = await summaryResponse.json();
-        const dashboardSummary = summaryResult.choices[0]?.message?.content || 'Summary not available';
-        
-        // Store dashboard summary as a special insight
-        await supabase
-          .from('ai_insights')
-          .insert([{
-            framework_id: framework.id,
-            user_email: userEmail,
-            insight_type: 'dashboard_summary',
-            title: 'Your Personalized Strategy',
-            description: dashboardSummary,
-            priority: 'Critical',
-            is_read: false
-          }]);
-          
-        console.log('[AI-DIRECT-RETURN] Dashboard summary generated and stored successfully');
-      } else {
-        console.error('[AI-DIRECT-RETURN] Dashboard summary generation failed');
-      }
-    } catch (summaryError) {
-      console.error('[AI-DIRECT-RETURN] Failed to generate dashboard summary:', summaryError);
-      // Continue without failing the main request
-    }
 
     return new Response(JSON.stringify({
       success: true,
       insights: formattedInsights,
-      message: `Generated ${formattedInsights.length} AI insights and dashboard summary`,
+      message: `Generated ${formattedInsights.length} AI insights`,
       timestamp: new Date().toISOString()
     }), {
       status: 200,

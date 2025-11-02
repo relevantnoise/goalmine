@@ -291,16 +291,11 @@ export const AssessmentCard = ({
     ? elements.reduce((max, element) => element.gap > max.gap ? element : max)
     : { name: 'Sleep', gap: 6 }; // Fallback
 
-  // Use AI insights from framework data instead of separate state
+  // Use AI insights from framework data (for Full Analysis only)
   const aiInsights = frameworkData?.aiInsights || [];
-  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   
-  // Get dashboard summary from AI insights
-  const dashboardSummary = aiInsights.find(insight => insight.insight_type === 'dashboard_summary')?.description || '';
-
   // AI insights are now loaded directly from frameworkData
   console.log('[AssessmentCard] AI insights from framework:', aiInsights.length);
-  console.log('[AssessmentCard] Dashboard summary available:', dashboardSummary.length > 0);
 
 
   const handleCreateGoals = () => {
@@ -578,142 +573,157 @@ export const AssessmentCard = ({
               </div>
             </div>
 
-            {/* AI-Generated Dashboard Summary */}
+            {/* Strategic Intelligence Summary */}
             <div className="mb-6">
-              {dashboardSummary ? (
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Brain className="w-6 h-6 text-blue-600" />
-                    <h4 className="text-lg font-bold text-blue-800">Your AI-Powered Assessment Analysis Summary</h4>
-                  </div>
-                  <div className="text-gray-700 leading-relaxed space-y-4">
-                    {(() => {
-                      // Smart parsing for better formatting
-                      const content = dashboardSummary;
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <Brain className="w-6 h-6 text-blue-600" />
+                  <h4 className="text-lg font-bold text-blue-800">Strategic Intelligence</h4>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">AI Analysis</span>
+                </div>
+                
+                {(() => {
+                  // Deep strategic analysis of assessment data
+                  const biggestGap = elements.length > 0 
+                    ? elements.reduce((max, element) => Math.abs(element.gap || 0) > Math.abs(max.gap || 0) ? element : max)
+                    : null;
+                  
+                  const workElement = elements.find(el => el.name === 'Work') || {};
+                  const sleepElement = elements.find(el => el.name === 'Sleep') || {};
+                  const healthElement = elements.find(el => el.name === 'Health & Fitness') || {};
+                  const relationshipElement = elements.find(el => el.name === 'Friends & Family') || {};
+                  const personalDevElement = elements.find(el => el.name === 'Personal Development') || {};
+                  
+                  // Calculate total time allocation
+                  const totalCurrentHours = elements.reduce((sum, el) => sum + (el.current || 0), 0);
+                  const totalDesiredHours = elements.reduce((sum, el) => sum + (el.desired || 0), 0);
+                  
+                  // Identify life patterns and stress drivers
+                  const workOverload = (workElement.current || 0) > 50;
+                  const sleepDeprived = (sleepElement.current || 0) < 49; // Less than 7 hours/night
+                  const neglectingHealth = (healthElement.current || 0) < 5;
+                  const relationshipSuffering = (relationshipElement.current || 0) < 10;
+                  const stagnating = (personalDevElement.current || 0) < 3;
+                  const burnoutPattern = workOverload && (sleepDeprived || neglectingHealth);
+                  
+                  // Work happiness analysis
+                  const workHappiness = frameworkData?.workHappiness;
+                  let workInsights = { focus: null, pattern: null, satisfaction: 0 };
+                  if (workHappiness) {
+                    const gaps = {
+                      impact: (workHappiness.impactDesired || 0) - (workHappiness.impactCurrent || 0),
+                      enjoyment: (workHappiness.funDesired || 0) - (workHappiness.funCurrent || 0),
+                      income: (workHappiness.moneyDesired || 0) - (workHappiness.moneyCurrent || 0),
+                      flexibility: (workHappiness.remoteDesired || 0) - (workHappiness.remoteCurrent || 0)
+                    };
+                    const maxGap = Math.max(...Object.values(gaps));
+                    workInsights.focus = Object.keys(gaps).find(key => gaps[key] === maxGap);
+                    workInsights.satisfaction = (workHappiness.impactCurrent + workHappiness.funCurrent + workHappiness.moneyCurrent + workHappiness.remoteCurrent) / 4;
+                    
+                    // Identify work dissatisfaction pattern
+                    if (workInsights.satisfaction < 6) {
+                      workInsights.pattern = 'unsatisfied';
+                    } else if (maxGap > 3) {
+                      workInsights.pattern = 'gap_focused';
+                    }
+                  }
+                  
+                  // Strategic life pattern analysis
+                  let lifePattern = '';
+                  let stressDriver = '';
+                  let goalGuidance = '';
+                  
+                  if (burnoutPattern) {
+                    lifePattern = 'Classic Burnout Pattern';
+                    stressDriver = `Working ${workElement.current}h weekly while sacrificing ${sleepDeprived ? 'sleep' : 'health'}`;
+                    goalGuidance = 'Boundaries & Recovery Goals';
+                  } else if (workOverload && relationshipSuffering) {
+                    lifePattern = 'Success at a Cost';
+                    stressDriver = `High work commitment (${workElement.current}h) limiting relationship time`;
+                    goalGuidance = 'Work-Life Integration Goals';
+                  } else if (stagnating && workInsights.pattern === 'unsatisfied') {
+                    lifePattern = 'Survival Mode';
+                    stressDriver = 'No growth time + work dissatisfaction creating stagnation';
+                    goalGuidance = 'Growth & Transition Goals';
+                  } else if (biggestGap && Math.abs(biggestGap.gap) > 10) {
+                    lifePattern = 'Major Life Misalignment';
+                    stressDriver = `${Math.abs(biggestGap.gap)}h weekly gap in what you value most`;
+                    goalGuidance = 'Strategic Rebalancing Goals';
+                  } else {
+                    lifePattern = 'Optimization Opportunity';
+                    stressDriver = 'Minor adjustments needed for better life satisfaction';
+                    goalGuidance = 'Fine-Tuning Goals';
+                  }
+                  
+                  return (
+                    <div className="space-y-4">
+                      {/* Life Pattern Diagnosis */}
+                      <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-semibold text-red-900">Life Pattern Analysis</h5>
+                          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Strategic</span>
+                        </div>
+                        <p className="text-sm text-red-800 font-medium">{lifePattern}</p>
+                        <p className="text-xs text-red-600 mt-1">{stressDriver}</p>
+                      </div>
                       
-                      // Find numbered action items pattern: "Three key steps..." or similar followed by numbered items
-                      const actionStepsMatch = content.match(/(Three key steps to address these issues are:|The three key steps are:|Three key steps:|Here are three key steps:)(.*)/i);
+                      {/* Primary Stress Driver */}
+                      {biggestGap && (
+                        <div className="bg-white rounded-lg p-4 border border-blue-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-semibold text-blue-900">Priority Investment Gap</h5>
+                            <span className="text-sm font-medium text-blue-600">{Math.abs(biggestGap.gap || 0)}h/week</span>
+                          </div>
+                          <p className="text-sm text-blue-800 font-medium">{biggestGap.name}</p>
+                          <p className="text-xs text-blue-600 mt-1">
+                            Importance: {biggestGap.importance || 0}/10 • Reality: {biggestGap.current || 0}h • Goal: {biggestGap.desired || 0}h
+                          </p>
+                        </div>
+                      )}
                       
-                      if (actionStepsMatch) {
-                        // Split into main content and action steps
-                        const mainContent = content.substring(0, actionStepsMatch.index).trim();
-                        const actionContent = actionStepsMatch[2].trim();
-                        
-                        // Parse action items - look for patterns like "1. " or "2. " etc
-                        const actionItems = [];
-                        const actionMatches = actionContent.match(/(\d+)\.\s*([^.]*(?:\.[^0-9][^.]*)*)/g);
-                        
-                        if (actionMatches) {
-                          actionMatches.forEach(match => {
-                            const itemMatch = match.match(/(\d+)\.\s*(.*)/);
-                            if (itemMatch) {
-                              actionItems.push({
-                                number: itemMatch[1],
-                                content: itemMatch[2].trim()
-                              });
-                            }
-                          });
-                        }
-                        
-                        return (
-                          <>
-                            {/* Main content - split into key insights */}
-                            {mainContent.split('. ').filter(sentence => sentence.trim().length > 5).map((sentence, index) => {
-                              const cleanSentence = sentence.trim() + (sentence.endsWith('.') ? '' : '.');
-                              
-                              // First sentence gets the callout treatment
-                              if (index === 0) {
-                                return (
-                                  <div key={`main-${index}`} className="bg-gradient-to-r from-blue-100 to-indigo-100 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
-                                    <p className="font-semibold text-blue-900 text-base leading-relaxed">{cleanSentence}</p>
-                                  </div>
-                                );
-                              }
-                              
-                              // Other sentences as regular paragraphs
-                              return (
-                                <p key={`main-${index}`} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
-                              );
-                            })}
-                            
-                            {/* Action Items Header */}
-                            {actionItems.length > 0 && (
-                              <div className="mt-6">
-                                <div className="flex items-center gap-2 mb-4">
-                                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                    <span className="text-white text-sm font-bold">✓</span>
-                                  </div>
-                                  <h5 className="font-semibold text-gray-800">Recommended Action Steps:</h5>
-                                </div>
-                                
-                                {/* Styled Action Items */}
-                                <div className="space-y-3">
-                                  {actionItems.map((item, index) => (
-                                    <div key={`action-${index}`} className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 shadow-sm">
-                                      <div className="flex items-start gap-4">
-                                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md flex-shrink-0 mt-1">
-                                          {item.number}
-                                        </div>
-                                        <div className="flex-1">
-                                          <p className="text-gray-800 font-medium leading-relaxed">{item.content}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        );
-                      } else {
-                        // Fallback for content without clear action steps
-                        return content.split('. ').filter(sentence => sentence.trim().length > 5).map((sentence, index) => {
-                          const cleanSentence = sentence.trim() + (sentence.endsWith('.') ? '' : '.');
-                          
-                          if (index === 0) {
-                            return (
-                              <div key={index} className="bg-gradient-to-r from-blue-100 to-indigo-100 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
-                                <p className="font-semibold text-blue-900 text-base leading-relaxed">{cleanSentence}</p>
-                              </div>
-                            );
+                      {/* Work Satisfaction Analysis */}
+                      {workInsights.focus && (
+                        <div className="bg-white rounded-lg p-4 border border-purple-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-semibold text-purple-900">Work Happiness Driver</h5>
+                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                              {workInsights.satisfaction.toFixed(1)}/10
+                            </span>
+                          </div>
+                          <p className="text-sm text-purple-800 font-medium capitalize">{workInsights.focus}</p>
+                          <p className="text-xs text-purple-600 mt-1">
+                            {workInsights.pattern === 'unsatisfied' ? 'Low satisfaction across multiple areas' : 
+                             workInsights.pattern === 'gap_focused' ? 'Strong foundation, one key improvement area' :
+                             'Primary opportunity for work fulfillment'}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* Goal Strategy Guidance */}
+                      <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-4 border border-green-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-semibold text-green-900">Goal Strategy</h5>
+                          <Target className="w-4 h-4 text-green-600" />
+                        </div>
+                        <p className="text-sm text-green-800 font-medium">{goalGuidance}</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          {totalDesiredHours > 168 ? 
+                            `Overcommitted by ${totalDesiredHours - 168}h - goals need trade-offs` :
+                            `${168 - totalCurrentHours}h unaccounted weekly - track where time actually goes`
                           }
-                          
-                          return (
-                            <p key={index} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
-                          );
-                        });
-                      }
-                    })()}
-                  </div>
-                </div>
-              ) : isGeneratingAI ? (
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="animate-spin w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                    <h4 className="text-lg font-bold text-blue-800">Generating AI Analysis...</h4>
-                  </div>
-                  <p className="text-gray-600">
-                    Our AI is analyzing your assessment data to provide personalized insights and strategic recommendations.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Brain className="w-6 h-6 text-yellow-600" />
-                    <h4 className="text-lg font-bold text-yellow-800">Analysis Ready</h4>
-                  </div>
-                  <p className="text-gray-700">
-                    Complete your assessment to receive AI-powered strategic insights and personalized recommendations based on your 6 Pillars Framework and Business Happiness Formula data.
-                  </p>
-                </div>
-              )}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
 
             <div className="space-y-3">
               <div className="flex gap-3">
                 <Button 
                   variant="outline" 
-                  onClick={async (e) => {
+                  onClick={async () => {
                     if (subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) {
                       console.log('[AssessmentCard] ✅ Access granted - opening Full Analysis modal');
                       setShowFullAnalysis(true);
