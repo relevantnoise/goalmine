@@ -587,40 +587,103 @@ export const AssessmentCard = ({
                     <h4 className="text-lg font-bold text-blue-800">Your AI-Powered Assessment Analysis Summary</h4>
                   </div>
                   <div className="text-gray-700 leading-relaxed space-y-4">
-                    {/* Format the summary for better readability */}
-                    {dashboardSummary.split('. ').map((sentence, index, array) => {
-                      // Clean up the sentence and add period if not the last one
-                      const cleanSentence = sentence.trim() + (index < array.length - 1 && !sentence.endsWith('.') ? '.' : '');
+                    {(() => {
+                      // Smart parsing for better formatting
+                      const content = dashboardSummary;
                       
-                      // Skip empty sentences
-                      if (!cleanSentence || cleanSentence === '.') return null;
+                      // Find numbered action items pattern: "Three key steps..." or similar followed by numbered items
+                      const actionStepsMatch = content.match(/(Three key steps to address these issues are:|The three key steps are:|Three key steps:|Here are three key steps:)(.*)/i);
                       
-                      // First sentence - main insight
-                      if (index === 0) {
+                      if (actionStepsMatch) {
+                        // Split into main content and action steps
+                        const mainContent = content.substring(0, actionStepsMatch.index).trim();
+                        const actionContent = actionStepsMatch[2].trim();
+                        
+                        // Parse action items - look for patterns like "1. " or "2. " etc
+                        const actionItems = [];
+                        const actionMatches = actionContent.match(/(\d+)\.\s*([^.]*(?:\.[^0-9][^.]*)*)/g);
+                        
+                        if (actionMatches) {
+                          actionMatches.forEach(match => {
+                            const itemMatch = match.match(/(\d+)\.\s*(.*)/);
+                            if (itemMatch) {
+                              actionItems.push({
+                                number: itemMatch[1],
+                                content: itemMatch[2].trim()
+                              });
+                            }
+                          });
+                        }
+                        
                         return (
-                          <div key={index} className="bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
-                            <p className="font-semibold text-blue-900 text-base">{cleanSentence}</p>
-                          </div>
+                          <>
+                            {/* Main content - split into key insights */}
+                            {mainContent.split('. ').filter(sentence => sentence.trim().length > 5).map((sentence, index) => {
+                              const cleanSentence = sentence.trim() + (sentence.endsWith('.') ? '' : '.');
+                              
+                              // First sentence gets the callout treatment
+                              if (index === 0) {
+                                return (
+                                  <div key={`main-${index}`} className="bg-gradient-to-r from-blue-100 to-indigo-100 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
+                                    <p className="font-semibold text-blue-900 text-base leading-relaxed">{cleanSentence}</p>
+                                  </div>
+                                );
+                              }
+                              
+                              // Other sentences as regular paragraphs
+                              return (
+                                <p key={`main-${index}`} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
+                              );
+                            })}
+                            
+                            {/* Action Items Header */}
+                            {actionItems.length > 0 && (
+                              <div className="mt-6">
+                                <div className="flex items-center gap-2 mb-4">
+                                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-sm font-bold">✓</span>
+                                  </div>
+                                  <h5 className="font-semibold text-gray-800">Recommended Action Steps:</h5>
+                                </div>
+                                
+                                {/* Styled Action Items */}
+                                <div className="space-y-3">
+                                  {actionItems.map((item, index) => (
+                                    <div key={`action-${index}`} className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 shadow-sm">
+                                      <div className="flex items-start gap-4">
+                                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md flex-shrink-0 mt-1">
+                                          {item.number}
+                                        </div>
+                                        <div className="flex-1">
+                                          <p className="text-gray-800 font-medium leading-relaxed">{item.content}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </>
                         );
+                      } else {
+                        // Fallback for content without clear action steps
+                        return content.split('. ').filter(sentence => sentence.trim().length > 5).map((sentence, index) => {
+                          const cleanSentence = sentence.trim() + (sentence.endsWith('.') ? '' : '.');
+                          
+                          if (index === 0) {
+                            return (
+                              <div key={index} className="bg-gradient-to-r from-blue-100 to-indigo-100 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
+                                <p className="font-semibold text-blue-900 text-base leading-relaxed">{cleanSentence}</p>
+                              </div>
+                            );
+                          }
+                          
+                          return (
+                            <p key={index} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
+                          );
+                        });
                       }
-                      
-                      // Look for numbered lists (1., 2., 3.)
-                      if (/^\d+\./.test(cleanSentence)) {
-                        return (
-                          <div key={index} className="flex items-start gap-3 pl-4">
-                            <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
-                              {cleanSentence.match(/^(\d+)/)?.[1]}
-                            </div>
-                            <p className="text-gray-700 flex-1">{cleanSentence.replace(/^\d+\.\s*/, '')}</p>
-                          </div>
-                        );
-                      }
-                      
-                      // Regular sentences
-                      return (
-                        <p key={index} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
-                      );
-                    }).filter(Boolean)}
+                    })()}
                   </div>
                 </div>
               ) : isGeneratingAI ? (
