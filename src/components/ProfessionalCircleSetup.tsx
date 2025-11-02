@@ -586,7 +586,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                       {isSubmitting ? (
                         <>
                           <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2" />
-                          Creating Your Framework...
+                          Creating Your AI Analysis...
                         </>
                       ) : (
                         'Complete Assessment & Get AI Insights 🎯'

@@ -262,7 +262,7 @@ export const FiveCircleOnboarding = ({ onComplete, onBack }: FiveCircleOnboardin
 
     // Show immediate feedback
     toast({
-      title: "🚀 Creating Your Framework",
+      title: "🚀 Creating Your AI Analysis",
       description: "Analyzing your responses and building your personalized 5 Circle system...",
       duration: 4000
     });

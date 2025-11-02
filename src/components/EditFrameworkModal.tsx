@@ -53,7 +53,7 @@ const pillars = [
     description: 'Rest, recovery, energy management'
   },
   {
-    name: 'Friends & Family',
+    name: 'Family & Friends',
     icon: Users,
     color: 'text-green-600',
     description: 'Relationships, social connections'

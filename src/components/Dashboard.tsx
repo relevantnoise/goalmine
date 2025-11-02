@@ -143,35 +143,6 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                 onWeeklyCheckin={onCircleCheckin}
               />
 
-              {/* Step 2: Action Section - Only show when framework exists */}
-              {frameworkExists && (
-                <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <Target className="w-6 h-6 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-green-800">Step 2: Ready to Transform Your Life Architecture</h3>
-                        <p className="text-green-600">Your assessment reveals clear opportunities - now create strategic goals to systematically improve your life</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <Button onClick={handleCreateGoal} className="flex-1 bg-green-600 hover:bg-green-700">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Your First Goal
-                      </Button>
-                      {onCircleCheckin && (
-                        <Button variant="outline" onClick={onCircleCheckin} className="flex-1 border-green-300 text-green-700 hover:bg-green-50">
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Weekly Check-in
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
               {/* Regular Goals */}
               {regularGoals.length === 0 && frameworkExists ? (
@@ -319,7 +290,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                     {[
                       { name: 'Work', icon: Briefcase, color: 'text-green-600' },
                       { name: 'Sleep', icon: Moon, color: 'text-indigo-600' },
-                      { name: 'Friends & Family', icon: Users, color: 'text-blue-600' },
+                      { name: 'Family & Friends', icon: Users, color: 'text-blue-600' },
                       { name: 'Health & Fitness', icon: Activity, color: 'text-red-600' },
                       { name: 'Personal Development', icon: BookOpen, color: 'text-orange-600' },
                       { name: 'Spiritual', icon: Heart, color: 'text-purple-600' }

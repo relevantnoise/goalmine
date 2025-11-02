@@ -54,16 +54,15 @@ serve(async (req) => {
       target_date, 
       tone, 
       time_of_day,
-      circle_type,
-      weekly_commitment_hours,
-      circle_interview_data
+      pillar_type,
+      weekly_commitment_hours
     } = requestBody;
 
     console.log('🎯 Creating goal for user:', user_id);
-    console.log('🎯 Goal data:', { title, description, target_date, tone, time_of_day, circle_type, weekly_commitment_hours });
+    console.log('🎯 Goal data:', { title, description, target_date, tone, time_of_day, pillar_type, weekly_commitment_hours });
 
-    if (!user_id || !title || !tone || !time_of_day) {
-      throw new Error('Missing required fields: user_id, title, tone, time_of_day');
+    if (!user_id || !title || !tone) {
+      throw new Error('Missing required fields: user_id, title, tone');
     }
 
     // HYBRID: Look up profile by email to get Firebase UID (proper architecture)
@@ -200,10 +199,9 @@ serve(async (req) => {
       description: description || null,
       target_date: target_date ? target_date.split('T')[0] : null, // Ensure date format
       tone,
-      time_of_day,
-      circle_type: circle_type || null, // Include circle_type for 6 Elements support
+      time_of_day: time_of_day || '06:00', // Default to 6 AM Eastern (universal email time)
+      pillar_type: pillar_type || null, // Include pillar_type for 6 Elements support
       weekly_commitment_hours: weekly_commitment_hours || null,
-      circle_interview_data: circle_interview_data || null,
       is_active: true
     };
     

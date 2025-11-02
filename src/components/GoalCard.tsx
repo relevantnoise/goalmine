@@ -13,7 +13,7 @@ import { useShare } from "@/hooks/useShare";
 // Pillar badge colors
 const pillarColors = {
   'Spiritual': 'bg-purple-100 text-purple-800 border-purple-200',
-  'Friends & Family': 'bg-blue-100 text-blue-800 border-blue-200',
+  'Family & Friends': 'bg-blue-100 text-blue-800 border-blue-200',
   'Work': 'bg-green-100 text-green-800 border-green-200',
   'Personal Development': 'bg-orange-100 text-orange-800 border-orange-200',
   'Health & Fitness': 'bg-red-100 text-red-800 border-red-200'
@@ -183,9 +183,9 @@ export const GoalCard = ({
                 <h3 className="font-semibold mb-1">Goal</h3>
                 
                 {/* Pillar Badge */}
-                {goal.circle_type && (
-                  <Badge variant="secondary" className={`text-xs font-medium ${pillarColors[goal.circle_type as keyof typeof pillarColors] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
-                    {goal.circle_type}
+                {goal.pillar_type && (
+                  <Badge variant="secondary" className={`text-xs font-medium ${pillarColors[goal.pillar_type as keyof typeof pillarColors] || 'bg-gray-100 text-gray-800 border-gray-200'}`}>
+                    {goal.pillar_type}
                   </Badge>
                 )}
                 

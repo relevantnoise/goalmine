@@ -40,7 +40,7 @@ export const FrameworkInsights = ({ frameworkData, onCreateGoal, onGetGuidance }
 
   // Work-Life Balance Analysis
   const workPillar = frameworkData.elements.find(el => el.name === 'Work');
-  const familyPillar = frameworkData.elements.find(el => el.name === 'Friends & Family');
+  const familyPillar = frameworkData.elements.find(el => el.name === 'Family & Friends');
   const workLifeImbalance = workPillar && familyPillar && 
     Math.abs(workPillar.current - familyPillar.current) > 3;
 
@@ -83,7 +83,7 @@ export const FrameworkInsights = ({ frameworkData, onCreateGoal, onGetGuidance }
       title: 'Work-Life Balance Alert',
       description: `Your Work (${workPillar.current}/10) and Family (${familyPillar.current}/10) pillars are ${Math.abs(workPillar.current - familyPillar.current)} points apart. Balanced pillars create sustainable success.`,
       action: 'Balance Work & Family',
-      element: workPillar.current > familyPillar.current ? 'Friends & Family' : 'Work',
+      element: workPillar.current > familyPillar.current ? 'Family & Friends' : 'Work',
       priority: 'medium'
     });
   }

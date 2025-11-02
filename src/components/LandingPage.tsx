@@ -50,11 +50,11 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
+              Ambitious professionals and other high-achievers don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
               GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> transform scattered goals into integrated life management.
             </p>
 
-            {/* 6 Pillars Visual - Ordered: Work, Friends & Family, Health & Fitness, Spiritual, Personal Development, Sleep */}
+            {/* 6 Pillars Visual - Ordered: Work, Family & Friends, Health & Fitness, Spiritual, Personal Development, Sleep */}
             <div className="flex justify-center items-start mb-8 flex-wrap gap-6">
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
@@ -66,7 +66,7 @@ export const LandingPage = ({
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-sm font-medium text-blue-800 text-center h-8 flex items-center justify-center">Friends &<br />Family</div>
+                <div className="text-sm font-medium text-blue-800 text-center h-8 flex items-center justify-center">Family &<br />Friends</div>
               </div>
               <div className="text-center w-24">
                 <div className="w-20 h-20 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg mb-2 mx-auto">
@@ -95,7 +95,7 @@ export const LandingPage = ({
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals.</strong> 
+              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals, entrepreneurs, and high-achievers.</strong> 
               The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes professional satisfaction. 
               Now powered by advanced AI for personalized guidance.
             </p>

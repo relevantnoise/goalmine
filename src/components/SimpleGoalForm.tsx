@@ -44,7 +44,7 @@ const circleOptions = [
     value: 'Work',
     label: 'Work',
     icon: Briefcase,
-    description: 'Career, job(s) (including commute time)',
+    description: 'Career, job(s)',
     color: 'text-green-600'
   },
   {
@@ -55,8 +55,8 @@ const circleOptions = [
     color: 'text-indigo-600'
   },
   {
-    value: 'Friends & Family',
-    label: 'Friends & Family', 
+    value: 'Family & Friends',
+    label: 'Family & Friends', 
     icon: Users,
     description: 'Relationships, social connections, quality time',
     color: 'text-blue-600'
@@ -79,7 +79,7 @@ const circleOptions = [
     value: 'Spiritual',
     label: 'Spiritual',
     icon: Heart,
-    description: 'Inner purpose, values, meaning, meditation, prayer',
+    description: 'Inner purpose, values, meaning, meditation, prayer, faith',
     color: 'text-purple-600'
   }
 ];
@@ -112,7 +112,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
         description: description.trim() || undefined,
         target_date: targetDate ? new Date(targetDate) : undefined,
         tone: selectedTone,
-        circle_type: selectedCircle
+        pillar_type: selectedCircle
       });
       if (result) {
         console.log('✅ Goal created with tone and target date, calling onComplete');
@@ -144,7 +144,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Exercise daily, Learn Spanish, Write a book..."
+                placeholder="e.g., Start a business, meditate daily, start a diet, find a new job, join a church..."
                 className="text-base md:text-base"
                 maxLength={100}
                 required
@@ -153,9 +153,14 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
 
             {/* Step 2: Goal Details (Now Required for Better AI) */}
             <div>
-              <Label htmlFor="description" className="text-base font-medium">
-                2. Tell us more about your goal (recommended)
-              </Label>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="description" className="text-base font-medium">
+                  2. Tell us more about your goal (recommended)
+                </Label>
+                <div className="text-xs text-muted-foreground">
+                  {description.length}/600
+                </div>
+              </div>
               <Textarea
                 id="description"
                 value={description}
@@ -163,7 +168,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
                 placeholder="Why is this goal important to you? What specific challenges do you face? Any relevant background or context..."
                 className="text-base resize-none"
                 rows={4}
-                maxLength={300}
+                maxLength={600}
               />
               <p className="text-xs text-muted-foreground mt-1">
                 <strong>The more details you provide, the better your AI coach can help you succeed.</strong> This creates personalized strategies, motivation, and daily guidance.
@@ -195,7 +200,7 @@ export const SimpleGoalForm = ({ onComplete, onCancel, defaultCircle }: SimpleGo
               </Label>
               <Select value={selectedCircle} onValueChange={setSelectedCircle}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select an element..." />
+                  <SelectValue placeholder="Select which of the 6 Pillars of Life your new goal targets..." />
                 </SelectTrigger>
                 <SelectContent>
                   {circleOptions.map((circle) => {

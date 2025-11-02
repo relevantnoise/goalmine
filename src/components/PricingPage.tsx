@@ -366,7 +366,7 @@ export const PricingPage = ({
               <ul className="space-y-2 text-muted-foreground">
                 <li>• <strong>Work:</strong> Career growth and performance</li>
                 <li>• <strong>Sleep:</strong> Rest, recovery, sleep optimization</li>
-                <li>• <strong>Friends & Family:</strong> Relationships that matter</li>
+                <li>• <strong>Family & Friends:</strong> Relationships that matter</li>
                 <li>• <strong>Health & Fitness:</strong> Physical vitality and energy</li>
                 <li>• <strong>Personal Development:</strong> Skills and growth</li>
                 <li>• <strong>Spiritual:</strong> Meaning, purpose, inner peace</li>

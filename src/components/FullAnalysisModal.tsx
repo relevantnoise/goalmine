@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Brain, BookOpen, Headphones, GraduationCap, ExternalLink, Lightbulb, TrendingUp, AlertTriangle, Sparkles, X } from "lucide-react";
+import { Brain, BookOpen, Headphones, GraduationCap, ExternalLink, Lightbulb, TrendingUp, AlertTriangle, Sparkles, X, Target } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +19,7 @@ interface ParsedInsight {
   title: string;
   analysis: string;
   resources: Array<{
-    type: 'book' | 'course' | 'podcast' | 'app' | 'practice' | 'action';
+    type: 'book' | 'course' | 'podcast' | 'practice' | 'action';
     title: string;
     author?: string;
     platform?: string;
@@ -169,11 +169,20 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
               Executive Summary
             </h3>
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
-              <p className="text-gray-700 leading-relaxed">
-                Based on our enterprise-grade analysis of your dual assessment data, we've identified {parsedInsights.length} strategic focus areas 
-                that will deliver maximum impact on your life architecture. Our proprietary algorithms have analyzed your pillar gaps, 
-                work happiness factors, and optimization patterns to provide research-backed recommendations with specific actionable resources.
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>Based on our enterprise-grade analysis</strong> of your 6 Pillars Framework™ and Business Happiness Formula™ assessments, 
+                our AI has identified {parsedInsights.length} critical strategic focus areas that will deliver maximum transformation to your life architecture.
               </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                <strong>What makes this analysis different:</strong> Our proprietary algorithms don't just identify gaps—they read between the lines 
+                to diagnose cascade effects, burnout patterns, and hidden sacrificial cycles that traditional tools miss.
+              </p>
+              <div className="bg-white border-l-4 border-green-500 p-4 rounded">
+                <p className="text-green-800 font-medium">
+                  ✨ <strong>Premium Intelligence:</strong> Each insight includes research-backed recommendations with specific books, courses, 
+                  and podcasts curated for your unique situation—resources worth hundreds of dollars in consultation value.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -208,38 +217,68 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
                   </div>
 
                   {/* Resources */}
-                  {insight.resources.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  {insight.resources.length > 0 ? (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
+                      <h4 className="font-bold text-green-800 mb-4 flex items-center gap-2">
                         <Sparkles className="w-5 h-5" />
-                        Immediate Action Resources:
+                        🎯 Expert-Curated Resources
                       </h4>
-                      <div className="grid gap-3">
+                      <p className="text-green-700 text-sm mb-4">
+                        Hand-selected by our AI based on your specific assessment patterns. These aren't generic recommendations—they're precisely matched to your unique situation.
+                      </p>
+                      <div className="grid gap-4">
                         {insight.resources.map((resource, resourceIndex) => {
                           const IconComponent = getResourceIcon(resource.type);
                           return (
                             <div
                               key={resourceIndex}
-                              className={`border rounded-lg p-4 ${getResourceColor(resource.type)}`}
+                              className={`border-2 rounded-lg p-4 ${getResourceColor(resource.type)} hover:shadow-md transition-shadow`}
                             >
                               <div className="flex items-start gap-3">
-                                <IconComponent className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                <div className="flex-shrink-0">
+                                  <IconComponent className="w-6 h-6 mt-0.5" />
+                                </div>
                                 <div className="flex-1">
-                                  <div className="font-medium">{resource.title}</div>
+                                  <div className="font-bold text-base">{resource.title}</div>
                                   {resource.author && (
-                                    <div className="text-sm opacity-80">by {resource.author}</div>
+                                    <div className="text-sm font-medium opacity-90 mt-1">by {resource.author}</div>
                                   )}
                                   {resource.platform && (
-                                    <div className="text-sm opacity-80">Platform: {resource.platform}</div>
+                                    <div className="text-sm opacity-80 mt-1">Platform: {resource.platform}</div>
                                   )}
-                                  <Badge variant="secondary" className="text-xs mt-1 capitalize">
-                                    {resource.type}
-                                  </Badge>
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <Badge variant="secondary" className="text-xs font-medium capitalize">
+                                      {resource.type}
+                                    </Badge>
+                                    <span className="text-xs text-green-600 font-medium">✨ AI-Matched</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           );
                         })}
+                      </div>
+                      <div className="mt-4 p-3 bg-white rounded border border-green-300">
+                        <p className="text-xs text-green-700">
+                          💡 <strong>Pro Tip:</strong> Start with the first resource listed—our AI ranked these based on maximum impact for your specific gaps.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+                      <h4 className="font-bold text-blue-800 mb-4 flex items-center gap-2">
+                        <Brain className="w-5 h-5" />
+                        🎯 Premium Insight Analysis
+                      </h4>
+                      <p className="text-blue-700 text-sm mb-4">
+                        This insight contains sophisticated analysis specifically tailored to your assessment data. 
+                        Our AI has identified patterns and provided strategic guidance based on your unique pillar gaps and work happiness scores.
+                      </p>
+                      <div className="bg-white border border-blue-300 rounded-lg p-4">
+                        <p className="text-xs text-blue-700">
+                          💡 <strong>Enhanced Analysis:</strong> Our enterprise-grade AI diagnostics go beyond surface-level advice to identify 
+                          cascade effects, burnout patterns, and strategic optimization opportunities specific to your situation.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -250,23 +289,40 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
 
           {/* Loading State - Analysis Being Generated */}
           {parsedInsights.length === 0 && (
-            <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                <h4 className="font-bold text-blue-800">Generating Your Enhanced Analysis</h4>
+            <div className="mt-8 p-8 bg-gradient-to-r from-blue-50 via-purple-50 to-emerald-50 border-2 border-blue-300 rounded-xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+                <h4 className="font-bold text-blue-900 text-xl">🧠 Generating Your Premium Analysis</h4>
               </div>
-              <p className="text-blue-700 mb-4">
-                Our AI is analyzing your assessment data and generating comprehensive insights with specific books, courses, podcasts, and actionable resources tailored to your unique framework profile.
-              </p>
+              <div className="space-y-4 mb-6">
+                <p className="text-blue-800 font-medium">
+                  ✨ <strong>Enterprise AI Processing:</strong> Our advanced algorithms are analyzing your 6 Pillars Framework™ and Business Happiness Formula™ data...
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded-lg border border-blue-200">
+                    <h5 className="font-semibold text-blue-800 mb-2">🔍 Pattern Recognition</h5>
+                    <p className="text-sm text-blue-700">Identifying cascade effects, burnout signals, and hidden sacrificial patterns</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg border border-purple-200">
+                    <h5 className="font-semibold text-purple-800 mb-2">📚 Resource Curation</h5>
+                    <p className="text-sm text-purple-700">Selecting specific books, courses, and podcasts matched to your gaps</p>
+                  </div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-yellow-800 font-medium text-sm">
+                    ⏱️ <strong>Premium Processing:</strong> This comprehensive analysis typically takes 30-60 seconds and includes personalized resources worth $200+ in consultation value.
+                  </p>
+                </div>
+              </div>
               <div className="flex gap-3">
                 <Button variant="outline" onClick={onClose}>
                   Close
                 </Button>
                 <Button 
-                  variant="secondary"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   onClick={() => window.location.reload()}
                 >
-                  Refresh to Check Status
+                  Refresh Analysis
                 </Button>
               </div>
             </div>
@@ -274,18 +330,42 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
 
           {/* Call to Action - Only show if we have insights */}
           {parsedInsights.length > 0 && (
-            <div className="mt-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg">
-              <h4 className="font-bold text-green-800 mb-2">Ready to Take Action?</h4>
-              <p className="text-green-700 mb-4">
-                Your strategic intelligence report is complete. Use these insights and resources to create targeted goals 
-                that will transform your life architecture systematically.
-              </p>
-              <div className="flex gap-3">
-                <Button className="bg-green-600 hover:bg-green-700 text-white">
-                  Create Strategic Goals
-                </Button>
-                <Button variant="outline" onClick={onClose}>
-                  Close Analysis
+            <div className="mt-8 p-8 bg-gradient-to-r from-emerald-50 via-green-50 to-blue-50 border-2 border-emerald-300 rounded-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <Target className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-emerald-900 text-xl">🎯 Your Strategic Action Plan</h4>
+                  <p className="text-emerald-700 text-sm">Premium analysis complete—time to transform</p>
+                </div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-white p-4 rounded-lg border border-emerald-200">
+                  <h5 className="font-semibold text-emerald-800 mb-2">✅ What You Now Have:</h5>
+                  <ul className="text-sm text-emerald-700 space-y-1">
+                    <li>• {parsedInsights.length} AI-diagnosed critical areas</li>
+                    <li>• {parsedInsights.reduce((sum, insight) => sum + insight.resources.length, 0)} expert-curated resources</li>
+                    <li>• Cascade effect analysis</li>
+                    <li>• Specific 30-day action plans</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-blue-200">
+                  <h5 className="font-semibold text-blue-800 mb-2">🚀 Next Steps:</h5>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• Start with your #1 priority insight</li>
+                    <li>• Get the first recommended resource</li>
+                    <li>• Create targeted goals in GoalMine</li>
+                    <li>• Track progress with weekly check-ins</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="flex justify-center">
+                <Button onClick={onClose} className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-medium">
+                  <Target className="w-4 h-4 mr-2" />
+                  Close Analysis & Create Strategic Goals
                 </Button>
               </div>
             </div>

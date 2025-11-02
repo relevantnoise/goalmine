@@ -73,7 +73,7 @@ function generateLocalAnalysis(frameworkData: any) {
   const personalDevElement = elements.find((el: any) => el.name === 'Personal Development') || {};
   const stagnating = (personalDevElement.current || 0) < 3;
   
-  const relationshipElement = elements.find((el: any) => el.name === 'Friends & Family') || {};
+  const relationshipElement = elements.find((el: any) => el.name === 'Family & Friends') || {};
   const relationshipSuffering = (relationshipElement.current || 0) < 10;
   
   // Life situation insights
@@ -123,9 +123,9 @@ Think about it: you're allocating ${totalCurrentHours} total hours across your p
 
 The real insight? ${biggestGap.name} isn't just a nice-to-have for you - you rated its importance as ${biggestGap.importance || 0}/10. Yet your time allocation doesn't match that priority. This disconnect between what you value and how you spend time is likely creating daily frustration and long-term regret.
 
-What's probably happening: ${biggestGap.name === 'Sleep' ? 'You\'re sacrificing sleep for other things, which is actually making you less effective in those areas.' : biggestGap.name === 'Health & Fitness' ? 'You\'re probably telling yourself you\'ll focus on health "when things calm down" - but they never do.' : biggestGap.name === 'Personal Development' ? 'You\'re stuck in reactive mode, always busy but never growing.' : biggestGap.name === 'Friends & Family' ? 'Your relationships are suffering while you focus on everything else, creating guilt and disconnection.' : biggestGap.name === 'Spiritual' ? 'You\'re running on empty, lacking the deeper meaning that fuels everything else.' : 'You\'re probably overwhelmed and not seeing the results you want from all your effort.'}
+What's probably happening: ${biggestGap.name === 'Sleep' ? 'You\'re sacrificing sleep for other things, which is actually making you less effective in those areas.' : biggestGap.name === 'Health & Fitness' ? 'You\'re probably telling yourself you\'ll focus on health "when things calm down" - but they never do.' : biggestGap.name === 'Personal Development' ? 'You\'re stuck in reactive mode, always busy but never growing.' : biggestGap.name === 'Family & Friends' ? 'Your relationships are suffering while you focus on everything else, creating guilt and disconnection.' : biggestGap.name === 'Spiritual' ? 'You\'re running on empty, lacking the deeper meaning that fuels everything else.' : 'You\'re probably overwhelmed and not seeing the results you want from all your effort.'}
 
-IMMEDIATE RESOURCES: • Book: 'Atomic Habits' by James Clear • App: Calendar blocking to protect ${biggestGap.name} time • Action: This week, track exactly where your ${weeklyUnallocated} unaccounted hours actually go • Tool: Set phone reminders for ${biggestGap.name} activities`
+IMMEDIATE RESOURCES: • Book: 'Atomic Habits' by James Clear • Course: 'Building Better Habits' online course`
     },
     {
       type: "leverage_strength", 
@@ -155,7 +155,7 @@ ${workInsights ? 'Work happiness insight: ' + workInsights.trim() + ` ${burnoutS
 
 Success metric: ${burnoutSignals ? `Work only ${workElement.desired || workElement.current - 10} hours per week AND consistently hit ${biggestGap.desired || 0} hours for ${biggestGap.name}.` : `Consistently hit ${biggestGap.desired || 0} weekly hours in ${biggestGap.name} without sacrificing other areas.`}
 
-IMMEDIATE RESOURCES: ${burnoutSignals ? '• Book: "The 4-Hour Workweek" by Tim Ferriss for boundary strategies • Practice: Leave work at a specific time every day this week • Action: Say no to one non-essential work request' : '• Action: Block specific times for ' + biggestGap.name + ' in your calendar tomorrow • App: RescueTime to see where time actually goes'} • Tool: Weekly life review to catch problems early`
+IMMEDIATE RESOURCES: ${burnoutSignals ? '• Book: "Boundaries" by Henry Cloud • Course: "Work-Life Balance Mastery" online course' : '• Book: "The Power of Habit" by Charles Duhigg • Podcast: "The Tim Ferriss Show" for optimization strategies'}`
     }
   ];
 }
@@ -591,7 +591,7 @@ export const AssessmentCard = ({
                   const workElement = elements.find(el => el.name === 'Work') || {};
                   const sleepElement = elements.find(el => el.name === 'Sleep') || {};
                   const healthElement = elements.find(el => el.name === 'Health & Fitness') || {};
-                  const relationshipElement = elements.find(el => el.name === 'Friends & Family') || {};
+                  const relationshipElement = elements.find(el => el.name === 'Family & Friends') || {};
                   const personalDevElement = elements.find(el => el.name === 'Personal Development') || {};
                   
                   // Calculate total time allocation
@@ -734,6 +734,7 @@ export const AssessmentCard = ({
                       const enhancedInsights = generateLocalAnalysis(frameworkData);
                       setLocalAnalysis(enhancedInsights);
                       console.log('[AssessmentCard] Analysis generated successfully:', enhancedInsights);
+                      console.log('[AssessmentCard] Modal state - showFullAnalysis:', true, 'insights count:', enhancedInsights.length);
                     } else {
                       console.log('[AssessmentCard] ❌ Access denied - showing upgrade prompt');
                       toast({
@@ -759,6 +760,16 @@ export const AssessmentCard = ({
                   Edit Assessment
                 </Button>
               </div>
+              
+              {/* Weekly Check-in button - assessment-related */}
+              {onWeeklyCheckin && (
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={onWeeklyCheckin} className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Weekly Check-in
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -772,7 +783,7 @@ export const AssessmentCard = ({
               modalStateRef.current = false;
             }}
             frameworkData={frameworkData}
-            insights={aiInsights}
+            insights={localAnalysis.length > 0 ? localAnalysis : aiInsights}
           />
         )}
 

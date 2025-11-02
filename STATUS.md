@@ -87,7 +87,7 @@
 ✅ **Edge Functions**: save-weekly-checkin, generate-goal-suggestions with fallback systems
 ✅ **Framework Filtering Removed**: Eliminated complex goal filtering - clean separation achieved
 
-**THE 6 PILLARS**: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual
+**THE 6 PILLARS**: Work, Sleep, Family & Friends, Health & Fitness, Personal Development, Spiritual
 
 **DEPLOYMENT STATUS**: All transformational changes completed and operational October 28, 2025
 

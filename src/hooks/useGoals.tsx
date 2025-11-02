@@ -18,7 +18,7 @@ export interface Goal {
   last_checkin_date?: string;
   created_at: string;
   updated_at: string;
-  circle_type?: string;
+  pillar_type?: string;
   weekly_commitment_hours?: number;
   circle_interview_data?: any;
 }
@@ -255,7 +255,7 @@ export const useGoals = () => {
     target_date?: Date;
     tone?: 'drill_sergeant' | 'kind_encouraging' | 'teammate' | 'wise_mentor';
     time_of_day?: string;
-    circle_type?: string;
+    pillar_type?: string;
     weekly_commitment_hours?: number;
   }) => {
     if (!user) {
@@ -278,7 +278,7 @@ export const useGoals = () => {
         target_date: goalData.target_date ? goalData.target_date.toISOString().split('T')[0] : null,
         tone: goalData.tone || 'kind_encouraging',
         time_of_day: goalData.time_of_day || '07:00', // Default early morning time for daily motivation
-        circle_type: goalData.circle_type || null,
+        pillar_type: goalData.pillar_type || null,
         weekly_commitment_hours: goalData.weekly_commitment_hours || null,
         streak_count: 0,
         is_active: true
@@ -307,7 +307,7 @@ export const useGoals = () => {
       try {
         console.log('🤖 Generating initial LLM motivation for new goal:', data.goal.id);
         console.log('🤖 Goal details:', { title: data.goal.title, tone: data.goal.tone });
-        const initialMotivation = await generateGoalMotivation(data.goal.id);
+        const initialMotivation = await generateGoalMotivationDirect(data.goal);
         if (initialMotivation) {
           console.log('✅ Initial motivation generated successfully:', initialMotivation);
           // Cache it for immediate display
@@ -316,7 +316,7 @@ export const useGoals = () => {
             [data.goal.id]: initialMotivation
           }));
         } else {
-          console.log('⚠️ generateGoalMotivation returned null, trying fallback');
+          console.log('⚠️ generateGoalMotivationDirect returned null, trying fallback');
           await createBasicMotivationContent(data.goal);
         }
       } catch (error) {
@@ -582,18 +582,11 @@ export const useGoals = () => {
   };
 
   // Generate goal-specific motivation content using LLM
-  const generateGoalMotivation = async (goalId: string): Promise<MotivationContent | null> => {
+  // Direct goal motivation generation (for newly created goals)
+  const generateGoalMotivationDirect = async (goal: Goal): Promise<MotivationContent | null> => {
     if (!user) return null;
-
     try {
-      const goal = goals.find(g => g.id === goalId);
-      if (!goal) {
-        toast.error('Goal not found');
-        return null;
-      }
-
       console.log('🤖 Generating LLM motivation for goal:', goal.title);
-
       const { data, error } = await supabase.functions.invoke('generate-daily-motivation', {
         body: {
           goalId: goal.id,
@@ -607,21 +600,34 @@ export const useGoals = () => {
           isGeneralNudge: false
         }
       });
-
       if (error) {
         console.error('❌ LLM generation error:', error);
         // Don't show error toast - this is not critical for goal creation success
         return null;
       }
-
       console.log('✅ LLM motivation generated:', data);
-
       return {
         message: data.message,
         microPlan: Array.isArray(data.microPlan) ? data.microPlan : [data.microPlan],
         challenge: data.challenge,
         tone: goal.tone
       };
+    } catch (error) {
+      console.error('❌ Error generating goal motivation:', error);
+      // Don't show error toast - this is not critical for goal creation success
+      return null;
+    }
+  };
+
+  const generateGoalMotivation = async (goalId: string): Promise<MotivationContent | null> => {
+    if (!user) return null;
+    try {
+      const goal = goals.find(g => g.id === goalId);
+      if (!goal) {
+        toast.error('Goal not found');
+        return null;
+      }
+      return await generateGoalMotivationDirect(goal);
     } catch (error) {
       console.error('❌ Error generating goal motivation:', error);
       // Don't show error toast - this is not critical for goal creation success

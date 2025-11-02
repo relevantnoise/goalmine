@@ -661,9 +661,8 @@ const Index = () => {
       <SimpleGoalForm 
         onComplete={handleOnboardingComplete}
         onCancel={() => {
-          console.log('🔙 Cancel button pressed, returning to landing');
-          setCurrentView('landing');
-          hasInitialized.current = false;
+          console.log('🔙 Cancel button pressed, returning to dashboard');
+          setCurrentView('dashboard');
         }}
       />
     );

@@ -11,7 +11,7 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
   const pillars = [
     { name: "Work", icon: Briefcase, description: "Career, job(s) (including commute time)" },
     { name: "Sleep", icon: Moon, description: "Rest, recovery, energy management" },
-    { name: "Friends & Family", icon: Users, description: "Relationships, social connections" },
+    { name: "Family & Friends", icon: Users, description: "Relationships, social connections" },
     { name: "Health & Fitness", icon: Activity, description: "Physical wellbeing, energy, vitality" },
     { name: "Personal Development", icon: BookOpen, description: "Learning, growth, skills" },
     { name: "Spiritual", icon: Heart, description: "Inner purpose, values, meaning" }

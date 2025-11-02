@@ -1,7 +1,42 @@
 # GoalMine.ai - Cursor Project Documentation
 
-## 🚨 **STOP! READ THIS FIRST - CRITICAL DATABASE SCHEMA**
-**⚠️ EVERY CHAT SESSION GETS THIS WRONG! Here's the current reality:**
+## 🚨 **STOP! READ THIS FIRST - CRITICAL HYBRID ARCHITECTURE**
+**⚠️ EVERY CHAT SESSION GETS THIS WRONG! This causes hours of wasted debugging time.**
+
+### **🔥 CRITICAL: HYBRID USER ID ARCHITECTURE (READ THIS FIRST!)**
+**The system uses DIFFERENT user ID formats in DIFFERENT tables. DO NOT assume consistency!**
+
+```typescript
+// ✅ SUBSCRIBERS TABLE - ALWAYS uses EMAIL as user_id
+subscribers: {
+  user_id: "danlynn@gmail.com",    // ✅ EMAIL FORMAT ONLY
+  subscribed: boolean,
+  subscription_tier: string,
+  // ...
+}
+
+// ✅ GOALS TABLE - HYBRID supports BOTH formats  
+goals: {
+  user_id: "danlynn@gmail.com" OR "ABC123xyz",  // ✅ EMAIL OR Firebase UID
+  title: string,
+  // ...
+}
+
+// ✅ PROFILES TABLE - uses Firebase UID
+profiles: {
+  id: "ABC123xyz",              // ✅ Firebase UID ONLY
+  email: "danlynn@gmail.com",   // Email stored separately
+  // ...
+}
+```
+
+**⚠️ EDGE FUNCTION PATTERN - ALWAYS FOLLOW THIS:**
+1. **Subscription checks**: Query by EMAIL (`danlynn@gmail.com`)
+2. **Goal operations**: Try EMAIL first, fallback to Firebase UID
+3. **New goals**: Use Firebase UID for user_id
+4. **NEVER change subscriber.user_id from email to Firebase UID**
+
+**🚨 DOCUMENTED PRODUCTION TABLES (November 2025 - VERIFIED FROM SUPABASE):**
 
 ### **✅ CONFIRMED PRODUCTION TABLES (November 2025 - VERIFIED FROM SUPABASE):**
 
@@ -363,64 +398,16 @@ email_deliveries      -- Email delivery tracking
 - **Differentiation**: No competitor offers this depth of life design intelligence
 - **Scalability**: Clean architecture supports advanced features
 
-## 🔥 LEGACY: 5 CIRCLE FRAMEWORK™ INTEGRATION (October 25, 2025)
+## 🔥 LEGACY: 5 CIRCLE FRAMEWORK™ (SUPERSEDED BY 6 PILLARS)
 
-### DEPLOYMENT PLAN (October 25, 2025)
-**Current Status**: Framework integrated, waiting for trial expiration test
-1. **Test Period**: 4-5 days to observe danlynn@gmail.com trial expiration behavior
-2. **Production Reset**: Clean slate deployment removing existing goals/frameworks
-3. **Full Launch**: Universal 5 Circle Framework experience for all users
-4. **User Count**: 3 users (Dan Lynn + family) - safe for fresh start approach
+**Note**: This framework has been superseded by the 6 Pillars Framework. Maintained for reference only.
 
-### Revolutionary Life Management System
-Transform GoalMine.ai from simple goal tracking into comprehensive life's complexities management using Dan Lynn's proprietary 30-year framework.
-
-### Complete 5 Circle User Journey (UNIVERSAL - October 25, 2025)
-1. **Universal Onboarding** → ALL users route to 5 Circle Framework™ (no choice component)
-2. **Circle Interview** → 15-20 minute personalized assessment across 5 life circles
-3. **AI Goal Workshop** → Intelligent goal suggestions based on personal definitions with subscription limits
-4. **Circle Dashboard** → Goals organized by life circles with time allocation tracking (PRIMARY experience)
-5. **Ongoing Management** → Circle-aware goal tracking and optimization
-6. **Subscription Benefits** → Goal limits: Free (1), Personal (3), Pro (5), Strategic (5)
-
-### Technical Architecture
-```
-5 Circle Database Schema:
-├── circle_frameworks (user framework instances)
-├── circle_profiles (individual circle definitions) 
-├── circle_specific_data (detailed circle information)
-├── weekly_circle_plans (time allocation plans)
-└── goals (enhanced with circle_type, weekly_commitment_hours)
-
-Components Added:
-├── FiveCircleOnboarding (universal interview process)
-├── FiveCircleGoalWorkshop (AI-guided goal creation with limits)
-├── FiveCircleDashboard (PRIMARY dashboard experience)
-├── SmartDashboard (REMOVED - simplified to direct FiveCircleDashboard)
-└── GoalCreationChoice (REMOVED - universal experience)
-
-Edge Functions:
-├── create-five-circle-framework (saves interview data)
-└── generate-goal-suggestions (AI goal recommendations)
-```
-
-### The Five Circles
+### The Five Circles (Legacy)
 - **Spiritual**: Inner purpose, values, meaning
 - **Friends & Family**: Relationships, social connections
 - **Work**: Career, professional development, income
 - **Personal Development**: Learning, growth, skills
 - **Health & Fitness**: Physical wellbeing, energy, vitality
-
-### Smart Dashboard System
-- **Auto-Detection**: Checks for existing 5 Circle Framework data
-- **Toggle Functionality**: Switch between traditional and circle views
-- **Circle Analytics**: Progress tracking, time allocation, streak monitoring per circle
-- **Goal Organization**: Goals displayed within appropriate life circles
-
-### Testing Setup (Current)
-- **Production**: danlynn@gmail.com remains free user (4 days trial remaining)
-- **Development**: danlynn@gmail.com appears as Pro Plan via code override
-- **Purpose**: Test 5 Circle experience while preserving real trial expiration flow
 
 ## Tech Stack
 - Frontend: Vite + React + TypeScript
@@ -445,40 +432,80 @@ Edge Functions:
 - Email stored separately for lookups
 - 30-day trial auto-configured
 
-### HYBRID User ID Architecture (Resolved September 2025)
+### 🔥🔥🔥 HYBRID USER ID ARCHITECTURE - MEMORIZE THIS! 🔥🔥🔥
+**⚠️ THIS IS THE #1 SOURCE OF CHAT SESSION CONFUSION - STUDY CAREFULLY**
+
 ```typescript
-// Profile Table Structure
-profiles: {
-  id: string,           // Firebase UID (e.g., "ABC123xyz")  
-  email: string,        // User email (e.g., "user@example.com")
-  trial_expires_at: timestamp
-}
-
-// Goals Table Structure (HYBRID - supports both formats)
-goals: {
-  id: string,
-  user_id: string,      // Can be EITHER:
-                        // - Firebase UID (e.g., "ABC123xyz") [NEW architecture]
-                        // - Email (e.g., "user@example.com") [OLD architecture]
-  title: string,
-  // ...
-}
-
-// Subscribers Table Structure  
+// 🚨 SUBSCRIBERS TABLE - ALWAYS EMAIL FORMAT (NEVER CHANGE THIS!)
 subscribers: {
-  user_id: string,      // Always email format
+  user_id: "danlynn@gmail.com",    // ✅ EMAIL - subscription lookups use this
   subscribed: boolean,
+  subscription_tier: string,       // "Professional Plan", "Personal Plan", etc.
   // ...
+}
+
+// 🚨 GOALS TABLE - HYBRID FORMAT (supports both)
+goals: {
+  user_id: "danlynn@gmail.com" OR "ABC123xyz",  // Can be EMAIL or Firebase UID
+  title: string,
+  pillar_type: string,             // "Work", "Sleep", "Health & Fitness", etc.
+  // ...
+}
+
+// 🚨 PROFILES TABLE - FIREBASE UID FORMAT
+profiles: {
+  id: "ABC123xyz",                 // ✅ Firebase UID - auth lookups use this
+  email: "danlynn@gmail.com",      // Email stored separately for reference
+  trial_expires_at: timestamp
 }
 ```
 
-### Hybrid Edge Function Architecture (RESOLVED)
+**🚨 CRITICAL EDGE FUNCTION PATTERNS (ALWAYS FOLLOW THESE):**
+
+1. **SUBSCRIPTION VALIDATION**: 
+   ```typescript
+   // ✅ CORRECT - Query subscribers by EMAIL
+   .eq('user_id', 'danlynn@gmail.com')
+   
+   // ❌ WRONG - Don't query by Firebase UID  
+   .eq('user_id', 'ABC123xyz')
+   ```
+
+2. **GOAL OPERATIONS (HYBRID APPROACH)**:
+   ```typescript
+   // ✅ CORRECT - Try both approaches
+   const emailGoals = await query.eq('user_id', email);
+   const uidGoals = await query.eq('user_id', firebaseUID);
+   return [...emailGoals, ...uidGoals];
+   ```
+
+3. **NEW GOAL CREATION**:
+   ```typescript
+   // ✅ CORRECT - Use Firebase UID for new goals
+   user_id: actualUserId  // Firebase UID from profile lookup
+   ```
+
+### Hybrid Edge Function Architecture (RESOLVED September 2025)
+**🔥 CRITICAL UNDERSTANDING: Frontend sends email, edge functions handle hybrid lookups**
 - Frontend sends email as user_id (unchanged)
-- Edge functions support both architectures
+- Edge functions support both architectures automatically
 - Goal retrieval: Query email AND Firebase UID, combine results
 - Goal operations: Email first, Firebase UID fallback
 - New goals use Firebase UID
 - Email system auto-detects goal format
+
+### 🚨 FINAL WARNING: COMMON MISTAKES TO AVOID 🚨
+**These mistakes waste hours every chat session:**
+
+❌ **NEVER DO THIS**: Change subscriber.user_id from email to Firebase UID
+❌ **NEVER DO THIS**: Assume all tables use the same user_id format
+❌ **NEVER DO THIS**: Query subscribers table with Firebase UID
+❌ **NEVER DO THIS**: Ignore the hybrid architecture and try to "fix" it
+
+✅ **ALWAYS DO THIS**: Read this section first before any user_id related work
+✅ **ALWAYS DO THIS**: Follow the documented patterns exactly
+✅ **ALWAYS DO THIS**: Test subscription lookups with EMAIL format
+✅ **ALWAYS DO THIS**: Remember goals table supports BOTH formats
 
 ### Hybrid Functions (September 2025)
 - fetch-user-goals: Dual lookup, combines all goals
@@ -749,85 +776,19 @@ if (goal.user_id.includes('@')) {
 }
 ```
 
-### Email System Issues ✅ **DUPLICATE EMAIL CRISIS ELIMINATED (OCTOBER 7, 2025)**
+### Email System Issues ✅ **RESOLVED (OCTOBER 2025)**
 
-**ROOT CAUSE: Multiple Supabase Cron Jobs (Oct 7, 2025)**
-- Problem: 3 simultaneous cron jobs causing 2+ emails per goal
-- Solution: Eliminated all Supabase cron jobs, implemented single Vercel cron
-- Result: Single daily delivery with AI content
-- Status: ✅ DUPLICATE EMAILS ELIMINATED
+**Status**: ✅ DUPLICATE EMAILS ELIMINATED
+- **Root Cause**: Multiple Supabase cron jobs
+- **Solution**: Single Vercel cron with direct OpenAI integration
+- **Result**: Reliable daily delivery with AI content
 
-**Historical Fixes (All Resolved):**
-- Email timing issues (Sept 17, 2025)
-- Authentication errors (Sept 16, 2025)
-- Free trial email delivery (Sept 14, 2025)
-- Hybrid profile lookup (Sept 12, 2025)
-- Duplicate email prevention (Sept 12, 2025)
-- Subscription field fixes (Sept 11, 2025)
-- Resend verification setup
-- Check-in link security
-- Templates in `/supabase/functions/send-motivation-email/index.ts`
-
-### Hybrid Profile Lookup (September 12, 2025)
-- Problem: Profile lookup only handled email-based goals
-- Solution: Dual query strategy with auto-detection
-- Auto-detection: `goal.user_id.includes('@')` determines lookup method
-- Result: All users receive emails regardless of architecture
-
-### Duplicate Email Fix (September 12, 2025)
-- Problem: Race condition allowed multiple processing
-- Solution: Atomic `last_motivation_date` update
-- Result: Exactly 1 email per goal per day
-
-### Dual Environment Fix (September 14, 2025)
-- Problem: Both dev and production running same cron
-- Solution: Environment detection in `/api/trigger-daily-emails.js`
-- Implementation: `req.headers.host` blocks dev domains
-- Result: Only production sends emails
-
-### Free Trial Email Fix (September 14, 2025)
-- Problem: Subscription filter excluded free trial users
-- Solution: Removed filter, rely on trial expiration logic
-- Result: Free trials receive emails during valid period
-
-### Email Check-In Security Fix (September 15, 2025)
-- Problem: Generic check-in links without user identification
-- Solution: Added user/goal/timestamp parameters
-- Security: Firebase email as validation authority
-- Result: Bulletproof user-specific link validation
-
-### Custom Domain Email Fix (September 15, 2025)
-- Problem: Resend sandbox limited to verified accounts
-- Solution: Verified custom domain notifications.goalmine.ai
-- DNS: MX, TXT/SPF, DKIM records configured
-- Result: All users receive emails regardless of domain
-
-### Email System Warnings (Updated Sept 26, 2025)
-
-**Previous Failure: Zero Emails (Sept 26, 2025)**
-- Issue: Goals marked processed before confirming delivery
-- Fix: Success confirmation pattern
-- Pattern: Multiple "tomorrow it will work" promises
-
-**Architectural Issue**
-- Both dev/production use same GitHub repo
-- Environment detection in api/trigger-daily-emails.js
-- Solution: Branch-based deployment needed
-
-### Email Fix #5: Success Confirmation (Sept 26, 2025)
-- Before: Mark processed immediately
-- After: Send email first, mark only if successful
-- Benefit: Failed emails retry automatically
-- Files: send-daily-emails/index.ts (replaced)
-
-### Debug Tools (Added Sept 11, 2025)
-- debug-email-issues: Database diagnostics
-- test-resend-simple: Direct API testing
-- cleanup-duplicate-profiles: User cleanup
-- debug-duplicate-emails: Analysis tool
-- reset-goals-for-testing: Reset states
-- Browser/Supabase/Edge function logs
-- Stripe dashboard for payments
+**Key Historical Fixes:**
+- Fixed multiple cron jobs causing duplicate emails
+- Implemented atomic `last_motivation_date` update
+- Added environment detection for dev/production
+- Established bulletproof check-in link security
+- Configured custom domain (notifications.goalmine.ai)
 
 ## Performance & UX Optimizations
 
@@ -866,78 +827,22 @@ if (goal.user_id.includes('@')) {
 
 ## Recent Technical Developments
 
-### Email System Failure - FINAL RESOLUTION: Direct AI Integration (October 7, 2025)
-- **ULTIMATE FIX**: Deployed `send-daily-emails-new` with direct OpenAI integration
-- **Root Problem**: Function-to-function calls between Supabase edge functions were failing consistently
-- **Technical Issue**: `generate-daily-motivation` function calls from `send-daily-emails` causing timeouts/errors
-- **Final Solution**: Inlined sophisticated ChatGPT prompt system directly into email function
-- **Deployment Fix**: Fixed escaped template literal syntax preventing function deployment
-- **Testing**: Successfully sent emails with goal-specific AI content (verified by user)
-- **Result**: 2-month "fake content" issue permanently resolved with enterprise-grade AI coaching
-- **Status**: ✅ PRODUCTION-READY AI EMAIL SYSTEM (October 7, 2025)
+### Email System Resolution (October 2025) ✅ COMPLETE
+- **Final Fix**: Direct OpenAI integration in email function
+- **Root Issue**: Function-to-function calls between edge functions failing
+- **Solution**: Inlined ChatGPT prompt system for reliable AI content
+- **Result**: Production-ready email system with goal-specific AI coaching
 
-### Email System Failure - Previous API Routing Fix (October 5, 2025)
-- **BREAKTHROUGH**: Identified and fixed the actual root cause after months of date logic troubleshooting
-- **Real Problem**: Vercel routing configuration was redirecting ALL API calls to `/index.html`
-- **Routing Issue**: `vercel.json` rewrite rule `"source": "/(.*)"` caught `/api/*` paths
-- **Fix Applied**: Changed to `"source": "/((?!api).*)"` to exclude API routes  
-- **Result**: External cron services can now successfully reach the production endpoint
-- **Verification**: `https://www.goalmine.ai/api/trigger-daily-emails` returns proper JSON response
-- **Status**: ✅ AUTOMATED DAILY EMAILS FULLY OPERATIONAL (October 5, 2025)
+### Critical Architecture Fixes ✅ COMPLETE
+- **Goal Editing**: Fixed `.maybeSingle()` PostgreSQL errors with proper array handling
+- **API Routing**: Fixed Vercel routing blocking `/api/*` paths
+- **UTC Consistency**: Simplified timezone logic for reliable daily delivery
 
-### Email System Failure - Previous UTC Fix Attempt (October 1, 2025)
-- **NEW PROBLEM**: Pacific/Midway solution created date logic mismatch causing zero emails to be sent
-- **Root Cause**: Query date vs marking date inconsistency
-  - **Query date**: `2025-09-30` (Pacific/Midway - 1 day adjustment)
-  - **Marking date**: `2025-10-01` (actual UTC date when goals processed)
-  - **Result**: System looked for goals older than yesterday, but they were marked as today
-- **FINAL SOLUTION**: Simple UTC consistency approach
-  - **Timing**: Keep cron at `0 11 * * *` (11:00 UTC = 7:00 AM EDT) ✅
-  - **Date Logic**: Use UTC date for both query and marking operations ✅
-  - **Implementation**: `const todayDate = now.toISOString().split('T')[0]`
-- **Benefits**: Eliminates timezone complexity, works year-round, predictable behavior
-- **Status**: Deployed October 1, 2025 - emails will work starting tomorrow 7 AM EDT
-
-### Goal Editing Fix - FINAL RESOLUTION (September 30, 2025)
-- **Problem**: Goal editing appeared to work (dialog opened, changes made, save clicked) but changes didn't persist to database
-- **Root Cause**: `.maybeSingle()` calls in `update-goal` edge function causing PostgreSQL "Cannot coerce the result to a single JSON object" errors
-- **FINAL SOLUTION**: Replaced ALL `.maybeSingle()` calls with proper array handling throughout update-goal function
-- **Result**: Goal editing now works perfectly - users see "Goal updated successfully" toast and changes persist across sessions
-
-### Email Timing Issue - Previous Pacific/Midway Solution (September 22, 2025) [SUPERSEDED]
-- **Problem**: Daily emails consistently arriving at wrong times (8 PM EDT, then midnight EDT) despite multiple fix attempts
-- **ROOT CAUSE DISCOVERY**: Date rollover triggering, NOT time-based triggering
-- **Pacific/Midway Solution**: Used timezone (UTC-11) for date calculation to match 7 AM EDT timing
-- **Issue**: Created date mismatch between query logic and goal marking logic
-- **Lesson Learned**: Simple solutions often work better than complex timezone mathematics
-
-### Data Structure Handling
-- **MicroPlan Format**: Components handle both string and array formats for `motivation.microPlan`
-- **Implementation**: Use conditional logic to convert strings to arrays before mapping
-
-### Loading State Management  
-- **Auth Loading**: Dashboard uses `authLoading` from `useAuth` to prevent "No Active Goals" flash
-- **Coordination**: Loading logic is `shouldShowLoading = authLoading || loading`
-- **Pattern**: Always coordinate auth state with data loading states
-
-### Database Permissions
-- **RLS Policy Issue**: Frontend cannot directly write to `motivation_history` table
-- **Solution**: Edge functions handle database writes with service role privileges
-- **Edge Function**: `generate-daily-motivation` now saves motivation to database automatically
-- **Pattern**: Use edge functions for any database writes that might be blocked by RLS
-
-### Email Verification Flow (Aug 2024)
-- **Issue**: Email verification links redirected to sign-in page instead of goal creation
-- **Solution**: Changed Firebase verification redirect from `/auth?verified=true` to `/?email-verified=true`
-- **Implementation**: Index.tsx detects `email-verified=true` parameter and forces goal creation
-- **Pattern**: Use URL parameters to maintain context across Firebase redirects
-
-### Expired Goals & Trials System (Sep 2024)
-- **Implementation**: 5-phase rollout ensuring no breaking changes
-- **Frontend**: Status badges, permission-based UI, upgrade prompts
-- **Backend**: Full permission validation in key edge functions
-- **Email System**: Smart skip logic prevents individual goal emails to expired scenarios
-- **Architecture**: Consistent business logic across frontend/backend with helper functions
+### Key Technical Patterns
+- **Data Handling**: Components handle both string/array formats for `motivation.microPlan`
+- **Loading Coordination**: Always combine `authLoading + dataLoading` to prevent UI flashes
+- **Database Permissions**: Use edge functions for writes (RLS bypassed with service role)
+- **Email Verification**: Use URL parameters to maintain context across Firebase redirects
 
 ## Content Generation Strategy
 
@@ -966,34 +871,9 @@ if (goal.user_id.includes('@')) {
 5. **Handle missing content gracefully** with user-friendly messages
 6. **Universal nudges** eliminate goal-selection complexity
 
-## Recent Technical Developments
-
-### Pro Plan Implementation & UI Improvements (October 12, 2025)
-- **NEW SUBSCRIPTION TIER**: Added Pro Plan at $199.99/month between Personal ($4.99) and Strategic Advisor ($950)
-- **Pro Plan Features**: 5 goals, 5 daily nudges + 1-hour monthly group Q&A sessions with Dan Lynn
-- **Stripe Integration**: Configured with price ID `price_1SHE5DCElVmMOup2zX8H4qnJ`
-- **Backend Updates**: Updated `create-checkout`, `create-goal`, `useNudgeLimit` functions for 5-goal/5-nudge limits
-- **UI Architecture**: Implemented 4-tier pricing layout (Free → Personal → Pro → Strategic)
-- **Design Optimizations**: Font size reductions, centered layouts, improved spacing for cramped 4-tier display
-- **Button Text Fixes**: Resolved overflow issues with "Upgrade Now" standardization
-- **Bio Integration**: Added Dan Lynn bio links to Pro Plan cards for group Q&A context
-- **STATUS**: ✅ IMPLEMENTATION COMPLETE - TESTING IN PROGRESS (not yet deployed to production)
-- **SAFETY**: All changes are additive - existing functionality preserved and working perfectly
-
-### Universal Nudge System & Goal Detail Intelligence (October 11, 2025)
-- **Universal Nudge Implementation**: Completely redesigned nudge system for dashboard-level operation
-- **Problem Solved**: Eliminated goal selection issues causing wrong tone/goal content in nudges
-- **Enhanced AI Prompt**: Powerful 35-50 word universal motivation that works for any goal type
-- **Goal Detail Reality Check**: Documented actual smart content system vs. outdated "pre-generated" assumption
-- **Architecture Improvement**: Simplified nudge logic from conditional goal-specific to universal approach
-- **User Experience**: Consistent high-quality motivation regardless of user's goal configuration
-- **Technical Benefits**: Eliminated edge cases, improved reliability, enhanced AI prompt quality
-
-### AI Content Generation System Restored (October 2, 2025)
-- **Critical Fix**: Daily emails upgraded from basic to advanced AI generation system
-- **Function Change**: `generate-daily-motivation-simple` → `generate-daily-motivation`
-- **Quality Upgrade**: Generic content (C-) → Expert coaching (A+)
-- **Features Restored**: Goal-specific expertise, authentic tone personalities, proven strategies
-- **Impact**: Core value proposition now fully operational in daily motivation emails
+### Pro Plan & Feature Updates (October 2025) ✅ COMPLETE
+- **New Tier**: Pro Plan at $199.99/month with 5 goals + group Q&A sessions
+- **Universal Nudges**: Redesigned system for dashboard-level operation (eliminated goal selection issues)
+- **AI Enhancement**: Restored advanced generation system for expert coaching quality
 
 This documentation provides a comprehensive overview for developers working on GoalMine.ai, covering architecture, features, user flow, performance optimizations, and critical UX patterns that must be maintained.

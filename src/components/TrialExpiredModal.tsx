@@ -116,7 +116,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
           </div>
 
           <p className="text-xs text-center text-muted-foreground">
-            30-day money-back guarantee • Cancel anytime
+            Cancel anytime
           </p>
         </div>
       </DialogContent>
