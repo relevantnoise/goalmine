@@ -584,10 +584,43 @@ export const AssessmentCard = ({
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <Brain className="w-6 h-6 text-blue-600" />
-                    <h4 className="text-lg font-bold text-blue-800">AI Strategic Analysis</h4>
+                    <h4 className="text-lg font-bold text-blue-800">Your AI-Powered Assessment Analysis Summary</h4>
                   </div>
-                  <div className="text-gray-700 leading-relaxed">
-                    {dashboardSummary}
+                  <div className="text-gray-700 leading-relaxed space-y-4">
+                    {/* Format the summary for better readability */}
+                    {dashboardSummary.split('. ').map((sentence, index, array) => {
+                      // Clean up the sentence and add period if not the last one
+                      const cleanSentence = sentence.trim() + (index < array.length - 1 && !sentence.endsWith('.') ? '.' : '');
+                      
+                      // Skip empty sentences
+                      if (!cleanSentence || cleanSentence === '.') return null;
+                      
+                      // First sentence - main insight
+                      if (index === 0) {
+                        return (
+                          <div key={index} className="bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <p className="font-semibold text-blue-900 text-base">{cleanSentence}</p>
+                          </div>
+                        );
+                      }
+                      
+                      // Look for numbered lists (1., 2., 3.)
+                      if (/^\d+\./.test(cleanSentence)) {
+                        return (
+                          <div key={index} className="flex items-start gap-3 pl-4">
+                            <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                              {cleanSentence.match(/^(\d+)/)?.[1]}
+                            </div>
+                            <p className="text-gray-700 flex-1">{cleanSentence.replace(/^\d+\.\s*/, '')}</p>
+                          </div>
+                        );
+                      }
+                      
+                      // Regular sentences
+                      return (
+                        <p key={index} className="text-gray-700 leading-relaxed">{cleanSentence}</p>
+                      );
+                    }).filter(Boolean)}
                   </div>
                 </div>
               ) : isGeneratingAI ? (

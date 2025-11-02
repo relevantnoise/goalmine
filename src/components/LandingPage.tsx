@@ -131,7 +131,7 @@ export const LandingPage = ({
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-3xl md:text-4xl font-bold mb-6">
-                Why Most Goal Systems Fail Ambitious Professionals
+                Why Most Goal Systems Fail Ambitious High-Achievers
               </h3>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 You're juggling career advancement, family relationships, personal growth, health, and spiritual fulfillment. 
