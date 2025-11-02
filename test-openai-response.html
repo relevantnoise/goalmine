@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test OpenAI Response</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
+        #result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; white-space: pre-wrap; max-height: 500px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test OpenAI AI Generation</h1>
+    
+    <button onclick="testOpenAI()">Test OpenAI with Dan's Real Data</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testOpenAI() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing OpenAI with real assessment data...';
+            
+            // Dan's actual assessment data
+            const assessmentData = {
+              pillars: [
+                { name: "Friends & Family", importance: 10, currentHours: 10, idealHours: 20, timeGap: 10 },
+                { name: "Health & Fitness", importance: 10, currentHours: 0, idealHours: 8, timeGap: 8 },
+                { name: "Personal Development", importance: 10, currentHours: 0, idealHours: 20, timeGap: 20 },
+                { name: "Sleep", importance: 10, currentHours: 55, idealHours: 60, timeGap: 5 },
+                { name: "Spiritual", importance: 10, currentHours: 0, idealHours: 3, timeGap: 3 },
+                { name: "Work", importance: 5, currentHours: 60, idealHours: 50, timeGap: -10 }
+              ],
+              workHappiness: {
+                impact: { current: 5, desired: 10 },
+                enjoyment: { current: 8, desired: 10 },
+                income: { current: 1, desired: 10 },
+                remote: { current: 7, desired: 10 }
+              }
+            };
+
+            const prompt = `You are an expert life coach who reads between the lines of assessment data to diagnose real problems and patterns.
+
+Analyze their 6 Pillars Framework and Business Happiness Formula data. Look for:
+- Burnout signals (working 50+ hours but wanting less)
+- Cascade effects (work overflow → sleep sacrifice → health neglect)
+- Sacrificial patterns (what they're giving up for what)
+- Priority mismatches (high importance, low time allocation)
+- Unsustainable cycles
+
+BE DIRECT AND HONEST. Call out problems like:
+- "Working 60 hours isn't a strength, it's a problem"
+- "You're in classic burnout - this isn't about time management, it's about boundaries"
+- "You're borrowing from sleep to handle work, creating a vicious cycle"
+
+Generate EXACTLY 3 insights that READ THEIR SPECIFIC DATA:
+
+[
+  {
+    "insight_type": "priority_focus",
+    "title": "Your [Specific Pillar] Wake-Up Call",
+    "content": "Here's what your assessment reveals: [specific hours/gaps]. You're spending X hours but want Y hours. That's Z work days per year missing from something you rated as important. [Diagnose what's probably happening based on their specific pattern]. IMMEDIATE RESOURCES: • Book: '[Specific book title]' • Course: '[Specific online course]'"
+  },
+  {
+    "insight_type": "leverage_strength", 
+    "title": "What Your Life Pattern Reveals",
+    "content": "Let's be honest about what's happening: [read between the lines - burnout? overcommitment? sacrifice patterns?]. [Specific analysis of their hours/patterns]. This isn't about time management - it's about [real problem]. The real insight: [what they actually need to address]. IMMEDIATE RESOURCES: • Book: '[Specific to their situation]' • Podcast: '[Specific podcast recommendation]'"
+  },
+  {
+    "insight_type": "strategic_sequence",
+    "title": "The Real Problem & Solution",
+    "content": "Here's what your assessment is really telling me: [specific diagnosis]. [Describe cascade effects if present]. The solution isn't optimization - it's [intervention/boundaries/priority reset]. 30-day plan: [specific to their situation]. IMMEDIATE RESOURCES: • Book: '[Specific book for their situation]' • Course: '[Relevant online course]'"
+  }
+]
+
+USER'S ASSESSMENT DATA:
+${JSON.stringify(assessmentData, null, 2)}
+
+Use their ACTUAL NUMBERS. Be specific about hours, gaps, and patterns. No generic advice.
+
+RESOURCE GUIDELINES:
+- Only recommend books, online courses, or podcasts (NO APPS)
+- Limit to exactly 2 resources per insight
+- Mix resource types: books, courses, podcasts
+- Choose well-known, reputable resources`;
+            
+            try {
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-ai-direct-return', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTE5MDM3NSwiZXhwIjoyMDcwNzY2Mzc1fQ.183iYvXPSTtSl3GeWOwhqk0Rhx17PXVrGVAdADfNjfI'
+                    },
+                    body: JSON.stringify({
+                        userEmail: 'danlynn@gmail.com'
+                    })
+                });
+
+                const data = await response.json();
+                result.textContent = 'OpenAI Results:\n' + JSON.stringify(data, null, 2);
+                
+            } catch (error) {
+                result.textContent = 'Error: ' + error.message;
+                result.style.background = '#f8d7da';
+                result.style.color = '#721c24';
+            }
+        }
+    </script>
+</body>
+</html>

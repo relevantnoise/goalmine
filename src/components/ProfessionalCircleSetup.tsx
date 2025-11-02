@@ -97,7 +97,7 @@ const elements = [
     icon: Heart,
     color: 'text-purple-600',
     bgColor: 'bg-purple-50 border-purple-200',
-    description: 'Inner purpose, values, meaning, meditation, prayer',
+    description: 'Inner purpose, values, meaning, faith, meditation, prayer',
     placeholder: 'Meditation, prayer, values reflection'
   }
 ];
@@ -254,10 +254,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
 
       // Automatically generate AI insights after framework creation
       try {
-        const { data: aiData, error: aiError } = await supabase.functions.invoke('generate-ai-insights', {
+        const { data: aiData, error: aiError } = await supabase.functions.invoke('generate-ai-direct-return', {
           body: {
-            userEmail: user.email,
-            frameworkId: frameworkData.frameworkId
+            userEmail: user.email
           }
         });
 
@@ -443,6 +442,11 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                               <Label className="text-sm font-medium text-gray-700">Current Hours/Week</Label>
                               <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
                                 {data.current_hours_per_week || 0}h
+                                {element.name === 'Sleep' && data.current_hours_per_week > 0 && (
+                                  <span className="text-xs text-gray-500 block">
+                                    ({(data.current_hours_per_week / 7).toFixed(1)} hrs/night)
+                                  </span>
+                                )}
                               </div>
                               <Slider
                                 value={[data.current_hours_per_week || 0]}
@@ -458,6 +462,11 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                               <Label className="text-sm font-medium text-gray-700">Ideal Hours/Week</Label>
                               <div className="text-center text-sm font-medium text-gray-700 mt-1 mb-2">
                                 {data.ideal_hours_per_week || 0}h
+                                {element.name === 'Sleep' && data.ideal_hours_per_week > 0 && (
+                                  <span className="text-xs text-gray-500 block">
+                                    ({(data.ideal_hours_per_week / 7).toFixed(1)} hrs/night)
+                                  </span>
+                                )}
                               </div>
                               <Slider
                                 value={[data.ideal_hours_per_week || 0]}

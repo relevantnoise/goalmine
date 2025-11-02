@@ -1,22 +1,22 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-);
-
-const handler = async (req: Request): Promise<Response> => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    // Initialize Supabase client with service role
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
     const { userEmail } = await req.json();
     
     if (!userEmail) {
@@ -25,31 +25,108 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('[AI-DIRECT-RETURN] Generating AI insights for user:', userEmail);
 
-    // Get user's real framework data from database
-    const { data: frameworkResponse } = await supabase.functions.invoke('fetch-framework-data', {
-      body: { userEmail }
-    });
+    // Get user's real framework data directly from database
+    console.log('[AI-DIRECT-RETURN] Fetching framework data for user:', userEmail);
 
-    if (!frameworkResponse?.hasFramework || !frameworkResponse?.data) {
-      throw new Error('No framework data found for user');
+    // Get Firebase UID from profile (following hybrid architecture)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('email', userEmail)
+      .single();
+
+    if (!profile) {
+      throw new Error('User profile not found');
     }
 
-    const { framework, elements, workHappiness } = frameworkResponse.data;
+    const userId = profile.id;
+    console.log('[AI-DIRECT-RETURN] Using Firebase UID:', userId);
+
+    // Get framework (using same logic as fetch-framework-data)
+    let framework;
+    const { data: primaryFramework, error: frameworkError } = await supabase
+      .from('user_frameworks')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    // If no user_frameworks entry, check if assessment data exists directly
+    if (frameworkError?.code === 'PGRST116') {
+      console.log('[AI-DIRECT-RETURN] No user_frameworks entry, checking for assessment data directly...');
+      
+      // Check if pillar assessment data exists for this user
+      const { data: directElements, error: directError } = await supabase
+        .from('pillar_assessments')
+        .select('framework_id')
+        .eq('user_email', userEmail)
+        .limit(1);
+
+      if (directError || !directElements || directElements.length === 0) {
+        throw new Error('No framework or assessment data found for user');
+      }
+
+      // Get the framework using the framework_id from assessment data
+      const frameworkId = directElements[0].framework_id;
+      const { data: directFramework, error: directFrameworkError } = await supabase
+        .from('user_frameworks')
+        .select('*')
+        .eq('id', frameworkId)
+        .single();
+
+      if (directFrameworkError || !directFramework) {
+        throw new Error('Framework data inconsistent');
+      }
+
+      console.log('[AI-DIRECT-RETURN] Using framework from assessment data:', frameworkId);
+      framework = directFramework;
+    } else if (frameworkError || !primaryFramework) {
+      throw new Error('No active framework found for user');
+    } else {
+      framework = primaryFramework;
+    }
+
+    // Get pillar assessments (elements)
+    const { data: elements, error: elementsError } = await supabase
+      .from('pillar_assessments')
+      .select('*')
+      .eq('framework_id', framework.id)
+      .order('pillar_name');
+
+    if (elementsError) {
+      console.error('[AI-DIRECT-RETURN] Elements error:', elementsError);
+      throw new Error('Failed to fetch pillar assessments');
+    }
+
+    // Get work happiness data
+    const { data: workHappiness, error: workError } = await supabase
+      .from('work_happiness')
+      .select('*')
+      .eq('framework_id', framework.id)
+      .single();
+
+    console.log('[AI-DIRECT-RETURN] Framework data loaded:', { 
+      frameworkId: framework.id, 
+      elementsCount: elements?.length || 0, 
+      hasWorkHappiness: !!workHappiness 
+    });
     
     // Transform real user data into assessment format for AI
     const assessmentData = {
       pillars: elements.map((element: any) => ({
-        name: element.name,
-        importance: element.importance,
-        currentHours: element.current,
-        idealHours: element.desired,
-        timeGap: element.gap
+        name: element.pillar_name,
+        importance: element.importance_level,
+        currentHours: element.current_hours_per_week,
+        idealHours: element.ideal_hours_per_week,
+        timeGap: (element.ideal_hours_per_week || 0) - (element.current_hours_per_week || 0)
       })),
       workHappiness: workHappiness ? {
-        impact: { current: workHappiness.impactCurrent, desired: workHappiness.impactDesired },
-        enjoyment: { current: workHappiness.funCurrent, desired: workHappiness.funDesired },
-        income: { current: workHappiness.moneyCurrent, desired: workHappiness.moneyDesired },
-        remote: { current: workHappiness.remoteCurrent, desired: workHappiness.remoteDesired }
+        impact: { current: workHappiness.impact_current, desired: workHappiness.impact_desired },
+        enjoyment: { current: workHappiness.enjoyment_current, desired: workHappiness.enjoyment_desired },
+        income: { current: workHappiness.income_current, desired: workHappiness.income_desired },
+        remote: { current: workHappiness.remote_current, desired: workHappiness.remote_desired }
       } : null
     };
 
@@ -61,40 +138,62 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('OpenAI API key not configured');
     }
 
-    const prompt = `You are an AI coach analyzing this person's 6 Pillars of Life™ Framework assessment. Your job is to provide honest, helpful insights based on their actual data - no corporate jargon or exaggerated claims.
+    const prompt = `You are an expert life coach who reads between the lines of assessment data to diagnose real problems and patterns.
+
+Analyze their 6 Pillars Framework AND Business Happiness Formula data. Look for:
+- Burnout signals (working 50+ hours but wanting less)
+- Cascade effects (work overflow → sleep sacrifice → health neglect)
+- Sacrificial patterns (what they're giving up for what)
+- Priority mismatches (high importance, low time allocation)
+- Unsustainable cycles
+- Work satisfaction gaps (impact, enjoyment, income, flexibility)
+- Career fulfillment issues (low impact/income scores reveal deeper problems)
+
+BE DIRECT AND HONEST. Call out problems like:
+- "Working 60 hours isn't a strength, it's a problem"
+- "You're in classic burnout - this isn't about time management, it's about boundaries"
+- "You're borrowing from sleep to handle work, creating a vicious cycle"
+- "Impact score of 3/10 means you're not doing meaningful work - that's soul-crushing"
+- "Income satisfaction of 1/10 suggests you're undervalued or in the wrong role"
+
+Generate EXACTLY 3 insights that READ THEIR SPECIFIC DATA:
+
+[
+  {
+    "insight_type": "priority_focus",
+    "title": "Your [Specific Pillar] Wake-Up Call",
+    "content": "Here's what your assessment reveals: [specific hours/gaps]. You're spending X hours but want Y hours. That's Z work days per year missing from something you rated as important. [Diagnose what's probably happening based on their specific pattern]. This isn't about time management - it's about [real problem]. IMMEDIATE RESOURCES: • Book: '[Specific book title]' • Course: '[Specific online course]'"
+  },
+  {
+    "insight_type": "work_happiness_analysis", 
+    "title": "Your Business Happiness Formula Diagnosis",
+    "content": "Your work satisfaction scores reveal critical issues: Impact [X/10 → Y/10], Income [X/10 → Y/10], Enjoyment [X/10 → Y/10], Flexibility [X/10 → Y/10]. [Analyze the specific gaps and what they mean]. The biggest red flag is [specific lowest score]. This suggests [specific career problem]. IMMEDIATE RESOURCES: • Book: '[Specific to their work situation]' • Podcast: '[Career/business specific recommendation]'"
+  },
+  {
+    "insight_type": "strategic_sequence",
+    "title": "The Real Problem & Solution",
+    "content": "Here's what your assessment is really telling me: [specific diagnosis]. [Describe cascade effects if present]. The solution isn't optimization - it's [intervention/boundaries/priority reset]. 30-day plan: [specific to their situation]. IMMEDIATE RESOURCES: • Book: '[Specific book for their situation]' • Course: '[Relevant online course]'"
+  }
+]
 
 USER'S ASSESSMENT DATA:
 ${JSON.stringify(assessmentData, null, 2)}
 
-ANALYSIS APPROACH:
-Look at their assessment honestly and identify:
-1. What pillar has the biggest gap between current and desired state
-2. What patterns you notice in their ratings
-3. How different pillars might be connected (e.g., sleep affects work performance)
+Use their ACTUAL NUMBERS from BOTH the 6 Pillars AND Business Happiness Formula. Be specific about:
+- Pillar hours, gaps, and patterns  
+- Work satisfaction scores (impact, income, enjoyment, flexibility)
+- How the two assessments connect (e.g., low work satisfaction + long work hours)
+No generic advice - reference their specific numbers!
 
-PROVIDE EXACTLY 3 INSIGHTS:
-Each insight should be helpful, specific, and honest - like advice from a knowledgeable friend who cares about their success.
-
-Format each insight:
-- insight_type: Choose from "gap_analysis", "pattern_recognition", or "connection_insight"  
-- title: A clear, friendly title that explains the insight (8-15 words)
-- content: 4-6 sentences explaining:
-  - What you notice in their data
-  - Why this matters for their life/goals
-  - Specific suggestions for what to focus on
-  - How this might help other areas too
-
-Keep language conversational and supportive. Avoid buzzwords like "enterprise intelligence" or "advanced pattern recognition" - just be genuinely helpful.
-
-Examples of good language:
-- "Looking at your assessment..."
-- "This often helps with..."  
-- "You might find that..."
-- "Consider focusing on..."
-
-Return as JSON array with exactly 3 insights.`;
+RESOURCE GUIDELINES:
+- Only recommend books, online courses, or podcasts (NO APPS)
+- Limit to exactly 2 resources per insight
+- Mix resource types: books, courses, podcasts
+- Choose well-known, reputable resources`;
 
     console.log('[AI-DIRECT-RETURN] Calling OpenAI with Enterprise Strategic Intelligence engine...');
+    console.log('[AI-DIRECT-RETURN] Assessment data being sent:', JSON.stringify(assessmentData, null, 2));
+    console.log('[AI-DIRECT-RETURN] OpenAI API Key exists:', !!openaiApiKey);
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -107,7 +206,7 @@ Return as JSON array with exactly 3 insights.`;
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful AI coach analyzing life assessment data. Be honest, supportive, and practical. Focus on what the data actually shows and give specific, actionable advice. Avoid corporate jargon - write like a knowledgeable friend who wants to help them succeed. Your insights should help them understand their assessment results and guide them toward creating meaningful goals.'
+            content: 'You are an expert life coach who reads between the lines of assessment data to diagnose real problems and patterns. Be direct and honest about what you see. Call out burnout, unsustainable patterns, and sacrificial behaviors. Focus on their actual numbers and specific situations, not generic advice. Include specific actionable resources like books, courses, and practices.'
           },
           {
             role: 'user',
@@ -119,14 +218,18 @@ Return as JSON array with exactly 3 insights.`;
       }),
     });
 
+    console.log('[AI-DIRECT-RETURN] OpenAI response status:', openaiResponse.status);
+    
     if (!openaiResponse.ok) {
       const errorText = await openaiResponse.text();
-      console.error('[AI-DIRECT-RETURN] OpenAI API error:', errorText);
+      console.error('[AI-DIRECT-RETURN] OpenAI API error status:', openaiResponse.status);
+      console.error('[AI-DIRECT-RETURN] OpenAI API error text:', errorText);
       throw new Error(`OpenAI API error: ${openaiResponse.status} ${errorText}`);
     }
 
     const openaiResult = await openaiResponse.json();
-    console.log('[AI-DIRECT-RETURN] OpenAI response received');
+    console.log('[AI-DIRECT-RETURN] OpenAI response received successfully');
+    console.log('[AI-DIRECT-RETURN] OpenAI result structure:', Object.keys(openaiResult));
 
     const aiContent = openaiResult.choices[0]?.message?.content;
     if (!aiContent) {
@@ -136,25 +239,52 @@ Return as JSON array with exactly 3 insights.`;
     // Parse the AI response
     let insights;
     try {
+      console.log('[AI-DIRECT-RETURN] Raw AI content received:', aiContent);
       insights = JSON.parse(aiContent);
+      console.log('[AI-DIRECT-RETURN] Successfully parsed AI insights:', insights.length);
     } catch (parseError) {
-      console.error('[AI-DIRECT-RETURN] Failed to parse AI response as JSON:', aiContent);
-      // Create helpful fallback insights when AI parsing fails
+      console.error('[AI-DIRECT-RETURN] JSON PARSE ERROR:', parseError);
+      console.error('[AI-DIRECT-RETURN] Raw AI content that failed to parse:', aiContent);
+      console.error('[AI-DIRECT-RETURN] Content length:', aiContent?.length);
+      console.error('[AI-DIRECT-RETURN] Content preview:', aiContent?.substring(0, 200));
+      
+      // Create data-driven fallback insights based on actual assessment data
+      console.log('[AI-DIRECT-RETURN] Generating data-driven fallback insights from assessment data');
+      
+      // Find biggest pillar gap
+      const biggestGap = assessmentData.pillars.reduce((max, pillar) => 
+        Math.abs(pillar.timeGap) > Math.abs(max.timeGap) ? pillar : max
+      );
+      
+      // Find work happiness biggest gap
+      let workHappinessIssue = null;
+      if (assessmentData.workHappiness) {
+        const gaps = [
+          { area: 'impact', gap: assessmentData.workHappiness.impact.desired - assessmentData.workHappiness.impact.current },
+          { area: 'income', gap: assessmentData.workHappiness.income.desired - assessmentData.workHappiness.income.current },
+          { area: 'enjoyment', gap: assessmentData.workHappiness.enjoyment.desired - assessmentData.workHappiness.enjoyment.current },
+          { area: 'flexibility', gap: assessmentData.workHappiness.remote.desired - assessmentData.workHappiness.remote.current }
+        ];
+        workHappinessIssue = gaps.reduce((max, gap) => gap.gap > max.gap ? gap : max);
+      }
+      
       insights = [
         {
-          insight_type: "gap_analysis",
-          title: "Your Biggest Opportunity for Positive Change",
-          content: "Looking at your assessment, it appears you have significant room for improvement in one or more life areas. The good news is that focusing on your biggest gap often creates positive changes elsewhere too. Consider starting with the pillar where you rated yourself lowest compared to where you want to be. Small, consistent improvements in your weakest area can build momentum and confidence for tackling other goals. You might find that strengthening one pillar naturally supports the others."
+          insight_type: "priority_focus",
+          title: `Your ${biggestGap.name} Opportunity`,
+          content: `Your assessment shows a ${Math.abs(biggestGap.timeGap)}-hour weekly gap in ${biggestGap.name} (${biggestGap.currentHours} current → ${biggestGap.idealHours} ideal). This represents your biggest time allocation opportunity. ${biggestGap.timeGap > 0 ? 'You want to invest more time here, which suggests this area is important to you.' : 'You\'re spending more time than desired, which may indicate overcommitment.'} Consider creating a goal to ${biggestGap.timeGap > 0 ? 'increase' : 'reduce'} your weekly ${biggestGap.name} time by ${Math.abs(biggestGap.timeGap)} hours.`
         },
         {
-          insight_type: "pattern_recognition", 
-          title: "Building on Your Strengths",
-          content: "Every assessment reveals both challenges and strengths. While it's important to address gaps, don't forget to leverage what's already working well in your life. Your stronger pillars can provide energy and confidence to tackle tougher areas. Consider how your successful habits or mindsets from high-performing areas might apply to struggling ones. This strength-based approach often feels more sustainable than trying to fix everything at once."
+          insight_type: "work_happiness_analysis",
+          title: workHappinessIssue ? `Your Work ${workHappinessIssue.area.charAt(0).toUpperCase() + workHappinessIssue.area.slice(1)} Challenge` : "Your Work Satisfaction Analysis",
+          content: workHappinessIssue ? 
+            `Your Business Happiness Formula reveals a ${workHappinessIssue.gap}-point gap in work ${workHappinessIssue.area}. This suggests ${workHappinessIssue.area} is a key area for professional improvement. ${workHappinessIssue.area === 'income' ? 'Financial satisfaction is crucial for long-term motivation.' : workHappinessIssue.area === 'impact' ? 'Meaningful work impact drives job satisfaction.' : workHappinessIssue.area === 'flexibility' ? 'Location and schedule flexibility affects work-life balance.' : 'Work enjoyment directly impacts daily motivation.'} Consider setting a goal to improve your work ${workHappinessIssue.area}.` :
+            "Your work satisfaction assessment shows opportunities for improvement. Focus on the areas where you rated yourself lowest compared to your desired state."
         },
         {
-          insight_type: "connection_insight",
-          title: "How Your Life Pillars Work Together",
-          content: "Your life pillars don't exist in isolation - they influence each other in important ways. For example, better sleep often improves work performance, and regular exercise can boost both physical health and mental clarity. As you create goals, think about how improving one area might naturally support others. This interconnected approach can multiply your efforts and create positive momentum across multiple life areas."
+          insight_type: "strategic_sequence",
+          title: "Your Next Steps",
+          content: `Based on your assessment data, start with your biggest gap: ${biggestGap.name}. ${workHappinessIssue ? `Additionally, address your work ${workHappinessIssue.area} challenge. ` : ''}Remember that life pillars are interconnected - improving one area often positively impacts others. Set specific, measurable goals rather than vague intentions.`
         }
       ];
     }
@@ -211,10 +341,73 @@ Return as JSON array with exactly 3 insights.`;
 
     console.log('[AI-DIRECT-RETURN] Success! Generated', formattedInsights.length, 'insights');
 
+    // Generate dashboard summary directly (inline to avoid JWT issues)
+    console.log('[AI-DIRECT-RETURN] Generating dashboard summary...');
+    try {
+      const summaryPrompt = `Create a concise 200-word dashboard summary from these AI insights:
+
+${formattedInsights.map(insight => `${insight.title}: ${insight.description}`).join('\n\n')}
+
+Extract the 3 most important points into a coherent summary that:
+1. Identifies the biggest opportunities 
+2. Explains key patterns or problems
+3. Provides clear next steps
+
+Keep it conversational and actionable. Focus on what matters most.`;
+
+      const summaryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a life coach creating dashboard summaries. Be concise, actionable, and focused on the most important insights.'
+            },
+            {
+              role: 'user',
+              content: summaryPrompt
+            }
+          ],
+          max_tokens: 300,
+          temperature: 0.7
+        })
+      });
+
+      if (summaryResponse.ok) {
+        const summaryResult = await summaryResponse.json();
+        const dashboardSummary = summaryResult.choices[0]?.message?.content || 'Summary not available';
+        
+        // Store dashboard summary as a special insight
+        await supabase
+          .from('ai_insights')
+          .insert([{
+            framework_id: framework.id,
+            user_email: userEmail,
+            insight_type: 'dashboard_summary',
+            title: 'Your Personalized Strategy',
+            description: dashboardSummary,
+            priority: 'Critical',
+            is_read: false
+          }]);
+          
+        console.log('[AI-DIRECT-RETURN] Dashboard summary generated and stored successfully');
+      } else {
+        console.error('[AI-DIRECT-RETURN] Dashboard summary generation failed');
+      }
+    } catch (summaryError) {
+      console.error('[AI-DIRECT-RETURN] Failed to generate dashboard summary:', summaryError);
+      // Continue without failing the main request
+    }
+
     return new Response(JSON.stringify({
       success: true,
       insights: formattedInsights,
-      message: `Generated ${formattedInsights.length} AI insights`,
+      message: `Generated ${formattedInsights.length} AI insights and dashboard summary`,
       timestamp: new Date().toISOString()
     }), {
       status: 200,
@@ -232,6 +425,4 @@ Return as JSON array with exactly 3 insights.`;
       headers: { "Content-Type": "application/json", ...corsHeaders }
     });
   }
-};
-
-serve(handler);
+})

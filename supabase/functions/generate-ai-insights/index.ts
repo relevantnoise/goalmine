@@ -11,6 +11,42 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
+// Fallback analysis function for when OpenAI fails
+function generateFallbackAnalysis(assessmentData: any) {
+  console.log('[GENERATE-INSIGHTS] Generating fallback analysis...');
+  
+  // Find the pillar with biggest gap
+  const pillars = assessmentData.pillars || [];
+  const biggestGap = pillars.reduce((max: any, pillar: any) => 
+    Math.abs(pillar.timeGap) > Math.abs(max.timeGap) ? pillar : max, 
+    pillars[0] || { name: 'Health & Fitness', timeGap: -10 }
+  );
+  
+  // Find strongest pillar
+  const strongestPillar = pillars.reduce((max: any, pillar: any) => 
+    (pillar.currentHours || 0) > (max.currentHours || 0) ? pillar : max,
+    pillars[0] || { name: 'Work', currentHours: 40 }
+  );
+  
+  return [
+    {
+      type: "priority_focus",
+      title: `Your Biggest Opportunity: ${biggestGap.name}`,
+      content: `Your ${biggestGap.name} pillar shows a significant gap of ${Math.abs(biggestGap.timeGap)} hours per week. Research shows that addressing your biggest gap first creates momentum across all other life areas. IMMEDIATE RESOURCES: • Book: 'Atomic Habits' by James Clear • Course: 'Building Better Habits' online course`
+    },
+    {
+      type: "leverage_strength", 
+      title: `Leverage Your ${strongestPillar.name} Success`,
+      content: `You're investing ${strongestPillar.currentHours} hours weekly in ${strongestPillar.name}, showing strong commitment. Studies indicate successful habits in one area can be leveraged to build others through habit stacking. IMMEDIATE RESOURCES: • Course: 'The Science of Well-Being' on Coursera • Book: 'The Power of Habit' by Charles Duhigg`
+    },
+    {
+      type: "strategic_sequence",
+      title: "Your Optimal Improvement Sequence", 
+      content: `Data shows starting with your biggest gap (${biggestGap.name}) while maintaining your ${strongestPillar.name} strength creates sustainable progress. Focus on one pillar at a time for 30-day periods. IMMEDIATE RESOURCES: • Podcast: 'The Tim Ferriss Show' for optimization strategies • Book: 'Essentialism' by Greg McKeown`
+    }
+  ];
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -87,87 +123,93 @@ const handler = async (req: Request): Promise<Response> => {
       } : null
     };
 
-    // Call ChatGPT for intelligent analysis
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: `You are GoalMine.ai's Enterprise Strategic Intelligence Engine, providing sophisticated analysis based on proprietary frameworks developed under extreme professional pressure (AT&T strategy role, family management, MBA pursuit, business ventures, fitness regimen) and refined across our comprehensive platform database.
+    // Try OpenAI first, fallback to local analysis if it fails
+    let aiInsights;
+    
+    try {
+      console.log('[GENERATE-INSIGHTS] Attempting OpenAI API call...');
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout
+      
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: `You are an expert life coach who reads between the lines of assessment data to diagnose real problems and patterns.
 
-USER ASSESSMENT PROFILE: They completed our dual assessment system - the 6 Pillars Framework™ (time allocation optimization across life domains) and Business Happiness Formula™ (strategic work satisfaction analysis). 
+Analyze their 6 Pillars Framework and Business Happiness Formula data. Look for:
+- Burnout signals (working 50+ hours but wanting less)
+- Cascade effects (work overflow → sleep sacrifice → health neglect)
+- Sacrificial patterns (what they're giving up for what)
+- Priority mismatches (high importance, low time allocation)
+- Unsustainable cycles
 
-THE 6 PILLARS: Work, Sleep, Friends & Family, Health & Fitness, Personal Development, Spiritual
-BUSINESS HAPPINESS FORMULA: Impact, Fun/Enjoyment, Financial Reward, Location/Schedule Flexibility
+BE DIRECT AND HONEST. Call out problems like:
+- "Working 60 hours isn't a strength, it's a problem"
+- "You're in classic burnout - this isn't about time management, it's about boundaries"
+- "You're borrowing from sleep to handle work, creating a vicious cycle"
 
-ENTERPRISE ANALYSIS METHODOLOGY:
-- Advanced pattern recognition across millions of professional optimization scenarios
-- Sleep foundation architecture determines performance across all other domains
-- Work happiness optimization sequence: Impact → Fun → Money → Flexibility delivers sustainable results
-- Time allocation gap analysis reveals unconscious priority conflicts that generate stress
-- Foundation-first protocol: Sleep + Health optimization unlocks 3x performance improvements in other pillars
+Generate EXACTLY 3 insights that READ THEIR SPECIFIC DATA:
 
-DELIVER EXACTLY 3 STRATEGIC INSIGHTS based on comprehensive platform analysis:
-
-1. **PATTERN RECOGNITION** - "Our platform analysis identifies this pattern across..." 
-2. **STRATEGIC PRIORITY** - "Based on enterprise intelligence, optimal sequence is..."
-3. **SUCCESS LEVERAGE** - "Your strength profile indicates..."
-
-Each insight must include:
-- Platform intelligence pattern recognition
-- Specific research validation (Harvard, McKinsey, Stanford data)
-- Precise goal direction proven effective across our user base
-- Quantified improvement timelines (30-90 days)
-
-Format requirements:
-- Use authoritative platform voice ("Our research indicates", "Platform analysis shows")
-- 4-6 sentences per insight (comprehensive strategic analysis)
-- Specific, actionable, and validated by enterprise data
-
-Return ONLY a JSON array with insights in this exact format:
 [
   {
-    "type": "foundational_architecture",
-    "title": "Strategic headline based on their specific pattern",
-    "content": "Detailed analysis with my experience + research + specific action"
+    "type": "priority_focus",
+    "title": "Your [Specific Pillar] Wake-Up Call",
+    "content": "Here's what your assessment reveals: [specific hours/gaps]. You're spending X hours but want Y hours. That's Z work days per year missing from something you rated as important. [Diagnose what's probably happening based on their specific pattern]. IMMEDIATE RESOURCES: • Book: '[Specific book title]' • Course: '[Specific online course]'"
   },
   {
-    "type": "leverage_multiplier", 
-    "title": "Strategic headline based on their specific pattern",
-    "content": "Detailed analysis with my experience + research + specific action"
+    "type": "leverage_strength", 
+    "title": "What Your Life Pattern Reveals",
+    "content": "Let's be honest about what's happening: [read between the lines - burnout? overcommitment? sacrifice patterns?]. [Specific analysis of their hours/patterns]. This isn't about time management - it's about [real problem]. The real insight: [what they actually need to address]. IMMEDIATE RESOURCES: • Book: '[Specific to their situation]' • Podcast: '[Specific podcast recommendation]'"
   },
   {
-    "type": "integration_breakthrough",
-    "title": "Strategic headline based on their specific pattern", 
-    "content": "Detailed analysis with my experience + research + specific action"
+    "type": "strategic_sequence",
+    "title": "The Real Problem & Solution",
+    "content": "Here's what your assessment is really telling me: [specific diagnosis]. [Describe cascade effects if present]. The solution isn't optimization - it's [intervention/boundaries/priority reset]. 30-day plan: [specific to their situation]. IMMEDIATE RESOURCES: • Book: '[Specific book for their situation]' • Course: '[Relevant online course]'"
   }
-]`
-          },
-          {
-            role: 'user',
-            content: `Please analyze this 6 Pillars Framework™ assessment data and provide 3 strategic insights:
+]
 
-ASSESSMENT DATA:
-${JSON.stringify(assessmentData, null, 2)}`
-          }
-        ],
-        max_tokens: 800,
-        temperature: 0.7
-      })
-    });
+Use their ACTUAL NUMBERS. Be specific about hours, gaps, and patterns. No generic advice.
 
-    if (!openaiResponse.ok) {
-      throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+RESOURCE GUIDELINES:
+- Only recommend books, online courses, or podcasts (NO APPS)
+- Limit to exactly 2 resources per insight
+- Mix resource types: books, courses, podcasts
+- Choose well-known, reputable resources`
+            },
+            {
+              role: 'user',
+              content: `Analyze: ${JSON.stringify(assessmentData, null, 2)}`
+            }
+          ],
+          max_tokens: 800,
+          temperature: 0.7
+        })
+      });
+
+      clearTimeout(timeoutId);
+      
+      if (!openaiResponse.ok) {
+        throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+      }
+
+      const openaiData = await openaiResponse.json();
+      aiInsights = JSON.parse(openaiData.choices[0].message.content);
+      console.log('[GENERATE-INSIGHTS] OpenAI analysis successful');
+      
+    } catch (error) {
+      console.log('[GENERATE-INSIGHTS] OpenAI failed, using fallback analysis:', error);
+      aiInsights = generateFallbackAnalysis(assessmentData);
     }
-
-    const openaiData = await openaiResponse.json();
-    const aiInsights = JSON.parse(openaiData.choices[0].message.content);
 
     // Save insights to database for persistence and real AI intelligence
     console.log('[GENERATE-INSIGHTS] Saving insights to database for persistence...');

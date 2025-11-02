@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Enhanced AI Insights</title>
+</head>
+<body>
+    <h1>Test Enhanced AI Insights with Resources</h1>
+    <button onclick="testInsights()">Generate Test Insights</button>
+    <div id="results"></div>
+
+    <script>
+        async function testInsights() {
+            const testData = {
+                userEmail: "danlynn@gmail.com",
+                frameworkId: "test-framework-123"
+            };
+
+            try {
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/generate-ai-insights', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer sbp_d01b3aec29b48e8cb4c4fc8c7677cfa6a72660b5'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const result = await response.json();
+                document.getElementById('results').innerHTML = `
+                    <h2>Test Results:</h2>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `
+                    <h2>Error:</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
