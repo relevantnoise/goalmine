@@ -69,9 +69,9 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
             <div className="space-y-3 text-green-800">
               <p><strong>1. AI Assessment:</strong> Intelligent system captures your current and desired state across all life domains</p>
               <p><strong>2. Gap Analysis:</strong> Advanced algorithms identify priority areas for maximum life transformation</p>
-              <p><strong>3. Strategic Architecture:</strong> AI generates personalized goals based on your unique complexity patterns</p>
-              <p><strong>4. Time Optimization:</strong> Platform helps allocate weekly hours across domains for optimal balance</p>
-              <p><strong>5. Progress Intelligence:</strong> Real-time analytics and AI coaching maintain momentum and adjust strategies</p>
+              <p><strong>3. Goal Creation & Management:</strong> Create goals across any pillar with personalized AI coaching and daily motivation</p>
+              <p><strong>4. Life Evolution Updates:</strong> Update your assessment as your life changes to maintain accurate insights and balance</p>
+              <p><strong>5. Daily Motivation System:</strong> Daily AI-powered motivational email boosts as well as goal-specific motivational content in the AI coaching tone of your choice</p>
             </div>
           </div>
 

@@ -120,19 +120,19 @@ export const Methodology = () => {
                 <div className="flex gap-3">
                   <span className="font-bold text-green-900">3.</span>
                   <div>
-                    <strong>Strategic Architecture:</strong> AI generates personalized goals based on your unique complexity patterns
+                    <strong>Goal Creation & Management:</strong> Create goals across any pillar with personalized AI coaching and daily motivation
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <span className="font-bold text-green-900">4.</span>
                   <div>
-                    <strong>Time Optimization:</strong> Platform helps allocate weekly hours across domains for optimal balance
+                    <strong>Life Evolution Updates:</strong> Update your assessment as your life changes to maintain accurate insights and balance
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <span className="font-bold text-green-900">5.</span>
                   <div>
-                    <strong>Progress Intelligence:</strong> Real-time analytics and AI coaching maintain momentum and adjust strategies
+                    <strong>Daily Motivation System:</strong> Daily AI-powered motivational email boosts as well as goal-specific motivational content in the AI coaching tone of your choice
                   </div>
                 </div>
               </div>
