@@ -174,7 +174,11 @@ export const Methodology = () => {
             {/* Navigation */}
             <div className="text-center pt-8 border-t">
               <Button 
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  navigate('/');
+                  // Ensure scroll to top after navigation
+                  setTimeout(() => window.scrollTo(0, 0), 100);
+                }}
                 variant="outline"
                 size="lg"
                 className="text-primary border-primary hover:bg-primary hover:text-white"
