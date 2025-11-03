@@ -46,12 +46,16 @@ export const LandingPage = ({
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
               <span className="text-primary">Master Life's Complexities</span><br />
-              with Two Proven Tools
+              with our Proven Frameworks
             </h2>
             
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals and other high-achievers don't need another goal app. You need a <strong>systematic approach</strong> to managing life's complexities. 
+            <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
+              Ambitious professionals and other high-achievers don't need another goal app. You need a <strong>sophisticated platform</strong> for managing life's complexities. 
               GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> transform scattered goals into integrated life management.
+            </p>
+            
+            <p className="text-2xl font-semibold text-primary mb-8 max-w-3xl mx-auto text-center italic">
+              Remember, happiness isn't achieving the goal. Happiness is the journey.
             </p>
 
             {/* 6 Pillars Visual - Ordered: Work, Family & Friends, Health & Fitness, Spiritual, Personal Development, Sleep */}
@@ -95,7 +99,7 @@ export const LandingPage = ({
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals, entrepreneurs, and high-achievers.</strong> 
+              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals, entrepreneurs, and high-achievers.</strong>{" "}
               The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes professional satisfaction. 
               Now powered by advanced AI for personalized guidance.
             </p>
@@ -119,6 +123,18 @@ export const LandingPage = ({
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </>}
+          </div>
+
+          <div className="flex justify-center mb-4">
+            <Button 
+              onClick={() => navigate('/methodology')} 
+              variant="outline" 
+              size="lg" 
+              className="text-primary border-primary hover:bg-primary hover:text-white text-base px-6 py-3"
+            >
+              Learn More About Our Proven Frameworks
+              <Target className="ml-2 w-4 h-4" />
+            </Button>
           </div>
           
           <p className="text-sm text-muted-foreground">30-day free trial • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>

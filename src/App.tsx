@@ -13,6 +13,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import { UpgradePage } from "./pages/UpgradePage";
 import { SetupDatabase } from "./pages/SetupDatabase";
 import { EditFrameworkPage } from "./components/EditFrameworkPage";
+import { Methodology } from "./pages/Methodology";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/goal/:goalId" element={<GoalDetail />} />
             <Route path="/upgrade" element={<UpgradePage />} />
+            <Route path="/methodology" element={<Methodology />} />
             <Route path="/setup-database" element={<SetupDatabase />} />
             <Route path="/edit-framework" element={<EditFrameworkPage onComplete={() => window.location.href = '/'} onCancel={() => window.location.href = '/'} />} />
             <Route path="/success" element={<Success />} />

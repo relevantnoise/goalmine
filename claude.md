@@ -664,14 +664,19 @@ interface MotivationContent {
 
 ## Email System
 
-### Daily Emails (SIMPLIFIED SYSTEM - Current)
+### Daily Emails (SIMPLIFIED SYSTEM - Current November 2025)
 - **UNIVERSAL DELIVERY**: 6 AM Eastern for ALL users (no user time selection)
-- **EMAIL CONTENT**: AI-generated goal-specific content + progress tracking  
-- **FORMAT**: HTML templates with check-in links
+- **EMAIL CONTENT**: ✅ **CURRENT SYSTEM**: Single "Your daily motivation boost" email per user with active goals
+- **EMAIL ARCHITECTURE**: 
+  - **One email per user** (not per goal) if they have at least 1 active goal
+  - **Universal fresh motivation** generated daily via AI (same for all users, changes daily)
+  - **No longer tone-specific or goal-specific** (eliminated old individual goal emails)
+  - **Clean, simple template**: Screenshot reference `/var/folders/wg/_k4qktzj0jxbjlys727l6w780000gn/T/TemporaryItems/NSIRD_screencaptureui_D7yOzi/Screenshot 2025-11-03 at 7.31.46 AM.png`
+- **FORMAT**: HTML templates with "Open Dashboard & Check In" button
 - **SERVICE**: Resend with custom domain (noreply@notifications.goalmine.ai)
-- **DELIVERY METHOD**: External cron via Vercel (not Supabase cron)
-- **KEY CHANGE**: Removed individual email time preferences - unified 6 AM delivery
-- **Status**: ✅ FULLY AUTOMATED (Oct 5, 2025 fix)
+- **DELIVERY METHOD**: `send-daily-wake-up-call` function via daily cron
+- **KEY CHANGE**: Transformed from goal-specific emails to consolidated daily boost system
+- **Status**: ✅ FULLY AUTOMATED and WORKING PERFECTLY (November 2025)
 
 ### Email Link Flow
 - Check-in links with user/goal/timestamp parameters

@@ -318,12 +318,23 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               You're about to complete a comprehensive <strong>2-step assessment</strong> that combines GoalMine.ai's proven and proprietary frameworks. 
-              Both tools work together to help set strategic goals that help optimize your life and career to reduce stress and increase satisfaction.
+              Both tools work together to help set strategic goals that optimize your life and career to reduce stress and increase satisfaction. 
+              <span className="text-green-700 font-medium"> Don't worry - this assessment takes less than 5 minutes to complete.</span>
             </p>
           </div>
           
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            {currentSection === 'circles' ? 'The 6 Pillars of Life™ Setup' : 'Business Happiness Formula™ Assessment'}
+            {currentSection === 'circles' ? (
+              <span className="flex items-center justify-center gap-3">
+                <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-lg font-semibold">Step 1</span>
+                The 6 Pillars of Life™ Setup
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-3">
+                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-lg font-semibold">Step 2</span>
+                Business Happiness Formula™ Assessment
+              </span>
+            )}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             {currentSection === 'circles' 
@@ -397,7 +408,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                       <TrendingUp className="w-7 h-7" />
                       Your 6 Life Pillars
                     </CardTitle>
-                    <p className="text-blue-100">Allocate your weekly hours across these essential life pillars. Focus on importance and ideal time investment.</p>
+                    <p className="text-blue-100">
+                      This framework was developed over 30 years ago and has helped hundreds of high-achievers better understand their stress drivers and create strategic goals to reduce them. This comprehensive system helps high-achieving professionals balance all essential life pillars: work, sleep, relationships, health, growth, and purpose.
+                    </p>
                   </CardHeader>
                 </Card>
 
