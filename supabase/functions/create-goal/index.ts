@@ -13,6 +13,8 @@ serve(async (req) => {
 
   try {
     console.log('[CREATE-GOAL] Function started, method:', req.method);
+    console.log('[CREATE-GOAL] Request URL:', req.url);
+    console.log('[CREATE-GOAL] Request headers:', Object.fromEntries(req.headers.entries()));
     
     // Check environment variables first
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -237,11 +239,15 @@ serve(async (req) => {
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ Error in create-goal function:', errorMessage);
+    console.error('❌ Error in create-goal function:', error);
+    console.error('❌ Error type:', typeof error);
+    console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('❌ Error message:', errorMessage);
     
     return new Response(JSON.stringify({ 
       success: false, 
-      error: errorMessage 
+      error: errorMessage,
+      details: error instanceof Error ? error.stack : 'No additional details'
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

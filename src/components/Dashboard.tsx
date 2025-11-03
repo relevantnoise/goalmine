@@ -25,9 +25,10 @@ interface DashboardProps {
   onViewFramework?: () => void;
   onCircleCheckin?: () => void;
   onTakeAssessment?: () => void;
+  onGoalDeleted?: () => void;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin, onTakeAssessment }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin, onTakeAssessment, onGoalDeleted }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
@@ -39,6 +40,15 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
   console.log('🔍 Dashboard subscription data:', subscription);
   const [isNudging, setIsNudging] = useState(false);
   const [isCheckingLimits, setIsCheckingLimits] = useState(false);
+
+  // Wrapper for deleteGoal that handles success callback
+  const handleDeleteGoal = async (goalId: string) => {
+    const result = await deleteGoal(goalId);
+    if (result?.success && onGoalDeleted) {
+      onGoalDeleted();
+    }
+    return result;
+  };
 
   const handleNudgeMe = async () => {
     setIsNudging(true);
@@ -179,7 +189,7 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                       key={goal.id} 
                       goal={goal} 
                       motivation={todaysMotivation[goal.id] || null} 
-                      onDelete={deleteGoal} 
+                      onDelete={handleDeleteGoal} 
                       onResetStreak={resetStreak} 
                       onUpdate={updateGoal} 
                       onCheckIn={checkIn} 
@@ -370,7 +380,6 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                           </div>
                           <div className="text-muted-foreground">• Up to {maxGoals} goals ({regularGoals.length}/{maxGoals} used)</div>
                           <div className="text-muted-foreground">• Up to {maxNudges} daily nudges</div>
-                          <div className="text-muted-foreground">• Priority email delivery</div>
                           {(tier === 'Pro Plan' || tier === 'Strategic Advisor Plan') && (
                             <div className="text-muted-foreground">• Enhanced features & support</div>
                           )}

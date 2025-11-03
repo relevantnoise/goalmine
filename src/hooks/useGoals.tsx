@@ -465,14 +465,15 @@ export const useGoals = () => {
       // Refresh goals to ensure consistency with backend
       await fetchGoals();
       
-      // Show success toast after backend sync completes
-      toast.success('🗑️ Goal deleted! Time to dream up something new.');
+      // Return success - let parent component handle the alert
+      return { success: true };
       
     } catch (error) {
       console.error('❌ Error deleting goal:', error);
       toast.error('Failed to delete goal. Please try again.');
       // Revert optimistic update on error
       await fetchGoals();
+      return { success: false, error: error.message };
     }
   };
 

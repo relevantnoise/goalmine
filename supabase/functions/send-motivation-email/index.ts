@@ -180,6 +180,15 @@ const handler = async (req: Request): Promise<Response> => {
             </a>
           </div>
 
+          <!-- Life Reflection Prompt -->
+          <div style="text-align: center; margin: 0 40px 30px 40px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px;">
+              <p style="color: #64748b; font-size: 14px; margin: 0; line-height: 1.5;">
+                Life changes. If your priorities have shifted recently, consider reviewing your 6 Pillars Framework to keep your life architecture aligned.
+              </p>
+            </div>
+          </div>
+
           <!-- Footer -->
           <div style="text-align: center; padding: 40px; border-top: 1px solid #f0f0f0;">
             <p style="color: #9ca3af; font-size: 14px; margin: 0;">

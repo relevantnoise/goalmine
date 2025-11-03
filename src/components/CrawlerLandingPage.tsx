@@ -281,7 +281,7 @@ export const CrawlerLandingPage = () => {
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-success mr-2 flex-shrink-0" />
-                  <span>Priority email delivery</span>
+                  <span>Full assessment analysis</span>
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-success mr-2 flex-shrink-0" />

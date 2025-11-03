@@ -431,6 +431,15 @@ const Index = () => {
     setShowAlert(true);
   };
 
+  const handleGoalDeleted = () => {
+    setAlertData({
+      title: "🗑️ Goal Deleted!",
+      message: "Goal deleted. Time to dream up something new.",
+      type: 'deletion'
+    });
+    setShowAlert(true);
+  };
+
   const handleStartOver = async () => {
     if (!user) return;
 
@@ -820,6 +829,7 @@ const Index = () => {
           hasFramework={hasFramework}
           onEditFramework={handleEditFramework}
           onCircleCheckin={handleCircleCheckin}
+          onGoalDeleted={handleGoalDeleted}
         />
         {showAlert && (
           <MotivationAlert

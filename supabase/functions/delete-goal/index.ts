@@ -70,8 +70,10 @@ serve(async (req) => {
     const { goalId, userId } = body;
 
     console.log('🗑️ Deleting goal:', goalId, 'for user:', userId);
+    console.log('🗑️ Request body received:', JSON.stringify(body));
 
     if (!goalId || !userId) {
+      console.error('❌ Missing required fields:', { goalId, userId });
       return new Response(JSON.stringify({
         success: false,
         error: "Missing required fields: goalId, userId"
@@ -88,34 +90,80 @@ serve(async (req) => {
     );
 
     // Phase 5: Get goal and user profile for permission validation
-    const { data: goal, error: fetchError } = await supabase
+    // Use hybrid architecture - try email first, then Firebase UID fallback
+    let goal = null;
+    let fetchError = null;
+
+    // First try with email (current userId)
+    const { data: goalByEmail, error: emailError } = await supabase
       .from('goals')
       .select('*')
       .eq('id', goalId)
       .eq('user_id', userId)
       .single();
 
-    if (fetchError) {
+    if (goalByEmail) {
+      goal = goalByEmail;
+      console.log('✅ Goal found by email:', userId);
+    } else {
+      console.log('⚠️ Goal not found by email, trying Firebase UID...');
+      
+      // Get user profile to find Firebase UID
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', userId)
+        .single();
+
+      if (profile) {
+        const firebaseUID = profile.id;
+        console.log('🔍 Found Firebase UID:', firebaseUID, 'for email:', userId);
+        
+        const { data: goalByUID, error: uidError } = await supabase
+          .from('goals')
+          .select('*')
+          .eq('id', goalId)
+          .eq('user_id', firebaseUID)
+          .single();
+
+        if (goalByUID) {
+          goal = goalByUID;
+          console.log('✅ Goal found by Firebase UID:', firebaseUID);
+        } else {
+          fetchError = uidError;
+          console.log('❌ Goal not found by either email or Firebase UID');
+        }
+      } else {
+        fetchError = emailError;
+        console.log('❌ Profile not found for email:', userId);
+      }
+    }
+
+    if (!goal || fetchError) {
+      console.error('❌ Error fetching goal:', fetchError);
+      console.log('🔍 Query details - goalId:', goalId, 'userId:', userId);
       return new Response(JSON.stringify({
         success: false,
-        error: fetchError.message
+        error: fetchError?.message || "Goal not found"
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
-    // Get user profile and subscription status
+    // Get user profile and subscription status  
+    // We need the profile for the actual goal owner, not the requesting user
+    const goalUserId = goal.user_id;
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', userId)
+      .eq('id', goalUserId)
       .single();
 
     const { data: subscription } = await supabase
       .from('subscribers')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', profile?.email || goalUserId)
       .single();
 
     const isSubscribed = subscription?.status === 'active';
@@ -148,7 +196,7 @@ serve(async (req) => {
       .from('motivation_history')
       .delete()
       .eq('goal_id', goalId)
-      .eq('user_id', userId);
+      .eq('user_id', goalUserId);
 
     if (motivationError) {
       console.error('❌ Error deleting motivation history:', motivationError);
@@ -161,7 +209,7 @@ serve(async (req) => {
       .from('goals')
       .delete()
       .eq('id', goalId)
-      .eq('user_id', userId)
+      .eq('user_id', goalUserId)
       .select()
       .single();
 

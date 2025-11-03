@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { X, Zap, Target } from "lucide-react";
+import { X, Zap, Target, Trash2 } from "lucide-react";
 
 interface MotivationAlertProps {
   title: string;
   message: string;
-  type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade';
+  type?: 'motivation' | 'nudge' | 'achievement' | 'upgrade' | 'deletion';
   onDismiss: () => void;
   autoHide?: boolean;
   duration?: number;
@@ -39,6 +39,8 @@ export const MotivationAlert = ({
         return 'border-warning bg-warning text-warning-foreground';
       case 'achievement':
         return 'border-success bg-success text-success-foreground';
+      case 'deletion':
+        return 'border-success bg-success text-success-foreground';
       case 'upgrade':
         return 'border-primary bg-primary text-primary-foreground';
       default:
@@ -52,6 +54,8 @@ export const MotivationAlert = ({
         return <Zap className="w-5 h-5" />;
       case 'achievement':
         return <Target className="w-5 h-5" />;
+      case 'deletion':
+        return <Trash2 className="w-5 h-5" />;
       case 'upgrade':
         return <Zap className="w-5 h-5" />;
       default:

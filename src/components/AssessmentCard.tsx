@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, Settings, Calendar, Brain, TrendingUp, CheckCircle, ArrowRight, Edit, Loader2, RotateCcw, Briefcase } from "lucide-react";
-import { WeeklyCheckin } from "./WeeklyCheckin";
+import { Target, Settings, Brain, TrendingUp, CheckCircle, ArrowRight, Edit, Loader2, RotateCcw, Briefcase } from "lucide-react";
 import { AIGoalGuidance } from "./AIGoalGuidance";
 import { FullAnalysisModal } from "./FullAnalysisModal";
 import { GapTrends } from "./GapTrends";
@@ -22,7 +21,6 @@ interface AssessmentCardProps {
   onTakeAssessment: () => void;
   onCreateGoals: () => void;
   onEditFramework: () => void;
-  onWeeklyCheckin?: () => void;
 }
 
 // Frontend analysis generation (no API dependencies)
@@ -163,14 +161,12 @@ IMMEDIATE RESOURCES: ${burnoutSignals ? '• Book: "Boundaries" by Henry Cloud �
 export const AssessmentCard = ({ 
   onTakeAssessment, 
   onCreateGoals, 
-  onEditFramework, 
-  onWeeklyCheckin 
+  onEditFramework
 }: AssessmentCardProps) => {
   const { user } = useAuth();
   const { frameworkData, hasFramework, assessmentState, loading, error, refetch } = useFramework();
   const { subscription } = useSubscription();
   const { toast } = useToast();
-  const [showCheckin, setShowCheckin] = useState(false);
   const [showGuidance, setShowGuidance] = useState(false);
   const [showTrends, setShowTrends] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -525,22 +521,41 @@ export const AssessmentCard = ({
             {/* Action Buttons */}
             <div className="space-y-3">
               <div className="flex gap-3">
-                <Button variant="outline" onClick={() => {
-                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
-                  onEditFramework();
-                }} className="flex-1">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => {
+                    console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
+                    onEditFramework();
+                  }} 
+                  className="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200"
+                >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Assessment
+                  Review My Assessment
                 </Button>
-                <Button variant="outline" onClick={() => setShowFrameworkInfo(true)} className="flex-1">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setShowFrameworkInfo(true)} 
+                  className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 border-blue-200"
+                >
                   Learn More About Framework
                 </Button>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" onClick={startFreshAssessment} className="flex-1 text-orange-600 border-orange-200 hover:bg-orange-50">
+                <Button 
+                  variant="secondary" 
+                  onClick={startFreshAssessment} 
+                  className="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 border-orange-200"
+                >
                   <RotateCcw className="w-4 h-4 mr-2" />
                   Start Fresh Assessment
                 </Button>
+              </div>
+              
+              {/* Life reflection prompt */}
+              <div className="mt-4 pt-3 border-t border-gray-100">
+                <p className="text-sm text-muted-foreground text-center">
+                  Life changes. If your priorities have shifted, tap 'Review My Assessment' to keep your pillars aligned with your current situation.
+                </p>
               </div>
             </div>
           </CardContent>
@@ -722,7 +737,7 @@ export const AssessmentCard = ({
             <div className="space-y-3">
               <div className="flex gap-3">
                 <Button 
-                  variant="outline" 
+                  variant="secondary" 
                   onClick={async () => {
                     if (subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) {
                       console.log('[AssessmentCard] ✅ Access granted - opening Full Analysis modal');
@@ -744,7 +759,7 @@ export const AssessmentCard = ({
                       });
                     }
                   }}
-                  className="flex-1"
+                  className="flex-1 bg-purple-100 hover:bg-purple-200 text-purple-700 border-purple-200"
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   See Full Analysis
@@ -752,24 +767,26 @@ export const AssessmentCard = ({
                     <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
                   )}
                 </Button>
-                <Button variant="outline" onClick={() => {
-                  console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
-                  onEditFramework();
-                }}>
+                <Button 
+                  variant="secondary" 
+                  onClick={() => {
+                    console.log('[AssessmentCard] Edit Assessment clicked - using original beautiful interface!');
+                    onEditFramework();
+                  }}
+                  className="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200"
+                >
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit Assessment
+                  Review My Assessment
                 </Button>
               </div>
               
-              {/* Weekly Check-in button - assessment-related */}
-              {onWeeklyCheckin && (
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={onWeeklyCheckin} className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Weekly Check-in
-                  </Button>
-                </div>
-              )}
+            </div>
+            
+            {/* Life reflection prompt */}
+            <div className="mt-4 pt-3 border-t border-gray-100">
+              <p className="text-sm text-muted-foreground text-center">
+                Life changes. If your priorities have shifted, tap 'Review My Assessment' to keep your pillars aligned with your current situation.
+              </p>
             </div>
           </CardContent>
         </Card>
