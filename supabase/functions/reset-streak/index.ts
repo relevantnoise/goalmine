@@ -28,7 +28,8 @@ serve(async (req) => {
     }
 
     // Reset the goal's streak using service role (bypasses RLS)
-    const { data, error } = await supabaseAdmin
+    // First try to find and update the goal by goal_id and user_id (email format)
+    let { data, error } = await supabaseAdmin
       .from('goals')
       .update({
         streak_count: 0,
@@ -38,6 +39,35 @@ serve(async (req) => {
       .eq('user_id', user_id)
       .select()
       .single();
+
+    // If no goal found and user_id looks like email, try Firebase UID from profiles
+    if (error && user_id.includes('@')) {
+      console.log('🔄 Email lookup failed, trying Firebase UID...');
+      
+      // Get Firebase UID from profiles table
+      const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('email', user_id)
+        .single();
+
+      if (profile) {
+        console.log('🔄 Found Firebase UID, retrying with:', profile.id);
+        const result = await supabaseAdmin
+          .from('goals')
+          .update({
+            streak_count: 0,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', goal_id)
+          .eq('user_id', profile.id)
+          .select()
+          .single();
+        
+        data = result.data;
+        error = result.error;
+      }
+    }
 
     if (error) {
       console.error('❌ Error resetting streak:', error);
