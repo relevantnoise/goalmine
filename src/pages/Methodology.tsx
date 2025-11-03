@@ -167,7 +167,7 @@ export const Methodology = () => {
                 Remember, happiness isn't achieving the goal. Happiness is the journey.
               </p>
               <p className="text-gray-600">
-                Our frameworks don't just help you achieve goals—they help you design a life architecture that brings satisfaction every step of the way.
+                Our frameworks don't just help you create goals to address the complexities and stress drivers in your life.
               </p>
             </div>
 
