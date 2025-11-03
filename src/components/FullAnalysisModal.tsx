@@ -152,7 +152,7 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
                 Enterprise Strategic Intelligence Report
               </CardTitle>
               <p className="text-blue-100 mt-2">
-                Comprehensive AI analysis of your 6 Pillars Framework™ and Business Happiness Formula™ assessments
+                Comprehensive AI analysis of your 6 Pillars Framework™ and Business Happiness Formula™ assessments. This full intelligence report is only available to Professional Plan and Strategic Advisor Plan users.
               </p>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose} className="text-white hover:bg-white/20">
@@ -180,7 +180,7 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
               <div className="bg-white border-l-4 border-green-500 p-4 rounded">
                 <p className="text-green-800 font-medium">
                   ✨ <strong>Premium Intelligence:</strong> Each insight includes research-backed recommendations with specific books, courses, 
-                  and podcasts curated for your unique situation—resources worth hundreds of dollars in consultation value.
+                  and podcasts curated for your unique assessment results. Please consider these suggestions when developing your goals.
                 </p>
               </div>
             </div>
