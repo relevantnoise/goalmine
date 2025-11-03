@@ -513,7 +513,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                     disabled={allocatedHours === 0}
                     className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
                   >
-                    Continue to Step 2: Work Happiness Assessment →
+                    Continue to Step 2: Business Happiness Assessment →
                   </Button>
                 </div>
               </div>
@@ -525,7 +525,7 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
                 <CardHeader className="bg-gradient-to-r from-green-600 to-green-700 text-white">
                   <CardTitle className="flex items-center gap-3 text-2xl">
                     <Briefcase className="w-7 h-7" />
-                    Work Happiness Assessment
+                    Business Happiness Assessment
                   </CardTitle>
                   <p className="text-green-100">
                     This proven formula was developed over 10 years of coaching high-achieving professionals

@@ -444,7 +444,7 @@ export const EditFrameworkPage = ({ onComplete, onCancel, frameworkData }: EditF
 
           {circle.name === 'Work' && (
             <div className="border-t pt-6 space-y-6">
-              <h3 className="font-semibold text-lg">Work Happiness Formula</h3>
+              <h3 className="font-semibold text-lg">Business Happiness Formula</h3>
               <p className="text-sm text-muted-foreground">
                 This proven happiness formula was developed over 10 years of coaching entrepreneurs. 
                 Rate your current satisfaction and desired goals across these four key dimensions of work fulfillment.
