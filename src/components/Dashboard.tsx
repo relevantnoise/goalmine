@@ -26,9 +26,11 @@ interface DashboardProps {
   onCircleCheckin?: () => void;
   onTakeAssessment?: () => void;
   onGoalDeleted?: () => void;
+  onGoalUpdated?: () => void;
+  onGoalCheckedIn?: () => void;
 }
 
-export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin, onTakeAssessment, onGoalDeleted }: DashboardProps) => {
+export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = false, onEditFramework, onViewFramework, onCircleCheckin, onTakeAssessment, onGoalDeleted, onGoalUpdated, onGoalCheckedIn }: DashboardProps) => {
   const { user } = useAuth();
   const { goals, loading, todaysMotivation, deleteGoal, resetStreak, updateGoal, checkIn } = useGoals();
   const { subscription } = useSubscription();
@@ -46,6 +48,24 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
     const result = await deleteGoal(goalId);
     if (result?.success && onGoalDeleted) {
       onGoalDeleted();
+    }
+    return result;
+  };
+  
+  // Wrapper for updateGoal that handles success callback
+  const handleUpdateGoal = async (goalId: string, updates: any) => {
+    const result = await updateGoal(goalId, updates);
+    if (result?.success && onGoalUpdated) {
+      onGoalUpdated();
+    }
+    return result;
+  };
+
+  // Wrapper for checkIn that handles success callback
+  const handleCheckIn = async (goalId: string) => {
+    const result = await checkIn(goalId);
+    if (result?.success && onGoalCheckedIn) {
+      onGoalCheckedIn();
     }
     return result;
   };
@@ -133,10 +153,6 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
             </div>
           </div>
           
-          <div className="flex items-center gap-2 bg-success-light px-3 py-2 rounded-lg">
-            <Flame className="w-5 h-5 text-success" />
-            <span className="font-semibold text-success">{totalStreak} avg daily streak for your goals</span>
-          </div>
         </div>
 
         {/* Main Content Grid */}
@@ -153,6 +169,13 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                 onWeeklyCheckin={onCircleCheckin}
               />
 
+              {/* Average Daily Streak - Goal-related feature positioned near goals */}
+              {regularGoals.length > 0 && (
+                <div className="flex items-center justify-center gap-2 bg-success-light px-4 py-3 rounded-lg">
+                  <Flame className="w-5 h-5 text-success" />
+                  <span className="font-semibold text-success">{totalStreak} avg daily streak for your goals</span>
+                </div>
+              )}
 
               {/* Regular Goals */}
               {regularGoals.length === 0 && frameworkExists ? (
@@ -191,8 +214,8 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
                       motivation={todaysMotivation[goal.id] || null} 
                       onDelete={handleDeleteGoal} 
                       onResetStreak={resetStreak} 
-                      onUpdate={updateGoal} 
-                      onCheckIn={checkIn} 
+                      onUpdate={handleUpdateGoal} 
+                      onCheckIn={handleCheckIn} 
                       status={status}
                       permissions={permissions}
                     />

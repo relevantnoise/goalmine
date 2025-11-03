@@ -44,6 +44,7 @@ serve(async (req) => {
         description: updates.description,
         target_date: updates.target_date,
         tone: updates.tone,
+        pillar_type: updates.pillar_type,
         updated_at: new Date().toISOString()
       })
       .eq('id', goalId)

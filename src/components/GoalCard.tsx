@@ -26,7 +26,7 @@ interface GoalCardProps {
   onDelete: (goalId: string) => void;
   onResetStreak: (goalId: string) => void;
   onUpdate: (goalId: string, updates: any) => Promise<void>;
-  onCheckIn: (goalId: string) => void;
+  onCheckIn: (goalId: string) => Promise<any>;
   // Phase 4: New props for status-aware UI
   status?: GoalStatus;
   permissions?: GoalPermissions;
@@ -127,26 +127,19 @@ export const GoalCard = ({
   const hasCheckedInToday = useMemo(() => {
     if (!goal.last_checkin_date) return false;
     
-    // SIMPLIFIED: Since backend already stores UTC timestamp, just compare dates directly
-    // The backend check-in function validates the streak day properly
+    // SIMPLIFIED: Backend stores UTC date, so just use UTC date directly
+    // Since backend stored '2025-11-03' when it's still Nov 2nd evening EST,
+    // the backend is probably just using the UTC date without timezone adjustment
     const now = new Date();
-    const easternTimeStr = now.toLocaleString("en-US", { timeZone: "America/New_York" });
-    const easternTime = new Date(easternTimeStr);
-    
-    // Subtract 3 hours so day changes at 3 AM Eastern
-    const streakDay = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
-    const currentStreakDate = streakDay.toISOString().split('T')[0];
+    const currentStreakDate = now.toISOString().split('T')[0];
     
     // For last check-in, if it's a date string (YYYY-MM-DD), use it directly
-    // If it's a full timestamp, convert it the same way as current time
+    // If it's a full timestamp, convert it the same way as current time  
     let lastCheckinStreakDate;
     if (goal.last_checkin_date.includes('T')) {
-      // Full timestamp - convert same as current time
+      // Full timestamp - convert to UTC date same as current time
       const lastCheckin = new Date(goal.last_checkin_date);
-      const lastCheckinEasternStr = lastCheckin.toLocaleString("en-US", { timeZone: "America/New_York" });
-      const lastCheckinEastern = new Date(lastCheckinEasternStr);
-      const lastStreakDay = new Date(lastCheckinEastern.getTime() - (3 * 60 * 60 * 1000));
-      lastCheckinStreakDate = lastStreakDay.toISOString().split('T')[0];
+      lastCheckinStreakDate = lastCheckin.toISOString().split('T')[0];
     } else {
       // Already a date string (YYYY-MM-DD)
       lastCheckinStreakDate = goal.last_checkin_date;
@@ -156,8 +149,6 @@ export const GoalCard = ({
     
     console.log(`🎯 hasCheckedInToday for ${goal.title}:`, {
       now: now.toISOString(),
-      easternTime: easternTime.toISOString(),
-      easternHour: easternTime.getHours(),
       currentStreakDate,
       lastCheckinStreakDate,
       result,
@@ -165,7 +156,8 @@ export const GoalCard = ({
       rawLastCheckinDate: goal.last_checkin_date,
       goalUpdatedAt: goal.updated_at,
       streakCount: goal.streak_count,
-      frontendCalculation: 'Matches backend logic exactly'
+      dateComparison: `${currentStreakDate} === ${lastCheckinStreakDate}`,
+      frontendCalculation: 'Simplified to match backend - both use UTC date'
     });
     return result;
   }, [goal.last_checkin_date, goal.updated_at]);

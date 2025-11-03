@@ -439,6 +439,24 @@ const Index = () => {
     });
     setShowAlert(true);
   };
+  
+  const handleGoalUpdated = () => {
+    setAlertData({
+      title: "✅ Goal Updated!",
+      message: "Your goal has been successfully updated.",
+      type: 'achievement'
+    });
+    setShowAlert(true);
+  };
+
+  const handleGoalCheckedIn = () => {
+    setAlertData({
+      title: "🔥 Checked In!",
+      message: "Great job! Your streak has been updated.",
+      type: 'achievement'
+    });
+    setShowAlert(true);
+  };
 
   const handleStartOver = async () => {
     if (!user) return;
@@ -830,6 +848,8 @@ const Index = () => {
           onEditFramework={handleEditFramework}
           onCircleCheckin={handleCircleCheckin}
           onGoalDeleted={handleGoalDeleted}
+          onGoalUpdated={handleGoalUpdated}
+          onGoalCheckedIn={handleGoalCheckedIn}
         />
         {showAlert && (
           <MotivationAlert

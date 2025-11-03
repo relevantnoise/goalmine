@@ -351,7 +351,7 @@ export const useGoals = () => {
 
   // Check in to a goal (update streak)
   const checkIn = async (goalId: string) => {
-    if (!user) return;
+    if (!user) return { success: false, error: 'User not authenticated' };
 
     try {
       // Use manual fetch to get better error details from 403 responses
@@ -375,34 +375,25 @@ export const useGoals = () => {
         const errorMessage = responseData?.error || 'Check-in failed';
         
         if (errorMessage.includes('already checked in')) {
-          toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
+          return { success: false, error: "You've already checked in today! Come back tomorrow after 3 AM EST." };
         } else if (errorMessage.includes('target date')) {
-          // Handle expired goal case
-          toast.error(errorMessage);
+          return { success: false, error: errorMessage };
         } else if (errorMessage.includes('trial has expired')) {
-          // Handle trial expiration case
-          toast.error(errorMessage);
+          return { success: false, error: errorMessage };
         } else if (response.status === 403) {
-          // Show the specific 403 error message
-          toast.error(errorMessage);
+          return { success: false, error: errorMessage };
         } else {
-          toast.error(`Check-in failed: ${errorMessage}`);
+          return { success: false, error: `Check-in failed: ${errorMessage}` };
         }
-        return;
       }
 
       const data = responseData;
 
       // Also handle server-side validation that returns success:false
       if (data?.alreadyCheckedIn) {
-        toast.error(data.error || "You've already checked in today! Come back tomorrow after 3 AM EST.");
-        return;
+        return { success: false, error: data.error || "You've already checked in today! Come back tomorrow after 3 AM EST." };
       }
 
-      // Show success message with streak info
-      const message = data.message || 'Checked in! Streak updated.';
-      toast.success(message);
-      
       // Optimistic update - update the goal state immediately
       if (data.goal) {
         console.log('🎯 Check-in successful, updating goal state:', {
@@ -410,7 +401,9 @@ export const useGoals = () => {
           oldLastCheckin: goals.find(g => g.id === goalId)?.last_checkin_date,
           newLastCheckin: data.goal.last_checkin_date,
           newStreakCount: data.goal.streak_count,
-          fullGoalData: data.goal
+          fullGoalData: data.goal,
+          dataGoalKeys: Object.keys(data.goal),
+          hasLastCheckinDate: !!data.goal.last_checkin_date
         });
         
         // Force update ONLY the specific goal that was checked in
@@ -433,14 +426,19 @@ export const useGoals = () => {
         console.log('🎯 No goal data returned, fetching goals');
         await fetchGoals();
       }
+
+      // Return success with the message for display
+      const message = data.message || 'Checked in! Streak updated.';
+      return { success: true, message };
+
     } catch (error) {
       console.error('❌ Error checking in:', error);
       
       // Handle function invocation errors vs response errors
       if (error?.message?.includes('already checked in')) {
-        toast.error("You've already checked in today! Come back tomorrow after 3 AM EST.");
+        return { success: false, error: "You've already checked in today! Come back tomorrow after 3 AM EST." };
       } else {
-        toast.error('Failed to check in. Please try again.');
+        return { success: false, error: 'Failed to check in. Please try again.' };
       }
     }
   };
@@ -571,14 +569,14 @@ export const useGoals = () => {
         console.log('⚠️ Database persistence failed, but localStorage backup exists:', dbError);
       }
       
-      toast.success('Goal updated successfully!');
+      return { success: true };
       
     } catch (error) {
       console.error('❌ Error updating goal:', error);
-      toast.error('Failed to update goal. Please try again.');
       
       // Revert optimistic update on error
       await fetchGoals();
+      return { success: false, error: error.message };
     }
   };
 

@@ -530,7 +530,7 @@ export const AssessmentCard = ({
                   className="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Review My Assessment
+                  Update My Assessment
                 </Button>
                 <Button 
                   variant="secondary" 
@@ -554,7 +554,7 @@ export const AssessmentCard = ({
               {/* Life reflection prompt */}
               <div className="mt-4 pt-3 border-t border-gray-100">
                 <p className="text-sm text-muted-foreground text-center">
-                  Life changes. If your priorities have shifted, tap 'Review My Assessment' to keep your pillars aligned with your current situation.
+                  Life changes. If your priorities have shifted, tap 'Update My Assessment' to keep your pillars aligned with your current situation.
                 </p>
               </div>
             </div>
@@ -762,7 +762,7 @@ export const AssessmentCard = ({
                   className="flex-1 bg-purple-100 hover:bg-purple-200 text-purple-700 border-purple-200"
                 >
                   <Brain className="w-4 h-4 mr-2" />
-                  See Full Analysis
+                  See Full AI Analysis
                   {!(subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) && (
                     <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
                   )}
@@ -776,7 +776,7 @@ export const AssessmentCard = ({
                   className="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 border-emerald-200"
                 >
                   <Edit className="w-4 h-4 mr-2" />
-                  Review My Assessment
+                  Update My Assessment
                 </Button>
               </div>
               
@@ -785,7 +785,7 @@ export const AssessmentCard = ({
             {/* Life reflection prompt */}
             <div className="mt-4 pt-3 border-t border-gray-100">
               <p className="text-sm text-muted-foreground text-center">
-                Life changes. If your priorities have shifted, tap 'Review My Assessment' to keep your pillars aligned with your current situation.
+                Life changes. If your priorities have shifted, tap 'Update My Assessment' to keep your pillars aligned with your current situation.
               </p>
             </div>
           </CardContent>
