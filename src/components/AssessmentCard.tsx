@@ -763,9 +763,6 @@ export const AssessmentCard = ({
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   See Full AI Analysis
-                  {!(subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) && (
-                    <Badge variant="secondary" className="ml-2 text-xs">Pro</Badge>
-                  )}
                 </Button>
                 <Button 
                   variant="secondary" 
@@ -778,6 +775,20 @@ export const AssessmentCard = ({
                   <Edit className="w-4 h-4 mr-2" />
                   Update My Assessment
                 </Button>
+              </div>
+              
+              {/* Upgrade message under the AI Analysis button */}
+              <div className="flex gap-4 mt-2">
+                <div className="flex-1">
+                  {!(subscription.subscribed && (subscription.subscription_tier === "Professional Plan" || subscription.subscription_tier === "Pro Plan" || subscription.subscription_tier === "Strategic Advisor Plan")) && (
+                    <p className="text-xs text-purple-600 text-center">
+                      Requires Professional Plan - Upgrade Now!
+                    </p>
+                  )}
+                </div>
+                <div className="flex-1">
+                  {/* Empty space under Update button */}
+                </div>
               </div>
               
             </div>
