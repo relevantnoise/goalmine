@@ -18,7 +18,7 @@ export const Methodology = () => {
     { name: "Family & Friends", icon: Users, description: "Relationships, social connections" },
     { name: "Health & Fitness", icon: Activity, description: "Physical wellbeing, energy, vitality" },
     { name: "Personal Development", icon: BookOpen, description: "Learning, growth, skills" },
-    { name: "Spiritual", icon: Heart, description: "Inner purpose, values, meaning" }
+    { name: "Spiritual", icon: Heart, description: "Faith, inner purpose, values, meaning" }
   ];
 
   return (
