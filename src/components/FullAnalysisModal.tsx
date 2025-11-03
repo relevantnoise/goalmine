@@ -144,7 +144,7 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" style={{ zIndex: 99999 }}>
       <Card className="w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <CardHeader className="bg-primary text-white">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-2xl flex items-center gap-3">
@@ -165,7 +165,7 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
           {/* Executive Summary */}
           <div className="mb-8">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <AlertTriangle className="w-6 h-6 text-orange-600" />
+              <Sparkles className="w-6 h-6 text-blue-600" />
               Executive Summary
             </h3>
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
@@ -348,7 +348,6 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
                     <li>• {parsedInsights.length} AI-diagnosed critical areas</li>
                     <li>• {parsedInsights.reduce((sum, insight) => sum + insight.resources.length, 0)} expert-curated resources</li>
                     <li>• Cascade effect analysis</li>
-                    <li>• Specific 30-day action plans</li>
                   </ul>
                 </div>
                 <div className="bg-white p-4 rounded-lg border border-blue-200">
@@ -357,7 +356,6 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
                     <li>• Start with your #1 priority insight</li>
                     <li>• Get the first recommended resource</li>
                     <li>• Create targeted goals in GoalMine</li>
-                    <li>• Track progress with weekly check-ins</li>
                   </ul>
                 </div>
               </div>
