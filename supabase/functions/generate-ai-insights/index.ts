@@ -117,9 +117,9 @@ const handler = async (req: Request): Promise<Response> => {
       })),
       workHappiness: workHappiness ? {
         impact: { current: workHappiness.impact_current, desired: workHappiness.impact_desired },
-        enjoyment: { current: workHappiness.enjoyment_current, desired: workHappiness.enjoyment_desired },
-        income: { current: workHappiness.income_current, desired: workHappiness.income_desired },
-        remote: { current: workHappiness.remote_current, desired: workHappiness.remote_desired }
+        fun: { current: workHappiness.fun_current, desired: workHappiness.fun_desired },
+        money: { current: workHappiness.income_current, desired: workHappiness.income_desired },
+        flexibility: { current: workHappiness.remote_current, desired: workHappiness.remote_desired }
       } : null
     };
 
@@ -144,37 +144,44 @@ const handler = async (req: Request): Promise<Response> => {
           messages: [
             {
               role: 'system',
-              content: `You are an expert life coach who reads between the lines of assessment data to diagnose real problems and patterns.
+              content: `You are an expert life strategist analyzing TWO COMPLEMENTARY ASSESSMENTS: 6 Pillars of Life Framework (life architecture) and Business Happiness Formula (work satisfaction).
 
-Analyze their 6 Pillars Framework and Business Happiness Formula data. Look for:
-- Burnout signals (working 50+ hours but wanting less)
+CRITICAL: Analyze BOTH assessments equally. The 6 Pillars reveal life management patterns. The Business Happiness Formula reveals work satisfaction drivers using Impact + Fun + Money + Flexibility.
+
+6 PILLARS ANALYSIS - Look for:
+- Time allocation gaps (current vs ideal hours)
 - Cascade effects (work overflow → sleep sacrifice → health neglect)
-- Sacrificial patterns (what they're giving up for what)
 - Priority mismatches (high importance, low time allocation)
-- Unsustainable cycles
+- Foundation issues (sleep <7 hours affecting everything)
 
-BE DIRECT AND HONEST. Call out problems like:
-- "Working 60 hours isn't a strength, it's a problem"
-- "You're in classic burnout - this isn't about time management, it's about boundaries"
-- "You're borrowing from sleep to handle work, creating a vicious cycle"
+BUSINESS HAPPINESS ANALYSIS - Look for:
+- Low scores in Impact, Fun, Money, or Flexibility (multiplicative effect - any low score tanks happiness)
+- Work satisfaction gaps vs life balance issues
+- Professional fulfillment vs personal time management
+- Career trajectory vs life architecture alignment
 
-Generate EXACTLY 3 insights that READ THEIR SPECIFIC DATA:
+BE DIRECT AND SPECIFIC. Call out patterns like:
+- "Your work happiness formula shows low Fun (3/10) - this explains why 50+ work hours feel draining"
+- "High Impact desire (9/10) but low current (4/10) suggests misaligned role, not time management issue"
+- "Perfect life balance won't fix 2/10 work flexibility - you need location/schedule changes"
+
+Generate EXACTLY 3 insights analyzing BOTH assessments:
 
 [
   {
     "type": "priority_focus",
-    "title": "Your [Specific Pillar] Wake-Up Call",
-    "content": "Here's what your assessment reveals: [specific hours/gaps]. You're spending X hours but want Y hours. That's Z work days per year missing from something you rated as important. [Diagnose what's probably happening based on their specific pattern]. IMMEDIATE RESOURCES: • Book: '[Specific book title]' • Course: '[Specific online course]'"
+    "title": "Your Strategic Priority: [Life or Work Focus]",
+    "content": "6 PILLARS ANALYSIS: [specific time gaps and patterns]. BUSINESS HAPPINESS ANALYSIS: [specific Impact/Fun/Money/Flexibility scores and gaps]. THE INTEGRATION: [how life architecture connects to work satisfaction]. This isn't just time management - it's [specific strategic intervention needed]. IMMEDIATE RESOURCES: • Book: '[Specific book title]' • Course: '[Specific online course]'"
   },
   {
     "type": "leverage_strength", 
-    "title": "What Your Life Pattern Reveals",
-    "content": "Let's be honest about what's happening: [read between the lines - burnout? overcommitment? sacrifice patterns?]. [Specific analysis of their hours/patterns]. This isn't about time management - it's about [real problem]. The real insight: [what they actually need to address]. IMMEDIATE RESOURCES: • Book: '[Specific to their situation]' • Podcast: '[Specific podcast recommendation]'"
+    "title": "Your Success Pattern Decoded",
+    "content": "LIFE ARCHITECTURE STRENGTH: [strongest pillar with hours]. WORK SATISFACTION STRENGTH: [highest Business Happiness factor]. THE STRATEGIC INSIGHT: [how to leverage existing strength to fix biggest gap]. Your [specific pattern] creates [specific opportunity]. Action plan: [concrete steps using strength to address weakness]. IMMEDIATE RESOURCES: • Book: '[Specific to their situation]' • Podcast: '[Specific podcast recommendation]'"
   },
   {
     "type": "strategic_sequence",
-    "title": "The Real Problem & Solution",
-    "content": "Here's what your assessment is really telling me: [specific diagnosis]. [Describe cascade effects if present]. The solution isn't optimization - it's [intervention/boundaries/priority reset]. 30-day plan: [specific to their situation]. IMMEDIATE RESOURCES: • Book: '[Specific book for their situation]' • Course: '[Relevant online course]'"
+    "title": "Your Integrated 30-Day Strategy",
+    "content": "LIFE FOUNDATION ISSUE: [biggest pillar gap]. WORK SATISFACTION ISSUE: [lowest Business Happiness factor]. THE CONNECTION: [how they affect each other]. Phase 1: [address foundation]. Phase 2: [leverage for work satisfaction]. Why this sequence works: [specific reasoning]. IMMEDIATE RESOURCES: • Book: '[Specific book for their situation]' • Course: '[Relevant online course]'"
   }
 ]
 

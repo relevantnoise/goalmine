@@ -281,9 +281,9 @@ export const ProfessionalCircleSetup = ({ onComplete, onBack, existingData }: Pr
       }
 
       toast({
-        title: "🎯 Life Architecture Complete!",
-        description: "Your 6 Pillars assessment and AI analysis are ready!",
-        duration: 5000
+        title: "🏛️ Strategic Life Analysis Complete!",
+        description: "Your 6 Pillars + Business Happiness assessment captured the data we need. Our AI is now analyzing your time gaps, stress patterns, and work satisfaction to generate your personalized strategy.",
+        duration: 8000
       });
 
       onComplete();

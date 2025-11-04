@@ -598,10 +598,12 @@ export const AssessmentCard = ({
                 </div>
                 
                 {(() => {
-                  // Deep strategic analysis of assessment data
-                  const biggestGap = elements.length > 0 
-                    ? elements.reduce((max, element) => Math.abs(element.gap || 0) > Math.abs(max.gap || 0) ? element : max)
-                    : null;
+                  // Deep strategic analysis of assessment data - handle ties
+                  const biggestGapSize = elements.length > 0 
+                    ? Math.max(...elements.map(el => Math.abs(el.gap || 0)))
+                    : 0;
+                  const biggestGaps = elements.filter(el => Math.abs(el.gap || 0) === biggestGapSize && biggestGapSize > 0);
+                  const biggestGap = biggestGaps.length > 0 ? biggestGaps[0] : null;
                   
                   const workElement = elements.find(el => el.name === 'Work') || {};
                   const sleepElement = elements.find(el => el.name === 'Sleep') || {};
@@ -621,9 +623,9 @@ export const AssessmentCard = ({
                   const stagnating = (personalDevElement.current || 0) < 3;
                   const burnoutPattern = workOverload && (sleepDeprived || neglectingHealth);
                   
-                  // Work happiness analysis
+                  // ENHANCED WORK HAPPINESS ANALYSIS
                   const workHappiness = frameworkData?.workHappiness;
-                  let workInsights = { focus: null, pattern: null, satisfaction: 0 };
+                  let workInsights = { focus: null, pattern: null, satisfaction: 0, severity: 'normal', message: '' };
                   if (workHappiness) {
                     const gaps = {
                       impact: (workHappiness.impactDesired || 0) - (workHappiness.impactCurrent || 0),
@@ -632,84 +634,353 @@ export const AssessmentCard = ({
                       flexibility: (workHappiness.remoteDesired || 0) - (workHappiness.remoteCurrent || 0)
                     };
                     const maxGap = Math.max(...Object.values(gaps));
-                    workInsights.focus = Object.keys(gaps).find(key => gaps[key] === maxGap);
+                    const tiedFactors = Object.keys(gaps).filter(key => gaps[key] === maxGap);
+                    workInsights.focus = tiedFactors[0]; // Keep single focus for backward compatibility
+                    workInsights.allFocusAreas = tiedFactors;
                     workInsights.satisfaction = (workHappiness.impactCurrent + workHappiness.funCurrent + workHappiness.moneyCurrent + workHappiness.remoteCurrent) / 4;
                     
-                    // Identify work dissatisfaction pattern
-                    if (workInsights.satisfaction < 6) {
+                    // ENHANCED PATTERN DETECTION WITH CRISIS IDENTIFICATION
+                    const current = {
+                      impact: workHappiness.impactCurrent || 0,
+                      enjoyment: workHappiness.funCurrent || 0,
+                      income: workHappiness.moneyCurrent || 0,
+                      flexibility: workHappiness.remoteCurrent || 0
+                    };
+                    const desired = {
+                      impact: workHappiness.impactDesired || 0,
+                      enjoyment: workHappiness.funDesired || 0,
+                      income: workHappiness.moneyDesired || 0,
+                      flexibility: workHappiness.remoteDesired || 0
+                    };
+                    
+                    // OPPORTUNITY DETECTION (Individual factor analysis)
+                    if (current.impact <= 2 && desired.impact >= 8) {
+                      workInsights.pattern = 'impact_opportunity';
+                      workInsights.severity = 'high';
+                      workInsights.message = 'Major growth opportunity: Transform your work impact potential';
+                    } else if (current.enjoyment <= 2 && desired.enjoyment >= 8) {
+                      workInsights.pattern = 'enjoyment_opportunity';
+                      workInsights.severity = 'high';
+                      workInsights.message = 'Significant opportunity: Redesign work for greater fulfillment';
+                    } else if (current.income <= 2 && desired.income >= 8) {
+                      workInsights.pattern = 'income_opportunity';
+                      workInsights.severity = 'high';
+                      workInsights.message = 'Income optimization opportunity: Bridge the gap to your goals';
+                    } else if (current.flexibility <= 2 && desired.flexibility >= 8) {
+                      workInsights.pattern = 'flexibility_opportunity';
+                      workInsights.severity = 'high';
+                      workInsights.message = 'Flexibility upgrade opportunity: Design your ideal work setup';
+                    }
+                    // COMPREHENSIVE TRANSFORMATION OPPORTUNITY
+                    else if (Object.values(current).filter(val => val <= 3).length >= 3) {
+                      workInsights.pattern = 'comprehensive_opportunity';
+                      workInsights.severity = 'high';
+                      workInsights.message = 'Major transformation opportunity: Redesign work across all factors';
+                    }
+                    // SIGNIFICANT IMPROVEMENT POTENTIAL
+                    else if (workInsights.satisfaction < 4) {
+                      workInsights.pattern = 'improvement_potential';
+                      workInsights.severity = 'medium';
+                      workInsights.message = 'Work optimization opportunity: Multiple areas ready for improvement';
+                    }
+                    // MODERATE DISSATISFACTION  
+                    else if (workInsights.satisfaction < 6) {
                       workInsights.pattern = 'unsatisfied';
-                    } else if (maxGap > 3) {
+                      workInsights.severity = 'medium';
+                      workInsights.message = 'Moderate dissatisfaction across multiple work areas';
+                    }
+                    // SINGLE MAJOR GAP
+                    else if (maxGap >= 6) {
+                      workInsights.pattern = 'major_gap';
+                      workInsights.severity = 'medium';
+                      workInsights.message = `Major gap in ${workInsights.focus} despite good foundation`;
+                    }
+                    // MINOR OPTIMIZATION
+                    else if (maxGap > 3) {
                       workInsights.pattern = 'gap_focused';
+                      workInsights.severity = 'low';
+                      workInsights.message = 'Strong foundation, one key improvement area';
+                    }
+                    // GENERALLY SATISFIED
+                    else {
+                      workInsights.pattern = 'satisfied';
+                      workInsights.severity = 'low';
+                      workInsights.message = 'Strong work satisfaction across all factors';
                     }
                   }
                   
-                  // Strategic life pattern analysis
+                  // ENHANCED STRATEGIC LIFE PATTERN ANALYSIS
                   let lifePattern = '';
                   let stressDriver = '';
                   let goalGuidance = '';
+                  let patternSeverity = 'normal';
                   
-                  if (burnoutPattern) {
-                    lifePattern = 'Classic Burnout Pattern';
-                    stressDriver = `Working ${workElement.current}h weekly while sacrificing ${sleepDeprived ? 'sleep' : 'health'}`;
-                    goalGuidance = 'Boundaries & Recovery Goals';
-                  } else if (workOverload && relationshipSuffering) {
-                    lifePattern = 'Success at a Cost';
-                    stressDriver = `High work commitment (${workElement.current}h) limiting relationship time`;
+                  // EXTREME EDGE CASES FIRST
+                  const totalDesiredHours = elements.reduce((sum, el) => sum + (el.desired || 0), 0);
+                  const totalCurrentHours = elements.reduce((sum, el) => sum + (el.current || 0), 0);
+                  const allCurrentZero = elements.every(el => (el.current || 0) === 0);
+                  const perfectBalance = elements.every(el => Math.abs(el.gap || 0) < 3);
+                  
+                  // Career Launch (unemployed wanting work)
+                  if (workElement.current === 0 && workElement.desired > 40) {
+                    lifePattern = 'Career Launch Opportunity';
+                    stressDriver = `Ready to build meaningful work life: 0h → ${workElement.desired}h career focus`;
+                    goalGuidance = 'Career Building Goals';
+                    patternSeverity = 'high';
+                  }
+                  // Complete Assessment Restart (all zeros - incomplete assessment)
+                  else if (allCurrentZero && totalDesiredHours > 40) {
+                    lifePattern = 'Fresh Life Design';
+                    stressDriver = 'Clean slate opportunity to design ideal life architecture';
+                    goalGuidance = 'Foundation Building Goals';
+                    patternSeverity = 'medium';
+                  }
+                  // Perfect Balance (rare but possible)
+                  else if (perfectBalance && totalCurrentHours > 100) {
+                    lifePattern = 'Optimization & Growth';
+                    stressDriver = 'Strong foundation ready for next-level challenges';
+                    goalGuidance = 'Excellence & Expansion Goals';
+                    patternSeverity = 'low';
+                  }
+                  // Unrealistic Expectations (>200h desired)
+                  else if (totalDesiredHours > 200) {
+                    lifePattern = 'Expectation Calibration Opportunity';
+                    stressDriver = `${totalDesiredHours}h weekly desired (vs 168h available) - goals need prioritization`;
+                    goalGuidance = 'Reality-Based Planning Goals';
+                    patternSeverity = 'medium';
+                  }
+                  
+                  // HIGH-IMPACT TRANSFORMATION OPPORTUNITIES (only if no edge cases above)
+                  else if (workInsights.severity === 'high' && burnoutPattern) {
+                    lifePattern = 'Key Opportunities';
+                    stressDriver = `Major transformation potential: work satisfaction + ${workElement.current}h schedule affecting health/sleep`;
+                    goalGuidance = 'Work-Life Balance Goals';
+                    patternSeverity = 'high';
+                  } else if (workInsights.severity === 'high') {
+                    lifePattern = 'Professional Breakthrough Opportunity';
+                    stressDriver = workInsights.message;
+                    goalGuidance = 'Career Development Goals';
+                    patternSeverity = 'high';
+                  } else if (burnoutPattern && sleepDeprived && neglectingHealth) {
+                    lifePattern = 'Foundation Optimization Opportunity';
+                    stressDriver = `Redesign opportunity: ${workElement.current}h schedule + sleep + health for sustainable success`;
+                    goalGuidance = 'Health & Sleep Goals';
+                    patternSeverity = 'high';
+                  }
+                  // BALANCE OPTIMIZATION OPPORTUNITIES
+                  else if (burnoutPattern) {
+                    lifePattern = 'Work-Life Integration Opportunity';
+                    stressDriver = `Optimization chance: ${workElement.current}h schedule while strengthening ${sleepDeprived ? 'sleep' : 'health'}`;
+                    goalGuidance = 'Balance & Wellness Goals';
+                    patternSeverity = 'medium';
+                  } else if (workInsights.severity === 'high' && stagnating) {
+                    lifePattern = 'Growth Acceleration Opportunity';
+                    stressDriver = 'Prime time for breakthrough: work satisfaction + growth momentum combination';
+                    goalGuidance = 'Growth & Development Goals';
+                    patternSeverity = 'medium';
+                  } else if (workOverload && relationshipSuffering && stagnating) {
+                    lifePattern = 'Holistic Success Opportunity';
+                    stressDriver = `Rebalance potential: ${workElement.current}h work + relationships + personal growth`;
+                    goalGuidance = 'Life Integration Goals';
+                    patternSeverity = 'medium';
+                  }
+                  // OPTIMIZATION OPPORTUNITIES
+                  else if (workOverload && relationshipSuffering) {
+                    lifePattern = 'Success Enhancement Opportunity';
+                    stressDriver = `Integration opportunity: ${workElement.current}h work commitment + relationship quality`;
                     goalGuidance = 'Work-Life Integration Goals';
+                    patternSeverity = 'medium';
                   } else if (stagnating && workInsights.pattern === 'unsatisfied') {
-                    lifePattern = 'Survival Mode';
-                    stressDriver = 'No growth time + work dissatisfaction creating stagnation';
-                    goalGuidance = 'Growth & Transition Goals';
-                  } else if (biggestGap && Math.abs(biggestGap.gap) > 10) {
-                    lifePattern = 'Major Life Misalignment';
-                    stressDriver = `${Math.abs(biggestGap.gap)}h weekly gap in what you value most`;
+                    lifePattern = 'Growth Momentum Building';
+                    stressDriver = 'Perfect timing: work optimization + growth acceleration combination';
+                    goalGuidance = 'Growth & Development Goals';
+                    patternSeverity = 'medium';
+                  } else if (biggestGap && Math.abs(biggestGap.gap) > 15) {
+                    lifePattern = 'Values Alignment Opportunity';
+                    stressDriver = `${Math.abs(biggestGap.gap)}h weekly optimization potential in ${biggestGap.name} - your highest priority`;
                     goalGuidance = 'Strategic Rebalancing Goals';
+                    patternSeverity = 'medium';
+                  } else if (sleepDeprived && (workInsights.severity === 'medium' || workOverload)) {
+                    lifePattern = 'Energy Optimization Opportunity';
+                    stressDriver = 'Sleep enhancement could dramatically improve work satisfaction and life energy';
+                    goalGuidance = 'Foundation-First Goals';
+                    patternSeverity = 'medium';
+                  }
+                  // LOW SEVERITY PATTERNS
+                  else if (biggestGap && Math.abs(biggestGap.gap) > 8) {
+                    lifePattern = 'Priority Adjustment Needed';
+                    stressDriver = `${Math.abs(biggestGap.gap)}h weekly gap in ${biggestGap.name}`;
+                    goalGuidance = 'Targeted Improvement Goals';
+                    patternSeverity = 'low';
+                  } else if (workInsights.pattern === 'gap_focused') {
+                    lifePattern = 'Fine-Tuning Opportunity';
+                    stressDriver = `Strong life foundation with optimization potential in ${workInsights.focus}`;
+                    goalGuidance = 'Enhancement Goals';
+                    patternSeverity = 'low';
                   } else {
-                    lifePattern = 'Optimization Opportunity';
-                    stressDriver = 'Minor adjustments needed for better life satisfaction';
-                    goalGuidance = 'Fine-Tuning Goals';
+                    lifePattern = 'Healthy Life Architecture';
+                    stressDriver = 'Well-balanced life with minor optimization opportunities';
+                    goalGuidance = 'Growth & Excellence Goals';
+                    patternSeverity = 'low';
                   }
                   
                   return (
                     <div className="space-y-4">
-                      {/* Life Pattern Diagnosis */}
-                      <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
+                      {/* Life Pattern Diagnosis - Enhanced with Severity Detection */}
+                      <div className={`rounded-lg p-4 border ${
+                        patternSeverity === 'high' ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300' :
+                        patternSeverity === 'medium' ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-300' :
+                        'bg-gradient-to-r from-green-50 to-blue-50 border-green-200'
+                      }`}>
                         <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-semibold text-red-900">Life Pattern Analysis</h5>
-                          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Strategic</span>
+                          <h5 className={`font-semibold ${
+                            patternSeverity === 'high' ? 'text-orange-900' :
+                            patternSeverity === 'medium' ? 'text-yellow-900' :
+                            'text-green-900'
+                          }`}>
+                            Overall Assessment Summary
+                          </h5>
+                          <div className="flex items-center gap-2">
+                            {patternSeverity === 'high' && (
+                              <span className="text-xs bg-orange-200 text-orange-800 px-2 py-1 rounded-full font-medium">
+                                TRANSFORMATION
+                              </span>
+                            )}
+                            {patternSeverity === 'medium' && (
+                              <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full font-medium">
+                                OPTIMIZATION
+                              </span>
+                            )}
+                            {patternSeverity === 'low' && (
+                              <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full font-medium">
+                                STRATEGIC
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-sm text-red-800 font-medium">{lifePattern}</p>
-                        <p className="text-xs text-red-600 mt-1">{stressDriver}</p>
+                        <p className={`text-sm font-medium ${
+                          patternSeverity === 'high' ? 'text-orange-800' :
+                          patternSeverity === 'medium' ? 'text-yellow-800' :
+                          'text-green-800'
+                        }`}>
+                          {lifePattern}
+                        </p>
+                        <p className={`text-xs mt-1 ${
+                          patternSeverity === 'high' ? 'text-orange-600' :
+                          patternSeverity === 'medium' ? 'text-yellow-600' :
+                          'text-green-600'
+                        }`}>
+                          {stressDriver}
+                        </p>
                       </div>
                       
                       {/* Primary Stress Driver */}
                       {biggestGap && (
                         <div className="bg-white rounded-lg p-4 border border-blue-100">
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-semibold text-blue-900">Priority Investment Gap</h5>
+                            <h5 className="font-semibold text-blue-900">
+                              {biggestGaps.length > 1 ? 'Largest Time Investment Gaps' : 'Largest Time Investment Gap'}
+                            </h5>
                             <span className="text-sm font-medium text-blue-600">{Math.abs(biggestGap.gap || 0)}h/week</span>
                           </div>
-                          <p className="text-sm text-blue-800 font-medium">{biggestGap.name}</p>
+                          <p className="text-sm text-blue-800 font-medium">
+                            {biggestGaps.length > 1 
+                              ? biggestGaps.map(gap => gap.name).join(', ')
+                              : biggestGap.name
+                            }
+                          </p>
                           <p className="text-xs text-blue-600 mt-1">
-                            Importance: {biggestGap.importance || 0}/10 • Reality: {biggestGap.current || 0}h • Goal: {biggestGap.desired || 0}h
+                            {biggestGaps.length > 1 
+                              ? `${biggestGaps.length} pillars tied at ${Math.abs(biggestGap.gap || 0)}h weekly gap`
+                              : `Importance: ${biggestGap.importance || 0}/10 • Reality: ${biggestGap.current || 0}h • Goal: ${biggestGap.desired || 0}h`
+                            }
                           </p>
                         </div>
                       )}
                       
-                      {/* Work Satisfaction Analysis */}
+                      {/* Work Satisfaction Analysis - Enhanced with Crisis Detection */}
                       {workInsights.focus && (
-                        <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className={`rounded-lg p-4 border ${
+                          workInsights.severity === 'high' ? 'bg-orange-50 border-orange-200' :
+                          workInsights.severity === 'medium' ? 'bg-yellow-50 border-yellow-200' :
+                          'bg-white border-purple-100'
+                        }`}>
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-semibold text-purple-900">Work Happiness Driver</h5>
-                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-                              {workInsights.satisfaction.toFixed(1)}/10
-                            </span>
+                            <h5 className={`font-semibold ${
+                              workInsights.severity === 'high' ? 'text-orange-900' :
+                              workInsights.severity === 'medium' ? 'text-yellow-900' :
+                              'text-purple-900'
+                            }`}>
+                              {workInsights.allFocusAreas && workInsights.allFocusAreas.length > 1 
+                                ? 'Largest Business Happiness Gaps' 
+                                : 'Largest Business Happiness Gap'
+                              }
+                            </h5>
+                            <div className="flex items-center gap-2">
+                              {workInsights.severity === 'high' && (
+                                <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+                                  HIGH IMPACT
+                                </span>
+                              )}
+                              {workInsights.severity === 'medium' && (
+                                <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium">
+                                  OPTIMIZATION
+                                </span>
+                              )}
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                workInsights.severity === 'high' ? 'bg-orange-100 text-orange-700' :
+                                workInsights.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-purple-100 text-purple-700'
+                              }`}>
+                                {(() => {
+                                  if (!workInsights.focus || !frameworkData?.workHappiness) return workInsights.satisfaction.toFixed(1);
+                                  const wh = frameworkData.workHappiness;
+                                  
+                                  // Handle tied factors - show range or shared score
+                                  if (workInsights.allFocusAreas && workInsights.allFocusAreas.length > 1) {
+                                    const scores = workInsights.allFocusAreas.map(area => {
+                                      return area === 'impact' ? wh.impactCurrent :
+                                             area === 'enjoyment' ? wh.funCurrent :
+                                             area === 'income' ? wh.moneyCurrent :
+                                             area === 'flexibility' ? wh.remoteCurrent : 0;
+                                    });
+                                    const uniqueScores = [...new Set(scores)];
+                                    return uniqueScores.length === 1 
+                                      ? `${uniqueScores[0].toFixed(1)}` 
+                                      : `${Math.min(...scores).toFixed(1)}-${Math.max(...scores).toFixed(1)}`;
+                                  }
+                                  
+                                  // Single factor
+                                  const currentScore = 
+                                    workInsights.focus === 'impact' ? wh.impactCurrent :
+                                    workInsights.focus === 'enjoyment' ? wh.funCurrent :
+                                    workInsights.focus === 'income' ? wh.moneyCurrent :
+                                    workInsights.focus === 'flexibility' ? wh.remoteCurrent : 0;
+                                  return (currentScore || 0).toFixed(1);
+                                })()}/10
+                              </span>
+                            </div>
                           </div>
-                          <p className="text-sm text-purple-800 font-medium capitalize">{workInsights.focus}</p>
-                          <p className="text-xs text-purple-600 mt-1">
-                            {workInsights.pattern === 'unsatisfied' ? 'Low satisfaction across multiple areas' : 
-                             workInsights.pattern === 'gap_focused' ? 'Strong foundation, one key improvement area' :
-                             'Primary opportunity for work fulfillment'}
+                          <p className={`text-sm font-medium capitalize ${
+                            workInsights.severity === 'high' ? 'text-orange-800' :
+                            workInsights.severity === 'medium' ? 'text-yellow-800' :
+                            'text-purple-800'
+                          }`}>
+                            {workInsights.allFocusAreas && workInsights.allFocusAreas.length > 1 
+                              ? workInsights.allFocusAreas.join(', ')
+                              : workInsights.focus
+                            }
+                          </p>
+                          <p className={`text-xs mt-1 ${
+                            workInsights.severity === 'high' ? 'text-orange-600' :
+                            workInsights.severity === 'medium' ? 'text-yellow-600' :
+                            'text-purple-600'
+                          }`}>
+                            {workInsights.message || (
+                              workInsights.pattern === 'unsatisfied' ? 'Low satisfaction across multiple areas' : 
+                              workInsights.pattern === 'gap_focused' ? 'Strong foundation, one key improvement area' :
+                              'Primary opportunity for work fulfillment'
+                            )}
                           </p>
                         </div>
                       )}
@@ -722,10 +993,23 @@ export const AssessmentCard = ({
                         </div>
                         <p className="text-sm text-green-800 font-medium">{goalGuidance}</p>
                         <p className="text-xs text-green-600 mt-1">
-                          {totalDesiredHours > 168 ? 
-                            `Overcommitted by ${totalDesiredHours - 168}h - goals need trade-offs` :
-                            `${168 - totalCurrentHours}h unaccounted weekly - track where time actually goes`
-                          }
+                          {(() => {
+                            // Validation guards for data integrity
+                            if (totalDesiredHours > 200) {
+                              return `Extreme overcommitment: ${totalDesiredHours}h desired (168h max possible) - prioritization needed`;
+                            }
+                            if (totalCurrentHours > 168) {
+                              return `Assessment error: ${totalCurrentHours}h current exceeds 168h weekly - review entries`;
+                            }
+                            if (totalCurrentHours < 50 && totalDesiredHours < 50) {
+                              return `Assessment incomplete: Only ${totalCurrentHours}h accounted for - complete remaining areas`;
+                            }
+                            
+                            // Normal cases
+                            return totalDesiredHours > 168 ? 
+                              `Overcommitted by ${totalDesiredHours - 168}h - goals need trade-offs` :
+                              `${Math.max(0, 168 - totalCurrentHours)}h unaccounted weekly - track where time actually goes`;
+                          })()}
                         </p>
                       </div>
                     </div>
