@@ -46,10 +46,8 @@ function generateLocalAnalysis(frameworkData: any) {
   );
   
   // Calculate insights from their specific numbers
-  const totalCurrentHours = elements.reduce((sum: number, el: any) => sum + (el.current || 0), 0);
-  const totalDesiredHours = elements.reduce((sum: number, el: any) => sum + (el.desired || 0), 0);
-  const weeklyUnallocated = 168 - totalCurrentHours; // Total hours in a week
-  const overcommitted = totalDesiredHours > 168;
+  const weeklyUnallocated = 168 - elements.reduce((sum: number, el: any) => sum + (el.current || 0), 0); // Total hours in a week
+  const overcommitted = elements.reduce((sum: number, el: any) => sum + (el.desired || 0), 0) > 168;
   
   // Find patterns in their data
   const underinvestedPillars = elements.filter((el: any) => (el.gap || 0) < -5);
@@ -716,8 +714,8 @@ export const AssessmentCard = ({
                   let patternSeverity = 'normal';
                   
                   // EXTREME EDGE CASES FIRST
-                  const totalDesiredHours = elements.reduce((sum, el) => sum + (el.desired || 0), 0);
-                  const totalCurrentHours = elements.reduce((sum, el) => sum + (el.current || 0), 0);
+                  const totalDesiredHoursLocal = elements.reduce((sum, el) => sum + (el.desired || 0), 0);
+                  const totalCurrentHoursLocal = elements.reduce((sum, el) => sum + (el.current || 0), 0);
                   const allCurrentZero = elements.every(el => (el.current || 0) === 0);
                   const perfectBalance = elements.every(el => Math.abs(el.gap || 0) < 3);
                   
@@ -729,7 +727,7 @@ export const AssessmentCard = ({
                     patternSeverity = 'high';
                   }
                   // Complete Assessment Restart (all zeros - incomplete assessment)
-                  else if (allCurrentZero && totalDesiredHours > 40) {
+                  else if (allCurrentZero && totalDesiredHoursLocal > 40) {
                     lifePattern = 'Fresh Life Design';
                     stressDriver = 'Clean slate opportunity to design ideal life architecture';
                     goalGuidance = 'Foundation Building Goals';
@@ -743,9 +741,9 @@ export const AssessmentCard = ({
                     patternSeverity = 'low';
                   }
                   // Unrealistic Expectations (>200h desired)
-                  else if (totalDesiredHours > 200) {
+                  else if (totalDesiredHoursLocal > 200) {
                     lifePattern = 'Expectation Calibration Opportunity';
-                    stressDriver = `${totalDesiredHours}h weekly desired (vs 168h available) - goals need prioritization`;
+                    stressDriver = `${totalDesiredHoursLocal}h weekly desired (vs 168h available) - goals need prioritization`;
                     goalGuidance = 'Reality-Based Planning Goals';
                     patternSeverity = 'medium';
                   }
@@ -995,20 +993,20 @@ export const AssessmentCard = ({
                         <p className="text-xs text-green-600 mt-1">
                           {(() => {
                             // Validation guards for data integrity
-                            if (totalDesiredHours > 200) {
-                              return `Extreme overcommitment: ${totalDesiredHours}h desired (168h max possible) - prioritization needed`;
+                            if (totalDesiredHoursLocal > 200) {
+                              return `Extreme overcommitment: ${totalDesiredHoursLocal}h desired (168h max possible) - prioritization needed`;
                             }
-                            if (totalCurrentHours > 168) {
-                              return `Assessment error: ${totalCurrentHours}h current exceeds 168h weekly - review entries`;
+                            if (totalCurrentHoursLocal > 168) {
+                              return `Assessment error: ${totalCurrentHoursLocal}h current exceeds 168h weekly - review entries`;
                             }
-                            if (totalCurrentHours < 50 && totalDesiredHours < 50) {
-                              return `Assessment incomplete: Only ${totalCurrentHours}h accounted for - complete remaining areas`;
+                            if (totalCurrentHoursLocal < 50 && totalDesiredHoursLocal < 50) {
+                              return `Assessment incomplete: Only ${totalCurrentHoursLocal}h accounted for - complete remaining areas`;
                             }
                             
                             // Normal cases
-                            return totalDesiredHours > 168 ? 
-                              `Overcommitted by ${totalDesiredHours - 168}h - goals need trade-offs` :
-                              `${Math.max(0, 168 - totalCurrentHours)}h unaccounted weekly - track where time actually goes`;
+                            return totalDesiredHoursLocal > 168 ? 
+                              `Overcommitted by ${totalDesiredHoursLocal - 168}h - goals need trade-offs` :
+                              `${Math.max(0, 168 - totalCurrentHoursLocal)}h unaccounted weekly - track where time actually goes`;
                           })()}
                         </p>
                       </div>
