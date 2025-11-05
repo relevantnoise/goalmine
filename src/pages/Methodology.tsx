@@ -56,7 +56,7 @@ export const Methodology = () => {
                 GoalMine.ai's proprietary frameworks originated from real-world challenges faced by ambitious professionals 
                 managing complex lives—demanding careers, family relationships, personal growth, and professional satisfaction. 
                 Originally developed 30 years ago by entrepreneur Dan Lynn while juggling strategy roles at AT&T, MBA studies, 
-                family commitments, and entrepreneurial aspirations, <strong>these methodologies solved the time management crisis 
+                family commitments, entrepreneurial aspirations, fitness routines, and his faith, <strong>these methodologies solved the time management crisis 
                 that traditional goal-setting tools couldn't address.</strong>
               </p>
               <p className="text-blue-800 leading-relaxed">

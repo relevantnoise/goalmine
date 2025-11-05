@@ -51,6 +51,7 @@ pillar_assessments      -- ✅ 6 Pillars assessment data (CONFIRMED EXISTS)
 profiles               -- User profiles and authentication
 subscribers            -- Stripe subscription data
 user_frameworks        -- Framework instances
+webhook_events         -- ✅ Stripe webhook event tracking (November 2025)
 weekly_checkins        -- Weekly progress tracking
 work_happiness         -- ✅ Business Happiness Formula data
 ```
