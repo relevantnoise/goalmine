@@ -429,7 +429,7 @@ export const useGoals = () => {
 
       // Return success with the message for display plus Arthur Brooks wisdom
       const baseMessage = data.message || 'Checked in! Streak updated.';
-      const message = `${baseMessage}\n\nEach step forward matters more than the finish line. Keep going.`;
+      const message = `${baseMessage}\n\nHappiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.`;
       return { success: true, message };
 
     } catch (error) {

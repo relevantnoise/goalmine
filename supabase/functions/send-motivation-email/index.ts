@@ -195,7 +195,7 @@ const handler = async (req: Request): Promise<Response> => {
               Turn your ambitions into action with AI-powered motivation
             </p>
             <p style="color: #9ca3af; font-size: 12px; margin: 8px 0 0 0; font-style: italic;">
-              P.S. Remember, the pursuit brings the joy.
+              P.S. Happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
             </p>
           </div>
         </div>

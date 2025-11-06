@@ -55,7 +55,7 @@ export const LandingPage = ({
             </p>
             
             <p className="text-2xl font-semibold text-primary mb-8 max-w-3xl mx-auto text-center italic">
-              Remember, happiness isn't achieving the goal. Happiness is the journey.
+              As you begin your GoalMine.ai journey, remember this profound truth: happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
             </p>
 
             {/* 6 Pillars Visual - Ordered: Work, Family & Friends, Health & Fitness, Spiritual, Personal Development, Sleep */}

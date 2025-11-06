@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Lightbulb } from "lucide-react";
 
 const wisdomQuotes = [
-  "Today's wisdom: Happiness lives in the pursuit of meaningful goals.",
+  "Today's wisdom: Happiness isn't found in achieving the goal—it lives in the pursuit itself.",
   "Remember: The journey transforms you more than the destination.",
   "Insight: Each step forward matters more than the finish line.",
   "Truth: You'll find the most joy in pursuing goals, not just achieving them.",
-  "Wisdom: The pursuit brings the joy, not the completion.",
+  "Wisdom: Embrace every step forward—happiness lives in the pursuit itself.",
   "Reflection: Progress is a practice, not a prize.",
   "Reminder: Growth happens in the daily pursuit, not the final moment."
 ];

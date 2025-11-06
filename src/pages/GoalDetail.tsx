@@ -417,7 +417,7 @@ export default function GoalDetail() {
           {/* Wisdom Footer */}
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground italic">
-              The journey transforms you more than the destination.
+              Happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
             </p>
           </div>
       </div>

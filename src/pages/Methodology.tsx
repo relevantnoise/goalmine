@@ -164,7 +164,7 @@ export const Methodology = () => {
             {/* Philosophy */}
             <div className="text-center bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-lg">
               <p className="text-2xl font-semibold text-primary mb-4 italic">
-                Remember, happiness isn't achieving the goal. Happiness is the journey.
+                As you begin your GoalMine.ai journey, remember this profound truth: happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
               </p>
               <p className="text-gray-600">
                 Our frameworks help you discover your highest-leverage opportunities for life optimization, then create goals that deliver maximum impact on your overall satisfaction and performance.
