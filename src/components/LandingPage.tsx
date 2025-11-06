@@ -54,7 +54,7 @@ export const LandingPage = ({
               GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to precision goals across work, health, relationships, and growth.
             </p>
             
-            <p className="text-2xl font-semibold text-primary mb-8 max-w-3xl mx-auto text-center italic">
+            <p className="text-lg font-medium text-primary mb-8 max-w-3xl mx-auto text-center italic">
               As you begin your GoalMine.ai journey, remember this profound truth: happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
             </p>
 
