@@ -50,7 +50,7 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
-              High achievers don't need another goal app. They need <strong>diagnostic intelligence</strong> that reveals your highest-impact opportunities. 
+              High achievers don't need another goal app. They need <strong>diagnostic intelligence</strong> that reveals their highest-impact opportunities. 
               GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to precision goals across work, health, relationships, and growth.
             </p>
             
@@ -150,7 +150,7 @@ export const LandingPage = ({
                 Why Most Goal Systems Fail Ambitious High-Achievers
               </h3>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                You're juggling multiple priorities: work or personal projects, family relationships, health, personal growth, and spiritual fulfillment. 
+                High achievers are juggling multiple priorities: work or personal projects, family relationships, health, personal growth, and spiritual fulfillment. 
                 Traditional goal apps treat these as separate items. <strong>Life doesn't work that way.</strong>
               </p>
             </div>
