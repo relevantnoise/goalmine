@@ -312,5 +312,39 @@ export const LandingPage = ({
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-50 border-t border-gray-200">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-bold">
+                <span className="text-blue-500">Goal</span><span className="text-gray-900">Mine.ai</span>
+              </span>
+            </div>
+            <div className="flex items-center space-x-6 text-sm text-gray-600">
+              <span>© 2025 GoalMine.ai</span>
+              <a 
+                href="/privacy-policy" 
+                className="hover:text-blue-600 transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a 
+                href="/terms-of-service" 
+                className="hover:text-blue-600 transition-colors"
+              >
+                Terms of Service
+              </a>
+              <a 
+                href="/disclaimer" 
+                className="hover:text-blue-600 transition-colors"
+              >
+                Disclaimer
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>;
 };
