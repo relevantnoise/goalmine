@@ -139,34 +139,30 @@ export const GoalCard = ({
     // Calculate last check-in streak date using same logic
     let lastCheckinStreakDate = '';
     if (goal.last_checkin_date) {
-      const lastCheckinTime = new Date(goal.last_checkin_date);
-      const lastUtcTime = lastCheckinTime.getTime();
-      const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
-      const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
-      lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
+      // HANDLE BOTH FORMATS: Full timestamp vs date string
+      if (goal.last_checkin_date.length === 10) {
+        // Date string format "2025-11-06" - use directly
+        lastCheckinStreakDate = goal.last_checkin_date;
+      } else {
+        // Full timestamp format - apply timezone calculation
+        const lastCheckinTime = new Date(goal.last_checkin_date);
+        const lastUtcTime = lastCheckinTime.getTime();
+        const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
+        const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
+        lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
+      }
     }
     
     const result = currentStreakDate === lastCheckinStreakDate;
     
-    console.log(`🎯 hasCheckedInToday for ${goal.title}:`, {
-      now: now.toISOString(),
-      easternOffset,
-      easternTime: easternTime.toISOString(),
-      streakResetTime: streakResetTime.toISOString(),
-      currentStreakDate,
-      lastCheckinStreakDate,
-      result,
-      goalId: goal.id,
-      rawLastCheckinDate: goal.last_checkin_date,
-      streakCount: goal.streak_count,
-      dateComparison: `${currentStreakDate} === ${lastCheckinStreakDate}`,
-      frontendCalculation: 'EXACT MATCH to backend - Eastern Time + 3 AM reset',
-      // ENHANCED DEBUG INFO:
-      goalObjectKeys: Object.keys(goal),
-      lastCheckinDateType: typeof goal.last_checkin_date,
-      updatedAt: goal.updated_at,
-      memoDeps: `deps: [${goal.last_checkin_date}, ${goal.updated_at}, ${goal.streak_count}]`
-    });
+    // FIXED DEBUG: Verify the fix works
+    console.log(`✅ FIXED DEBUG for ${goal.title}:`);
+    console.log('✅ Raw last_checkin_date:', goal.last_checkin_date);
+    console.log('✅ Format detected:', goal.last_checkin_date?.length === 10 ? 'DATE_STRING' : 'FULL_TIMESTAMP');
+    console.log('✅ Current streak date:', currentStreakDate);
+    console.log('✅ Last checkin streak date:', lastCheckinStreakDate);
+    console.log('✅ Dates match?', currentStreakDate === lastCheckinStreakDate);
+    console.log('✅ Button should be:', result ? 'DISABLED ✓' : 'ACTIVE ✓');
     return result;
   }, [goal.last_checkin_date, goal.updated_at]);
   return <Card className="border border-border shadow-sm">
