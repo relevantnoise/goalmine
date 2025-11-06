@@ -413,6 +413,13 @@ export default function GoalDetail() {
               )}
             </CardContent>
           </Card>}
+          
+          {/* Wisdom Footer */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground italic">
+              The journey transforms you more than the destination.
+            </p>
+          </div>
       </div>
     </div>;
 }

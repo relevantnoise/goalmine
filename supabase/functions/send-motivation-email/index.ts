@@ -194,6 +194,9 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="color: #9ca3af; font-size: 14px; margin: 0;">
               Turn your ambitions into action with AI-powered motivation
             </p>
+            <p style="color: #9ca3af; font-size: 12px; margin: 8px 0 0 0; font-style: italic;">
+              P.S. Remember, the pursuit brings the joy.
+            </p>
           </div>
         </div>
       `

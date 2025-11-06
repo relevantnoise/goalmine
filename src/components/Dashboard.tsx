@@ -14,6 +14,7 @@ import { AIGoalGuidance } from "./AIGoalGuidance";
 import { Header } from "./Header";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { ProfessionalCoachPrompt } from "./ProfessionalCoachPrompt";
+import { WisdomWidget } from "./WisdomWidget";
 import { format } from "date-fns";
 
 interface DashboardProps {
@@ -154,6 +155,9 @@ export const Dashboard = ({ onNudgeMe, onStartOver, onLogoClick, hasFramework = 
           </div>
           
         </div>
+
+        {/* Wisdom Widget */}
+        <WisdomWidget />
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-4 gap-8">

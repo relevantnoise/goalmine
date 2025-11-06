@@ -427,8 +427,9 @@ export const useGoals = () => {
         await fetchGoals();
       }
 
-      // Return success with the message for display
-      const message = data.message || 'Checked in! Streak updated.';
+      // Return success with the message for display plus Arthur Brooks wisdom
+      const baseMessage = data.message || 'Checked in! Streak updated.';
+      const message = `${baseMessage}\n\nEach step forward matters more than the finish line. Keep going.`;
       return { success: true, message };
 
     } catch (error) {
