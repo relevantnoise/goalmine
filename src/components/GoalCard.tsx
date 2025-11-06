@@ -160,7 +160,12 @@ export const GoalCard = ({
       rawLastCheckinDate: goal.last_checkin_date,
       streakCount: goal.streak_count,
       dateComparison: `${currentStreakDate} === ${lastCheckinStreakDate}`,
-      frontendCalculation: 'EXACT MATCH to backend - Eastern Time + 3 AM reset'
+      frontendCalculation: 'EXACT MATCH to backend - Eastern Time + 3 AM reset',
+      // ENHANCED DEBUG INFO:
+      goalObjectKeys: Object.keys(goal),
+      lastCheckinDateType: typeof goal.last_checkin_date,
+      updatedAt: goal.updated_at,
+      memoDeps: `deps: [${goal.last_checkin_date}, ${goal.updated_at}]`
     });
     return result;
   }, [goal.last_checkin_date, goal.updated_at]);

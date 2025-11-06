@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Check-In Logic</title>
+</head>
+<body>
+    <h1>Test Check-In Date Calculation</h1>
+    <button onclick="testLogic()">Test Current Logic</button>
+    <div id="results"></div>
+
+    <script>
+        function testLogic() {
+            // EXACT SAME LOGIC as frontend GoalCard.tsx lines 132-137
+            const now = new Date();
+            const utcTime = now.getTime();
+            const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5;
+            const easternTime = new Date(utcTime + (easternOffset * 60 * 60 * 1000));
+            const streakResetTime = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
+            const currentStreakDate = streakResetTime.toISOString().split('T')[0]; // YYYY-MM-DD
+            
+            const easternString = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+            const isDST = easternString.includes('EDT');
+            
+            const results = {
+                utcTime: now.toISOString(),
+                easternOffset,
+                easternTime: easternTime.toISOString(),
+                streakResetTime: streakResetTime.toISOString(),
+                currentStreakDate,
+                easternString,
+                isDST,
+                testTime: new Date().toISOString()
+            };
+            
+            document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(results, null, 2) + '</pre>';
+            
+            // Test multiple calls in quick succession
+            console.log('Multiple calls test:');
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const testNow = new Date();
+                    const testUtcTime = testNow.getTime();
+                    const testEasternOffset = testNow.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5;
+                    const testEasternTime = new Date(testUtcTime + (testEasternOffset * 60 * 60 * 1000));
+                    const testStreakResetTime = new Date(testEasternTime.getTime() - (3 * 60 * 60 * 1000));
+                    const testCurrentStreakDate = testStreakResetTime.toISOString().split('T')[0];
+                    
+                    console.log(`Call ${i + 1}:`, {
+                        time: testNow.toISOString(),
+                        streakDate: testCurrentStreakDate,
+                        consistent: testCurrentStreakDate === currentStreakDate
+                    });
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>

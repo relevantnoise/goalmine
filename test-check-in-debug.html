@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Check-In Issue</title>
+</head>
+<body>
+    <h1>Debug Check-In State</h1>
+    <button onclick="testDanEmail()">Test danlynn@gmail.com</button>
+    <button onclick="testDandEmail()">Test dandlynn@yahoo.com</button>
+    <div id="results"></div>
+
+    <script>
+        async function testUser(userEmail) {
+            try {
+                // Call the debug function we just created
+                const response = await fetch('https://dhlcycjnzwfnadmsptof.supabase.co/functions/v1/debug-check-in-state', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg0MTIyNjEsImV4cCI6MjA0Mzk4ODI2MX0.6_Lp4CHcIf-y5_8GX8Dj3Q-MV5CxUGQhMmEyFEcZhAU'
+                    },
+                    body: JSON.stringify({ userEmail })
+                });
+                
+                const data = await response.json();
+                document.getElementById('results').innerHTML = `<h3>${userEmail} Results:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<h3>Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+
+        function testDanEmail() {
+            testUser('danlynn@gmail.com');
+        }
+
+        function testDandEmail() {
+            testUser('dandlynn@yahoo.com');
+        }
+    </script>
+</body>
+</html>
