@@ -126,15 +126,13 @@ export const LandingPage = ({
           </div>
 
           <div className="flex justify-center mb-4">
-            <Button 
+            <a 
               onClick={() => navigate('/methodology')} 
-              variant="outline" 
-              size="lg" 
-              className="text-primary border-primary hover:bg-primary hover:text-white text-base px-6 py-3"
+              className="text-sm text-muted-foreground hover:text-primary cursor-pointer transition-colors duration-200 flex items-center gap-1"
             >
               Learn More About Our Proven Frameworks
-              <Target className="ml-2 w-4 h-4" />
-            </Button>
+              <Target className="w-3 h-3" />
+            </a>
           </div>
           
           <p className="text-sm text-muted-foreground">30-day free trial • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
