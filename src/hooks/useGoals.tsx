@@ -408,28 +408,21 @@ export const useGoals = () => {
         
         // Force update ONLY the specific goal that was checked in
         setGoals(prev => {
-          console.log('🎯 BEFORE state update - current goal:', {
-            goalId,
-            oldGoal: prev.find(g => g.id === goalId),
-            newGoalData: data.goal,
-            oldLastCheckin: prev.find(g => g.id === goalId)?.last_checkin_date,
-            newLastCheckin: data.goal.last_checkin_date
-          });
-          
           const updated = prev.map(goal => 
             goal.id === goalId 
-              ? { ...data.goal } // Replace with complete backend data
+              ? { 
+                  ...data.goal, // Replace with complete backend data
+                  updated_at: data.goal.updated_at || new Date().toISOString() // Force memo recalculation
+                }
               : goal // Leave other goals unchanged
           );
-          
-          console.log('🎯 AFTER state update - goals:', updated.map(g => ({
+          console.log('🎯 Goals after update:', updated.map(g => ({
             id: g.id, 
             title: g.title, 
             last_checkin_date: g.last_checkin_date, 
             streak_count: g.streak_count,
             updated_at: g.updated_at
           })));
-          
           return updated;
         });
       } else {

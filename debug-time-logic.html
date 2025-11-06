@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Time Logic</title>
+</head>
+<body>
+    <h1>Debug Current Time Logic</h1>
+    <button onclick="checkTimeLogic()">Check Current Time Logic</button>
+    <div id="results"></div>
+
+    <script>
+        function checkTimeLogic() {
+            // EXACT SAME LOGIC as GoalCard.tsx lines 132-137
+            const now = new Date();
+            const utcTime = now.getTime();
+            const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5;
+            const easternTime = new Date(utcTime + (easternOffset * 60 * 60 * 1000));
+            const streakResetTime = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
+            const currentStreakDate = streakResetTime.toISOString().split('T')[0]; // YYYY-MM-DD
+            
+            // Simulate a check-in happening right now
+            const simulatedCheckinTime = now.toISOString();
+            
+            // Calculate what the last checkin streak date would be if we checked in now
+            const lastCheckinTime = new Date(simulatedCheckinTime);
+            const lastUtcTime = lastCheckinTime.getTime();
+            const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
+            const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
+            const lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
+            
+            const wouldBeCheckedInToday = currentStreakDate === lastCheckinStreakDate;
+            
+            const results = {
+                currentTime: now.toISOString(),
+                easternOffset,
+                easternTime: easternTime.toISOString(),
+                streakResetTime: streakResetTime.toISOString(),
+                currentStreakDate,
+                simulatedCheckinTime,
+                lastCheckinStreakDate,
+                wouldBeCheckedInToday,
+                comparison: `${currentStreakDate} === ${lastCheckinStreakDate}`,
+                explanation: wouldBeCheckedInToday ? 
+                    "✅ If you check in now, the button SHOULD become inactive" :
+                    "❌ If you check in now, the button would NOT become inactive (BUG!)"
+            };
+            
+            document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(results, null, 2) + '</pre>';
+            console.log('🕐 Time logic debug:', results);
+        }
+    </script>
+</body>
+</html>

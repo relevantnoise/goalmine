@@ -165,7 +165,7 @@ export const GoalCard = ({
       goalObjectKeys: Object.keys(goal),
       lastCheckinDateType: typeof goal.last_checkin_date,
       updatedAt: goal.updated_at,
-      memoDeps: `deps: [${goal.last_checkin_date}, ${goal.updated_at}]`
+      memoDeps: `deps: [${goal.last_checkin_date}, ${goal.updated_at}, ${goal.streak_count}]`
     });
     return result;
   }, [goal.last_checkin_date, goal.updated_at]);
