@@ -128,7 +128,7 @@ export const LandingPage = ({
           <div className="flex justify-center mb-4">
             <a 
               onClick={() => navigate('/methodology')} 
-              className="text-sm text-muted-foreground hover:text-primary cursor-pointer transition-colors duration-200 flex items-center gap-1"
+              className="text-sm text-primary hover:text-primary/80 cursor-pointer transition-colors duration-200 flex items-center gap-1 underline-offset-4 hover:underline"
             >
               Learn More About Our Proven Frameworks
               <Target className="w-3 h-3" />
