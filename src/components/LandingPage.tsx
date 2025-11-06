@@ -45,13 +45,13 @@ export const LandingPage = ({
             </h1>
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
-              <span className="text-primary">Master Life's Complexities</span><br />
-              with our Proven Frameworks
+              <span className="text-primary">Know Exactly Where to Focus</span><br />
+              for Maximum Impact
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
-              High achievers don't need another goal app. You need a <strong>proven system</strong> that shows you exactly where to focus for maximum results. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> turn scattered goals into coordinated progress across work, health, relationships, and growth.
+              High achievers don't need another goal app. You need <strong>diagnostic intelligence</strong> that reveals your highest-impact opportunities. 
+              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to precision goals across work, health, relationships, and growth.
             </p>
             
             <p className="text-2xl font-semibold text-primary mb-8 max-w-3xl mx-auto text-center italic">
