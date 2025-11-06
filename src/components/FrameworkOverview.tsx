@@ -58,7 +58,7 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
             </div>
             <h3 className="text-xl font-bold mb-2">Complete Your 6 Pillars Assessment</h3>
             <p className="text-muted-foreground mb-4">
-              Get started with your personalized life architecture framework
+              Discover your highest-leverage opportunities for improvement
             </p>
             <Button onClick={debugData} variant="outline">
               🐛 Debug Data
@@ -85,7 +85,7 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
             </div>
             <div>
               <h3 className="text-xl font-bold">Your 6 Pillars of Life™ Framework</h3>
-              <p className="text-sm text-muted-foreground">Balanced life architecture platform</p>
+              <p className="text-sm text-muted-foreground">Optimizing results across all life areas</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={onEditFramework}>
@@ -123,10 +123,10 @@ export const FrameworkOverview = ({ onEditFramework, onWeeklyCheckin }: Framewor
 
         {/* Insight */}
         <div className="bg-muted/50 rounded-lg p-4 mb-4">
-          <h4 className="font-semibold text-sm mb-1">💡 Smart Architecture Insight</h4>
+          <h4 className="font-semibold text-sm mb-1">💡 Highest-Impact Opportunity</h4>
           <p className="text-sm text-muted-foreground">
             Your <strong>{biggestGap.name}</strong> pillar shows the greatest potential for improvement ({biggestGap.current}→{biggestGap.desired}). 
-            Strengthening this foundational pillar will create positive ripple effects across your entire life architecture.
+            Strengthening this foundational pillar will create positive ripple effects across all your results.
           </p>
         </div>
 

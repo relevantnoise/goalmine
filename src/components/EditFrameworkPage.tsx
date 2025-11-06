@@ -46,7 +46,7 @@ const circles = [
     name: 'Work',
     icon: Briefcase,
     color: 'text-green-600',
-    description: 'Career, job(s) (including commute time)'
+    description: 'Career, job(s), professional activities (can be 0 hours if not working)'
   },
   {
     name: 'Sleep',

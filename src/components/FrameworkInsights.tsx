@@ -166,7 +166,7 @@ export const FrameworkInsights = ({ frameworkData, onCreateGoal, onGetGuidance }
           Smart Insights
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          AI-powered analysis of your life architecture
+          AI analysis showing exactly where to focus for maximum impact
         </p>
       </CardHeader>
       

@@ -50,8 +50,8 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
-              Ambitious professionals and other high-achievers don't need another goal app. You need a <strong>sophisticated platform</strong> for managing life's complexities. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> transform scattered goals into integrated life management.
+              High achievers don't need another goal app. You need a <strong>proven system</strong> that shows you exactly where to focus for maximum results. 
+              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> turn scattered goals into coordinated progress across work, health, relationships, and growth.
             </p>
             
             <p className="text-2xl font-semibold text-primary mb-8 max-w-3xl mx-auto text-center italic">
@@ -99,9 +99,9 @@ export const LandingPage = ({
             </div>
 
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Enterprise-grade frameworks refined over 30 years with hundreds of professionals, entrepreneurs, and high-achievers.</strong>{" "}
-              The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes professional satisfaction. 
-              Now powered by advanced AI for personalized guidance.
+              <strong>Proven frameworks refined over 30 years with hundreds of high achievers: professionals, entrepreneurs, parents, retirees, and ambitious individuals.</strong>{" "}
+              The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes work-life satisfaction. 
+              Now powered by AI that identifies your highest-impact opportunities.
             </p>
             
             <div className="flex justify-center mb-12">
@@ -150,7 +150,7 @@ export const LandingPage = ({
                 Why Most Goal Systems Fail Ambitious High-Achievers
               </h3>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                You're juggling career advancement, family relationships, personal growth, health, and spiritual fulfillment. 
+                You're juggling multiple priorities: work or personal projects, family relationships, health, personal growth, and spiritual fulfillment. 
                 Traditional goal apps treat these as separate items. <strong>Life doesn't work that way.</strong>
               </p>
             </div>
@@ -181,7 +181,7 @@ export const LandingPage = ({
 
               {/* The Solution */}
               <div className="bg-white rounded-2xl p-8 shadow-lg border border-blue-200">
-                <h4 className="text-2xl font-bold mb-4 text-blue-600">The Solution: Integrated Life Management</h4>
+                <h4 className="text-2xl font-bold mb-4 text-blue-600">The Solution: Coordinated Life Optimization</h4>
                 <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
@@ -213,14 +213,14 @@ export const LandingPage = ({
                 </div>
                 <div>
                   <h4 className="text-xl font-bold">Proven Frameworks, Enterprise Platform</h4>
-                  <p className="text-muted-foreground">GoalMine.ai's proprietary frameworks are built on methodologies refined over 30 years with hundreds of professionals, originally developed by successful serial entrepreneur Dan Lynn</p>
+                  <p className="text-muted-foreground">GoalMine.ai's proven frameworks are built on methodologies refined over 30 years with hundreds of high achievers, originally developed by successful serial entrepreneur Dan Lynn</p>
                 </div>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Our frameworks originated from real-world challenges faced by ambitious professionals juggling complex lives—
-                demanding careers, family relationships, personal growth, and professional satisfaction. 
+                Our frameworks originated from real-world challenges faced by high achievers juggling complex lives—
+                demanding responsibilities, family relationships, personal growth, and life satisfaction. 
                 Traditional goal-setting tools failed to address the <strong>systematic complexity management</strong> that high-achievers need. 
-                GoalMine.ai has evolved these proven methodologies into an AI-powered platform that scales personalized life architecture for thousands of users.
+                GoalMine.ai has evolved these proven methodologies into an AI-powered platform that helps thousands of users optimize their results across all life areas.
               </p>
             </div>
 
@@ -234,7 +234,7 @@ export const LandingPage = ({
                   </div>
                   <h5 className="text-lg font-semibold mb-3">AI-Powered Assessment</h5>
                   <p className="text-muted-foreground text-sm">
-                    Our intelligent system captures life's complexity gaps and professional happiness factors through proprietary frameworks, delivering insights in under 5 minutes.
+                    Our proven system identifies where you're losing time and energy, plus what's limiting your work satisfaction, delivering clear insights in under 5 minutes.
                   </p>
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-lg border">
@@ -271,8 +271,8 @@ export const LandingPage = ({
               AI-Powered Platform Features
             </h3>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Beyond our proven frameworks, GoalMine.ai delivers enterprise-grade AI technology 
-              that adapts to your unique success patterns and keeps you consistently moving forward.
+              Beyond our proven frameworks, GoalMine.ai delivers AI technology that identifies your highest-impact opportunities 
+              and adapts to your unique success patterns to keep you consistently moving forward.
             </p>
           </div>
 

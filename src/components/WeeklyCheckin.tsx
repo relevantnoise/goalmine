@@ -59,7 +59,7 @@ export const WeeklyCheckin = ({ onClose, onSuccess }: WeeklyCheckinProps) => {
       await saveWeeklyCheckin(checkinData);
 
       console.log('✅ Check-in submitted successfully');
-      toast.success("Pillar assessment complete! Your life architecture is strengthening! 🏛️");
+      toast.success("Pillar assessment complete! Your life optimization is improving! 🎯");
       
       // Trigger framework data refresh
       if (onSuccess) {

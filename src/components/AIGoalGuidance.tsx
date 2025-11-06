@@ -70,7 +70,7 @@ export const AIGoalGuidance = ({ frameworkData, onClose }: AIGoalGuidanceProps) 
         return false;
       });
 
-      const aiPrompt = `You are Dan Lynn's strategic life advisor and framework expert. Analyze this 6 Pillars assessment and provide intelligent, research-backed guidance.
+      const aiPrompt = `You are Dan Lynn's strategic life optimization advisor and framework expert. Analyze this 6 Pillars assessment and provide intelligent, research-backed guidance.
 
 ASSESSMENT DATA:
 ${assessmentSummary}
@@ -184,7 +184,7 @@ Format as JSON:
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="w-6 h-6 text-primary" />
-            Your Personalized Life Architecture Analysis
+            Your Personalized Life Optimization Analysis
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             AI-powered insights based on your 6 Pillars assessment

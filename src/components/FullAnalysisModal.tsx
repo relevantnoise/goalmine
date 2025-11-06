@@ -170,11 +170,11 @@ export const FullAnalysisModal = ({ isOpen, onClose, frameworkData, insights }: 
             </h3>
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
               <p className="text-gray-700 leading-relaxed mb-4">
-                <strong>Based on our enterprise-grade analysis</strong> of your 6 Pillars Framework™ and Business Happiness Formula™ assessments, 
-                our AI has identified {parsedInsights.length} critical strategic focus areas that will deliver maximum transformation to your life architecture.
+                <strong>Based on our proven analysis</strong> of your 6 Pillars Framework™ and Business Happiness Formula™ assessments, 
+                our AI has identified {parsedInsights.length} critical strategic focus areas that will deliver maximum transformation to your life optimization.
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
-                <strong>What makes this analysis different:</strong> Our proprietary algorithms don't just identify gaps—they read between the lines 
+                <strong>What makes this analysis different:</strong> Our proven algorithms don't just identify gaps—they read between the lines 
                 to diagnose cascade effects, burnout patterns, and hidden sacrificial cycles that traditional tools miss.
               </p>
               <div className="bg-white border-l-4 border-green-500 p-4 rounded">

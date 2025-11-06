@@ -361,7 +361,7 @@ export const AssessmentCard = ({
             </div>
             <div>
               <h3 className="text-xl font-bold">6 Pillars of Life Framework™ + Business Happiness Formula™</h3>
-              <p className="text-sm text-muted-foreground">GoalMine.ai's proprietary frameworks to transform life's complexities into strategic clarity</p>
+              <p className="text-sm text-muted-foreground">GoalMine.ai's proven frameworks that show you exactly where to focus for the biggest results</p>
             </div>
           </div>
 
@@ -509,7 +509,7 @@ export const AssessmentCard = ({
                   <div className="text-center">
                     <Loader2 className="w-8 h-8 animate-spin mx-auto mb-3 text-purple-600" />
                     <p className="text-lg text-purple-700 font-medium">Enterprise Strategic Intelligence Engine</p>
-                    <p className="text-sm text-purple-600 mt-2">Analyzing your data against comprehensive optimization patterns...</p>
+                    <p className="text-sm text-purple-600 mt-2">Analyzing your data to identify highest-impact opportunities...</p>
                     <p className="text-xs text-purple-500 mt-1">Enterprise-grade analysis • 30-60 seconds</p>
                   </div>
                 </div>
@@ -729,7 +729,7 @@ export const AssessmentCard = ({
                   // Complete Assessment Restart (all zeros - incomplete assessment)
                   else if (allCurrentZero && totalDesiredHoursLocal > 40) {
                     lifePattern = 'Fresh Life Design';
-                    stressDriver = 'Clean slate opportunity to design ideal life architecture';
+                    stressDriver = 'Clean slate opportunity to design ideal life optimization';
                     goalGuidance = 'Foundation Building Goals';
                     patternSeverity = 'medium';
                   }

@@ -119,7 +119,7 @@ export const PricingPage = ({
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Master life's complexities with our proven systematic approach. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
+            Discover your highest-leverage opportunities for life optimization with our proven frameworks. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
             with AI-powered insights. Try free for 30 days, then continue starting as low as $24.99/month.
           </p>
         </div>
@@ -233,7 +233,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">Essential for managing complex lives across all 6 pillars - with 10 goals, you can truly address each life domain.</p>
+                <p className="text-muted-foreground text-sm mb-2">Ideal for high achievers managing multiple priorities - with 10 goals, you can optimize results across all 6 pillars.</p>
               </div>
               <div className="text-2xl font-bold">
                 $199.99
@@ -256,7 +256,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Full 6 Pillars Framework™ experience with comprehensive goal coverage</span>
+                  <span>Full 6 Pillars Framework™ system with goal optimization across all areas</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -346,7 +346,7 @@ export const PricingPage = ({
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">The 6 Pillars of Life Framework™</h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              A revolutionary approach to managing life's complexity, developed over 30 years and proven with hundreds of ambitious professionals
+              A proven system for optimizing results across work, health, relationships, and growth, developed over 30 years with hundreds of high achievers
             </p>
           </div>
           
@@ -386,8 +386,8 @@ export const PricingPage = ({
                 <p className="text-blue-800 text-sm">
                   "Our proven framework has been impacting lives for over 30 years. I first developed this system as a rising professional 
                   juggling a demanding strategy job at AT&T, pursuing my MBA at Rutgers, with a wife and two kids under 3. I was overwhelmed 
-                  and created this framework out of necessity - and it worked. Since then, I've helped hundreds of ambitious professionals 
-                  use this system to reduce stress, increase happiness, and systematically achieve their complex life goals." - Dan Lynn, Creator
+                  and created this framework out of necessity - and it worked. Since then, I've helped hundreds of high achievers 
+                  use this system to discover their highest-leverage opportunities and systematically achieve their most important goals." - Dan Lynn, Creator
                 </p>
               </div>
             </div>

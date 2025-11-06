@@ -44,7 +44,7 @@ const circleOptions = [
     value: 'Work',
     label: 'Work',
     icon: Briefcase,
-    description: 'Career, job(s)',
+    description: 'Career, job(s), professional activities',
     color: 'text-green-600'
   },
   {

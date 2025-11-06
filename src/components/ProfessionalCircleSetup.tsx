@@ -57,8 +57,8 @@ const elements = [
     icon: Briefcase,
     color: 'text-green-600',
     bgColor: 'bg-green-50 border-green-200',
-    description: 'Career, job(s) (including commute time)',
-    placeholder: 'Core work, meetings, professional growth, commuting'
+    description: 'Career, job(s), professional activities (can be 0 hours if not working)',
+    placeholder: 'Work activities, meetings, professional growth (can be 0 if retired/not working)'
   },
   {
     name: 'Sleep',

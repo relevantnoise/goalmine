@@ -116,8 +116,8 @@ export const UpgradePage = () => {
             Ready for More Advanced Goal Management?
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto">
-            You've reached the free limit. Upgrade to Personal Plan for traditional multi-goal tracking, 
-            or discover our revolutionary <strong>6 Pillars of Life Framework™ + Business Happiness Formula™</strong> - proven frameworks for managing complex life priorities.
+            You've reached the free limit. Upgrade to Personal Plan for multi-goal tracking, 
+            or discover our proven <strong>6 Pillars of Life Framework™ + Business Happiness Formula™</strong> - frameworks that show you exactly where to focus for maximum results.
           </p>
         </div>
 
@@ -217,7 +217,7 @@ export const UpgradePage = () => {
             </div>
             <CardHeader className="pt-12 text-center">
               <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-              <p className="text-sm text-muted-foreground mb-2">The ideal plan for the busy professional managing a complex life.</p>
+              <p className="text-sm text-muted-foreground mb-2">The ideal plan for high achievers optimizing multiple life priorities.</p>
               <div className="text-2xl font-bold text-blue-600">
                 $199.99
                 <span className="text-sm font-normal text-muted-foreground">/month</span>
@@ -235,15 +235,15 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 10 Goals Across All Elements</span>
-                    <p className="text-xs text-muted-foreground">Complete life coverage with multiple goals per element</p>
+                    <span className="font-semibold">Up to 10 Goals Across All Pillars</span>
+                    <p className="text-xs text-muted-foreground">Complete life optimization with multiple goals per pillar</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Enhanced Elements Dashboard</span>
-                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and element integration</p>
+                    <span className="font-semibold">Enhanced Pillars Dashboard</span>
+                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and pillar integration</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -257,14 +257,14 @@ export const UpgradePage = () => {
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Up to 10 Goals + 10 Nudges</span>
-                    <p className="text-xs text-muted-foreground">Multiple goals per element + daily motivation</p>
+                    <p className="text-xs text-muted-foreground">Multiple goals per pillar + daily motivation</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Stress Reduction System</span>
-                    <p className="text-xs text-muted-foreground">Break overwhelm into manageable pieces</p>
+                    <span className="font-semibold">Life Optimization System</span>
+                    <p className="text-xs text-muted-foreground">Discover your highest-leverage opportunities for maximum results</p>
                   </div>
                 </li>
               </ul>

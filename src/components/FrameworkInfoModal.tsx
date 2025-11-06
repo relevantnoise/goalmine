@@ -9,7 +9,7 @@ interface FrameworkInfoModalProps {
 
 export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps) => {
   const pillars = [
-    { name: "Work", icon: Briefcase, description: "Career, job(s) (including commute time)" },
+    { name: "Work", icon: Briefcase, description: "Career, job(s), professional activities (can be 0 hours if not working)" },
     { name: "Sleep", icon: Moon, description: "Rest, recovery, energy management" },
     { name: "Family & Friends", icon: Users, description: "Relationships, social connections" },
     { name: "Health & Fitness", icon: Activity, description: "Physical wellbeing, energy, vitality" },
@@ -32,15 +32,15 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
           <div className="bg-blue-50 p-6 rounded-lg">
             <h3 className="text-xl font-semibold mb-3 text-blue-900">Proven Methodologies, Enterprise Platform</h3>
             <p className="text-blue-800 leading-relaxed">
-              GoalMine.ai's proprietary frameworks originated from real-world challenges faced by ambitious professionals 
-              managing complex lives—demanding careers, family relationships, personal growth, and professional satisfaction. 
+              GoalMine.ai's proven frameworks originated from real-world challenges faced by high achievers 
+              managing complex lives—demanding responsibilities, family relationships, personal growth, and life satisfaction. 
               Originally developed 30 years ago by entrepreneur Dan Lynn while juggling strategy roles at AT&T, MBA studies, 
-              family commitments, and entrepreneurial aspirations, <strong>these methodologies solved the time management crisis 
+              family commitments, entrepreneurial aspirations, fitness routines, and his faith, <strong>these methodologies solved the time management crisis 
               that traditional goal-setting tools couldn't address.</strong>
             </p>
             <p className="text-blue-800 leading-relaxed mt-3">
-              GoalMine.ai has evolved these proven frameworks into an AI-powered platform that scales personalized life architecture 
-              for thousands of users, providing enterprise-grade systematic complexity management for ambitious professionals.
+              GoalMine.ai has evolved these proven frameworks into an AI-powered platform that helps thousands of users optimize results across all life areas, 
+              helping high achievers identify exactly where to focus for the biggest impact.
             </p>
           </div>
 
@@ -79,13 +79,13 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
           <div className="bg-amber-50 p-6 rounded-lg">
             <h3 className="text-xl font-semibold mb-3 text-amber-900">Plus: The Business Happiness Formula™</h3>
             <p className="text-amber-800 leading-relaxed mb-3">
-              GoalMine.ai's proprietary Business Happiness Formula identifies the core drivers of professional satisfaction: 
+              GoalMine.ai's proven Business Happiness Formula identifies the core drivers of work-life satisfaction: 
               <strong> impact, fun, compensation, and flexibility (location/schedule).</strong> Our platform's intelligent assessment captures 
-              your unique weighting of these variables to optimize career fulfillment.
+              your unique weighting of these variables to optimize work fulfillment.
             </p>
             <p className="text-amber-800 leading-relaxed">
-              This specialized framework works within the Work pillar to provide granular professional optimization, 
-              ensuring not just career advancement but genuine workplace satisfaction aligned with your personal values and lifestyle preferences.
+              This specialized framework works within the Work pillar to provide granular work optimization, 
+              ensuring not just advancement but genuine work satisfaction aligned with your personal values and lifestyle preferences.
             </p>
           </div>
 
@@ -107,7 +107,7 @@ export const FrameworkInfoModal = ({ isOpen, onClose }: FrameworkInfoModalProps)
               </div>
               <div className="bg-white border border-gray-200 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">Proven Methodologies</h4>
-                <p className="text-gray-600 text-sm">30 years of framework refinement scaled through AI for thousands of ambitious professionals managing complex lives</p>
+                <p className="text-gray-600 text-sm">30 years of framework refinement scaled through AI for thousands of high achievers managing complex lives</p>
               </div>
             </div>
           </div>

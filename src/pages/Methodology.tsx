@@ -13,7 +13,7 @@ export const Methodology = () => {
   }, []);
 
   const pillars = [
-    { name: "Work", icon: Briefcase, description: "Career, job(s) (including commute time)" },
+    { name: "Work", icon: Briefcase, description: "Career, job(s), professional activities (can be 0 hours if not working)" },
     { name: "Sleep", icon: Moon, description: "Rest, recovery, energy management" },
     { name: "Family & Friends", icon: Users, description: "Relationships, social connections" },
     { name: "Health & Fitness", icon: Activity, description: "Physical wellbeing, energy, vitality" },
@@ -44,7 +44,7 @@ export const Methodology = () => {
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Two sophisticated methodologies working together to transform scattered goals into integrated life management
+              Two proven systems working together to help you focus on goals that deliver maximum results across all life areas
             </p>
           </div>
 
@@ -53,15 +53,15 @@ export const Methodology = () => {
             <div className="bg-blue-50 p-8 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4 text-blue-900">Proven Methodologies, Enterprise Platform</h2>
               <p className="text-blue-800 leading-relaxed mb-4">
-                GoalMine.ai's proprietary frameworks originated from real-world challenges faced by ambitious professionals 
-                managing complex lives—demanding careers, family relationships, personal growth, and professional satisfaction. 
+                GoalMine.ai's proven frameworks originated from real-world challenges faced by high achievers 
+                managing complex lives—demanding responsibilities, family relationships, personal growth, and life satisfaction. 
                 Originally developed 30 years ago by entrepreneur Dan Lynn while juggling strategy roles at AT&T, MBA studies, 
                 family commitments, entrepreneurial aspirations, fitness routines, and his faith, <strong>these methodologies solved the time management crisis 
                 that traditional goal-setting tools couldn't address.</strong>
               </p>
               <p className="text-blue-800 leading-relaxed">
-                GoalMine.ai has evolved these proven frameworks into an AI-powered platform that scales personalized life architecture 
-                for thousands of users, providing enterprise-grade systematic complexity management for ambitious professionals.
+                GoalMine.ai has evolved these proven frameworks into an AI-powered platform that helps you optimize results across all life areas 
+                for thousands of users, helping high achievers identify exactly where to focus for the biggest impact.
               </p>
             </div>
 
@@ -69,7 +69,7 @@ export const Methodology = () => {
             <div>
               <h2 className="text-2xl font-semibold mb-6 text-gray-800">The 6 Pillars of Life Framework™</h2>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                A comprehensive system for balancing all essential life domains. Each pillar represents a critical area that affects your overall satisfaction and success.
+                A proven method for optimizing your time and energy across work, health, relationships, and personal growth. Each pillar represents a critical area that affects your overall satisfaction and success.
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 {pillars.map((pillar) => {
@@ -91,13 +91,13 @@ export const Methodology = () => {
             <div className="bg-amber-50 p-8 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4 text-amber-900">The Business Happiness Formula™</h2>
               <p className="text-amber-800 leading-relaxed mb-4">
-                GoalMine.ai's proprietary Business Happiness Formula identifies the core drivers of professional satisfaction: 
+                GoalMine.ai's proven Business Happiness Formula identifies the core drivers of work-life satisfaction: 
                 <strong> impact, fun, compensation, and flexibility (location/schedule).</strong> Our platform's intelligent assessment captures 
-                your unique weighting of these variables to optimize career fulfillment.
+                your unique weighting of these variables to optimize work-life fulfillment.
               </p>
               <p className="text-amber-800 leading-relaxed">
                 This specialized framework works within the Work pillar to provide granular professional optimization, 
-                ensuring not just career advancement but genuine workplace satisfaction aligned with your personal values and lifestyle preferences.
+                ensuring not just professional advancement but genuine work-life satisfaction aligned with your personal values and lifestyle preferences.
               </p>
             </div>
 
@@ -114,7 +114,7 @@ export const Methodology = () => {
                 <div className="flex gap-3">
                   <span className="font-bold text-green-900">2.</span>
                   <div>
-                    <strong>Gap Analysis:</strong> Advanced algorithms identify priority areas for maximum life transformation
+                    <strong>Gap Analysis:</strong> Proven system identifies your highest-leverage opportunities for improvement
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -143,12 +143,12 @@ export const Methodology = () => {
               <h2 className="text-2xl font-semibold mb-6 text-gray-800">Why GoalMine.ai's Platform Works</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Enterprise-Grade Intelligence</h3>
-                  <p className="text-gray-600">Advanced AI addresses all life domains simultaneously, preventing the common trap of success in one area at the expense of others</p>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Proven Intelligence</h3>
+                  <p className="text-gray-600">AI addresses all life domains simultaneously, preventing the common trap of success in one area at the expense of others</p>
                 </div>
                 <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Personalized Architecture</h3>
-                  <p className="text-gray-600">Intelligent algorithms analyze your complexity patterns to reveal where you should focus energy for maximum life transformation</p>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Personalized Optimization</h3>
+                  <p className="text-gray-600">Proven algorithms analyze your patterns to reveal where you should focus energy for maximum results</p>
                 </div>
                 <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">Optimized Resource Allocation</h3>
@@ -156,7 +156,7 @@ export const Methodology = () => {
                 </div>
                 <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">Proven Methodologies</h3>
-                  <p className="text-gray-600">30 years of framework refinement scaled through AI for thousands of ambitious professionals managing complex lives</p>
+                  <p className="text-gray-600">30 years of framework refinement scaled through AI for thousands of high achievers managing complex lives</p>
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ export const Methodology = () => {
                 Remember, happiness isn't achieving the goal. Happiness is the journey.
               </p>
               <p className="text-gray-600">
-                Our frameworks don't just help you create goals to address the complexities and stress drivers in your life.
+                Our frameworks help you discover your highest-leverage opportunities for life optimization, then create goals that deliver maximum impact on your overall satisfaction and performance.
               </p>
             </div>
 
