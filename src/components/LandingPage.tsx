@@ -50,7 +50,7 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
-              High achievers don't need another goal app. You need <strong>diagnostic intelligence</strong> that reveals your highest-impact opportunities. 
+              High achievers don't need another goal app. They need <strong>diagnostic intelligence</strong> that reveals your highest-impact opportunities. 
               GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to precision goals across work, health, relationships, and growth.
             </p>
             
