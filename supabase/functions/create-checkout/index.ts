@@ -19,17 +19,20 @@ serve(async (req) => {
     // Determine plan based on tier parameter or explicit priceId
     const isStrategicAdvisory = tier === 'strategic_advisory';
     const isProPlan = tier === 'pro_plan';
+    const isPersonalPlan = tier === 'personal_plan';
     
     const planName = (() => {
       if (isStrategicAdvisory) return 'Strategic Advisor Plan';
       if (isProPlan) return 'Professional Plan';
-      return 'Personal Plan';
+      if (isPersonalPlan) return 'Personal Plan';
+      return 'Personal Plan'; // Default fallback
     })();
     
     const finalPriceId = priceId || (() => {
       if (isStrategicAdvisory) return "price_1SCPJLCElVmMOup293vWqNTQ"; // Strategic Advisor Plan $950/month
       if (isProPlan) return "price_1SHE5DCElVmMOup2zX8H4qnJ"; // Professional Plan $199.99/month
-      return "price_1SNEM2CElVmMOup25aJLD43T"; // Personal Plan $24.99/month
+      if (isPersonalPlan) return "price_1SNEM2CElVmMOup25aJLD43T"; // Personal Plan $24.99/month
+      return "price_1SNEM2CElVmMOup25aJLD43T"; // Default to Personal Plan
     })();
     
     console.log(`🔍 DEBUG: tier=${tier}, isStrategicAdvisory=${isStrategicAdvisory}, isProPlan=${isProPlan}, planName=${planName}, finalPriceId=${finalPriceId}`);

@@ -45,13 +45,13 @@ export const LandingPage = ({
             </h1>
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
-              <span className="text-primary">Know Exactly Where to Focus</span><br />
-              for Maximum Impact
+              <span className="text-primary">AI-Powered Framework for Creating Goals</span><br />
+              That Reduce Stress & Increase Happiness
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
               High achievers don't need another goal app. They need <strong>diagnostic intelligence</strong> that reveals their highest-impact opportunities. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to precision goals across work, health, relationships, and growth.
+              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to create precision goals across work, health, relationships, and personal growth.
             </p>
             
             <p className="text-lg font-medium text-primary mb-8 max-w-3xl mx-auto text-center italic">
