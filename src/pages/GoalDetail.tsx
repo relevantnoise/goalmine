@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { useGoals } from "@/hooks/useGoals";
+import { PartnerRecommendation } from "@/components/PartnerRecommendation";
 export default function GoalDetail() {
   const {
     goalId
@@ -335,6 +336,9 @@ export default function GoalDetail() {
                 </p>
               </CardContent>
             </Card>
+
+            {/* Strategic Partner Recommendation */}
+            <PartnerRecommendation goal={goal} />
 
             {/* Encouragement Footer */}
             <Card className="bg-primary/5 border-primary/20">

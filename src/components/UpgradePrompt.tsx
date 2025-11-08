@@ -18,7 +18,7 @@ export const UpgradePrompt = ({
     pricing: "From $24.99/month",
     buttonText: "View Plans",
     features: [{
-      text: "Up to 3 traditional goals OR 6 Pillars of Life Framework™"
+      text: "Up to 6 traditional goals OR 6 Pillars of Life Framework™"
     }, {
       text: "Proven system for life optimization"
     }, {

@@ -49,7 +49,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, isFromGoalLimit = false }: 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="font-semibold text-blue-800 mb-2">Free Plan Active</h3>
             <p className="text-sm text-blue-700">
-              Your free GoalMine.ai account gives you 1 goal. Upgrade to Personal Plan for up to 3 goals,
+              Your free GoalMine.ai account gives you 1 goal. Upgrade to Personal Plan for up to 6 goals,
               or discover our revolutionary 6 Pillars of Life Framework™ + Business Happiness Formula™ for comprehensive life optimization.
             </p>
           </div>
@@ -62,7 +62,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, isFromGoalLimit = false }: 
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Personal Plan: Up to 3 goals ($24.99/month)
+                Personal Plan: Up to 6 goals ($24.99/month)
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-blue-600" />

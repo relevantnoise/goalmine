@@ -520,7 +520,7 @@ const Index = () => {
       } else {
         setAlertData({
           title: '🎯 Upgrade to Create More Goals',
-          message: 'Free users can have 1 goal. Upgrade to Personal Plan for up to 3 goals.',
+          message: 'Free users can have 1 goal. Upgrade to Personal Plan for up to 6 goals.',
           type: 'upgrade'
         });
       }

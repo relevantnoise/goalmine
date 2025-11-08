@@ -37,7 +37,7 @@ export const CrawlerLandingPage = () => {
         "name": "Personal Plan",
         "price": "24.99",
         "priceCurrency": "USD",
-        "description": "Up to 3 active goals with 6 Pillars framework",
+        "description": "Up to 6 active goals with 6 Pillars framework",
         "validFrom": "2024-01-01"
       },
       {
@@ -45,7 +45,7 @@ export const CrawlerLandingPage = () => {
         "name": "Professional Plan", 
         "price": "199.99",
         "priceCurrency": "USD",
-        "description": "Up to 10 goals with advanced 6 Pillars analytics",
+        "description": "Up to 18 goals with advanced 6 Pillars analytics",
         "validFrom": "2024-01-01"
       },
       {
@@ -92,7 +92,7 @@ export const CrawlerLandingPage = () => {
           "name": "Can I work on multiple goals at once?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes! Personal Plan users can track up to 3 goals, while Pro Plan users can manage up to 5 goals simultaneously. Our system helps you balance progress across different life areas without overwhelming you."
+            "text": "Yes! Personal Plan users can track up to 6 goals, while Professional Plan users can manage up to 18 goals simultaneously. Our system helps you balance progress across different life areas without overwhelming you."
           }
         },
         {
@@ -175,7 +175,7 @@ export const CrawlerLandingPage = () => {
           </div>
           
           <p className="text-sm text-muted-foreground">
-            Free plan available with no credit card required • Upgrade to $24.99/month for up to 3 goals
+            Free plan available with no credit card required • Upgrade to $24.99/month for up to 6 goals
           </p>
         </div>
       </section>
@@ -566,7 +566,7 @@ export const CrawlerLandingPage = () => {
             <div className="bg-card rounded-xl p-6 border border-border">
               <h3 className="font-semibold mb-2">Can I work on multiple goals at once?</h3>
               <p className="text-muted-foreground">
-                Yes! Personal Plan users can track up to 3 goals, while Pro Plan users can manage up to 5 goals simultaneously. 
+                Yes! Personal Plan users can track up to 6 goals, while Professional Plan users can manage up to 18 goals simultaneously. 
                 Our system helps you balance progress across different life areas without overwhelming you.
               </p>
             </div>

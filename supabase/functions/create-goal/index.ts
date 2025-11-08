@@ -98,13 +98,15 @@ serve(async (req) => {
         .from('goals')
         .select('id, title, is_active')
         .eq('user_id', user_id)
-        .not('title', 'like', '%6 Elements of Life™ Framework%'),
+        .not('title', 'like', '%6 Pillars%')
+        .not('title', 'like', '%6 Elements%'),
       // Check goals with Firebase UID as user_id (NEW architecture) - EXCLUDE framework goals
       supabaseAdmin
         .from('goals')
         .select('id, title, is_active')
         .eq('user_id', actualUserId)
-        .not('title', 'like', '%6 Elements of Life™ Framework%')
+        .not('title', 'like', '%6 Pillars%')
+        .not('title', 'like', '%6 Elements%')
     ]);
 
     if (goalsByEmail.error) {
@@ -139,7 +141,7 @@ serve(async (req) => {
     // Check subscription status using email (subscribers table uses email as user_id)
     const { data: subscriberResults, error: subError } = await supabaseAdmin
       .from('subscribers')
-      .select('subscribed')
+      .select('subscribed, subscription_tier')
       .eq('user_id', user_id); // Keep using email for subscribers table
     
     const subscriber = subscriberResults && subscriberResults.length > 0 ? subscriberResults[0] : null;
@@ -157,31 +159,37 @@ serve(async (req) => {
       if (!subscriber?.subscribed) return 1; // Free users
       
       const tier = subscriber.subscription_tier;
-      if (tier === 'Professional Plan') return 10; // Updated from 5 to 10
-      if (tier === 'Pro Plan') return 10; // Legacy name support
-      if (tier === 'Strategic Advisor Plan') return 10; // Same as Professional
-      if (tier === 'Professional Coach') return 10; // Legacy tier
-      return 3; // Personal Plan (default for subscribed users)
+      if (tier === 'Professional Plan') return 18; // Multiple goals per pillar
+      if (tier === 'Pro Plan') return 18; // Legacy name support  
+      if (tier === 'Strategic Advisor Plan') return 18; // Same as Professional
+      if (tier === 'Professional Coach') return 18; // Legacy tier
+      return 6; // Personal Plan (default for subscribed users)
     };
     
     const maxGoals = getMaxGoals(subscriber);
     
-    console.log('💳 User subscription status:', { isSubscribed, maxGoals, currentGoalCount });
+    console.log('💳 User subscription status:', { 
+      isSubscribed, 
+      maxGoals, 
+      currentGoalCount,
+      subscriberData: subscriber,
+      subscriberTier: subscriber?.subscription_tier 
+    });
 
     if (currentGoalCount >= maxGoals) {
       const getErrorMessage = (subscriber, currentCount) => {
         if (!subscriber?.subscribed) {
-          return `Free users can have a maximum of 1 goal. Upgrade to Personal Plan ($24.99/month) to create up to 3 goals.`;
+          return `Free users can have a maximum of 1 goal. Upgrade to Personal Plan ($24.99/month) to create up to 6 goals.`;
         }
         
         const tier = subscriber.subscription_tier || 'Personal Plan';
         
         if (tier === 'Personal Plan') {
-          return `Personal Plan users can have a maximum of 3 goals. Upgrade to Professional Plan ($199.99/month) to create up to 10 goals.`;
+          return `Personal Plan users can have a maximum of 6 goals. Upgrade to Professional Plan ($199.99/month) to create up to 18 goals.`;
         }
         
         // Professional Plan, Strategic Advisor Plan, and Professional Coach (legacy) - no upgrade available
-        const maxForTier = tier === 'Professional Plan' || tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 10 : 3;
+        const maxForTier = tier === 'Professional Plan' || tier === 'Pro Plan' || tier === 'Strategic Advisor Plan' || tier === 'Professional Coach' ? 18 : 6;
         return `${tier} users can have a maximum of ${maxForTier} goals. You currently have ${currentCount} goals.`;
       };
       
