@@ -249,7 +249,7 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 **CURRENT**: All users receive emails at 6 AM Eastern regardless of preferences
 
 ### Dashboard Experience (6 Pillars Framework PRIMARY)
-- **6 Pillars Framework Dashboard** - Visual life architecture with gap analysis
+- **6 Pillars Framework Dashboard** - Visual framework overview with gap analysis
 - **Smart Insights System** - AI-powered pattern recognition and recommendations
 - **Weekly Pillar Check-ins** - Structured progress tracking and trend analysis
 - **AI Goal Guidance** - Research-backed coaching from assessment to action
@@ -276,7 +276,7 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 
 ### MAJOR ARCHITECTURAL BREAKTHROUGH (October 28, 2025)
 **Status**: ✅ COMPLETE - Clean architecture implemented with 80/20 MVP approach  
-**Transformation**: From simple goal tracking to comprehensive life architecture platform  
+**Transformation**: From simple goal tracking to comprehensive framework-driven goal creation platform  
 **Timeline**: 5-day implementation delivering maximum impact with minimum complexity  
 
 ### Revolutionary Life Architecture System
@@ -343,7 +343,7 @@ email_deliveries      -- Email delivery tracking
 - Real-time overall satisfaction calculation
 - Optional notes for weekly insights
 - Integration with save-weekly-checkin edge function
-- Encouraging feedback: "Your life architecture is strengthening!"
+- Encouraging feedback: "Your framework progress is strengthening!"
 
 #### AIGoalGuidance.tsx
 - **The Bridge Component** - Assessment to action transformation

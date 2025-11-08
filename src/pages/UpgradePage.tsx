@@ -140,8 +140,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 3 Goals Across Any Pillars</span>
-                    <p className="text-xs text-muted-foreground">Create goals in multiple life pillars simultaneously</p>
+                    <span className="font-semibold">Up to 6 Goals - One for Each Pillar</span>
+                    <p className="text-xs text-muted-foreground">Work on all 6 pillars of your life strategically</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -154,15 +154,8 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 3 Daily Nudges</span>
+                    <span className="font-semibold">Up to 6 Daily Nudges</span>
                     <p className="text-xs text-muted-foreground">Get extra motivation when you need it most</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Full AI-Powered Analysis Report</span>
-                    <p className="text-xs text-muted-foreground">6 Pillars Framework™ + Business Happiness Formula™ insights</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -242,14 +235,14 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 10 Goals Across All Pillars</span>
-                    <p className="text-xs text-muted-foreground">Manage complex life priorities effectively</p>
+                    <span className="font-semibold">Up to 18 Goals Across All Pillars</span>
+                    <p className="text-xs text-muted-foreground">Multiple strategic goals per pillar for comprehensive growth</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Up to 10 Daily Nudges</span>
+                    <span className="font-semibold">Up to 18 Daily Nudges</span>
                     <p className="text-xs text-muted-foreground">Stay motivated throughout your day</p>
                   </div>
                 </li>

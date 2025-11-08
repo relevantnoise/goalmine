@@ -75,9 +75,11 @@ export const FiveCircleGoalWorkshop = ({ onComplete, onBack }: FiveCircleGoalWor
 
   const getMaxGoals = () => {
     if (!subscription.subscribed) return 1; // Free users
-    if (subscription.subscription_tier === 'Personal Plan') return 3;
-    if (subscription.subscription_tier === 'Pro Plan') return 5;
-    if (subscription.subscription_tier === 'Strategic Advisor Plan') return 5;
+    if (subscription.subscription_tier === 'Personal Plan') return 6; // One goal per pillar
+    if (subscription.subscription_tier === 'Professional Plan') return 18; // Multiple goals per pillar
+    if (subscription.subscription_tier === 'Pro Plan') return 18; // Legacy tier
+    if (subscription.subscription_tier === 'Strategic Advisor Plan') return 18; // Everything + coaching
+    if (subscription.subscription_tier === 'Professional Coach') return 18; // Legacy tier
     return 1; // Default fallback
   };
 

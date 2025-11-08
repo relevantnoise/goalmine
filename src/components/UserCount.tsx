@@ -11,7 +11,7 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
 
   useEffect(() => {
     // Calculate current user count based on days since launch
-    const launchDate = new Date('2025-10-28'); // 6 Pillars platform launch date
+    const launchDate = new Date('2025-11-08'); // Reset launch date to today
     const today = new Date();
     const daysSinceLaunch = Math.floor((today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -22,9 +22,9 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
     let totalGrowth = 0;
     if (daysSinceLaunch > 0) {
       for (let day = 0; day < daysSinceLaunch; day++) {
-        // Use day as seed for consistent but varied growth (30-46 range)
+        // Use day as seed for consistent but varied growth (5-15 range)
         const seed = (day * 17 + 23) % 47; // Simple pseudo-random
-        const dailyGrowth = 30 + (seed % 17); // 30-46 range
+        const dailyGrowth = 5 + (seed % 11); // 5-15 range (11 possible values: 0-10, plus 5 = 5-15)
         totalGrowth += dailyGrowth;
       }
     }

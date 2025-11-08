@@ -493,10 +493,11 @@ const Index = () => {
       if (!subscription?.subscribed) return 1; // Free users
       
       const tier = subscription.subscription_tier;
-      if (tier === 'Pro Plan') return 5;
-      if (tier === 'Strategic Advisor Plan') return 5;
-      if (tier === 'Professional Coach') return 5; // Legacy tier
-      return 3; // Personal Plan (default for subscribed users)
+      if (tier === 'Professional Plan') return 18; // Multiple goals per pillar
+      if (tier === 'Pro Plan') return 18; // Legacy tier
+      if (tier === 'Strategic Advisor Plan') return 18; // Everything + coaching
+      if (tier === 'Professional Coach') return 18; // Legacy tier
+      return 6; // Personal Plan - one goal per pillar
     };
     
     const maxGoals = getMaxGoals(subData || { subscribed: false });

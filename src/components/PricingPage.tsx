@@ -120,7 +120,7 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover your highest-leverage opportunities for life optimization with our proven frameworks. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
-            with AI-powered insights. Start with our free plan, then upgrade starting as low as $24.99/month to unlock more goals and gain access to a full AI-powered analysis of your personal assessement.
+            with AI-powered insights. Start with our free plan, then upgrade starting as low as $24.99/month to unlock more goals and enhanced motivation features.
           </p>
         </div>
 
@@ -186,7 +186,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
-                <p className="text-muted-foreground text-sm">Perfect for managing multiple goals with AI-powered framework analysis. Cancel anytime.</p>
+                <p className="text-muted-foreground text-sm">Perfect for managing multiple goals and staying motivated. Cancel anytime.</p>
               </div>
               <div className="text-2xl font-bold">
                 $24.99
@@ -201,15 +201,11 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Up to 3 goals across any pillars</span>
+                  <span>Up to 6 goals - one for each pillar</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Up to 3 daily "Nudge Me" requests</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span><strong>Full AI-Powered Analysis Report</strong> - 6 Pillars Framework™ + Business Happiness Formula™ insights</span>
+                  <span>Up to 6 daily "Nudge Me" requests</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
@@ -237,7 +233,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Professional Plan</CardTitle>
-                <p className="text-muted-foreground text-sm mb-2">Ideal for high achievers managing multiple priorities - with 10 goals, you can optimize results across all 6 pillars.</p>
+                <p className="text-muted-foreground text-sm mb-2">Ideal for high achievers managing multiple priorities - with 18 goals, you can optimize results across all 6 pillars with multiple goals each.</p>
               </div>
               <div className="text-2xl font-bold">
                 $199.99
@@ -252,11 +248,19 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span><strong>Up to 10 goals across all pillars</strong> - Manage complex life priorities effectively</span>
+                  <span><strong>Up to 18 goals across all pillars</strong> - Multiple strategic goals per pillar for comprehensive growth</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span><strong>Up to 10 daily nudges</strong> - Stay motivated throughout your day</span>
+                  <span><strong>Up to 18 daily nudges</strong> - Comprehensive motivation support for all your goals</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span><strong>Exclusive Full AI-Powered Analysis Report</strong> - Comprehensive strategic insights and recommendations</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <span>AI-powered insights and strategic guidance across all life domains</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />

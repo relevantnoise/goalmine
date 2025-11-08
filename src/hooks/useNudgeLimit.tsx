@@ -63,16 +63,16 @@ export const useNudgeLimit = () => {
     const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userKey}`) || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
     
-    // Determine max nudges based on subscription tier (matches goal limits)
+    // Determine max nudges based on subscription tier (matches goal limits exactly)
     const getNudgeLimit = (subscription) => {
-      if (!subscription.subscribed) return 1; // Free users
+      if (!subscription.subscribed) return 1; // Free users - 1 nudge
       
       const tier = subscription.subscription_tier;
-      if (tier === 'Professional Plan') return 10; // Updated to match goal limit
-      if (tier === 'Pro Plan') return 10; // Legacy name support
-      if (tier === 'Strategic Advisor Plan') return 10; // Updated to match goal limit
-      if (tier === 'Professional Coach') return 10; // Legacy tier
-      return 3; // Personal Plan (default for subscribed users)
+      if (tier === 'Professional Plan') return 18; // Multiple goals per pillar - 18 nudges
+      if (tier === 'Pro Plan') return 18; // Legacy tier - 18 nudges  
+      if (tier === 'Strategic Advisor Plan') return 18; // Everything + coaching - 18 nudges
+      if (tier === 'Professional Coach') return 18; // Legacy tier - 18 nudges
+      return 6; // Personal Plan - one goal per pillar - 6 nudges
     };
     
     const maxNudges = getNudgeLimit(subscription);
@@ -129,16 +129,16 @@ export const useNudgeLimit = () => {
     const storedDate = localStorage.getItem(`lastNudgeDate_${userKey}`);
     const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userKey}`) || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
-    // Determine max nudges based on subscription tier (matches goal limits)
+    // Determine max nudges based on subscription tier (matches goal limits exactly)
     const getNudgeLimit = (subscription) => {
-      if (!subscription.subscribed) return 1; // Free users
+      if (!subscription.subscribed) return 1; // Free users - 1 nudge
       
       const tier = subscription.subscription_tier;
-      if (tier === 'Professional Plan') return 10; // Updated to match goal limit
-      if (tier === 'Pro Plan') return 10; // Legacy name support
-      if (tier === 'Strategic Advisor Plan') return 10; // Updated to match goal limit
-      if (tier === 'Professional Coach') return 10; // Legacy tier
-      return 3; // Personal Plan (default for subscribed users)
+      if (tier === 'Professional Plan') return 18; // Multiple goals per pillar - 18 nudges
+      if (tier === 'Pro Plan') return 18; // Legacy tier - 18 nudges  
+      if (tier === 'Strategic Advisor Plan') return 18; // Everything + coaching - 18 nudges
+      if (tier === 'Professional Coach') return 18; // Legacy tier - 18 nudges
+      return 6; // Personal Plan - one goal per pillar - 6 nudges
     };
     
     const maxNudges = getNudgeLimit(subscription);
