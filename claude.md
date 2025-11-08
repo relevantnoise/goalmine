@@ -186,7 +186,7 @@ ai_insights {
 
 ## Project Overview
 
-GoalMine.ai is a **comprehensive life architecture platform** built with React, TypeScript, and Supabase. The application combines Dan Lynn's proprietary **6 Pillars of Life™ Framework** with intelligent goal tracking, featuring AI-powered insights, weekly pillar assessments, and research-backed guidance for optimal life design.
+GoalMine.ai is a **comprehensive goal creation platform** built with React, TypeScript, and Supabase. The application combines Dan Lynn's proprietary **6 Pillars of Life™ Framework** with intelligent goal tracking, featuring AI-powered insights, weekly pillar assessments, and research-backed guidance that helps high achievers create goals that reduce stress & increase happiness.
 
 ## ⚠️ CRITICAL CODEBASE WARNING (October 2025)
 

@@ -84,7 +84,7 @@ export const TermsOfService = () => {
             <section className="mb-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Subscription Terms</h2>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li><strong>Free Trial:</strong> 30-day free trial for new users, automatically expires</li>
+                <li><strong>Free Plan:</strong> Permanent free access with 1 goal and basic features</li>
                 <li><strong>Billing:</strong> Paid plans are billed monthly or annually in advance</li>
                 <li><strong>Cancellation:</strong> You may cancel your subscription at any time; service continues until the end of your billing period</li>
                 <li><strong>Refunds:</strong> Generally no refunds for partial months, but we'll consider special circumstances</li>

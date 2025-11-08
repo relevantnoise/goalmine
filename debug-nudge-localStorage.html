@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Nudge localStorage</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; }
+        .user-section { border: 1px solid #ddd; padding: 15px; margin: 10px 0; }
+        button { margin: 5px; padding: 8px 15px; }
+        .current { background: #e7f5e7; }
+        .storage-item { background: #f9f9f9; padding: 5px; margin: 2px 0; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Nudge localStorage Debug Tool</h1>
+        
+        <div class="user-section">
+            <h3>Current localStorage Contents</h3>
+            <div id="storageContents"></div>
+            <button onclick="refreshStorage()">Refresh</button>
+            <button onclick="clearAllNudgeData()">Clear All Nudge Data</button>
+        </div>
+        
+        <div class="user-section">
+            <h3>Test User: dandlynn@yahoo.com</h3>
+            <p><strong>Today:</strong> <span id="todayDate"></span></p>
+            <p><strong>Stored Date:</strong> <span id="danStoredDate">Not set</span></p>
+            <p><strong>Stored Count:</strong> <span id="danStoredCount">0</span></p>
+            <p><strong>Today Count:</strong> <span id="danTodayCount">0</span></p>
+            <button onclick="simulateNudge('dandlynn@yahoo.com')">Simulate Nudge</button>
+            <button onclick="clearUserData('dandlynn@yahoo.com')">Clear Dan's Data</button>
+        </div>
+        
+        <div class="user-section">
+            <h3>Test User: danlynn@gmail.com</h3>
+            <p><strong>Stored Date:</strong> <span id="emailStoredDate">Not set</span></p>
+            <p><strong>Stored Count:</strong> <span id="emailStoredCount">0</span></p>
+            <p><strong>Today Count:</strong> <span id="emailTodayCount">0</span></p>
+            <button onclick="simulateNudge('danlynn@gmail.com')">Simulate Nudge</button>
+            <button onclick="clearUserData('danlynn@gmail.com')">Clear Email User's Data</button>
+        </div>
+    </div>
+
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        
+        function refreshStorage() {
+            document.getElementById('todayDate').textContent = today;
+            
+            // Show all localStorage contents
+            const container = document.getElementById('storageContents');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('nudge') || key.includes('Nudge'))) {
+                    const value = localStorage.getItem(key);
+                    const div = document.createElement('div');
+                    div.className = 'storage-item';
+                    div.textContent = `${key}: ${value}`;
+                    container.appendChild(div);
+                }
+            }
+            
+            // Update Dan's data
+            updateUserDisplay('dandlynn@yahoo.com', 'dan');
+            updateUserDisplay('danlynn@gmail.com', 'email');
+        }
+        
+        function updateUserDisplay(userEmail, prefix) {
+            const storedDate = localStorage.getItem(`lastNudgeDate_${userEmail}`);
+            const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userEmail}`) || '0');
+            const todayCount = storedDate === today ? storedCount : 0;
+            
+            document.getElementById(`${prefix}StoredDate`).textContent = storedDate || 'Not set';
+            document.getElementById(`${prefix}StoredCount`).textContent = storedCount.toString();
+            document.getElementById(`${prefix}TodayCount`).textContent = todayCount.toString();
+        }
+        
+        function simulateNudge(userEmail) {
+            const storedDate = localStorage.getItem(`lastNudgeDate_${userEmail}`);
+            const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userEmail}`) || '0');
+            const todayCount = storedDate === today ? storedCount : 0;
+            
+            if (todayCount >= 1) {
+                alert(`${userEmail} has already used ${todayCount} nudge(s) today`);
+                return;
+            }
+            
+            localStorage.setItem(`lastNudgeDate_${userEmail}`, today);
+            localStorage.setItem(`dailyNudgeCount_${userEmail}`, (todayCount + 1).toString());
+            
+            alert(`✅ Nudge simulated for ${userEmail}`);
+            refreshStorage();
+        }
+        
+        function clearUserData(userEmail) {
+            localStorage.removeItem(`lastNudgeDate_${userEmail}`);
+            localStorage.removeItem(`dailyNudgeCount_${userEmail}`);
+            alert(`Cleared data for ${userEmail}`);
+            refreshStorage();
+        }
+        
+        function clearAllNudgeData() {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('nudge') || key.includes('Nudge'))) {
+                    keysToRemove.push(key);
+                }
+            }
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            alert(`Cleared ${keysToRemove.length} nudge-related localStorage items`);
+            refreshStorage();
+        }
+        
+        // Initialize display
+        refreshStorage();
+    </script>
+</body>
+</html>

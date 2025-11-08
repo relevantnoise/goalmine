@@ -58,8 +58,9 @@ export const useNudgeLimit = () => {
   // Fallback to localStorage (backwards compatibility during transition)
   const getFallbackNudgeStatus = (): NudgeStatus => {
     const today = new Date().toISOString().split('T')[0];
-    const storedDate = localStorage.getItem('lastNudgeDate');
-    const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
+    const userKey = user?.email || 'anonymous';
+    const storedDate = localStorage.getItem(`lastNudgeDate_${userKey}`);
+    const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userKey}`) || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
     
     // Determine max nudges based on subscription tier (matches goal limits)
@@ -124,8 +125,9 @@ export const useNudgeLimit = () => {
   // Fallback nudge handling using localStorage
   const handleFallbackNudge = (): { success: boolean; error?: string } => {
     const today = new Date().toISOString().split('T')[0];
-    const storedDate = localStorage.getItem('lastNudgeDate');
-    const storedCount = parseInt(localStorage.getItem('dailyNudgeCount') || '0');
+    const userKey = user?.email || 'anonymous';
+    const storedDate = localStorage.getItem(`lastNudgeDate_${userKey}`);
+    const storedCount = parseInt(localStorage.getItem(`dailyNudgeCount_${userKey}`) || '0');
     const todayNudgeCount = storedDate === today ? storedCount : 0;
     // Determine max nudges based on subscription tier (matches goal limits)
     const getNudgeLimit = (subscription) => {
@@ -162,9 +164,9 @@ export const useNudgeLimit = () => {
       };
     }
 
-    // Update localStorage
-    localStorage.setItem('lastNudgeDate', today);
-    localStorage.setItem('dailyNudgeCount', (todayNudgeCount + 1).toString());
+    // Update localStorage with user-specific keys
+    localStorage.setItem(`lastNudgeDate_${userKey}`, today);
+    localStorage.setItem(`dailyNudgeCount_${userKey}`, (todayNudgeCount + 1).toString());
 
     // Update local state
     const newStatus = {

@@ -162,54 +162,16 @@ const handler = async (req: Request): Promise<Response> => {
       };
     }
 
-    // 2. Send trial warning emails
-    try {
-      console.log('[DAILY-CRON] Invoking send-trial-warning function');
-      const trialWarningsResponse = await supabase.functions.invoke('send-trial-warning', {
-        body: {},
-        headers: {
-          Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
-        },
-      });
-      
-      console.log('[DAILY-CRON] Raw trial warnings response:', trialWarningsResponse);
-      
-      // Check if response has data even if there's an error
-      if (trialWarningsResponse.data) {
-        results.trialWarnings = {
-          success: trialWarningsResponse.data.success || false,
-          emailsSent: trialWarningsResponse.data.emailsSent || 0,
-          errors: trialWarningsResponse.data.errors || 0,
-          message: trialWarningsResponse.data.message || 'Trial warnings processed'
-        };
-      } else if (trialWarningsResponse.error) {
-        console.warn('[DAILY-CRON] Trial warnings error (non-critical):', trialWarningsResponse.error);
-        results.trialWarnings = {
-          success: true, // Don't fail entire cron for trial warnings
-          emailsSent: 0,
-          errors: 0,
-          message: 'Trial warnings skipped due to error'
-        };
-      } else {
-        results.trialWarnings = {
-          success: true,
-          emailsSent: 0,
-          errors: 0,
-          message: 'Trial warnings completed with no data'
-        };
-      }
-      
-      console.log('[DAILY-CRON] Trial warnings result:', results.trialWarnings);
-      
-    } catch (error) {
-      console.error('[DAILY-CRON] Error in trial warnings (non-critical):', error);
-      results.trialWarnings = {
-        success: true, // Don't fail entire cron for trial warnings
-        emailsSent: 0,
-        errors: 0,
-        message: `Trial warnings skipped: ${error.message}`
-      };
-    }
+    // 2. Trial warning emails - DISABLED FOR FREEMIUM MODEL
+    // Previously sent countdown emails (7-day, 3-day, 1-day warnings)
+    // Now disabled since users keep free access permanently
+    console.log('[DAILY-CRON] 🚫 Trial warnings DISABLED - freemium model implemented');
+    results.trialWarnings = {
+      success: true,
+      emailsSent: 0,
+      errors: 0,
+      message: 'Trial warnings disabled - freemium model active'
+    };
 
     // Skip database cleanup to avoid potential table issues
     console.log('[DAILY-CRON] Skipping database cleanup (not critical for daily emails)');

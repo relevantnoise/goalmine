@@ -45,7 +45,7 @@ export const LandingPage = ({
             </h1>
             
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-6 leading-tight">
-              <span className="text-primary">AI-Powered Framework for Creating Goals</span><br />
+              <span className="text-primary">AI-Powered Frameworks for Creating Goals</span><br />
               That Reduce Stress & Increase Happiness
             </h2>
             
@@ -115,7 +115,7 @@ export const LandingPage = ({
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button> : <>
                 <Button onClick={() => navigate('/auth')} size="lg" className="bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-48">
-                  Start Free Trial
+                  Get Started Free
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <Button onClick={onSeePricing} size="lg" variant="outline" className="text-lg px-8 py-4 h-auto w-48">
@@ -135,7 +135,7 @@ export const LandingPage = ({
             </a>
           </div>
           
-          <p className="text-sm text-muted-foreground">30-day free trial • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
+          <p className="text-sm text-muted-foreground">Free forever • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
         </div>
       </div>
 

@@ -9,7 +9,7 @@ This document is the **SINGLE SOURCE OF TRUTH** for GoalMine.ai's current state.
 
 ## 📋 **WHAT GOALMINE.AI IS TODAY**
 
-GoalMine.ai is a **comprehensive life architecture platform** built around the proprietary **6 Elements of Life™ Framework**, not just a goal tracking app.
+GoalMine.ai is a **comprehensive goal creation platform** built around the proprietary **6 Elements of Life™ Framework**, not just a goal tracking app.
 
 **Core Value Proposition**: Transform users' lives through strategic time allocation and AI-powered coaching across all 6 life elements.
 
@@ -213,10 +213,10 @@ Dan Lynn's proven 10-year methodology with 4 dimensions:
 ## 🎯 **STRATEGIC POSITIONING**
 
 **GoalMine.ai is positioned as:**
-- **Life Architecture Platform** (not goal tracking app)
+- **AI-Powered Goal Creation Platform** (not simple goal tracking app)
 - **30-year proprietary framework** delivered via AI
-- **Business consulting expertise** accessible 24/7
-- **Strategic life management** for time, stress, and happiness optimization
+- **Proven frameworks for high achievers** accessible 24/7
+- **Strategic goal creation** that reduces stress & increases happiness
 
 **Competitive Advantage:**
 - Proprietary 6 Elements Framework™

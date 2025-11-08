@@ -59,24 +59,23 @@ export function isGoalExpired(goal: Goal): boolean {
 }
 
 // Helper function to check if user's free trial has expired
+// FREEMIUM MODEL: Trial expiration no longer blocks access
 export function isTrialExpired(profile: Profile | null): boolean {
-  if (!profile || !profile.trial_expires_at) return false;
-  return new Date(profile.trial_expires_at) < new Date();
+  // Always return false - users get permanent free access
+  return false;
 }
 
 // Helper function to determine goal status (most restrictive wins)
 export function getGoalStatus(goal: Goal, profile: Profile | null, isSubscribed: boolean): GoalStatus {
-  // Trial expired and not subscribed = most restrictive
-  if (isTrialExpired(profile) && !isSubscribed) {
-    return 'trial-expired';
-  }
+  // FREEMIUM MODEL: Trial expiration no longer blocks access
+  // Users now have permanent free access with 1-goal limit
   
-  // Goal expired = moderately restrictive
+  // Goal expired = only restriction now
   if (isGoalExpired(goal)) {
     return 'goal-expired';
   }
   
-  // Normal operation
+  // Normal operation (includes former trial-expired users)
   return 'active';
 }
 
@@ -85,17 +84,6 @@ export function getGoalPermissions(goal: Goal, profile: Profile | null, isSubscr
   const status = getGoalStatus(goal, profile, isSubscribed);
   
   switch (status) {
-    case 'trial-expired':
-      // Trial expired: completely read-only
-      return {
-        canEdit: false,
-        canDelete: false,
-        canCheckIn: false,
-        canShare: false,
-        canReceiveEmails: false,
-        canGenerateNudge: false,
-      };
-      
     case 'goal-expired':
       // Goal expired: only edit/delete allowed
       return {
@@ -109,7 +97,7 @@ export function getGoalPermissions(goal: Goal, profile: Profile | null, isSubscr
       
     case 'active':
     default:
-      // Full functionality
+      // Full functionality (includes freemium users)
       return {
         canEdit: true,
         canDelete: true,
@@ -217,8 +205,9 @@ export const useGoals = () => {
 
       let fetchedGoals = goalsResponse.data.goals;
       
-      // Apply localStorage edits to fetched goals
-      const editedGoals = JSON.parse(localStorage.getItem('goalEdits') || '{}');
+      // Apply user-specific localStorage edits to fetched goals
+      const userKey = user?.email || 'anonymous';
+      const editedGoals = JSON.parse(localStorage.getItem(`goalEdits_${userKey}`) || '{}');
       if (Object.keys(editedGoals).length > 0) {
         fetchedGoals = fetchedGoals.map(goal => {
           if (editedGoals[goal.id]) {
@@ -533,15 +522,16 @@ export const useGoals = () => {
           : goal
       ));
 
-      // 2. Store in localStorage for persistence across sessions
-      console.log('💾 Storing update in localStorage for persistence...');
-      const existingEdits = JSON.parse(localStorage.getItem('goalEdits') || '{}');
+      // 2. Store in user-specific localStorage for persistence across sessions
+      console.log('💾 Storing update in user-specific localStorage for persistence...');
+      const userKey = user?.email || 'anonymous';
+      const existingEdits = JSON.parse(localStorage.getItem(`goalEdits_${userKey}`) || '{}');
       existingEdits[goalId] = {
         ...existingEdits[goalId],
         ...processedUpdates,
         updated_at: new Date().toISOString()
       };
-      localStorage.setItem('goalEdits', JSON.stringify(existingEdits));
+      localStorage.setItem(`goalEdits_${userKey}`, JSON.stringify(existingEdits));
 
       // 3. Try to persist to database in the background (optional)
       console.log('🔄 Attempting to persist to database...');
@@ -560,10 +550,11 @@ export const useGoals = () => {
           const data = await response.json();
           if (data.success) {
             console.log('✅ Successfully persisted to database');
-            // Remove from localStorage since it's now in the database
-            const edits = JSON.parse(localStorage.getItem('goalEdits') || '{}');
+            // Remove from user-specific localStorage since it's now in the database
+            const userKey = user?.email || 'anonymous';
+            const edits = JSON.parse(localStorage.getItem(`goalEdits_${userKey}`) || '{}');
             delete edits[goalId];
-            localStorage.setItem('goalEdits', JSON.stringify(edits));
+            localStorage.setItem(`goalEdits_${userKey}`, JSON.stringify(edits));
           } else {
             console.log('⚠️ Database persistence failed, but localStorage backup exists:', data.error);
           }

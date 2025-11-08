@@ -120,7 +120,7 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover your highest-leverage opportunities for life optimization with our proven frameworks. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
-            with AI-powered insights. Try free for 30 days, then continue starting as low as $24.99/month.
+            with AI-powered insights. Get started free forever, then upgrade starting as low as $24.99/month to unlock more goals.
           </p>
         </div>
 
@@ -129,16 +129,16 @@ export const PricingPage = ({
           {/* Trial Card */}
           <Card className="border-2 border-trial relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-trial text-trial-foreground text-center py-2 text-sm font-medium">
-              Great Way To Start
+              Free Forever
             </div>
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
-                <CardTitle className="text-lg mb-2">Free Trial</CardTitle>
-                <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey.</p>
+                <CardTitle className="text-lg mb-2">Free Plan</CardTitle>
+                <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey with lifetime access.</p>
               </div>
               <div className="text-2xl font-bold">
                 $0
-                <span className="text-sm font-normal text-muted-foreground">/30 days</span>
+                <span className="text-sm font-normal text-muted-foreground">/forever</span>
               </div>
             </CardHeader>
             <CardContent>
@@ -173,7 +173,7 @@ export const PricingPage = ({
                 </li>
               </ul>
               <Button onClick={handleStartTrial} className="w-full bg-trial hover:bg-trial/90" size="lg" disabled={loading}>
-                {loading ? "Dream Big..." : "Start Free Trial"}
+                {loading ? "Dream Big..." : "Get Started Free"}
               </Button>
             </CardContent>
           </Card>
@@ -186,7 +186,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
-                <p className="text-muted-foreground text-sm">The perfect option after your free trial. Cancel anytime.</p>
+                <p className="text-muted-foreground text-sm">Perfect for managing multiple goals simultaneously. Cancel anytime.</p>
               </div>
               <div className="text-2xl font-bold">
                 $24.99
@@ -197,7 +197,7 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span>Everything in the free trial plus...</span>
+                  <span>Everything in free plan plus...</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
@@ -435,15 +435,15 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">Can I have multiple Goals?</h3>
-              <p className="text-muted-foreground">Yes! While you can have one Goal in the 30-day trial, our Personal Plan enables you to have up to 3 Goals for just $24.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
+              <p className="text-muted-foreground">Yes! While you can have one Goal on our free plan, our Personal Plan enables you to have up to 3 Goals for just $24.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What's included in Strategic Advisor Plan?</h3>
               <p className="text-muted-foreground">Strategic Advisor Plan includes everything from Personal Plan plus 2-hour quarterly 1-on-1 professional coach/strategic advisory sessions with Dan Lynn, co-Founder and Managing Director at Starting Point Ventures, a successful serial entrepreneur and Fortune 500 executive. Also includes the ability to email him from time-to-time during the quarter with questions that may come up between sessions. We'll work together on strategic goal planning, business execution methodology, "right to left" project planning, and provide executive-level guidance tailored to your specific business challenges.</p>
             </div>
             <div>
-              <h3 className="font-semibold mb-2">What happens after my 30-day trial?</h3>
-              <p className="text-muted-foreground">After 30-days you will have to upgrade to our Personal Plan.  Your existing Goal will continue seamlessly.  Remember that if you aren't completely satisfied, you can cancel anytime.</p>
+              <h3 className="font-semibold mb-2">How does the free plan work?</h3>
+              <p className="text-muted-foreground">Our free plan gives you permanent access to GoalMine.ai with 1 goal, full framework access, and daily motivation emails. Upgrade to Personal Plan anytime to add more goals and enhanced features.  Your existing Goal will continue seamlessly.  Remember that if you aren't completely satisfied, you can cancel anytime.</p>
             </div>
           </div>
         </div>
@@ -454,7 +454,7 @@ export const PricingPage = ({
             Back
           </Button>
           <Button onClick={subscription.subscribed ? handleSubscribe : handleStartTrial} size="lg" className="bg-trial hover:bg-trial/90" disabled={loading}>
-            {loading ? "Dream Big..." : subscription.subscribed ? "Manage Subscription" : "Start Your Free Trial Today"}
+            {loading ? "Dream Big..." : subscription.subscribed ? "Manage Subscription" : "Get Started Free Today"}
           </Button>
         </div>
       </div>

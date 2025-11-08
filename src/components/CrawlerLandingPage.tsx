@@ -26,10 +26,10 @@ export const CrawlerLandingPage = () => {
     "offers": [
       {
         "@type": "Offer",
-        "name": "Free Trial",
+        "name": "Free Plan",
         "price": "0",
         "priceCurrency": "USD",
-        "description": "30-day free trial with 1 active goal",
+        "description": "Free forever plan with 1 active goal",
         "validFrom": "2024-01-01"
       },
       {
@@ -175,7 +175,7 @@ export const CrawlerLandingPage = () => {
           </div>
           
           <p className="text-sm text-muted-foreground">
-            30-day free trial with no credit card required • After the trial it's just $4.99/month for up to 3 goals
+            Free forever with no credit card required • Upgrade to $24.99/month for up to 3 goals
           </p>
         </div>
       </section>
@@ -231,7 +231,7 @@ export const CrawlerLandingPage = () => {
       <section id="pricing" className="container mx-auto px-6 py-16 bg-muted/30">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, transparent pricing</h2>
-          <p className="text-xl text-muted-foreground mb-12">Start your journey with a 30-day free trial</p>
+          <p className="text-xl text-muted-foreground mb-12">Start your journey - free forever</p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {/* Free Trial */}
@@ -481,7 +481,7 @@ export const CrawlerLandingPage = () => {
                 Start free and scale up as needed, with plans ranging from personal goal tracking to professional strategic coaching.
               </p>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• 30-day free trial</li>
+                <li>• Free forever</li>
                 <li>• No long-term contracts</li>
                 <li>• Cancel anytime</li>
               </ul>
@@ -591,7 +591,7 @@ export const CrawlerLandingPage = () => {
             <div className="bg-card rounded-xl p-6 border border-border">
               <h3 className="font-semibold mb-2">Is there a long-term commitment?</h3>
               <p className="text-muted-foreground">
-                No! Start with a 30-day free trial, then continue month-to-month. You can cancel anytime and keep access 
+                No! Start with our free forever plan, then upgrade month-to-month whenever you need more goals. You can cancel anytime and keep access 
                 until the end of your billing period. No contracts or cancellation fees.
               </p>
             </div>
@@ -626,7 +626,7 @@ export const CrawlerLandingPage = () => {
           </div>
           
           <p className="text-sm text-muted-foreground">
-            No credit card required • 30-day free trial • Cancel anytime • Get started in under 2 minutes
+            No credit card required • Free forever • Upgrade anytime • Get started in under 2 minutes
           </p>
         </div>
       </section>

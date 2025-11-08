@@ -9,13 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Crown, Clock, Shield } from "lucide-react";
 import { useSubscription } from "@/hooks/useSubscription";
 
-interface TrialExpiredModalProps {
+interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  daysRemaining?: number;
+  isFromGoalLimit?: boolean;
 }
 
-export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialExpiredModalProps) => {
+export const TrialExpiredModal = ({ isOpen, onClose, isFromGoalLimit = false }: UpgradeModalProps) => {
   const { createCheckout, loading } = useSubscription();
 
   const handleUpgrade = async () => {
@@ -23,28 +23,22 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
     // Don't close modal immediately - user will be redirected to Stripe
   };
 
-  const isExpired = daysRemaining <= 0;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] mx-4 max-w-[calc(100vw-2rem)]">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-12 h-12 bg-premium-light rounded-full flex items-center justify-center">
-              {isExpired ? (
-                <Crown className="w-6 h-6 text-premium" />
-              ) : (
-                <Clock className="w-6 h-6 text-orange-500" />
-              )}
+              <Crown className="w-6 h-6 text-premium" />
             </div>
             <div>
               <DialogTitle className="text-xl">
-                {isExpired ? "Free Trial Expired" : `${daysRemaining} Days Remaining`}
+                {isFromGoalLimit ? "Goal Limit Reached" : "Upgrade to Personal Plan"}
               </DialogTitle>
               <DialogDescription>
-                {isExpired 
-                  ? "Upgrade to continue using GoalMine.ai"
-                  : "Your free trial will expire soon"
+                {isFromGoalLimit 
+                  ? "Upgrade to Personal Plan to create more goals"
+                  : "Unlock more goals and premium features"
                 }
               </DialogDescription>
             </div>
@@ -52,23 +46,13 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
         </DialogHeader>
 
         <div className="space-y-4">
-          {isExpired ? (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-              <h3 className="font-semibold text-destructive mb-2">Access Restricted</h3>
-              <p className="text-sm text-muted-foreground">
-                Your 30-day free trial has ended. Upgrade to Personal Plan for traditional goal tracking,
-                or discover our revolutionary 6 Pillars of Life Framework™ + Business Happiness Formula™ for comprehensive life's complexities management.
-              </p>
-            </div>
-          ) : (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-              <h3 className="font-semibold text-orange-800 mb-2">Trial Ending Soon</h3>
-              <p className="text-sm text-orange-700">
-                You have {daysRemaining} day{daysRemaining !== 1 ? 's' : ''} left in your free trial. 
-                Upgrade now to ensure uninterrupted access to your goals.
-              </p>
-            </div>
-          )}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-800 mb-2">Free Plan Active</h3>
+            <p className="text-sm text-blue-700">
+              Your free GoalMine.ai account gives you 1 goal forever. Upgrade to Personal Plan for up to 3 goals,
+              or discover our revolutionary 6 Pillars of Life Framework™ + Business Happiness Formula™ for comprehensive life optimization.
+            </p>
+          </div>
 
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2">
@@ -78,7 +62,7 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-premium" />
-                Personal Plan: Up to 3 traditional goals ($4.99/month)
+                Personal Plan: Up to 3 goals ($24.99/month)
               </li>
               <li className="flex items-center gap-2">
                 <Crown className="w-4 h-4 text-blue-600" />
@@ -100,18 +84,16 @@ export const TrialExpiredModal = ({ isOpen, onClose, daysRemaining = 0 }: TrialE
           </div>
 
           <div className="flex gap-3 pt-4">
-            {!isExpired && (
-              <Button variant="outline" onClick={onClose} className="flex-1">
-                Continue Trial
-              </Button>
-            )}
+            <Button variant="outline" onClick={onClose} className="flex-1">
+              Continue Free Plan
+            </Button>
             <Button 
               onClick={handleUpgrade}
               disabled={loading}
-              className={`bg-premium hover:bg-premium/90 ${isExpired ? 'flex-1' : 'flex-1'}`}
+              className="bg-premium hover:bg-premium/90 flex-1"
             >
               <Crown className="w-4 h-4 mr-2" />
-{loading ? "Dream Big..." : "View All Plans - From $4.99/month"}
+              {loading ? "Dream Big..." : "View All Plans - From $24.99/month"}
             </Button>
           </div>
 
