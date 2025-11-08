@@ -145,7 +145,7 @@ export const PricingPage = ({
               <ul className="space-y-1 mb-3">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
-                  <span>6 Pillars of Life Framework™ + Business Happiness Formula™</span>
+                  <span>6 Pillars of Life Framework™ + Business Happiness Formula™ assessment</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-trial mt-0.5 flex-shrink-0" />
@@ -186,7 +186,7 @@ export const PricingPage = ({
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Personal Plan</CardTitle>
-                <p className="text-muted-foreground text-sm">Perfect for managing multiple goals simultaneously. Cancel anytime.</p>
+                <p className="text-muted-foreground text-sm">Perfect for managing multiple goals with AI-powered framework analysis. Cancel anytime.</p>
               </div>
               <div className="text-2xl font-bold">
                 $24.99
@@ -206,6 +206,10 @@ export const PricingPage = ({
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <span>Up to 3 daily "Nudge Me" requests</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <span><strong>Full AI Analysis Report</strong> - 6 Pillars Framework™ + Business Happiness Formula™ insights</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
