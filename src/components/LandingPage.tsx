@@ -135,7 +135,7 @@ export const LandingPage = ({
             </a>
           </div>
           
-          <p className="text-sm text-muted-foreground">Free forever • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
+          <p className="text-sm text-muted-foreground">Free plan available • GoalMine.ai's proprietary frameworks • Upgrade for more goals across all pillars</p>
         </div>
       </div>
 

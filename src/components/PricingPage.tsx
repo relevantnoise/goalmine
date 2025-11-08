@@ -120,7 +120,7 @@ export const PricingPage = ({
           <h1 className="text-4xl font-bold text-foreground mb-4">Start Your GoalMine.ai Journey</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover your highest-leverage opportunities for life optimization with our proven frameworks. Experience the 6 Pillars of Life Framework™ + Business Happiness Formula™ 
-            with AI-powered insights. Get started free forever, then upgrade starting as low as $24.99/month to unlock more goals.
+            with AI-powered insights. Start with our free plan, then upgrade starting as low as $24.99/month to unlock more goals.
           </p>
         </div>
 
@@ -129,16 +129,16 @@ export const PricingPage = ({
           {/* Trial Card */}
           <Card className="border-2 border-trial relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 bg-trial text-trial-foreground text-center py-2 text-sm font-medium">
-              Free Forever
+              Free Plan
             </div>
             <CardHeader className="pt-12 text-center">
               <div className="mb-4">
                 <CardTitle className="text-lg mb-2">Free Plan</CardTitle>
-                <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey with lifetime access.</p>
+                <p className="text-muted-foreground text-sm">Perfect to get started on your goal achievement journey.</p>
               </div>
               <div className="text-2xl font-bold">
                 $0
-                <span className="text-sm font-normal text-muted-foreground">/forever</span>
+                <span className="text-sm font-normal text-muted-foreground">/month</span>
               </div>
             </CardHeader>
             <CardContent>
@@ -443,7 +443,7 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">How does the free plan work?</h3>
-              <p className="text-muted-foreground">Our free plan gives you permanent access to GoalMine.ai with 1 goal, full framework access, and daily motivation emails. Upgrade to Personal Plan anytime to add more goals and enhanced features.  Your existing Goal will continue seamlessly.  Remember that if you aren't completely satisfied, you can cancel anytime.</p>
+              <p className="text-muted-foreground">Our free plan gives you access to GoalMine.ai with 1 goal, full framework access, and daily motivation emails. Upgrade to Personal Plan anytime to add more goals and enhanced features.  Your existing Goal will continue seamlessly.  Remember that if you aren't completely satisfied, you can cancel anytime.</p>
             </div>
           </div>
         </div>
