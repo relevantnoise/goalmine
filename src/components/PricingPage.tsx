@@ -209,7 +209,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
-                  <span><strong>Full AI Analysis Report</strong> - 6 Pillars Framework™ + Business Happiness Formula™ insights</span>
+                  <span><strong>Full AI-Powered Analysis Report</strong> - 6 Pillars Framework™ + Business Happiness Formula™ insights</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
@@ -260,7 +260,7 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span><strong>Exclusive Full AI Analysis Report</strong> - Comprehensive strategic insights and recommendations</span>
+                  <span><strong>Exclusive Full AI-Powered Analysis Report</strong> - Comprehensive strategic insights and recommendations</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
