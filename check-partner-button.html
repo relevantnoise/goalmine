@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Partner Data</title>
+</head>
+<body>
+    <h1>Strategic Partner Data Check</h1>
+    <button onclick="checkPartnerData()">Check StartingIt.ai Data</button>
+    <div id="output"></div>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+
+        const supabase = createClient(
+            'https://dhlcycjnzwfnadmsptof.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.GDWFR0c8TwZNt6DGwk4d6PnpafI6YQr5FEsJBMD-VxY'
+        );
+
+        window.checkPartnerData = async function() {
+            try {
+                console.log('Checking partner data...');
+                
+                const { data: partners, error } = await supabase
+                    .from('strategic_partners')
+                    .select('*')
+                    .eq('name', 'StartingIt.ai');
+                
+                if (error) {
+                    document.getElementById('output').innerHTML = `<pre>Error: ${JSON.stringify(error, null, 2)}</pre>`;
+                    return;
+                }
+                
+                document.getElementById('output').innerHTML = `<pre>${JSON.stringify(partners, null, 2)}</pre>`;
+                console.log('Partner data:', partners);
+                
+            } catch (error) {
+                document.getElementById('output').innerHTML = `<pre>Error: ${error.message}</pre>`;
+                console.error('Error:', error);
+            }
+        };
+    </script>
+</body>
+</html>

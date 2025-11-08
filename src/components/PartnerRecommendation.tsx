@@ -155,7 +155,7 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
           size="sm" 
           className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 shrink-0"
         >
-          {partner.cta_text}
+          Learn More
           <ExternalLink className="w-3 h-3" />
         </Button>
       </div>
