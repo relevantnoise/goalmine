@@ -30,6 +30,7 @@ interface PartnerRecommendationProps {
 
 export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
   console.log('🚀 PartnerRecommendation component mounted with goal:', goal.title);
+  // Static "Learn More" button implementation
   const { user } = useAuth();
   const { subscription } = useSubscription();
   const [partner, setPartner] = useState<Partner | null>(null);
