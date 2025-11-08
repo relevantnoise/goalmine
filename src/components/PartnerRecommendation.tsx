@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Target, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,8 +34,6 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
   const { subscription } = useSubscription();
   const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Find matching partner for this goal
   useEffect(() => {
@@ -43,15 +41,6 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
       findPartnerForGoal();
     }
   }, [goal.id]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const findPartnerForGoal = async () => {
     try {
@@ -103,9 +92,7 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
   };
 
   const handlePartnerClick = async () => {
-    if (!partner || !user || clicked) return;
-    
-    setClicked(true);
+    if (!partner || !user) return;
     
     try {
       // Track the click
@@ -127,11 +114,6 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
     // Open partner link with user email substitution
     const url = partner.affiliate_url.replace('{{USER_EMAIL}}', encodeURIComponent(user.email || ''));
     window.open(url, '_blank', 'noopener,noreferrer');
-    
-    // Reset clicked state after 3 seconds to allow re-clicking
-    timeoutRef.current = setTimeout(() => {
-      setClicked(false);
-    }, 3000);
   };
 
   // Don't render if no partner match, still loading, or no goal
@@ -171,10 +153,9 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
           onClick={handlePartnerClick}
           size="sm" 
           className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 shrink-0"
-          disabled={clicked}
         >
-          {clicked ? 'Opening...' : partner.cta_text}
-          {!clicked && <ExternalLink className="w-3 h-3" />}
+          {partner.cta_text}
+          <ExternalLink className="w-3 h-3" />
         </Button>
       </div>
     </div>
