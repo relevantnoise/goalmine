@@ -424,6 +424,14 @@ export default function GoalDetail() {
               Happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
             </p>
           </div>
+
+          {/* Bottom Back to Dashboard Button */}
+          <div className="mt-8 text-center">
+            <Button variant="outline" onClick={() => navigate('/dashboard')} className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
       </div>
     </div>;
 }
