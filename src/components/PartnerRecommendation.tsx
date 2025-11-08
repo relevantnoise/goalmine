@@ -154,8 +154,9 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
           onClick={handlePartnerClick}
           size="sm" 
           className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 shrink-0"
+          data-testid="partner-cta-v2"
         >
-          Learn More
+          Learn More (v2)
           <ExternalLink className="w-3 h-3" />
         </Button>
       </div>
