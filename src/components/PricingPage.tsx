@@ -260,14 +260,6 @@ export const PricingPage = ({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Full 6 Pillars Framework™ system with goal optimization across all areas</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Business Happiness Formula™ optimization for professional satisfaction</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <span><strong>Exclusive Full AI Analysis Report</strong> - Comprehensive strategic insights and recommendations</span>
                 </li>
                 <li className="flex items-start gap-3">
