@@ -427,7 +427,7 @@ export default function GoalDetail() {
 
           {/* Bottom Back to Dashboard Button */}
           <div className="mt-8 text-center">
-            <Button variant="outline" onClick={() => navigate('/dashboard')} className="mb-4">
+            <Button onClick={() => navigate('/dashboard')} className="mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>

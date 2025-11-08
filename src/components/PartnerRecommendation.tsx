@@ -150,14 +150,13 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
           </div>
         </div>
         
-        <Button 
+        <button
           onClick={handlePartnerClick}
-          size="sm" 
-          className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2 shrink-0"
+          className="px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-2 shrink-0 shadow-sm hover:shadow-md"
         >
           Learn More
           <ExternalLink className="w-3 h-3" />
-        </Button>
+        </button>
       </div>
     </div>
   );
