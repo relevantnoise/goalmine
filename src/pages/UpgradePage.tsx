@@ -161,6 +161,13 @@ export const UpgradePage = () => {
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
                   <div>
+                    <span className="font-semibold">Full AI-Powered Analysis Report</span>
+                    <p className="text-xs text-muted-foreground">6 Pillars Framework™ + Business Happiness Formula™ insights</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-premium mt-0.5 flex-shrink-0" />
+                  <div>
                     <span className="font-semibold">Custom Coaching Tones</span>
                     <p className="text-xs text-muted-foreground">Choose from 4 different motivational styles</p>
                   </div>
@@ -236,35 +243,21 @@ export const UpgradePage = () => {
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <span className="font-semibold">Up to 10 Goals Across All Pillars</span>
-                    <p className="text-xs text-muted-foreground">Complete life optimization with multiple goals per pillar</p>
+                    <p className="text-xs text-muted-foreground">Manage complex life priorities effectively</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">Enhanced Pillars Dashboard</span>
-                    <p className="text-xs text-muted-foreground">Advanced analytics, optimization, and pillar integration</p>
+                    <span className="font-semibold">Up to 10 Daily Nudges</span>
+                    <p className="text-xs text-muted-foreground">Stay motivated throughout your day</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold">AI Life Assessment</span>
-                    <p className="text-xs text-muted-foreground">Intelligent integration & optimization</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Up to 10 Goals + 10 Nudges</span>
-                    <p className="text-xs text-muted-foreground">Multiple goals per pillar + daily motivation</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="font-semibold">Life Optimization System</span>
-                    <p className="text-xs text-muted-foreground">Discover your highest-leverage opportunities for maximum results</p>
+                    <span className="font-semibold">Priority Support and Feature Access</span>
+                    <p className="text-xs text-muted-foreground">Enhanced service level and early access to new features</p>
                   </div>
                 </li>
               </ul>
