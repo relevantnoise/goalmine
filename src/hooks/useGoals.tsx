@@ -342,10 +342,23 @@ export const useGoals = () => {
   const checkIn = async (goalId: string) => {
     if (!user) return { success: false, error: 'User not authenticated' };
 
+    console.log('🎯 FRONTEND CHECK-IN START:', {
+      goalId,
+      user: {
+        email: user.email,
+        id: user.id,
+        selectedUserId: user.email || user.id
+      },
+      timestamp: new Date().toISOString()
+    });
+
     try {
       // Use manual fetch to get better error details from 403 responses
       const SUPABASE_URL = "https://dhlcycjnzwfnadmsptof.supabase.co";
       const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxOTAzNzUsImV4cCI6MjA3MDc2NjM3NX0.UA1bHJVLG6uqL4xtjlkRRjn3GWyid6D7DGN9XIhTcQ0";
+      
+      const requestBody = { goalId, userId: user.email || user.id };
+      console.log('🎯 FRONTEND REQUEST:', requestBody);
       
       const response = await fetch(`${SUPABASE_URL}/functions/v1/check-in`, {
         method: 'POST',
@@ -353,11 +366,16 @@ export const useGoals = () => {
           'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ goalId, userId: user.email || user.id })
+        body: JSON.stringify(requestBody)
       });
 
       const responseData = await response.json();
-      console.log('🔍 Manual fetch response:', { status: response.status, data: responseData });
+      console.log('🎯 FRONTEND RESPONSE:', { 
+        status: response.status, 
+        ok: response.ok,
+        data: responseData,
+        timestamp: new Date().toISOString()
+      });
 
       if (!response.ok) {
         // Handle 403/400 errors with detailed server messages
@@ -385,13 +403,13 @@ export const useGoals = () => {
 
       // Optimistic update - update the goal state immediately
       if (data.goal) {
-        console.log('🎯 Check-in successful, updating goal state:', {
+        console.log('🎯 CHECK-IN BACKEND RESPONSE:', {
           goalId,
-          oldLastCheckin: goals.find(g => g.id === goalId)?.last_checkin_date,
-          newLastCheckin: data.goal.last_checkin_date,
+          oldGoal: goals.find(g => g.id === goalId),
+          backendGoal: data.goal,
+          backendKeys: Object.keys(data.goal),
+          lastCheckinFormat: data.goal.last_checkin_date?.length,
           newStreakCount: data.goal.streak_count,
-          fullGoalData: data.goal,
-          dataGoalKeys: Object.keys(data.goal),
           hasLastCheckinDate: !!data.goal.last_checkin_date
         });
         

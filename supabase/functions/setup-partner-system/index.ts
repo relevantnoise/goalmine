@@ -76,7 +76,7 @@ const handler = async (req: Request): Promise<Response> => {
           description: 'Complete business launch platform with legal setup, financial planning, and strategic guidance',
           website_url: 'https://startingit.ai',
           affiliate_url: 'https://startingit.ai?ref=goalmine&user={{USER_EMAIL}}',
-          cta_text: 'Start Your Business - Free Trial',
+          // Note: No cta_text field - frontend always shows "Learn More" button
           keywords: ['business', 'startup', 'entrepreneur', 'consulting', 'freelance', 'launch', 'company', 'llc', 'corporation', 'firm', 'agency', 'venture'],
           pillar_categories: ['Work'],
           notes: 'First strategic partner - business/entrepreneurship focus',

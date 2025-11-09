@@ -5,16 +5,32 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * STRATEGIC PARTNER SYSTEM
+ * 
+ * How it works:
+ * 1. Pure keyword matching - gets ALL active partners (randomized order)
+ * 2. Matches partner keywords against goal title + description
+ * 3. Shows first match with "Learn More" button (hardcoded text)
+ * 4. Tracks clicks for revenue attribution
+ * 
+ * Key decisions:
+ * - No pillar filtering (too subjective - "start business" could be Work OR Personal Development)
+ * - Random partner order (fair exposure when multiple partners have same keywords)  
+ * - Hardcoded "Learn More" button (simple, consistent UX)
+ * - Pure keyword matching (partner keywords array vs goal content)
+ */
+
 interface Partner {
   id: string;
   name: string;
   description: string;
   website_url: string;
   affiliate_url: string;
-  cta_text: string;
   keywords: string[];
   pillar_categories: string[];
   is_active: boolean;
+  // Note: Button always says "Learn More" (hardcoded below) - no dynamic CTA text
 }
 
 interface Goal {
@@ -30,7 +46,6 @@ interface PartnerRecommendationProps {
 
 export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
   console.log('🚀 PartnerRecommendation component mounted with goal:', goal.title);
-  // Static "Learn More" button implementation
   const { user } = useAuth();
   const { subscription } = useSubscription();
   const [partner, setPartner] = useState<Partner | null>(null);
@@ -49,12 +64,12 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
       console.log('🔍 PartnerRecommendation: Goal pillar type:', goal.pillar_type);
       setLoading(true);
       
-      // Get active partners that match the goal's pillar category
+      // Get all active partners (randomized) - let keywords do the matching
       const { data: partners, error } = await supabase
         .from('strategic_partners')
         .select('*')
         .eq('is_active', true)
-        .contains('pillar_categories', [goal.pillar_type]);
+        .order('RANDOM()');
       
       if (error) {
         console.error('🚨 Partner query error:', error);
@@ -64,7 +79,7 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
       console.log('🔍 PartnerRecommendation: Found partners:', partners);
       
       if (!partners || partners.length === 0) {
-        console.log(`🚨 No partners found for pillar: ${goal.pillar_type}`);
+        console.log(`🚨 No active partners found`);
         return;
       }
       
@@ -154,6 +169,7 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
           onClick={handlePartnerClick}
           className="px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-2 shrink-0 shadow-sm hover:shadow-md"
         >
+          {/* Hardcoded "Learn More" - consistent across all partners (no dynamic CTA text) */}
           Learn More
           <ExternalLink className="w-3 h-3" />
         </button>
