@@ -83,14 +83,28 @@ export const PartnerRecommendation = ({ goal }: PartnerRecommendationProps) => {
         return;
       }
       
-      // Find partner with matching keywords in goal text
+      // Find partner with matching keywords AND pillar category
       const goalText = `${goal.title} ${goal.description || ''}`.toLowerCase();
       
-      const matchingPartner = partners.find(partner =>
-        partner.keywords.some(keyword => 
+      const matchingPartner = partners.find(partner => {
+        // Must match BOTH keyword and pillar for strategic precision
+        const hasKeywordMatch = partner.keywords.some(keyword => 
           goalText.includes(keyword.toLowerCase())
-        )
-      );
+        );
+        const hasPillarMatch = partner.pillar_categories.includes(goal.pillar_type);
+        
+        console.log(`🔍 Partner ${partner.name} evaluation:`, {
+          hasKeywordMatch,
+          hasPillarMatch,
+          goalPillar: goal.pillar_type,
+          partnerPillars: partner.pillar_categories,
+          matchedKeywords: partner.keywords.filter(keyword => 
+            goalText.includes(keyword.toLowerCase())
+          )
+        });
+        
+        return hasKeywordMatch && hasPillarMatch;
+      });
       
       if (matchingPartner) {
         console.log(`Partner match found: ${matchingPartner.name} for goal "${goal.title}"`);
