@@ -16,6 +16,7 @@ export interface Goal {
   is_active: boolean;
   last_motivation_date?: string;
   last_checkin_date?: string;
+  last_streak_date?: string;  // Backend's authoritative streak date (YYYY-MM-DD)
   created_at: string;
   updated_at: string;
   pillar_type?: string;

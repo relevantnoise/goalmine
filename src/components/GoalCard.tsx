@@ -123,48 +123,46 @@ export const GoalCard = ({
     }
   };
 
-  // Check if user has already checked in today - MUST match backend logic exactly
+  // Check if user has already checked in today using backend's authoritative calculation
   const hasCheckedInToday = useMemo(() => {
     if (!goal.last_checkin_date) return false;
     
-    // EXACT MATCH: Backend logic from check-in/index.ts lines 185-190
-    // Calculate current streak date using Eastern Time + 3 AM reset logic
+    // SIMPLIFIED: Use backend's authoritative streak date calculation
+    // Calculate current streak date using same logic as backend (check-in/index.ts:185-190)
     const now = new Date();
     const utcTime = now.getTime();
-    const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5; // EDT vs EST
+    const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5;
     const easternTime = new Date(utcTime + (easternOffset * 60 * 60 * 1000));
     const streakResetTime = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
-    const currentStreakDate = streakResetTime.toISOString().split('T')[0]; // YYYY-MM-DD
+    const currentStreakDate = streakResetTime.toISOString().split('T')[0];
     
-    // Calculate last check-in streak date using same logic
+    // Use backend's last_streak_date if available, otherwise calculate from timestamp
     let lastCheckinStreakDate = '';
-    if (goal.last_checkin_date) {
-      // HANDLE BOTH FORMATS: Full timestamp vs date string
-      if (goal.last_checkin_date.length === 10) {
-        // Date string format "2025-11-06" - use directly
-        lastCheckinStreakDate = goal.last_checkin_date;
-      } else {
-        // Full timestamp format - apply timezone calculation
-        const lastCheckinTime = new Date(goal.last_checkin_date);
-        const lastUtcTime = lastCheckinTime.getTime();
-        const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
-        const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
-        lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
-      }
+    if (goal.last_streak_date) {
+      // Backend provided authoritative streak date
+      lastCheckinStreakDate = goal.last_streak_date;
+      console.log('🎯 Using backend authoritative streak date:', lastCheckinStreakDate);
+    } else if (goal.last_checkin_date) {
+      // Fallback to timestamp calculation (legacy)
+      const lastCheckinTime = new Date(goal.last_checkin_date);
+      const lastUtcTime = lastCheckinTime.getTime();
+      const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
+      const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
+      lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
+      console.log('⚠️ Using fallback timestamp calculation for:', goal.title);
     }
     
     const result = currentStreakDate === lastCheckinStreakDate;
     
-    // FIXED DEBUG: Verify the fix works
-    console.log(`✅ FIXED DEBUG for ${goal.title}:`);
-    console.log('✅ Raw last_checkin_date:', goal.last_checkin_date);
-    console.log('✅ Format detected:', goal.last_checkin_date?.length === 10 ? 'DATE_STRING' : 'FULL_TIMESTAMP');
-    console.log('✅ Current streak date:', currentStreakDate);
-    console.log('✅ Last checkin streak date:', lastCheckinStreakDate);
-    console.log('✅ Dates match?', currentStreakDate === lastCheckinStreakDate);
-    console.log('✅ Button should be:', result ? 'DISABLED ✓' : 'ACTIVE ✓');
+    console.log(`🎯 Check-in status for ${goal.title}:`, {
+      currentStreakDate,
+      lastCheckinStreakDate,
+      hasBackendDate: !!goal.last_streak_date,
+      result: result ? 'ALREADY_CHECKED_IN' : 'CAN_CHECK_IN'
+    });
+    
     return result;
-  }, [goal.last_checkin_date, goal.updated_at]);
+  }, [goal.last_checkin_date, goal.last_streak_date, goal.updated_at]);
   return <Card className="border border-border shadow-sm">
       <div>
       <CardHeader>

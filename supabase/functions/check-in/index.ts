@@ -265,7 +265,10 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      goal: updateResult,
+      goal: {
+        ...updateResult,
+        last_streak_date: currentStreakDate  // Add authoritative streak date to goal object
+      },
       message: `Checked in! Streak is now ${updatedStreakCount} day${updatedStreakCount === 1 ? '' : 's'}.`,
       streakInfo: {
         previousStreak: goal.streak_count || 0,
