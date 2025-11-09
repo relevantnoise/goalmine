@@ -125,18 +125,14 @@ export const GoalCard = ({
 
   // Check if user has already checked in today - MUST match backend logic exactly
   const hasCheckedInToday = useMemo(() => {
-    if (!goal.last_checkin_date) {
-      console.log(`🎯 ${goal.title}: No last_checkin_date - button ACTIVE`);
-      return false;
-    }
+    if (!goal.last_checkin_date) return false;
     
-    // EXACT MATCH: Backend logic from check-in/index.ts (updated Nov 2025)
-    // Calculate current streak date using proper Eastern Time conversion
+    // EXACT MATCH: Backend logic from check-in/index.ts lines 185-190
+    // Calculate current streak date using Eastern Time + 3 AM reset logic
     const now = new Date();
     const utcTime = now.getTime();
-    const isDST = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT');
-    const easternOffsetHours = isDST ? -4 : -5; // EDT is UTC-4, EST is UTC-5
-    const easternTime = new Date(utcTime + (easternOffsetHours * 60 * 60 * 1000));
+    const easternOffset = now.toLocaleString("en-US", { timeZone: "America/New_York" }).includes('EDT') ? -4 : -5; // EDT vs EST
+    const easternTime = new Date(utcTime + (easternOffset * 60 * 60 * 1000));
     const streakResetTime = new Date(easternTime.getTime() - (3 * 60 * 60 * 1000));
     const currentStreakDate = streakResetTime.toISOString().split('T')[0]; // YYYY-MM-DD
     
@@ -150,13 +146,8 @@ export const GoalCard = ({
       } else {
         // Full timestamp format - apply timezone calculation
         const lastCheckinTime = new Date(goal.last_checkin_date);
-        // ROBUST: Handle invalid dates
-        if (isNaN(lastCheckinTime.getTime())) {
-          console.error(`🎯 ${goal.title}: Invalid last_checkin_date format:`, goal.last_checkin_date);
-          return false;
-        }
         const lastUtcTime = lastCheckinTime.getTime();
-        const lastEasternTime = new Date(lastUtcTime + (easternOffsetHours * 60 * 60 * 1000));
+        const lastEasternTime = new Date(lastUtcTime + (easternOffset * 60 * 60 * 1000));
         const lastStreakResetTime = new Date(lastEasternTime.getTime() - (3 * 60 * 60 * 1000));
         lastCheckinStreakDate = lastStreakResetTime.toISOString().split('T')[0];
       }
@@ -164,18 +155,14 @@ export const GoalCard = ({
     
     const result = currentStreakDate === lastCheckinStreakDate;
     
-    // ENHANCED DEBUG: Track button state calculation for Dan's issue  
-    console.log(`🎯 CHECK-IN STATE for ${goal.title}:`);
-    console.log('📍 Raw last_checkin_date:', goal.last_checkin_date);
-    console.log('📍 Format detected:', goal.last_checkin_date?.length === 10 ? 'DATE_STRING' : 'FULL_TIMESTAMP');
-    console.log('📍 Current time:', now.toISOString());
-    console.log('📍 Eastern offset:', easternOffsetHours, isDST ? '(EDT)' : '(EST)');
-    console.log('📍 Current streak date:', currentStreakDate);
-    console.log('📍 Last checkin streak date:', lastCheckinStreakDate);
-    console.log('📍 Dates match?', currentStreakDate === lastCheckinStreakDate);
-    console.log('📍 Button should be:', result ? '🔥 CHECKED IN (DISABLED)' : '🎯 CHECK IN TODAY (ACTIVE)');
-    console.log('📍 Goal updated_at:', goal.updated_at);
-    
+    // FIXED DEBUG: Verify the fix works
+    console.log(`✅ FIXED DEBUG for ${goal.title}:`);
+    console.log('✅ Raw last_checkin_date:', goal.last_checkin_date);
+    console.log('✅ Format detected:', goal.last_checkin_date?.length === 10 ? 'DATE_STRING' : 'FULL_TIMESTAMP');
+    console.log('✅ Current streak date:', currentStreakDate);
+    console.log('✅ Last checkin streak date:', lastCheckinStreakDate);
+    console.log('✅ Dates match?', currentStreakDate === lastCheckinStreakDate);
+    console.log('✅ Button should be:', result ? 'DISABLED ✓' : 'ACTIVE ✓');
     return result;
   }, [goal.last_checkin_date, goal.updated_at]);
   return <Card className="border border-border shadow-sm">
