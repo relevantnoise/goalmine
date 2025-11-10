@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upgrade Ryan to Personal Plan</title>
+</head>
+<body>
+    <h1>Upgrade Ryan to Personal Plan</h1>
+    <button onclick="upgradeRyan()">Upgrade Ryan to Personal</button>
+    <button onclick="checkRyanStatus()">Check Ryan's Current Status</button>
+    <div id="result"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://dhlcycjnzwfnadmsptof.supabase.co';
+        const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRobGN5Y2puendmbmFkbXNwdG9mIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTE5MDM3NSwiZXhwIjoyMDcwNzY2Mzc1fQ.183iYvXPSTtSl3GeWOwhqk0Rhx17PXVrGVAdADfNjfI';
+
+        async function checkRyanStatus() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/subscribers?user_id=eq.ryanlynn@umich.edu&select=*`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'apikey': SERVICE_ROLE_KEY
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('result').innerHTML = `
+                    <h3>Ryan's Current Status:</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error checking status: ${error.message}`;
+            }
+        }
+
+        async function upgradeRyan() {
+            try {
+                // First check current status
+                await checkRyanStatus();
+                
+                // Then upgrade/insert subscriber record
+                const subscriberData = {
+                    user_id: 'ryanlynn@umich.edu',
+                    subscribed: true,
+                    subscription_tier: 'Personal Plan',
+                    stripe_customer_id: 'test_customer_ryan'
+                };
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'apikey': SERVICE_ROLE_KEY,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(subscriberData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = `
+                        <h3>✅ SUCCESS!</h3>
+                        <p>Ryan has been upgraded to Personal Plan</p>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                } else {
+                    // If insert failed, try update
+                    const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/subscribers?user_id=eq.ryanlynn@umich.edu`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+                            'Content-Type': 'application/json',
+                            'apikey': SERVICE_ROLE_KEY,
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(subscriberData)
+                    });
+
+                    const updateResult = await updateResponse.json();
+                    
+                    if (updateResponse.ok) {
+                        document.getElementById('result').innerHTML = `
+                            <h3>✅ UPDATED!</h3>
+                            <p>Ryan has been updated to Personal Plan</p>
+                            <pre>${JSON.stringify(updateResult, null, 2)}</pre>
+                        `;
+                    } else {
+                        document.getElementById('result').innerHTML = `
+                            <h3>❌ Error:</h3>
+                            <pre>Insert error: ${JSON.stringify(result, null, 2)}</pre>
+                            <pre>Update error: ${JSON.stringify(updateResult, null, 2)}</pre>
+                        `;
+                    }
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error upgrading: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

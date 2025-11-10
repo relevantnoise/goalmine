@@ -6,19 +6,19 @@
 - Current DB Record: `subscribed: false` or no record
 - Goal Limit: 1
 - Nudge Limit: 1
-- Error Message: "Free users can have a maximum of 1 goal. Upgrade to Personal Plan ($24.99/month) to create up to 3 goals."
+- Error Message: "Free users can have a maximum of 1 goal. Upgrade to Personal Plan ($24.99/month) to create up to 6 goals."
 
 ### Personal Plan User  
 - Current DB Record: `subscribed: true, subscription_tier: 'Personal Plan'`
-- Goal Limit: 3
-- Nudge Limit: 3
-- Error Message: "Personal Plan users can have a maximum of 3 goals. Upgrade to Professional Plan ($199.99/month) to create up to 10 goals."
+- Goal Limit: 6
+- Nudge Limit: 6
+- Error Message: "Personal Plan users can have a maximum of 6 goals. Upgrade to Professional Plan ($199.99/month) to create up to 18 goals."
 
 ### Professional Plan User (Dan's Current Status)
 - Current DB Record: `subscribed: true, subscription_tier: 'Professional Plan'`
-- Goal Limit: 10
-- Nudge Limit: 10  
-- Error Message: "Professional Plan users can have a maximum of 10 goals. You currently have X goals."
+- Goal Limit: 18
+- Nudge Limit: 18  
+- Error Message: "Professional Plan users can have a maximum of 18 goals. You currently have X goals."
 
 ### Pro Plan User (Legacy)
 - Current DB Record: `subscribed: true, subscription_tier: 'Pro Plan'`

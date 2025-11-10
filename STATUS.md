@@ -718,8 +718,10 @@ if (!isProductionDomain) {
 - **Status**: ✅ WORKING PERFECTLY - stable and reliable daily motivation system
 
 ### ✅ **Subscription & Business Logic**
-- Free tier: 1 goal, 1 nudge/day, 30-day trial
-- Personal Plan: 3 goals, 3 nudges/day, $4.99/month
+- Free tier: 1 goal, 1 nudge/day, 30-day trial (no access to full AI-powered assessment analysis)
+- Personal Plan: 6 goals, 6 nudges/day, $24.99/month (full access to AI-powered assessment analysis)
+- Professional Plan: 18 goals, 18 nudges/day + Exclusive Full AI-Powered Analysis Report + Priority support, $199.99/month
+- Strategic Advisor Plan: 18 goals, 18 nudges/day + 2-hour quarterly 1-on-1 coaching sessions, $950/month
 - Stripe integration with proper webhooks
 - Feature gates with dynamic UI adaptation
 - **NEW**: Comprehensive expired state handling

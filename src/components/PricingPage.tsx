@@ -427,7 +427,7 @@ export const PricingPage = ({
             </div>
             <div>
               <h3 className="font-semibold mb-2">Can I have multiple Goals?</h3>
-              <p className="text-muted-foreground">Yes! While you can have one Goal on our free plan, our Personal Plan enables you to have up to 3 Goals for just $24.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
+              <p className="text-muted-foreground">Yes! While you can have one Goal on our free plan, our Personal Plan enables you to have up to 6 Goals for just $24.99/month, so you can run multiple Goals simultaneously for different goals (fitness, health, career, relationships, etc.).</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">What's included in Strategic Advisor Plan?</h3>

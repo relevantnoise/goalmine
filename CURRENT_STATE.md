@@ -108,22 +108,22 @@ Dan Lynn's proven 10-year methodology with 4 dimensions:
 - **1 daily nudge** 
 - **All 6 Elements Framework** features included
 
-### **Personal Plan** - $24.99/month ⬆️ (UPDATED OCT 28, 2025)
-- **3 goals** maximum
-- **3 daily nudges**
-- **6 Elements Framework** included
-- **Enhanced value** reflecting professional life management platform
+### **Personal Plan** - $24.99/month ⬆️ (UPDATED NOV 2025)
+- **6 goals** maximum
+- **6 daily nudges**
+- **6 Pillars Framework** included
+- **Full access to AI-powered assessment analysis**
 
-### **Professional Plan** - $199.99/month ⬆️ (UPDATED OCT 28, 2025)
-- **10 goals** maximum (increased from 5)
-- **10 daily nudges** (increased from 5)  
-- **Advanced 6 Elements analytics**
-- **No group Q&A** (removed for scalability)
+### **Professional Plan** - $199.99/month ⬆️ (UPDATED NOV 2025)
+- **18 goals** maximum across all pillars
+- **18 daily nudges** for comprehensive motivation support
+- **Exclusive Full AI-Powered Analysis Report** with comprehensive strategic insights
+- **Priority support and feature access**
 
 ### **Strategic Advisor Plan** - $950/month
-- **10 goals** maximum (increased from 5)
-- **10 daily nudges** (increased from 5)
-- **Everything in Professional Plan** + **quarterly 1-on-1 coaching with Dan Lynn**
+- **18 goals** maximum across all pillars
+- **18 daily nudges** for comprehensive motivation support
+- **Everything in Professional Plan** + **2-hour quarterly 1-on-1 coaching sessions with Dan Lynn**
 
 ---
 

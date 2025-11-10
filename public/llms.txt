@@ -27,10 +27,10 @@ GoalMine.ai is a comprehensive goal achievement platform that combines AI-powere
 - **Tone Adaptation**: AI matches user's preferred motivation style
 
 ## Subscription Plans
-- **Free Trial**: 30 days, 1 goal, 1 daily nudge
-- **Personal Plan**: $4.99/month, 3 goals, 3 daily nudges  
-- **Pro Plan**: $199.99/month, 5 goals, 5 nudges + monthly group Q&A
-- **Strategic Advisor Plan**: $950/month, everything + quarterly 1-on-1 coaching
+- **Free Trial**: 30 days, 1 goal, 1 daily nudge (no access to full AI-powered assessment analysis)
+- **Personal Plan**: $24.99/month, 6 goals, 6 daily nudges (full access to AI-powered assessment analysis)
+- **Professional Plan**: $199.99/month, 18 goals, 18 nudges + Exclusive Full AI-Powered Analysis Report + Priority support
+- **Strategic Advisor Plan**: $950/month, 18 goals, 18 nudges + 2-hour quarterly 1-on-1 coaching sessions
 
 ## Common Use Cases
 - **Fitness Goals**: "Lose 25 pounds", "Run a marathon", "Build muscle"

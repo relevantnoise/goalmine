@@ -265,10 +265,10 @@ git push origin main  # → Updates both goalmine.ai AND steady-aim-coach.vercel
 - **Key Change**: Users NO LONGER select email times - everyone gets the same consolidated email at 6 AM
 
 ### Subscription Tiers (Updated November 2025)
-- **Free Users**: 1 goal, 1 daily nudge, 30-day trial
-- **Personal Plan**: 3 goals, 3 daily nudges, $24.99/month
-- **Professional Plan**: 10 goals, 10 daily nudges + 6 Pillars Framework™ + monthly group Q&A, $199.99/month
-- **Strategic Advisor Plan**: 10 goals, 10 daily nudges + 6 Pillars Framework™ + 1-on-1 coaching, $950/month
+- **Free Users**: 1 goal, 1 daily nudge, 30-day trial (no access to full AI-powered assessment analysis)
+- **Personal Plan**: 6 goals, 6 daily nudges, $24.99/month (full access to AI-powered assessment analysis)
+- **Professional Plan**: 18 goals, 18 daily nudges + Exclusive Full AI-Powered Analysis Report + Priority support, $199.99/month
+- **Strategic Advisor Plan**: 18 goals, 18 daily nudges + 2-hour quarterly 1-on-1 coaching sessions, $950/month
 - **Legacy Support**: Pro Plan, Professional Coach (mapped to Professional Plan limits)
 - **Feature Gates**: UI dynamically adapts based on subscription status
 
