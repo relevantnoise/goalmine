@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart, Target, Zap, LogIn, LogOut, Users, Briefcase, BookOpen, Activity, RotateCcw, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { Header } from "@/components/Header";
 import { UserCount } from "@/components/UserCount";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +21,25 @@ export const LandingPage = ({
     signOut
   } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dashboardButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Check if user came from email check-in link
+  const isCheckinFlow = searchParams.get('checkin') === 'true';
+  
+  // Auto-scroll to dashboard button for email check-in users
+  useEffect(() => {
+    if (isCheckinFlow && user && dashboardButtonRef.current) {
+      // Smooth scroll to center the dashboard button in viewport
+      setTimeout(() => {
+        dashboardButtonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 100); // Small delay to ensure rendering is complete
+    }
+  }, [isCheckinFlow, user]);
+  
   // Use standard supabase client with native auth
 
   const handleContinueToDashboard = async () => {
@@ -109,8 +129,26 @@ export const LandingPage = ({
             </div>
           </div>
 
+          {/* Check-in flow indicator */}
+          {isCheckinFlow && user && (
+            <div className="flex justify-center mb-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 text-center">
+                <p className="text-sm text-blue-700 font-medium">
+                  ✉️ Welcome back from your email! Continue to your dashboard to complete your check-in.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
-            {user ? <Button onClick={handleContinueToDashboard} size="lg" className="bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-72">
+            {user ? <Button 
+                ref={dashboardButtonRef}
+                onClick={handleContinueToDashboard} 
+                size="lg" 
+                className={`bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-72 transition-all duration-300 ${
+                  isCheckinFlow ? 'ring-2 ring-blue-400 ring-opacity-50 shadow-lg' : ''
+                }`}
+              >
                 Continue to Your Dashboard
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button> : <>
