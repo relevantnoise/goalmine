@@ -24,12 +24,12 @@ export const LandingPage = ({
   const [searchParams] = useSearchParams();
   const dashboardButtonRef = useRef<HTMLButtonElement>(null);
   
-  // Check if user came from email check-in link
-  const isCheckinFlow = searchParams.get('checkin') === 'true';
+  // Check if user came from any email link (wake-up call or check-in)
+  const isFromEmail = searchParams.get('user') || searchParams.get('checkin') === 'true';
   
-  // Auto-scroll to dashboard button for email check-in users
+  // Auto-scroll to dashboard button for users coming from email
   useEffect(() => {
-    if (isCheckinFlow && user && dashboardButtonRef.current) {
+    if (isFromEmail && user && dashboardButtonRef.current) {
       // Smooth scroll to center the dashboard button in viewport
       setTimeout(() => {
         dashboardButtonRef.current?.scrollIntoView({
@@ -38,7 +38,7 @@ export const LandingPage = ({
         });
       }, 100); // Small delay to ensure rendering is complete
     }
-  }, [isCheckinFlow, user]);
+  }, [isFromEmail, user]);
   
   // Use standard supabase client with native auth
 
@@ -129,12 +129,12 @@ export const LandingPage = ({
             </div>
           </div>
 
-          {/* Check-in flow indicator */}
-          {isCheckinFlow && user && (
+          {/* Email flow indicator */}
+          {isFromEmail && user && (
             <div className="flex justify-center mb-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 text-center">
                 <p className="text-sm text-blue-700 font-medium">
-                  ✉️ Welcome back from your email! Continue to your dashboard to complete your check-in.
+                  ✉️ Welcome back from your email! Continue to your dashboard to check in and start your day.
                 </p>
               </div>
             </div>
@@ -146,7 +146,7 @@ export const LandingPage = ({
                 onClick={handleContinueToDashboard} 
                 size="lg" 
                 className={`bg-primary hover:bg-primary-hover text-lg px-8 py-4 h-auto w-72 transition-all duration-300 ${
-                  isCheckinFlow ? 'ring-2 ring-blue-400 ring-opacity-50 shadow-lg' : ''
+                  isFromEmail ? 'ring-2 ring-blue-400 ring-opacity-50 shadow-lg' : ''
                 }`}
               >
                 Continue to Your Dashboard
