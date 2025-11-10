@@ -134,7 +134,7 @@ export const LandingPage = ({
             <div className="flex justify-center mb-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 text-center">
                 <p className="text-sm text-blue-700 font-medium">
-                  ✉️ Welcome back from your email! Continue to your dashboard to check in and start your day.
+                  ✉️ Welcome back. Continue to your dashboard to check in and start your day.
                 </p>
               </div>
             </div>
