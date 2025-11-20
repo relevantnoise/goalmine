@@ -168,6 +168,7 @@ export const useAuth = () => {
       
       console.log('🎯 Attempting popup sign-in...');
       try {
+        // Force popup to stay focused and return to current tab
         const result = await signInWithPopup(auth, googleProvider);
         console.log('✅ Google sign-in successful!', {
           user: result.user ? {
