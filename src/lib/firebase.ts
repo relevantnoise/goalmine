@@ -5,7 +5,7 @@ import { getAuth, GoogleAuthProvider, connectAuthEmulator } from 'firebase/auth'
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDqxbqX-z6L6kYvWZGnKIttNz0GWm6IQAg",
-  authDomain: "goalmineai.firebaseapp.com",
+  authDomain: "goalmine.ai",
   projectId: "goalmineai",
   storageBucket: "goalmineai.firebasestorage.app",
   messagingSenderId: "518935050036",
