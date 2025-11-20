@@ -22,9 +22,9 @@ export const UserCount = ({ variant = 'subtle', className = '' }: UserCountProps
     let totalGrowth = 0;
     if (daysSinceLaunch > 0) {
       for (let day = 0; day < daysSinceLaunch; day++) {
-        // Use day as seed for consistent but varied growth (5-15 range)
+        // Use day as seed for consistent but varied growth (2-5 range)
         const seed = (day * 17 + 23) % 47; // Simple pseudo-random
-        const dailyGrowth = 5 + (seed % 11); // 5-15 range (11 possible values: 0-10, plus 5 = 5-15)
+        const dailyGrowth = 2 + (seed % 4); // 2-5 range (4 possible values: 0-3, plus 2 = 2-5)
         totalGrowth += dailyGrowth;
       }
     }

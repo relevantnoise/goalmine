@@ -70,12 +70,15 @@ export const LandingPage = ({
             </h2>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed font-normal">
-              High achievers don't need another goal app. They need <strong>diagnostic intelligence</strong> that reveals their highest-impact opportunities. 
-              GoalMine.ai's proprietary <strong>6 Pillars of Life Framework™</strong> + <strong>Business Happiness Formula™</strong> analyze your current state and guide you to create precision goals across work, health, relationships, and personal growth.
+              High achievers are juggling multiple priorities: work, sleep, family relationships, health & fitness, personal development, and spiritual fulfillment. <strong>These competing priorities and limited time create stress.</strong>
             </p>
             
-            <p className="text-lg font-medium text-primary mb-8 max-w-3xl mx-auto text-center italic">
-              As you begin your GoalMine.ai journey, remember this profound truth: happiness isn't found in achieving the goal—it lives in the pursuit itself. Embrace every step forward.
+            <p className="text-xl text-muted-foreground mb-6 max-w-3xl mx-auto leading-relaxed">
+              GoalMine.ai's proven frameworks refined over 30 years identify your highest-leverage opportunities, then guide you to create precision goals that optimize your time and reduce stress.
+            </p>
+            
+            <p className="text-md text-primary mb-8 max-w-2xl mx-auto font-medium">
+              Trusted by professionals, entrepreneurs, parents, retirees, and ambitious individuals.
             </p>
 
             {/* 6 Pillars Visual - Ordered: Work, Family & Friends, Health & Fitness, Spiritual, Personal Development, Sleep */}
@@ -118,11 +121,6 @@ export const LandingPage = ({
               </div>
             </div>
 
-            <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              <strong>Proven frameworks refined over 30 years with hundreds of high achievers: professionals, entrepreneurs, parents, retirees, and ambitious individuals.</strong>{" "}
-              The 6 Pillars Framework™ manages life's complexities, while the Business Happiness Formula™ optimizes work-life satisfaction. 
-              Now powered by AI that identifies your highest-impact opportunities.
-            </p>
             
             <div className="flex justify-center mb-12">
               <UserCount variant="prominent" />
@@ -183,11 +181,11 @@ export const LandingPage = ({
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-3xl md:text-4xl font-bold mb-6">
-                Why Most Goal Systems Fail Ambitious High-Achievers
+                Why Traditional Goal Apps Fall Short
               </h3>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                High achievers are juggling multiple priorities: work or personal projects, family relationships, health, personal growth, and spiritual fulfillment. 
-                Traditional goal apps treat these as separate items. <strong>Life doesn't work that way.</strong>
+                When everything is connected, you need a <strong>systematic approach</strong> that understands 
+                how your goals impact each other across all life areas.
               </p>
             </div>
 
@@ -248,15 +246,14 @@ export const LandingPage = ({
                   </span>
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold">Proven Frameworks, Enterprise Platform</h4>
-                  <p className="text-muted-foreground">GoalMine.ai's proven frameworks are built on methodologies refined over 30 years with hundreds of high achievers, originally developed by successful serial entrepreneur Dan Lynn</p>
+                  <h4 className="text-xl font-bold">Proven Frameworks, AI-Powered Platform</h4>
+                  <p className="text-muted-foreground">30-year methodology by serial entrepreneur Dan Lynn, now enhanced with intelligent technology</p>
                 </div>
               </div>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Our frameworks originated from real-world challenges faced by high achievers juggling complex lives—
-                demanding responsibilities, family relationships, personal growth, and life satisfaction. 
-                Traditional goal-setting tools failed to address the <strong>systematic complexity management</strong> that high-achievers need. 
-                GoalMine.ai has evolved these proven methodologies into an AI-powered platform that helps thousands of users optimize their results across all life areas.
+                These frameworks solved real challenges for professionals juggling demanding careers, family relationships, and personal growth. 
+                Now powered by AI, GoalMine.ai makes <strong>systematic life optimization</strong> accessible to anyone seeking 
+                sustainable success across all life areas.
               </p>
             </div>
 
