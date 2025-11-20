@@ -1,7 +1,7 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Index from "./pages/Index";
 import Test from "./pages/Test";
@@ -20,10 +20,16 @@ import { Disclaimer } from "./pages/Disclaimer";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-        <BrowserRouter>
+const App = () => {
+  // Don't render React Router for Firebase auth routes
+  if (window.location.pathname.startsWith('/__/')) {
+    return null;
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/test" element={<Test />} />
             <Route path="/" element={<Index />} />
@@ -45,7 +51,8 @@ const App = () => (
         </BrowserRouter>
         <Toaster />
       </TooltipProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;

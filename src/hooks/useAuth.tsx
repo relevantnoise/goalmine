@@ -51,6 +51,22 @@ export const useAuth = () => {
   useEffect(() => {
     console.log('🔄 Setting up Firebase auth state listener...');
     
+    // Check for redirect result first (for Google OAuth redirect flow)
+    getRedirectResult(auth).then((result) => {
+      if (result) {
+        console.log('✅ Google redirect sign-in successful!', {
+          user: result.user ? {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName
+          } : 'No user'
+        });
+        // The auth state listener will handle the rest
+      }
+    }).catch((error) => {
+      console.error('❌ Redirect result error:', error);
+    });
+    
     // Set a timeout fallback to prevent infinite loading
     const timeoutId = setTimeout(() => {
       console.log('⏰ Auth initialization timeout - setting loading to false');
@@ -164,8 +180,16 @@ export const useAuth = () => {
         return result.user;
       } catch (popupError: any) {
         console.log('❌ Popup failed:', popupError.message);
-        // Temporarily disable redirect fallback for Safari debugging
-        throw new Error('Google sign-in popup was blocked. Please allow popups for this site or try a different browser.');
+        console.log('🔄 Popup blocked, trying redirect method...');
+        
+        try {
+          await signInWithRedirect(auth, googleProvider);
+          // Note: signInWithRedirect doesn't return immediately, it redirects the page
+          return null; // We'll handle the result after redirect
+        } catch (redirectError: any) {
+          console.error('❌ Redirect also failed:', redirectError);
+          throw new Error('Google sign-in failed. Please try again or use email/password.');
+        }
       }
     } catch (error: any) {
       console.error('❌ Google sign-in error:', error);
