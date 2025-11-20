@@ -163,11 +163,9 @@ export const useAuth = () => {
         
         return result.user;
       } catch (popupError: any) {
-        console.log('❌ Popup failed, falling back to redirect:', popupError.message);
-        console.log('🔄 Attempting redirect sign-in...');
-        await signInWithRedirect(auth, googleProvider);
-        console.log('🔄 Redirect initiated successfully, user will be redirected to Google...');
-        return null; // Will be handled by redirect result
+        console.log('❌ Popup failed:', popupError.message);
+        // Temporarily disable redirect fallback for Safari debugging
+        throw new Error('Google sign-in popup was blocked. Please allow popups for this site or try a different browser.');
       }
     } catch (error: any) {
       console.error('❌ Google sign-in error:', error);
